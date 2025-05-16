@@ -8,7 +8,7 @@ import type { ThreadTopic } from "@/constants/thread-topics";
 
 export const useThreadCreation = (
   onThreadCreated: (thread: Thread) => void,
-  onClose: () => void,
+  onClose: () => void
 ) => {
   const [newThreadTitle, setNewThreadTitle] = useState("");
   const [selectedContactId, setSelectedContactId] = useState<string>("");
@@ -27,8 +27,9 @@ export const useThreadCreation = (
       navigate("/auth");
       return;
     }
+    const trimmedTitle = newThreadTitle.trim();
 
-    if (!newThreadTitle.trim()) {
+    if (!trimmedTitle) {
       toast({
         title: "Title required",
         description: "Please enter a title for the thread",
@@ -49,9 +50,9 @@ export const useThreadCreation = (
     setIsCreating(true);
 
     const newThread = await createThread(
-      newThreadTitle,
+      trimmedTitle,
       [selectedContactId],
-      selectedTopic,
+      selectedTopic
     );
 
     setIsCreating(false);
@@ -67,7 +68,7 @@ export const useThreadCreation = (
 
       toast({
         title: "Thread created",
-        description: `"${newThreadTitle}" has been created successfully.`,
+        description: `"${trimmedTitle}" has been created successfully.`,
       });
     } else {
       toast({
