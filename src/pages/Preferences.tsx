@@ -55,6 +55,7 @@ const Preferences = () => {
   const [mounted, setMounted] = useState(false);
   const [messageTone, setMessageTone] = useState<string>("friendly");
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   // Form with validation
   const form = useForm<FormValues>({
@@ -128,8 +129,6 @@ const Preferences = () => {
   }, [user, navigate, form, toast]);
 
   const onSubmit = async (data: FormValues) => {
-    if (!user) return;
-
     setIsLoading(true);
 
     try {
@@ -194,9 +193,8 @@ const Preferences = () => {
 
   const handleEmojiSelect = (emoji: { native: string }) => {
     setSelectedEmoji(emoji.native);
+    setShowEmojiPicker(false);
   };
-
-  if (!user) return null;
 
   return (
     <div className="container max-w-3xl py-10">
@@ -238,19 +236,32 @@ const Preferences = () => {
                 <div className="space-y-4">
                   <div className="flex items-center space-x-4">
                     {selectedEmoji ? (
-                      <span className="text-3xl">{selectedEmoji}</span>
+                      <span
+                        className="text-3xl cursor-pointer"
+                        onClick={() => setShowEmojiPicker((v) => !v)}
+                        title="Click to change your emoji"
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') setShowEmojiPicker((v) => !v);
+                        }}
+                        aria-label="Change avatar emoji"
+                      >
+                        {selectedEmoji}
+                      </span>
                     ) : (
                       <span className="text-sm text-muted-foreground">
                         No emoji selected
                       </span>
                     )}
                   </div>
-
-                  <Picker
-                    data={emojiData}
-                    onEmojiSelect={handleEmojiSelect}
-                    theme={theme === "dark" ? "dark" : "light"}
-                  />
+                  {showEmojiPicker && (
+                    <Picker
+                      data={emojiData}
+                      onEmojiSelect={handleEmojiSelect}
+                      theme={theme === "dark" ? "dark" : "light"}
+                    />
+                  )}
                 </div>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading ? "Saving..." : "Save Changes"}
