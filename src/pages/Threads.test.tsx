@@ -20,13 +20,11 @@ vi.mock("@/services/threadService", () => ({
 
 vi.mock("@/components/ThreadsList", () => ({
   __esModule: true,
-  // eslint-disable-next-line react/display-name -- mock component
   default: () => <div data-testid="threads-list">ThreadsList</div>,
 }));
 
 vi.mock("@/components/ThreadsTable", () => ({
   __esModule: true,
-  // eslint-disable-next-line react/display-name -- mock component
   default: () => <div data-testid="threads-table">ThreadsTable</div>,
 }));
 

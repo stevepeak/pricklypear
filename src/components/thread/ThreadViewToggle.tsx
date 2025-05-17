@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
  * Toggle between "table" and "cards" thread views.
  *
  * Visually it displays a switch whose track contains a List icon on the
- * left (table view) and a LayoutGrid icon on the right (card view).  
+ * left (table view) and a LayoutGrid icon on the right (card view).
  * When the thumb is on the right the switch is *checked* and therefore
  * represents the "cards" view.
  */
@@ -33,10 +33,16 @@ function ThreadViewToggle(props: ThreadViewToggleProps) {
   const checked = value === "cards";
 
   return (
-    <div className={className ? `relative inline-flex ${className}` : "relative inline-flex"}>
+    <div
+      className={
+        className ? `relative inline-flex ${className}` : "relative inline-flex"
+      }
+    >
       <Switch
         checked={checked}
-        onCheckedChange={(isChecked) => onValueChange(isChecked ? "cards" : "table")}
+        onCheckedChange={(isChecked) =>
+          onValueChange(isChecked ? "cards" : "table")
+        }
         aria-label="Toggle thread view"
       />
       {/* Left icon – table view */}
