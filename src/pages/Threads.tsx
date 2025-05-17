@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { LayoutGrid, List } from "lucide-react";
 
 import { getThreads } from "@/services/threadService";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,13 +6,16 @@ import type { Thread } from "@/types/thread";
 import ThreadsList from "@/components/ThreadsList";
 import ThreadsTable from "@/components/ThreadsTable";
 import CreateThreadDialog from "@/components/thread/CreateThreadDialog";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import ThreadViewToggle from "@/components/thread/ThreadViewToggle"; // DD-90
 
 const Threads = () => {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [view, setView] = useState<"cards" | "table">("cards");
+
+  // DD-90: default to “table” view
+  const [view, setView] = useState<"cards" | "table">("table");
+
   const { user } = useAuth();
 
   // Load persisted view preference on mount
@@ -45,11 +47,10 @@ const Threads = () => {
     setIsDialogOpen(true);
   };
 
-  const handleViewChange = (value: string) => {
-    if (value === "cards" || value === "table") {
-      setView(value);
-      localStorage.setItem("threads.view", value);
-    }
+  // DD-90: accept the exact union type
+  const handleViewChange = (value: "cards" | "table") => {
+    setView(value);
+    localStorage.setItem("threads.view", value);
   };
 
   return (
@@ -58,19 +59,7 @@ const Threads = () => {
         <h1 className="text-3xl font-bold">Threads</h1>
 
         <div className="flex items-center gap-3">
-          <ToggleGroup
-            type="single"
-            value={view}
-            onValueChange={handleViewChange}
-            variant="outline"
-          >
-            <ToggleGroupItem value="cards" aria-label="Card view">
-              <LayoutGrid className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="table" aria-label="Table view">
-              <List className="h-4 w-4" />
-            </ToggleGroupItem>
-          </ToggleGroup>
+          <ThreadViewToggle value={view} onValueChange={handleViewChange} />
 
           {user && (
             <CreateThreadDialog
