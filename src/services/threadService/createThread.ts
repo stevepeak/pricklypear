@@ -11,6 +11,22 @@ export const createThread = async (
   try {
     const user = await requireCurrentUser();
 
+    // Derive the creator's display name. Fallbacks:
+    // 1. user_metadata.full_name
+    // 2. user_metadata.name
+    // 3. user.email
+    // 4. "Unknown user"
+    let creatorName =
+      (user.user_metadata?.full_name as string | undefined) ??
+      (user.user_metadata?.name as string | undefined) ??
+      (user.email as string | undefined) ??
+      "Unknown user";
+
+    // Handle edge-case where creatorName is an empty string or only whitespace.
+    if (!creatorName?.trim()) {
+      creatorName = "Unknown user";
+    }
+
     // Call the database function to create the thread and add participants
     const { data: threadId, error: threadError } = await supabase.rpc(
       "create_thread",
@@ -33,7 +49,7 @@ export const createThread = async (
       createdAt: new Date(),
       status: "open" as ThreadStatus,
       participants: participantIds,
-      summary: null,
+      summary: `New thread created by ${creatorName}`,
       topic,
     };
   } catch (error) {
