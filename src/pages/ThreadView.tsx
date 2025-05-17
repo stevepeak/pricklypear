@@ -28,13 +28,19 @@ const ThreadView = () => {
     setIsReviewDialogOpen,
   } = useThreadDetails(threadId);
 
-  // Scroll handling
-  // Holds a reference to the scrollable messages container
+  /*
+   * Scroll handling
+   *
+   * 1. Always scroll on the first render so the user starts at the newest message.
+   * 2. On later updates, only scroll when either…
+   *      a) the viewer is already near the bottom  –or–
+   *      b) the content fits without overflowing.
+   *    This prevents disruptive jumps while someone is reading older messages.
+   */
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  // Tracks whether this is the first render after mount
+  const isInitialMountRef = useRef(true);
 
-  // Automatically scroll to the bottom when new messages arrive,
-  // but only if the viewer is already near the bottom (≤150 px).
-  // This prevents jumping when the user is reading older content.
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -44,13 +50,17 @@ const ThreadView = () => {
       container.scrollHeight - container.scrollTop - container.clientHeight;
 
     const isNearBottom = distanceFromBottom <= THRESHOLD_PX;
-
-    // Always scroll if content fits without overflow
     const contentFits = container.scrollHeight <= container.clientHeight;
 
-    if (isNearBottom || contentFits) {
+    const shouldScroll =
+      isInitialMountRef.current || isNearBottom || contentFits;
+
+    if (shouldScroll) {
       container.scrollTop = container.scrollHeight;
     }
+
+    // After the first run, disable the “initial mount” behaviour
+    isInitialMountRef.current = false;
   }, [messages]);
 
   const isThreadClosed = thread?.status === "closed";
