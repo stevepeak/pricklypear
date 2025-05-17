@@ -65,7 +65,7 @@ const Navigation = () => {
       description: "You have been successfully logged out.",
     });
     // Redirect to homepage and replace the current history entry so the user
-    // can’t navigate back to an authenticated route with the browser back button.
+    // can't navigate back to an authenticated route with the browser back button.
     navigate("/", { replace: true });
   };
 
