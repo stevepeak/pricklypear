@@ -28,15 +28,13 @@ const ThreadView = () => {
     setIsReviewDialogOpen,
   } = useThreadDetails(threadId);
 
-  /*
-   * Scroll handling
-   *
-   * 1. Always scroll on the first render so the user starts at the newest message.
-   * 2. On later updates, only scroll when either…
-   *      a) the viewer is already near the bottom  -or-
-   *      b) the content fits without overflowing.
-   *    This prevents disruptive jumps while someone is reading older messages.
-   */
+  // Scroll handling
+  //
+  // 1. Always scroll on the first render so the user starts at the newest message.
+  // 2. On later updates, only scroll when either...
+  //      a) the viewer is already near the bottom  -or-
+  //      b) the content fits without overflowing.
+  //    This prevents disruptive jumps while someone is reading older messages.
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   // Tracks whether this is the first render after mount
   const isInitialMountRef = useRef(true);
