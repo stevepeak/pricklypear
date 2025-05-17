@@ -60,15 +60,12 @@ const Threads = () => {
 
         <div className="flex items-center gap-3">
           <ThreadViewToggle value={view} onValueChange={handleViewChange} />
-
-          {user && (
-            <CreateThreadDialog
-              onThreadCreated={handleThreadCreated}
-              user={user}
-              isOpen={isDialogOpen}
-              onOpenChange={setIsDialogOpen}
-            />
-          )}
+          <CreateThreadDialog
+            onThreadCreated={handleThreadCreated}
+            user={user}
+            isOpen={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+          />
         </div>
       </div>
 
