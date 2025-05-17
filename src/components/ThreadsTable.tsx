@@ -67,11 +67,15 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
             const topicInfo = getThreadTopicInfo(thread.topic);
             const participants = thread.participants ?? [];
 
+            // Closed threads get a subtle grey background, open threads stay white
+            const baseBgClass =
+              thread.status === "open" ? "bg-white" : "bg-gray-100";
+
             return (
               <tr
                 key={thread.id}
                 onClick={() => navigate(`/threads/${thread.id}`)}
-                className="cursor-pointer hover:bg-muted/50"
+                className={cn("cursor-pointer hover:bg-yellow-50", baseBgClass)}
               >
                 {/* State */}
                 <td className="px-4 py-2">
