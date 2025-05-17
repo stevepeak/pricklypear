@@ -18,21 +18,17 @@ vi.mock("@/services/threadService", () => ({
   getThreads: vi.fn().mockResolvedValue([]),
 }));
 
-vi.mock("@/components/ThreadsList", () => {
-  const React = require("react");
-  return {
-    __esModule: true,
-    default: () => <div data-testid="threads-list">ThreadsList</div>,
-  };
-});
+vi.mock("@/components/ThreadsList", () => ({
+  __esModule: true,
+  // eslint-disable-next-line react/display-name -- mock component
+  default: () => <div data-testid="threads-list">ThreadsList</div>,
+}));
 
-vi.mock("@/components/ThreadsTable", () => {
-  const React = require("react");
-  return {
-    __esModule: true,
-    default: () => <div data-testid="threads-table">ThreadsTable</div>,
-  };
-});
+vi.mock("@/components/ThreadsTable", () => ({
+  __esModule: true,
+  // eslint-disable-next-line react/display-name -- mock component
+  default: () => <div data-testid="threads-table">ThreadsTable</div>,
+}));
 
 // ---------------------------------------------------------------------------
 // Tests

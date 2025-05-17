@@ -5,12 +5,12 @@ import { Switch } from "@/components/ui/switch";
 
 /**
  * DD-90
- * Toggle between “table” and “cards” thread views.
+ * Toggle between "table" and "cards" thread views.
  *
  * Visually it displays a switch whose track contains a List icon on the
  * left (table view) and a LayoutGrid icon on the right (card view).  
  * When the thumb is on the right the switch is *checked* and therefore
- * represents the “cards” view.
+ * represents the "cards" view.
  */
 interface ThreadViewToggleProps {
   /** Current view selection. */

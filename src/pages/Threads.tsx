@@ -13,7 +13,7 @@ const Threads = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // DD-90: default to “table” view
+  // DD-90: default to "table" view
   const [view, setView] = useState<"cards" | "table">("table");
 
   const { user } = useAuth();
