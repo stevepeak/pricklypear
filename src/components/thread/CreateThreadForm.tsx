@@ -49,6 +49,7 @@ const CreateThreadForm = ({
         placeholder="Thread title"
         value={newThreadTitle}
         onChange={(e) => setNewThreadTitle(e.target.value)}
+        maxLength={50}
       />
 
       <div>

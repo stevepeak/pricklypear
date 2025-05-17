@@ -8,6 +8,20 @@ export const createThread = async (
   participantIds: string[],
   topic: ThreadTopic = "other",
 ): Promise<Thread | null> => {
+  const MAX_THREAD_TITLE_LENGTH = 50;
+
+  // Trim and validate before we do anything expensive.
+  const trimmedTitle = title.trim();
+  if (
+    trimmedTitle.length === 0 ||
+    trimmedTitle.length > MAX_THREAD_TITLE_LENGTH
+  ) {
+    console.error(
+      `Thread title must be between 1 and ${MAX_THREAD_TITLE_LENGTH} characters.`,
+    );
+    return null;
+  }
+
   try {
     const user = await requireCurrentUser();
 
@@ -15,7 +29,7 @@ export const createThread = async (
     const { data: threadId, error: threadError } = await supabase.rpc(
       "create_thread",
       {
-        title,
+        title: trimmedTitle,
         topic,
         participant_ids: participantIds,
       },
@@ -29,7 +43,7 @@ export const createThread = async (
     // Return the thread with participant names
     return {
       id: threadId,
-      title,
+      title: trimmedTitle,
       createdAt: new Date(),
       status: "open" as ThreadStatus,
       participants: participantIds,
