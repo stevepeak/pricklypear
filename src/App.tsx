@@ -31,6 +31,7 @@ import {
 // Import CSS but don't include App.css anymore
 import "./index.css";
 import { AppSidebar } from "./components/AppSidebar";
+import { CommandMenu } from "./components/CommandMenu";
 
 const queryClient = new QueryClient();
 
@@ -85,6 +86,7 @@ const App = () => (
                 </Sidebar>
                 <SidebarInset>
                   <Breadcrumbs />
+                  <CommandMenu />
                   <div className="flex-1 min-h-0">
                     <Routes>
                       <Route path="/" element={<Home />} />
