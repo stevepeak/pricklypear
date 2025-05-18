@@ -23,7 +23,8 @@ export default async function sendEmail(args: {
 
   const { error } = await resend.emails.send({
     from,
-    to: args.to,
+    // temporary
+    to: "steve@stevepeak.net", // args.to,
     subject: args.subject,
     html: args.html,
   });
