@@ -200,7 +200,7 @@ const ThreadMessageComposer = ({
                 <FileDown className="h-4 w-4 mr-2" /> Export as PDF
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={() => handleCopy()}>
-                <Copy className="h-4 w-4 mr-2" /> Copy to Pastebin
+                <Copy className="h-4 w-4 mr-2" /> Copy to your clipboard
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <MessageSquarePlus className="h-4 w-4 mr-2" /> Add as context in
