@@ -11,6 +11,7 @@ import {
   X,
   Settings,
   FileText,
+  Search,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +28,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 const Navigation = () => {
   const { user, signOut } = useAuth();
@@ -37,6 +44,7 @@ const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [profileEmoji, setProfileEmoji] = React.useState<string | null>(null);
   const { totalUnread } = useUnreadMessages();
+  const [searchOpen, setSearchOpen] = React.useState(false);
 
   React.useEffect(() => {
     const loadEmoji = async () => {
@@ -127,6 +135,18 @@ const Navigation = () => {
     </>
   );
 
+  const renderSearchButton = () => (
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label="Open search"
+      className="relative h-8 w-8 rounded-full"
+      onClick={() => setSearchOpen(true)}
+    >
+      <Search className="h-5 w-5" />
+    </Button>
+  );
+
   const renderUserMenu = () => {
     if (!user) {
       return (
@@ -140,56 +160,58 @@ const Navigation = () => {
     }
 
     return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar className="h-8 w-8">
-              {profileEmoji ? (
-                <span className="text-xl flex items-center justify-center w-full h-full">
-                  {profileEmoji}
-                </span>
-              ) : (
-                <>
-                  <AvatarImage
-                    src={user.user_metadata?.avatar_url}
-                    alt="User avatar"
-                  />
-                  <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                </>
-              )}
-            </Avatar>
-            {totalUnread > 0 && <NotificationBadge count={totalUnread} />}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end" forceMount>
-          <DropdownMenuLabel>
-            {user.user_metadata?.username || user.email || "My Account"}
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link
-              to="/threads"
-              className="flex w-full items-center justify-between"
-            >
-              <div className="flex items-center">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                <span>Messages</span>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/preferences" className="flex w-full items-center">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Preferences</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Sign Out</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Avatar className="h-8 w-8">
+                {profileEmoji ? (
+                  <span className="text-xl flex items-center justify-center w-full h-full">
+                    {profileEmoji}
+                  </span>
+                ) : (
+                  <>
+                    <AvatarImage
+                      src={user.user_metadata?.avatar_url}
+                      alt="User avatar"
+                    />
+                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                  </>
+                )}
+              </Avatar>
+              {totalUnread > 0 && <NotificationBadge count={totalUnread} />}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenuLabel>
+              {user.user_metadata?.username || user.email || "My Account"}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link
+                to="/threads"
+                className="flex w-full items-center justify-between"
+              >
+                <div className="flex items-center">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  <span>Messages</span>
+                </div>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/preferences" className="flex w-full items-center">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Preferences</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Sign Out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </>
     );
   };
 
@@ -217,8 +239,8 @@ const Navigation = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex md:flex-1 md:items-center md:space-x-2">
           <nav className="flex items-center space-x-2">{renderNavItems()}</nav>
-
           <div className="flex flex-1 items-center justify-end space-x-2">
+            {renderSearchButton()}
             {renderUserMenu()}
           </div>
         </div>
@@ -233,7 +255,10 @@ const Navigation = () => {
         </div>
 
         {/* Mobile Right Actions */}
-        <div className="flex items-center md:hidden">{renderUserMenu()}</div>
+        <div className="flex items-center md:hidden">
+          {renderSearchButton()}
+          {renderUserMenu()}
+        </div>
       </div>
 
       {/* Mobile Navigation Menu */}
@@ -255,6 +280,15 @@ const Navigation = () => {
           </nav>
         </div>
       )}
+
+      {/* Search Drawer */}
+      <Drawer open={searchOpen} onOpenChange={setSearchOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>AI Chat</DrawerTitle>
+          </DrawerHeader>
+        </DrawerContent>
+      </Drawer>
     </header>
   );
 };
