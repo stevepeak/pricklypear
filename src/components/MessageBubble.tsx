@@ -12,9 +12,7 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
     <div
       className={cn(
         "flex flex-col mb-2 animate-message-appear",
-        message.isCurrentUser
-          ? "self-end items-end"
-          : "self-start items-start",
+        message.isCurrentUser ? "self-end items-end" : "self-start items-start",
       )}
     >
       <div className="flex items-center gap-1 mb-1 text-xs text-gray-500">

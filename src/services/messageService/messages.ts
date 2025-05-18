@@ -4,6 +4,7 @@ import { Message } from "@/types/message";
 import { handleError } from "./utils.js";
 import { createReadReceipts } from "./readReceipts.js";
 import { getConnections } from "@/services/connections/getConnections.js";
+import type { Database } from "@/integrations/supabase/types";
 
 // Cache for profile name lookups to avoid repeated database queries
 const profileNameCache = new Map<string, string>();
@@ -58,10 +59,20 @@ const lookupProfileName = async (
   }
 };
 
+/**
+ * Saves a message to the database.
+ *
+ * @param {string} text - The message text
+ * @param {string} threadId - The thread ID
+ * @param {string} [selected] - Optional selected text
+ * @param {Database["public"]["Enums"]["message_type"]} [type] - Optional message type
+ * @returns {Promise<boolean>} True if saved successfully, false otherwise
+ */
 export const saveMessage = async (
   text: string,
   threadId: string,
   selected?: string,
+  type: Database["public"]["Enums"]["message_type"] = "user_message",
 ): Promise<boolean> => {
   try {
     if (!text || !threadId) {
@@ -79,6 +90,7 @@ export const saveMessage = async (
         text: messageText,
         thread_id: threadId,
         timestamp: new Date().toISOString(),
+        type,
       })
       .select("id")
       .single();

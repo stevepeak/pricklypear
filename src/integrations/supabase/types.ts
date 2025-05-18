@@ -99,6 +99,7 @@ export type Database = {
           text: string | null
           thread_id: string | null
           timestamp: string | null
+          type: Database["public"]["Enums"]["message_type"] | null
           user_id: string | null
         }
         Insert: {
@@ -106,6 +107,7 @@ export type Database = {
           text?: string | null
           thread_id?: string | null
           timestamp?: string | null
+          type?: Database["public"]["Enums"]["message_type"] | null
           user_id?: string | null
         }
         Update: {
@@ -113,6 +115,7 @@ export type Database = {
           text?: string | null
           thread_id?: string | null
           timestamp?: string | null
+          type?: Database["public"]["Enums"]["message_type"] | null
           user_id?: string | null
         }
         Relationships: [
@@ -239,6 +242,11 @@ export type Database = {
     }
     Enums: {
       connection_status: "pending" | "accepted" | "declined" | "disabled"
+      message_type:
+        | "user_message"
+        | "request_close"
+        | "close_accepted"
+        | "close_declined"
       thread_topic:
         | "travel"
         | "parenting_time"
@@ -364,6 +372,12 @@ export const Constants = {
   public: {
     Enums: {
       connection_status: ["pending", "accepted", "declined", "disabled"],
+      message_type: [
+        "user_message",
+        "request_close",
+        "close_accepted",
+        "close_declined",
+      ],
       thread_topic: [
         "travel",
         "parenting_time",
