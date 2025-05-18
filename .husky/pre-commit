@@ -5,8 +5,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+git add -u
+
 bun run gen
 if [ $? -ne 0 ]; then
   echo "\n\033[0;31mError: 'bun run gen' failed. Commit aborted.\033[0m"
   exit 1
 fi 
+
+git add src/integrations/supabase/types.ts

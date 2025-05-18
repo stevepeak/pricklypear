@@ -96,16 +96,7 @@ export const useThreadMessages = (
 
       if (summary) {
         // Update local thread state with the new summary
-        setThread({
-          ...thread,
-          summary,
-        });
-
-        toast({
-          title: "Summary generated",
-          description:
-            "Thread summary has been successfully generated and saved.",
-        });
+        setThread({ ...thread, summary });
       }
     } catch (error) {
       console.error("Error generating summary:", error);
