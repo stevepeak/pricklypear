@@ -1,31 +1,16 @@
-import { useState } from "react";
-import { getConnections } from "@/services/users/userService.js";
-import type { Connection } from "@/types/connection";
-import type { User } from "@/utils/authCache";
+import { useConnectionsContext } from "@/contexts/ConnectionsContext";
 
-export const useConnections = (user: User | null) => {
-  const [connections, setConnections] = useState<Connection[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const loadConnections = async () => {
-    if (!user) return;
-
-    setIsLoading(true);
-    try {
-      const acceptedConnections = await getConnections();
-      setConnections(
-        acceptedConnections.filter((conn) => conn.status === "accepted"),
-      );
-    } catch (error) {
-      console.error("Error loading connections:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+export const useConnections = () => {
+  const { connections, isLoading, refreshConnections } =
+    useConnectionsContext();
+  const acceptedConnections = connections.filter(
+    (conn) => conn.status === "accepted",
+  );
 
   return {
     connections,
+    acceptedConnections,
     isLoading,
-    loadConnections,
+    refreshConnections,
   };
 };

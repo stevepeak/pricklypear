@@ -38,11 +38,7 @@ const CreateThreadDialog = ({
   const setDialogOpen = externalOnOpenChange || setIsDialogOpen;
 
   // Custom hooks for connections and thread creation
-  const {
-    connections,
-    isLoading: isLoadingContacts,
-    loadConnections,
-  } = useConnections(user);
+  const { connections, isLoading: isLoadingContacts } = useConnections();
   const {
     newThreadTitle,
     setNewThreadTitle,
@@ -57,7 +53,6 @@ const CreateThreadDialog = ({
   const handleDialogOpen = (open: boolean) => {
     setDialogOpen(open);
     if (open) {
-      loadConnections();
       setNewThreadTitle("");
       setSelectedContactId("");
       setSelectedTopic(undefined);

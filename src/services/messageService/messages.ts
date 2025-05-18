@@ -3,21 +3,28 @@ import { requireCurrentUser } from "@/utils/authCache";
 import { Message } from "@/types/message";
 import { handleError } from "./utils.js";
 import { createReadReceipts } from "./readReceipts.js";
-import { getConnections } from "@/services/connections/getConnections.js";
+import type { Connection } from "@/types/connection";
 import type { Database } from "@/integrations/supabase/types";
 
 // Cache for profile name lookups to avoid repeated database queries
 const profileNameCache = new Map<string, string>();
+let connectionsCache: Connection[] = [];
+
+export function setConnectionsCache(connections: Connection[]) {
+  connectionsCache = connections;
+}
 
 /**
  * Looks up a profile name by ID using the user's connections.
  * First checks the cache, then queries the database if needed.
  *
  * @param {string} profileId - The ID of the profile to look up
+ * @param {Connection[]} [connections] - Optionally provide a connections array to use for lookup
  * @returns {Promise<string | undefined>} The profile name if found, undefined otherwise
  */
-const lookupProfileName = async (
+export const lookupProfileName = async (
   profileId: string,
+  connections?: Connection[],
 ): Promise<string | undefined> => {
   // Check cache first
   if (profileNameCache.has(profileId)) {
@@ -25,11 +32,11 @@ const lookupProfileName = async (
   }
 
   try {
-    // Get all connections for the current user
-    const connections = await getConnections();
+    // Use provided connections, or fallback to module cache
+    const allConnections = connections || connectionsCache;
 
     // Find the connection with matching profile ID
-    const connection = connections.find(
+    const connection = allConnections.find(
       (conn) => conn.otherUserId === profileId && conn.status === "accepted",
     );
 
@@ -109,7 +116,10 @@ export const saveMessage = async (
   }
 };
 
-export const getMessages = async (threadId: string): Promise<Message[]> => {
+export const getMessages = async (
+  threadId: string,
+  connections?: Connection[],
+): Promise<Message[]> => {
   try {
     if (!threadId) {
       console.error("ThreadId is required");
@@ -133,7 +143,8 @@ export const getMessages = async (threadId: string): Promise<Message[]> => {
       (messagesData || []).map(async (msg) => ({
         id: msg.id,
         text: (msg.text || "").trim(),
-        sender: (await lookupProfileName(msg.user_id)) || "Unknown User",
+        sender:
+          (await lookupProfileName(msg.user_id, connections)) || "Unknown User",
         timestamp: new Date(msg.timestamp || ""),
         threadId: msg.thread_id || "",
         isCurrentUser: msg.user_id === user.id,

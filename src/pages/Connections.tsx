@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { UserPlus, Loader2 } from "lucide-react";
 import { DialogTrigger, Dialog } from "@/components/ui/dialog";
+import React from "react";
 
 import {
   Connection,
@@ -24,6 +25,8 @@ import InviteConnectionDialog from "@/components/connections/InviteConnectionDia
 import { deleteConnection } from "@/services/connections/manageConnections.js";
 
 import { Connection as ConnectionType } from "@/types/connection";
+import { useConnections } from "@/hooks/useConnections";
+import { setConnectionsCache } from "@/services/messageService/messages.js";
 
 type FormattedConnection = ConnectionType & {
   isUserSender: boolean;
@@ -34,33 +37,30 @@ type FormattedConnection = ConnectionType & {
 };
 
 const Connections = () => {
-  const [connections, setConnections] = useState<FormattedConnection[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isInviting, setIsInviting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { connections, acceptedConnections, isLoading, refreshConnections } =
+    useConnections();
 
-  useEffect(() => {
-    loadConnections();
-  }, [user]);
+  // Keep messageService cache in sync
+  React.useEffect(() => {
+    setConnectionsCache(connections);
+  }, [connections]);
 
-  const loadConnections = async () => {
-    setIsLoading(true);
-    try {
-      const fetchedConnections: FormattedConnection[] = await getConnections();
-      setConnections(fetchedConnections);
-    } catch (error) {
-      console.error("Error loading connections:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load connections",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Filter connections by status and relation to current user
+  const pendingIncomingConnections = connections.filter(
+    (c) => c.status === "pending" && !c.isUserSender,
+  );
+
+  const pendingOutgoingConnections = connections.filter(
+    (c) => c.status === "pending" && c.isUserSender,
+  );
+
+  const disabledConnections = connections.filter(
+    (c) => c.status === "disabled",
+  );
 
   const handleInvite = async (email: string) => {
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -89,7 +89,7 @@ const Connections = () => {
 
       if (response.success) {
         setIsDialogOpen(false);
-        loadConnections();
+        await refreshConnections();
 
         toast({
           title: "Invitation sent",
@@ -120,7 +120,7 @@ const Connections = () => {
   ) => {
     try {
       await updateConnectionStatus(connectionId, status);
-      loadConnections();
+      await refreshConnections();
 
       toast({
         title:
@@ -139,7 +139,7 @@ const Connections = () => {
   const handleDisableConnection = async (connectionId: string) => {
     try {
       await disableConnection(connectionId);
-      loadConnections();
+      await refreshConnections();
 
       toast({
         title: "Connection disabled",
@@ -158,7 +158,7 @@ const Connections = () => {
   const handleDeleteConnection = async (connectionId: string) => {
     try {
       await deleteConnection(connectionId);
-      loadConnections();
+      await refreshConnections();
       toast({
         title: "Request cancelled",
         description: "The connection request has been cancelled.",
@@ -172,23 +172,6 @@ const Connections = () => {
       });
     }
   };
-
-  // Filter connections by status and relation to current user
-  const pendingIncomingConnections = connections.filter(
-    (c) => c.status === "pending" && !c.isUserSender,
-  );
-
-  const pendingOutgoingConnections = connections.filter(
-    (c) => c.status === "pending" && c.isUserSender,
-  );
-
-  const acceptedConnections = connections.filter(
-    (c) => c.status === "accepted",
-  );
-
-  const disabledConnections = connections.filter(
-    (c) => c.status === "disabled",
-  );
 
   if (isLoading) {
     return (
