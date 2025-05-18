@@ -243,7 +243,8 @@ const Preferences = () => {
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') setShowEmojiPicker((v) => !v);
+                          if (e.key === "Enter" || e.key === " ")
+                            setShowEmojiPicker((v) => !v);
                         }}
                         aria-label="Change avatar emoji"
                       >

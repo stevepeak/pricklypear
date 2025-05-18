@@ -8,7 +8,7 @@ import type { ThreadTopic } from "@/constants/thread-topics";
 
 export const useThreadCreation = (
   onThreadCreated: (thread: Thread) => void,
-  onClose: () => void
+  onClose: () => void,
 ) => {
   const [newThreadTitle, setNewThreadTitle] = useState("");
   const [selectedContactId, setSelectedContactId] = useState<string>("");
@@ -52,7 +52,7 @@ export const useThreadCreation = (
     const newThread = await createThread(
       trimmedTitle,
       [selectedContactId],
-      selectedTopic
+      selectedTopic,
     );
 
     setIsCreating(false);

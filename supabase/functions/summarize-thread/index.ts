@@ -36,8 +36,8 @@ serve(async (req) => {
 
     // Fetch messages from the database
     const { data: messagesData, error: messagesError } = await supabase
-      .from("message_profiles")
-      .select("*")
+      .from("messages")
+      .select("text, timestamp, is_system, profiles:user_id(name)")
       .eq("thread_id", threadId)
       .order("timestamp", { ascending: true });
 
@@ -58,7 +58,7 @@ serve(async (req) => {
     // Format messages for OpenAI
     const conversationText = messagesData
       .map((msg) => {
-        const sender = msg.is_system ? "SYSTEM" : msg.profile_name;
+        const sender = msg.is_system ? "SYSTEM" : msg.profiles?.name;
         const timestamp = new Date(msg.timestamp).toLocaleString();
         return `[${timestamp}] ${sender}: ${(msg.text ?? "").trim()}`;
       })

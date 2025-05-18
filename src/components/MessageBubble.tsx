@@ -1,7 +1,7 @@
 import { formatThreadTimestamp } from "@/utils/formatTimestamp";
 import { cn } from "@/lib/utils";
 import type { Message } from "@/types/message";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
 
 interface MessageBubbleProps {
   message: Message;

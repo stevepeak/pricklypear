@@ -48,8 +48,6 @@ export const getConnections = async (): Promise<Connection[]> => {
           };
         }
 
-        console.log("connection", connection);
-
         // Determine if the current user is the sender
         const isUserSender = connection.user_id === userId;
 
