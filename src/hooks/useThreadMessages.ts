@@ -4,7 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   getMessages,
   saveMessage,
-  saveSystemMessage,
   getUnreadMessageCount,
 } from "@/services/messageService";
 import { reviewMessage } from "@/utils/messageReview";
@@ -152,16 +151,6 @@ export const useThreadMessages = (
     handleInitiateMessageReview();
   };
 
-  const addSystemMessage = async (message: string) => {
-    if (!threadId) return false;
-
-    const success = await saveSystemMessage(message, threadId);
-    if (success) {
-      await loadMessages();
-    }
-    return success;
-  };
-
   return {
     messages,
     newMessage,
@@ -176,6 +165,5 @@ export const useThreadMessages = (
     handleSendReviewedMessage,
     setIsReviewDialogOpen,
     loadMessages,
-    addSystemMessage,
   };
 };

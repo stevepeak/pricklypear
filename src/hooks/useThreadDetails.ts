@@ -13,7 +13,6 @@ export const useThreadDetails = (threadId: string | undefined) => {
     newMessage,
     isSending,
     isReviewDialogOpen,
-    originalMessage,
     kindMessage,
     isReviewingMessage,
     isGeneratingSummary,
@@ -22,7 +21,6 @@ export const useThreadDetails = (threadId: string | undefined) => {
     handleSendReviewedMessage,
     setIsReviewDialogOpen,
     loadMessages,
-    addSystemMessage,
   } = useThreadMessages(threadId, thread, setThread);
 
   // Initialize thread and messages
@@ -50,7 +48,6 @@ export const useThreadDetails = (threadId: string | undefined) => {
     newMessage,
     isSending,
     isReviewDialogOpen,
-    originalMessage,
     kindMessage,
     isReviewingMessage,
     isGeneratingSummary,

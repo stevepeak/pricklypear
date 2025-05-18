@@ -121,12 +121,9 @@ export const getMessages = async (threadId: string): Promise<Message[]> => {
       (messagesData || []).map(async (msg) => ({
         id: msg.id,
         text: (msg.text || "").trim(),
-        sender: msg.is_system
-          ? "system"
-          : (await lookupProfileName(msg.user_id)) || "Unknown User",
+        sender: (await lookupProfileName(msg.user_id)) || "Unknown User",
         timestamp: new Date(msg.timestamp || ""),
         threadId: msg.thread_id || "",
-        isSystem: Boolean(msg.is_system),
         isCurrentUser: msg.user_id === user.id,
       })),
     );

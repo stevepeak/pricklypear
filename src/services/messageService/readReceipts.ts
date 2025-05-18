@@ -101,10 +101,9 @@ export const getUnreadMessageCount = async (
 
       const { data, error } = await supabase
         .from("messages")
-        .select("id, user_id, is_system")
+        .select("id, user_id")
         .eq("thread_id", threadId)
-        .neq("user_id", user.id)
-        .eq("is_system", false);
+        .neq("user_id", user.id);
 
       if (error || !data?.length) return 0;
 
@@ -144,15 +143,13 @@ export const getAllUnreadCounts = async (): Promise<Record<string, number>> => {
         message_id,
         messages!inner (
           thread_id,
-          user_id,
-          is_system
+          user_id
         )
       `,
       )
       .eq("user_id", user.id)
       .is("read_at", null)
-      .neq("messages.user_id", user.id)
-      .eq("messages.is_system", false);
+      .neq("messages.user_id", user.id);
 
     if (error) {
       return handleError(error, "fetching all unread counts") ? {} : {};

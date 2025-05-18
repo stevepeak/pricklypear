@@ -33,7 +33,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
     if (user && messages.length > 0) {
       // Get message IDs that aren't from the current user
       const otherUserMessageIds = messages
-        .filter((message) => !message.isCurrentUser && !message.isSystem)
+        .filter((message) => !message.isCurrentUser)
         .map((message) => message.id);
 
       if (otherUserMessageIds.length > 0) {

@@ -96,7 +96,6 @@ export type Database = {
       messages: {
         Row: {
           id: string
-          is_system: boolean | null
           text: string | null
           thread_id: string | null
           timestamp: string | null
@@ -104,7 +103,6 @@ export type Database = {
         }
         Insert: {
           id?: string
-          is_system?: boolean | null
           text?: string | null
           thread_id?: string | null
           timestamp?: string | null
@@ -112,7 +110,6 @@ export type Database = {
         }
         Update: {
           id?: string
-          is_system?: boolean | null
           text?: string | null
           thread_id?: string | null
           timestamp?: string | null
