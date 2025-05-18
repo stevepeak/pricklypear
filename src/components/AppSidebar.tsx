@@ -5,8 +5,13 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarSeparator,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -105,22 +110,32 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {navItems.map((item) => (
-            <Link key={item.path} to={item.path} className="block">
-              <Button
-                variant={isActive(item.path) ? "default" : "ghost"}
-                className="flex items-center w-full justify-start mb-1"
-              >
-                {item.icon}
-                {item.label}
-                {item.path === "/threads" && totalUnread > 0 && (
-                  <NotificationBadge label={totalUnread} className="ml-2">
-                    {""}
-                  </NotificationBadge>
-                )}
-              </Button>
-            </Link>
-          ))}
+          <SidebarGroupLabel>Starred</SidebarGroupLabel>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Tools</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.path}>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      to={item.path}
+                      className="flex items-center w-full justify-start mb-1"
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                      {item.path === "/threads" && totalUnread > 0 && (
+                        <NotificationBadge label={totalUnread} className="ml-2">
+                          {""}
+                        </NotificationBadge>
+                      )}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

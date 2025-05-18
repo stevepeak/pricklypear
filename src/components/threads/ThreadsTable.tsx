@@ -16,7 +16,6 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableCaption,
 } from "@/components/ui/table";
 
 interface ThreadsTableProps {
@@ -62,13 +61,12 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
     <Table>
       <TableHeader className="bg-secondary/20 text-left">
         <TableRow>
-          <TableHead className="px-4 py-2 font-semibold">State</TableHead>
-          <TableHead className="px-4 py-2 font-semibold">Topic</TableHead>
-          <TableHead className="px-4 py-2 font-semibold">Title</TableHead>
-          <TableHead className="px-4 py-2 font-semibold">Created</TableHead>
           <TableHead className="px-4 py-2 font-semibold">
             Participants
           </TableHead>
+          <TableHead className="px-4 py-2 font-semibold">Topic</TableHead>
+          <TableHead className="px-4 py-2 font-semibold">Title</TableHead>
+          <TableHead className="px-4 py-2 font-semibold">Created</TableHead>
           <TableHead className="px-4 py-2 font-semibold">Summary</TableHead>
         </TableRow>
       </TableHeader>
@@ -87,38 +85,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               onClick={() => navigate(`/threads/${thread.id}`)}
               className={cn("cursor-pointer hover:bg-yellow-50", baseBgClass)}
             >
-              {/* State */}
-              <TableCell className="px-4 py-2">
-                <Badge
-                  variant={thread.status === "open" ? "secondary" : "outline"}
-                  className={
-                    thread.status === "open"
-                      ? "bg-secondary text-primary"
-                      : "text-muted-foreground"
-                  }
-                >
-                  {thread.status === "open" ? "Open" : "Closed"}
-                </Badge>
-              </TableCell>
-
-              {/* Topic */}
-              <TableCell className="px-4 py-2">
-                <Badge variant="secondary">
-                  <span className="mr-1">{topicInfo.icon}</span>
-                  {topicInfo.label}
-                </Badge>
-              </TableCell>
-
-              {/* Title */}
-              <TableCell className="px-4 py-2 font-medium">
-                {thread.title}
-              </TableCell>
-
-              {/* Date Created */}
-              <TableCell className="px-4 py-2 text-muted-foreground">
-                {thread.createdAt.toLocaleDateString()}
-              </TableCell>
-
+              {/* Participants */}
               <TableCell className="px-4 py-2">
                 <div className="flex items-center">
                   {participants.slice(0, 3).map((name, idx) => (
@@ -139,6 +106,24 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
                   )}
                 </div>
               </TableCell>
+              {/* Topic */}
+              <TableCell className="px-4 py-2">
+                <Badge variant="secondary">
+                  <span className="mr-1">{topicInfo.icon}</span>
+                  {topicInfo.label}
+                </Badge>
+              </TableCell>
+
+              {/* Title */}
+              <TableCell className="px-4 py-2 font-medium">
+                {thread.title}
+              </TableCell>
+
+              {/* Date Created */}
+              <TableCell className="px-4 py-2 text-muted-foreground">
+                {thread.createdAt.toLocaleDateString()}
+              </TableCell>
+
 
               {/* Summary */}
               <TableCell
