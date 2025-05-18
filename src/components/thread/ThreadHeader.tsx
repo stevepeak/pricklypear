@@ -14,7 +14,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
   const topicLabel = `${icon} ${label}`;
 
   return (
-    <div className="relative sticky bg-white p-6 space-y-4">
+    <div className="sticky top-12 bg-white border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 p-6 space-y-4 ">
       <div className="flex justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2 mb-2">

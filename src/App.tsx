@@ -44,7 +44,7 @@ function Breadcrumbs() {
   const pathnames = location.pathname.split("/").filter(Boolean);
 
   return (
-    <Breadcrumb className="p-3 sticky top-0 z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <Breadcrumb className="p-3 sticky top-0 z-20 bg-white">
       <BreadcrumbList>
         <BreadcrumbItem>
           <SidebarTrigger className="" />
@@ -85,7 +85,7 @@ const App = () => (
                 </Sidebar>
                 <SidebarInset>
                   <Breadcrumbs />
-                  <div className="flex-1 min-h-0 overflow-auto">
+                  <div className="flex-1 min-h-0">
                     <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/threads" element={<Threads />} />
