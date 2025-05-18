@@ -1,0 +1,12 @@
+#!/bin/sh
+bun run fix
+if [ $? -ne 0 ]; then
+  echo "\n\033[0;31mError: 'bun run fix' failed. Commit aborted.\033[0m"
+  exit 1
+fi
+
+bun run gen
+if [ $? -ne 0 ]; then
+  echo "\n\033[0;31mError: 'bun run gen' failed. Commit aborted.\033[0m"
+  exit 1
+fi 
