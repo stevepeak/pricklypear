@@ -14,7 +14,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
-// Import refactored components
 import PendingConnectionsList from "@/components/connections/PendingConnectionsList";
 import OutgoingConnectionsList from "@/components/connections/OutgoingConnectionsList";
 import AcceptedConnectionsList from "@/components/connections/AcceptedConnectionsList";

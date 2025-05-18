@@ -192,8 +192,6 @@ const Account = () => {
 
   return (
     <div className="container max-w-3xl py-10 mx-10">
-      <h1 className="text-3xl font-bold mb-8">Account</h1>
-
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Personal Information</CardTitle>
