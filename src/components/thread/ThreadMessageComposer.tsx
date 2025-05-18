@@ -47,6 +47,7 @@ interface ThreadMessageComposerProps {
   scrollToBottom?: () => void;
   threadId: string;
   loadMessages: () => Promise<Message[]>;
+  autoFocus?: boolean;
 }
 
 const ThreadMessageComposer = ({
@@ -58,6 +59,7 @@ const ThreadMessageComposer = ({
   scrollToBottom,
   threadId,
   loadMessages,
+  autoFocus = false,
 }: ThreadMessageComposerProps) => {
   const [autoAccept, setAutoAccept] = useState(false);
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
@@ -81,6 +83,13 @@ const ThreadMessageComposer = ({
       scrollToBottom();
     }
   }, [newMessage, scrollToBottom]);
+
+  // Focus textarea on mount if autoFocus is true and not disabled
+  useEffect(() => {
+    if (autoFocus && !isSending && !isThreadClosed && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [autoFocus, isSending, isThreadClosed]);
 
   const handleToggleAutoAccept = (value: boolean) => {
     setAutoAccept(value);
@@ -127,6 +136,7 @@ const ThreadMessageComposer = ({
         disabled={isSending || isThreadClosed}
         className="w-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none px-4 pt-4 shadow-none"
         rows={3}
+        autoFocus={autoFocus && !isSending && !isThreadClosed}
       />
       <div className="flex justify-between items-center px-4 pb-4">
         <div className="flex gap-2">

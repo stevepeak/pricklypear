@@ -71,6 +71,7 @@ const ThreadView = () => {
               scrollToBottom={scrollToBottom}
               threadId={threadId}
               loadMessages={loadMessages}
+              autoFocus={true}
             />
           </div>
         </div>

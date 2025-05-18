@@ -27,12 +27,12 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
       <div className="flex items-start gap-1">
         <div
           className={cn(
-            "px-4 py-2 rounded-2xl shadow-sm",
+            "px-4 py-2 rounded-xl shadow-sm",
             message.type !== "user_message"
-              ? "bg-gray-200 text-gray-700 mx-auto"
+              ? "bg-gray-200 text-gray-700"
               : message.isCurrentUser
-                ? "bg-sky-500 text-white rounded-tr-none"
-                : "bg-gray-200 rounded-tl-none",
+                ? "bg-sky-500 text-white rounded-tr-none ml-20"
+                : "bg-gray-200 rounded-tl-none mr-20",
           )}
         >
           <ReactMarkdown>{message.text}</ReactMarkdown>

@@ -124,7 +124,6 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
                 {thread.createdAt.toLocaleDateString()}
               </TableCell>
 
-
               {/* Summary */}
               <TableCell
                 className="px-4 py-2 max-w-xs truncate whitespace-nowrap overflow-hidden text-ellipsis"

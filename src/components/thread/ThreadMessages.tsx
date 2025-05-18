@@ -44,7 +44,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   };
 
   return (
-    <div className="flex-grow px-4 py-6 mb-4">
+    <div className="flex-grow px-4 py-6 mb-4 mx-10">
       {messages.length > 0 ? (
         <>
           {messages.map((message) => (
