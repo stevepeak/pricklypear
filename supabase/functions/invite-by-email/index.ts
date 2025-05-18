@@ -1,6 +1,16 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { getSupabaseServiceClient } from "../../../src/integrations/supabase/client.ts";
 import sendEmail from "../send-email/index.ts";
+import { createClient } from "@supabase/supabase-js";
+import type { Database } from "../../../src/integrations/supabase/types.ts";
+
+function getSupabaseServiceClient() {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing Supabase credentials");
+  }
+  return createClient<Database>(supabaseUrl, supabaseKey);
+}
 
 const APP_CONNECTIONS_URL = "https://pricklypear-three.vercel.app/connections";
 
