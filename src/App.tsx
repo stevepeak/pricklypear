@@ -81,9 +81,7 @@ const App = () => (
           <BrowserRouter>
             <SidebarProvider>
               <div className="flex min-h-screen w-full flex-col md:flex-row">
-                <Sidebar>
-                  <AppSidebar />
-                </Sidebar>
+                <AppSidebar />
                 <SidebarInset>
                   <Breadcrumbs />
                   <CommandMenu />
