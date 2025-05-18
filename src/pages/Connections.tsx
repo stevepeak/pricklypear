@@ -172,9 +172,7 @@ const Connections = () => {
 
   return (
     <div className="container p-10">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold flex items-center">Connections</h1>
-
+      <div className="flex justify-end mb-8">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>

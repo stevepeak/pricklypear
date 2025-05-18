@@ -14,19 +14,17 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
   const topicLabel = `${icon} ${label}`;
 
   return (
-    <div className="sticky top-0 z-20 bg-white p-6 space-y-4">
+    <div className="relative sticky bg-white p-6 space-y-4">
       <div className="flex justify-between">
         <div className="space-y-1">
-          {thread.topic && (
-            <div className="flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-white">
-                {topicLabel}
-              </Badge>
-              <span className="text-sm text-muted-foreground">
-                Created {thread.createdAt.toLocaleDateString()}
-              </span>
-            </div>
-          )}
+          <div className="flex items-center gap-2 mb-2">
+            <Badge variant="outline" className="bg-white">
+              {topicLabel}
+            </Badge>
+            <span className="text-sm text-muted-foreground">
+              Created {thread.createdAt.toLocaleDateString()}
+            </span>
+          </div>
           <h1 className="text-2xl font-bold">{thread.title}</h1>
           {thread.summary ? (
             <p className="text-muted-foreground text-sm">{thread.summary}</p>

@@ -34,12 +34,17 @@ import { AppSidebar } from "./components/AppSidebar";
 
 const queryClient = new QueryClient();
 
+function capitalize(str: string) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 function Breadcrumbs() {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter(Boolean);
 
   return (
-    <Breadcrumb className="m-3">
+    <Breadcrumb className="p-3 sticky top-0 z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <BreadcrumbList>
         <BreadcrumbItem>
           <SidebarTrigger className="" />
@@ -47,16 +52,15 @@ function Breadcrumbs() {
         {pathnames.map((value, idx) => {
           const to = `/${pathnames.slice(0, idx + 1).join("/")}`;
           const isLast = idx === pathnames.length - 1;
+          const label = capitalize(decodeURIComponent(value));
           return (
             <React.Fragment key={to}>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 {isLast ? (
-                  <BreadcrumbPage>{decodeURIComponent(value)}</BreadcrumbPage>
+                  <BreadcrumbPage>{label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink href={to}>
-                    {decodeURIComponent(value)}
-                  </BreadcrumbLink>
+                  <BreadcrumbLink href={to}>{label}</BreadcrumbLink>
                 )}
               </BreadcrumbItem>
             </React.Fragment>
@@ -81,16 +85,21 @@ const App = () => (
                 </Sidebar>
                 <SidebarInset>
                   <Breadcrumbs />
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/threads" element={<Threads />} />
-                    <Route path="/threads/:threadId" element={<ThreadView />} />
-                    <Route path="/connections" element={<Connections />} />
-                    <Route path="/documents" element={<Documents />} />
-                    <Route path="/auth" element={<AuthPage />} />
-                    <Route path="/account" element={<Account />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
+                  <div className="flex-1 min-h-0 overflow-auto">
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/threads" element={<Threads />} />
+                      <Route
+                        path="/threads/:threadId"
+                        element={<ThreadView />}
+                      />
+                      <Route path="/connections" element={<Connections />} />
+                      <Route path="/documents" element={<Documents />} />
+                      <Route path="/auth" element={<AuthPage />} />
+                      <Route path="/account" element={<Account />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </div>
                 </SidebarInset>
               </div>
             </SidebarProvider>

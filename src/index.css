@@ -121,7 +121,7 @@
     @apply bg-background text-foreground;
   }
 }
-
+/* 
 @layer base {
   :root {
     --sidebar-background: 0 0% 98%;
@@ -144,4 +144,4 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-}
+} */

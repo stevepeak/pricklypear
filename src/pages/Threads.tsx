@@ -55,9 +55,7 @@ const Threads = () => {
 
   return (
     <div className="container py-8">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">Threads</h1>
-
+      <div className="flex justify-end mb-8 mr-8">
         <div className="flex items-center gap-3">
           <ThreadViewToggle value={view} onValueChange={handleViewChange} />
           <CreateThreadDialog

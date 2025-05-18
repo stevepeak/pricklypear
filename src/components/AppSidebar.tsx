@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -127,7 +127,7 @@ export function AppSidebar() {
     : [];
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <Link to="/" className="flex items-center space-x-2 px-2 py-4">
           <span className="font-bold flex items-center">
