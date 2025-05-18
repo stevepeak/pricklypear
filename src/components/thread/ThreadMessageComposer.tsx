@@ -10,6 +10,12 @@ import {
 } from "@/components/ui/tooltip";
 import { Label } from "@/components/ui/label";
 import { Loader2, Send, Plus, Mic } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu.js";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -80,14 +86,23 @@ const ThreadMessageComposer = ({
       />
       <div className="flex justify-between items-center px-4 pb-4">
         <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="shrink-0"
-            disabled={isThreadClosed}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                disabled={isThreadClosed}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onSelect={() => {}}>
+                Close thread
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button
             variant="ghost"
             size="icon"

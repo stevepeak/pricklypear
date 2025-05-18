@@ -53,7 +53,12 @@ const ThreadView = () => {
             isGeneratingSummary={isGeneratingSummary}
           />
 
-          <ThreadMessages messages={messages} user={user} thread={thread} messagesEndRef={messagesEndRef} />
+          <ThreadMessages
+            messages={messages}
+            user={user}
+            thread={thread}
+            messagesEndRef={messagesEndRef}
+          />
 
           <ThreadMessageComposer
             newMessage={newMessage}
