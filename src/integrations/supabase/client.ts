@@ -13,3 +13,17 @@ export const supabase = createClient<Database>(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY,
 );
+
+/**
+ * Create a Supabase service client using environment variables.
+ * Intended for server-side or edge environments (not for browser use).
+ * Throws if credentials are missing.
+ */
+export function getSupabaseServiceClient() {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing Supabase credentials");
+  }
+  return createClient<Database>(supabaseUrl, supabaseKey);
+}

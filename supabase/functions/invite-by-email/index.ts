@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
-import { Resend } from "https://esm.sh/resend@4.5.0";
+import { getSupabaseServiceClient } from "../../../src/integrations/supabase/client.ts";
+import sendEmail from "../send-email/index.ts";
 
 const APP_CONNECTIONS_URL = "https://pricklypear-three.vercel.app/connections";
 
@@ -10,54 +10,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-/**
- * Send an email via the Resend SDK.  Logs on failure but never throws.
- */
-async function sendEmail(args: { to: string; subject: string; html: string }) {
-  const apiKey = Deno.env.get("RESEND_API_KEY") ?? "";
-  if (!apiKey) {
-    console.warn("RESEND_API_KEY missing – skipping email send");
-    return;
-  }
-
-  const resend = new Resend(apiKey);
-  const from = Deno.env.get("RESEND_FROM_EMAIL");
-  if (!from) {
-    console.warn("RESEND_FROM_EMAIL missing – skipping email send");
-    return;
-  }
-
-  const { error } = await resend.emails.send({
-    from,
-    to: args.to,
-    subject: args.subject,
-    html: args.html,
-  });
-
-  if (error) console.error("Resend error:", error);
-}
-
-/**
- * Create a Supabase client using environment variables.
- * @returns {ReturnType<typeof createClient>} Supabase client instance
- * @throws {Error} If credentials are missing
- */
-function getSupabaseClient() {
-  const supabaseUrl = Deno.env.get("SUPABASE_URL");
-  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!supabaseUrl || !supabaseKey)
-    throw new Error("Missing Supabase credentials");
-  return createClient(supabaseUrl, supabaseKey);
-}
-
-/**
- * Fetch inviter profile by userId.
- * @param {object} args
- * @param {ReturnType<typeof createClient>} args.supabase
- * @param {string} args.userId
- * @returns {Promise<string>} Inviter name
- * @throws {Error} If not found
- */
 async function fetchInviterName({ supabase, userId }) {
   const { data: inviterProfile, error } = await supabase
     .from("profiles")
@@ -68,14 +20,6 @@ async function fetchInviterName({ supabase, userId }) {
   return inviterProfile.name;
 }
 
-/**
- * Fetch invitee user by email (case-insensitive).
- * @param {object} args
- * @param {ReturnType<typeof createClient>} args.supabase
- * @param {string} args.email
- * @returns {Promise<object|null>} Invitee user or null
- * @throws {Error} On query error
- */
 async function fetchInviteeUser({ supabase, email }) {
   const { data, error } = await supabase.auth.admin.listUsers({ email });
   if (error) throw error;
@@ -85,13 +29,6 @@ async function fetchInviteeUser({ supabase, email }) {
   return user ?? null;
 }
 
-/**
- * Send invitation email (existing or new user).
- * @param {object} args
- * @param {string} args.to
- * @param {string} args.inviterName
- * @param {boolean} args.isExistingUser
- */
 async function sendInvitationEmail({ to, inviterName, isExistingUser }) {
   const subject = `${inviterName} invited you on PricklyPear`;
   const htmlExisting = `
@@ -113,14 +50,6 @@ async function sendInvitationEmail({ to, inviterName, isExistingUser }) {
   });
 }
 
-/**
- * Check if a connection already exists between two users.
- * @param {object} args
- * @param {ReturnType<typeof createClient>} args.supabase
- * @param {string} args.userId
- * @param {string} args.inviteeId
- * @returns {Promise<boolean>} True if exists
- */
 async function connectionExists({ supabase, userId, inviteeId }) {
   const { data: existing1 } = await supabase
     .from("connections")
@@ -137,15 +66,6 @@ async function connectionExists({ supabase, userId, inviteeId }) {
   return Boolean(existing1 || existing2);
 }
 
-/**
- * Create a pending connection between two users.
- * @param {object} args
- * @param {ReturnType<typeof createClient>} args.supabase
- * @param {string} args.userId
- * @param {object} args.inviteeUser
- * @returns {Promise<object>} Connection object
- * @throws {Error} On insert error
- */
 async function createPendingConnection({ supabase, userId, inviteeUser }) {
   const { data: connection, error } = await supabase
     .from("connections")
@@ -160,7 +80,6 @@ async function createPendingConnection({ supabase, userId, inviteeUser }) {
   return connection;
 }
 
-// Main handler
 serve(async (req) => {
   if (req.method === "OPTIONS")
     return new Response(null, { headers: corsHeaders });
@@ -179,7 +98,7 @@ serve(async (req) => {
         },
       );
     }
-    const supabase = getSupabaseClient();
+    const supabase = getSupabaseServiceClient();
     const inviterName = await fetchInviterName({ supabase, userId });
     const inviteeUser = await fetchInviteeUser({ supabase, email });
     await sendInvitationEmail({
