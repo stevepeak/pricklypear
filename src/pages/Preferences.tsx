@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "next-themes";
@@ -38,15 +38,16 @@ import {
 } from "@/components/ui/select";
 import Picker from "@emoji-mart/react";
 import emojiData from "@emoji-mart/data";
+import { requireCurrentUser } from "@/utils/authCache";
 
 const formSchema = z.object({
-  fullName: z.string().min(1, "Full name is required"),
+  name: z.string().min(1, "Full name is required"),
+  email: z.string().email("A valid email is required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 const Preferences = () => {
-  const { user } = useAuth();
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -56,12 +57,15 @@ const Preferences = () => {
   const [messageTone, setMessageTone] = useState<string>("friendly");
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [emailUpdating, setEmailUpdating] = useState(false);
+  const [emailConfirmationSent, setEmailConfirmationSent] = useState(false);
 
   // Form with validation
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: "",
+      name: "",
+      email: "",
     },
   });
 
@@ -72,47 +76,23 @@ const Preferences = () => {
 
   // Fetch user profile data and preferences when component mounts
   useEffect(() => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-
     const fetchUserProfile = async () => {
       try {
+        const user = await requireCurrentUser();
+
         setProfileLoading(true);
-
-        // Get user profile from the profiles table
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("name, message_tone, profile_emoji")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        if (profileError) {
-          console.error("Error fetching profile:", profileError);
-          throw profileError;
-        }
-
-        // Get the user's metadata for the full name
-        const fullName =
-          user.user_metadata?.full_name ||
-          (profileData ? profileData.name : "") ||
-          "";
 
         // Update form with fetched data
         form.reset({
-          fullName: fullName,
+          name: user.name,
+          email: user.auth.email,
         });
 
         // Set message tone if it exists in profile
-        if (profileData && profileData.message_tone) {
-          setMessageTone(profileData.message_tone);
-        }
+        setMessageTone(user.message_tone);
 
         // Set selected emoji if it exists in profile
-        if (profileData && profileData.profile_emoji) {
-          setSelectedEmoji(profileData.profile_emoji);
-        }
+        setSelectedEmoji(user.profile_emoji);
       } catch (error) {
         console.error("Error loading user data:", error);
         toast({
@@ -126,25 +106,42 @@ const Preferences = () => {
     };
 
     fetchUserProfile();
-  }, [user, navigate, form, toast]);
+  }, [navigate, form, toast]);
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
+    setEmailUpdating(false);
+    setEmailConfirmationSent(false);
+    const user = await requireCurrentUser();
 
     try {
-      // Update user metadata
+      // Update user metadata (full name)
       const { error: metadataError } = await supabase.auth.updateUser({
-        data: { full_name: data.fullName },
+        data: { name: data.name },
       });
-
       if (metadataError) throw metadataError;
+
+      // Update email if changed
+      if (data.email !== user.auth.email) {
+        setEmailUpdating(true);
+        const { error: emailError } = await supabase.auth.updateUser({
+          email: data.email,
+        });
+        setEmailUpdating(false);
+        if (emailError) throw emailError;
+        setEmailConfirmationSent(true);
+        toast({
+          title: "Email update initiated",
+          description:
+            "A confirmation link has been sent to your new email. Please check your inbox to confirm the change.",
+        });
+      }
 
       // Also update the profile name and emoji for consistency
       const { error: profileError } = await supabase
         .from("profiles")
-        .update({ name: data.fullName, profile_emoji: selectedEmoji })
+        .update({ name: data.name, profile_emoji: selectedEmoji })
         .eq("id", user.id);
-
       if (profileError) throw profileError;
 
       toast({
@@ -160,6 +157,7 @@ const Preferences = () => {
       });
     } finally {
       setIsLoading(false);
+      setEmailUpdating(false);
     }
   };
 
@@ -218,7 +216,7 @@ const Preferences = () => {
               >
                 <FormField
                   control={form.control}
-                  name="fullName"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Full Name</FormLabel>
@@ -229,6 +227,35 @@ const Preferences = () => {
                         This is the name that will be displayed on your profile.
                       </FormDescription>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Your email address"
+                          type="email"
+                          autoComplete="email"
+                          {...field}
+                          disabled={emailUpdating}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        This is the email used to sign in. Changing your email
+                        will require confirmation.
+                      </FormDescription>
+                      <FormMessage />
+                      {emailConfirmationSent && (
+                        <div className="text-sm text-muted-foreground mt-2">
+                          A confirmation link has been sent to your new email.
+                          Please check your inbox.
+                        </div>
+                      )}
                     </FormItem>
                   )}
                 />
@@ -264,8 +291,8 @@ const Preferences = () => {
                     />
                   )}
                 </div>
-                <Button type="submit" disabled={isLoading}>
-                  {isLoading ? "Saving..." : "Save Changes"}
+                <Button type="submit" disabled={isLoading || emailUpdating}>
+                  {isLoading || emailUpdating ? "Saving..." : "Save Changes"}
                 </Button>
               </form>
             </Form>

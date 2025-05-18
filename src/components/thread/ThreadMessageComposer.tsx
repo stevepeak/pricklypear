@@ -181,7 +181,7 @@ const ThreadMessageComposer = ({
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top">
-              ⚡️ Auto-accept AI suggestions
+                ⚡️ Auto-accept AI suggestions
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
