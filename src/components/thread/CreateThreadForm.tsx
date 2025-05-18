@@ -115,7 +115,11 @@ const CreateThreadForm = ({
             {Object.entries(topicInfo).map(([value, info]) => (
               <div key={value} className="flex items-center space-x-2">
                 <RadioGroupItem value={value} id={`topic-${value}`} />
-                <Label htmlFor={`topic-${value}`} className="text-sm">
+                <Label
+                  htmlFor={`topic-${value}`}
+                  className="text-sm flex items-center gap-1"
+                >
+                  <span>{info.icon}</span>
                   {info.label}
                 </Label>
               </div>

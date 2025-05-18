@@ -14,4 +14,10 @@ export interface Connection {
   status: ConnectionStatus;
   created_at: string;
   updated_at: string;
+  otherUserId?: string | null;
+  username?: string;
+  avatarUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  isUserSender?: boolean;
 }
