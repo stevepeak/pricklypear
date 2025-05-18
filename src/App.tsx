@@ -9,7 +9,7 @@ import ThreadView from "./pages/ThreadView";
 import Connections from "./pages/Connections";
 import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
-import Preferences from "./pages/Preferences";
+import Account from "./pages/Account";
 import Documents from "./pages/Documents";
 import { ConnectionsProvider } from "@/contexts/ConnectionsContext";
 import {
@@ -46,7 +46,7 @@ const App = () => (
                     <Route path="/connections" element={<Connections />} />
                     <Route path="/documents" element={<Documents />} />
                     <Route path="/auth" element={<AuthPage />} />
-                    <Route path="/preferences" element={<Preferences />} />
+                    <Route path="/account" element={<Account />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </SidebarInset>

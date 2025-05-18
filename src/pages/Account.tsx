@@ -42,7 +42,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const Preferences = () => {
+const Account = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -191,8 +191,8 @@ const Preferences = () => {
   };
 
   return (
-    <div className="container max-w-3xl py-10">
-      <h1 className="text-3xl font-bold mb-8">Preferences</h1>
+    <div className="container max-w-3xl py-10 mx-10">
+      <h1 className="text-3xl font-bold mb-8">Account</h1>
 
       <Card className="mb-8">
         <CardHeader>
@@ -361,4 +361,4 @@ const Preferences = () => {
   );
 };
 
-export default Preferences;
+export default Account;
