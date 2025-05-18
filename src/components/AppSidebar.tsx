@@ -31,6 +31,8 @@ import {
   ChevronUpIcon,
   Sparkles,
   BadgeCheck,
+  Calendar,
+  Receipt,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -103,6 +105,16 @@ export function AppSidebar() {
           path: "/documents",
           label: "Documents",
           icon: <FileText className="h-4 w-4 mr-2" />,
+        },
+        {
+          path: "/calendar",
+          label: "Calendar",
+          icon: <Calendar className="h-4 w-4 mr-2" />,
+        },
+        {
+          path: "/expenses",
+          label: "Expenses",
+          icon: <Receipt className="h-4 w-4 mr-2" />,
         },
       ]
     : [];

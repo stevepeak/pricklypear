@@ -17,6 +17,9 @@ import {
   Lock,
   Check,
   Zap,
+  FileDown,
+  Copy,
+  MessageSquarePlus,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -27,7 +30,6 @@ import {
 } from "@/components/ui/dropdown-menu.js";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogFooter,
@@ -37,6 +39,7 @@ import {
 } from "@/components/ui/dialog.js";
 import { saveMessage } from "@/services/messageService/messages.js";
 import { Message } from "@/types/message";
+import { useToast } from "@/hooks/use-toast";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -65,6 +68,7 @@ const ThreadMessageComposer = ({
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
   const [isRequestingClose, setIsRequestingClose] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { toast } = useToast();
 
   // Initialise from localStorage on mount
   useEffect(() => {
@@ -123,6 +127,42 @@ const ThreadMessageComposer = ({
     setIsRequestingClose(false);
   };
 
+  const handleCopy = async () => {
+    try {
+      const { getMessages } = await import(
+        "@/services/messageService/messages.js"
+      );
+      const messages = await getMessages(threadId);
+      if (!messages.length) {
+        toast({
+          title: "Nothing to copy",
+          description: "No messages found in this thread.",
+        });
+        return;
+      }
+      const formatted = messages
+        .map((msg) => {
+          const date =
+            msg.timestamp instanceof Date
+              ? msg.timestamp
+              : new Date(msg.timestamp);
+          const time = date.toLocaleString();
+          return `[${time}] ${msg.sender}: ${msg.text}`;
+        })
+        .join("\n\n");
+      await navigator.clipboard.writeText(formatted);
+      toast({
+        title: "Copied!",
+        description: "Thread messages copied to clipboard.",
+      });
+    } catch (err) {
+      toast({
+        title: "Copy failed",
+        description: "Failed to copy messages to clipboard.",
+      });
+    }
+  };
+
   return (
     <div className="sticky bottom-10 bg-white border rounded-md shadow-md m-10">
       <Textarea
@@ -151,9 +191,20 @@ const ThreadMessageComposer = ({
                 <Plus className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
+            <DropdownMenuContent side="top" align="start">
               <DropdownMenuItem onSelect={() => setIsRequestDialogOpen(true)}>
-                <Lock className="h-4 w-4 mr-2" /> Request to close
+                <Lock className="h-4 w-4 mr-2" /> Request to close thread
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <FileDown className="h-4 w-4 mr-2" /> Export as PDF
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleCopy()}>
+                <Copy className="h-4 w-4 mr-2" /> Copy to Pastebin
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <MessageSquarePlus className="h-4 w-4 mr-2" /> Add as context in
+                new AI chat
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
