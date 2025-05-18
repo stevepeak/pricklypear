@@ -39,6 +39,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { useConnections } from "@/hooks/useConnections";
 
 export function AppSidebar() {
   const { user, signOut } = useAuth();
@@ -46,6 +47,12 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const { totalUnread } = useUnreadMessages();
   const [profileEmoji, setProfileEmoji] = React.useState<string | null>(null);
+  const { connections } = useConnections();
+
+  // Calculate pending incoming connections
+  const pendingIncomingCount = connections.filter(
+    (c) => c.status === "pending" && !c.isUserSender,
+  ).length;
 
   React.useEffect(() => {
     const loadEmoji = async () => {
@@ -98,7 +105,7 @@ export function AppSidebar() {
           path: "/connections",
           label: "Connections",
           icon: <Users className="h-4 w-4 mr-2" />,
-          // TODO if connection waiting show badge
+          badge: pendingIncomingCount > 0 ? pendingIncomingCount : undefined,
         },
         {
           path: "/documents",
