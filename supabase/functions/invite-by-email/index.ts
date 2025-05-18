@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import sendEmail from "../send-email/index.ts";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "../../../src/integrations/supabase/types.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 function getSupabaseServiceClient() {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -9,7 +8,7 @@ function getSupabaseServiceClient() {
   if (!supabaseUrl || !supabaseKey) {
     throw new Error("Missing Supabase credentials");
   }
-  return createClient<Database>(supabaseUrl, supabaseKey);
+  return createClient(supabaseUrl, supabaseKey);
 }
 
 const APP_CONNECTIONS_URL = "https://pricklypear-three.vercel.app/connections";
