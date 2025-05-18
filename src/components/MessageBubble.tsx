@@ -1,6 +1,7 @@
 import { formatThreadTimestamp } from "@/utils/formatTimestamp";
 import { cn } from "@/lib/utils";
 import type { Message } from "@/types/message";
+import ReactMarkdown from 'react-markdown';
 
 interface MessageBubbleProps {
   message: Message;
@@ -39,7 +40,11 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
                 : "bg-chat-gray rounded-tl-none",
           )}
         >
-          {message.text}
+          {isSystemMessage ? (
+            message.text
+          ) : (
+            <ReactMarkdown>{message.text}</ReactMarkdown>
+          )}
         </div>
       </div>
     </div>
