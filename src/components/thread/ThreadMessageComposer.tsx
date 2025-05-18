@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog.js";
 import { saveMessage } from "@/services/messageService/messages.js";
 import { Message } from "@/types/message";
+import { requireCurrentUser } from "@/utils/authCache";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -91,7 +92,8 @@ const ThreadMessageComposer = ({
   const handleRequestClose = async () => {
     if (!threadId) return;
     setIsRequestingClose(true);
-    const text = "Requested to close this thread.";
+    const user = await requireCurrentUser();
+    const text = `${user.name} requested to close this thread.`;
     const success = await saveMessage(
       text,
       threadId,

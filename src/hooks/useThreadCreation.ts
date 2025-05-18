@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { createThread } from "@/services/threadService";
-import type { User } from "@supabase/supabase-js";
+import type { User } from "@/utils/authCache";
 import type { Thread } from "@/types/thread";
 import type { ThreadTopic } from "@/constants/thread-topics";
 

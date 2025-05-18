@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { getConnections } from "@/services/users/userService.js";
 import type { Connection } from "@/types/connection";
-import type { User } from "@supabase/supabase-js";
+import type { User } from "@/utils/authCache";
 
 export const useConnections = (user: User | null) => {
   const [connections, setConnections] = useState<Connection[]>([]);

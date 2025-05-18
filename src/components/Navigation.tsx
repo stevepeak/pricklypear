@@ -68,22 +68,7 @@ const Navigation = () => {
   };
 
   const getUserInitials = () => {
-    if (!user) return "?";
-
-    // Try to get name from metadata if available
-    const displayName = user.user_metadata?.username || user.email;
-
-    if (!displayName) return "?";
-
-    if (user.user_metadata?.username) {
-      // If we have a name, get first letter
-      return displayName.charAt(0).toUpperCase();
-    } else if (user.email) {
-      // If we have an email, get first letter
-      return user.email.charAt(0).toUpperCase();
-    }
-
-    return "?";
+    return user?.name?.charAt(0).toUpperCase() ?? "?";
   };
 
   // Only show these nav items when user is logged in

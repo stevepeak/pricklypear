@@ -1,12 +1,17 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { User } from "@supabase/supabase-js";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 import * as Sentry from "@sentry/react";
+import { Database } from "@/integrations/supabase/types";
 
 let cachedUser: User | null | undefined; // undefined = not yet fetched
 let inFlightRequest: Promise<User | null> | null = null; // Track in-flight request
 
+export type User = Database["public"]["Tables"]["profiles"]["Row"] & {
+  auth: SupabaseUser;
+};
+
 export async function getCurrentUser(
-  forceRefresh = false,
+  forceRefresh = false
 ): Promise<User | null> {
   // If we have a cached value and aren't forcing refresh, return it
   if (!forceRefresh && cachedUser !== undefined) return cachedUser;
@@ -20,7 +25,18 @@ export async function getCurrentUser(
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      cachedUser = user ?? null;
+
+      // Get the user's profile from the database
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      cachedUser = {
+        ...profile,
+        auth: user,
+      };
       return cachedUser;
     } finally {
       // Clear the in-flight request when done

@@ -5,7 +5,8 @@ import React, {
   useContext,
   ReactNode,
 } from "react";
-import { Session, User } from "@supabase/supabase-js";
+import { Session } from "@supabase/supabase-js";
+import type { User } from "@/utils/authCache";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { getCurrentUser } from "@/utils/authCache";

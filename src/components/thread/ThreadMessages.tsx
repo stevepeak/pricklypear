@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import MessageBubble from "@/components/MessageBubble";
 import type { Message } from "@/types/message";
 import { markMessagesAsRead } from "@/services/messageService";
-import type { User } from "@supabase/supabase-js";
+import type { User } from "@/utils/authCache";
 import { MessageCircle } from "lucide-react";
 import type { Thread } from "@/types/thread";
 
