@@ -37,7 +37,7 @@ serve(async (req) => {
     // Fetch messages from the database
     const { data: messagesData, error: messagesError } = await supabase
       .from("messages")
-      .select("text, timestamp, profiles:user_id(name)")
+      .select("text, timestamp, profiles:user_id(name), type")
       .eq("thread_id", threadId)
       .order("timestamp", { ascending: true });
 

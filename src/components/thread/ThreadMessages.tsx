@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import MessageBubble from "@/components/MessageBubble";
 import type { Message } from "@/types/message";
-import { useAuth } from "@/contexts/AuthContext";
 import { markMessagesAsRead } from "@/services/messageService";
 import type { User } from "@supabase/supabase-js";
 import { MessageCircle } from "lucide-react";
@@ -17,12 +16,10 @@ interface ThreadMessagesProps {
 const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   messages,
   user,
-  thread,
   messagesEndRef: externalMessagesEndRef,
 }) => {
   const localMessagesEndRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = externalMessagesEndRef || localMessagesEndRef;
-  const { user: authUser } = useAuth();
 
   useEffect(() => {
     scrollToBottom();
@@ -47,7 +44,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   };
 
   return (
-    <div className="flex-grow overflow-y-auto px-4 py-6 border rounded-md mb-4 bg-white dark:bg-transparent pt-[140px]">
+    <div className="flex-grow overflow-y-auto px-4 py-6 border rounded-md mb-4 bg-white dark:bg-transparent">
       {messages.length > 0 ? (
         <>
           {messages.map((message) => (

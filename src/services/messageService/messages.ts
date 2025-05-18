@@ -137,6 +137,7 @@ export const getMessages = async (threadId: string): Promise<Message[]> => {
         timestamp: new Date(msg.timestamp || ""),
         threadId: msg.thread_id || "",
         isCurrentUser: msg.user_id === user.id,
+        type: msg.type,
       })),
     );
 

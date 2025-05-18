@@ -12,7 +12,11 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
     <div
       className={cn(
         "flex flex-col mb-2 animate-message-appear",
-        message.isCurrentUser ? "self-end items-end" : "self-start items-start",
+        message.type !== "user_message"
+          ? "items-center justify-center"
+          : message.isCurrentUser
+            ? "self-end items-end"
+            : "self-start items-start",
       )}
     >
       <div className="flex items-center gap-1 mb-1 text-xs text-gray-500">
@@ -24,9 +28,11 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
         <div
           className={cn(
             "px-4 py-2 rounded-2xl shadow-sm",
-            message.isCurrentUser
-              ? "bg-chat-sender1 text-white rounded-tr-none"
-              : "bg-chat-gray rounded-tl-none",
+            message.type !== "user_message"
+              ? "bg-gray-200 text-gray-700 mx-auto"
+              : message.isCurrentUser
+                ? "bg-chat-sender1 text-white rounded-tr-none"
+                : "bg-chat-gray rounded-tl-none",
           )}
         >
           <ReactMarkdown>{message.text}</ReactMarkdown>

@@ -1,3 +1,5 @@
+import { Database } from "@/integrations/supabase/types";
+
 export type Message = {
   id: string;
   text: string;
@@ -12,4 +14,7 @@ export type Message = {
   // Read status information
   isRead?: boolean;
   readAt?: Date | null;
+
+  // Message type (e.g., 'user_message', 'request_close', etc)
+  type: Database["public"]["Enums"]["message_type"];
 };
