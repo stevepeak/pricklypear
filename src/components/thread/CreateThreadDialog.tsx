@@ -13,7 +13,7 @@ import { useConnections } from "@/hooks/useConnections";
 import { useThreadCreation } from "@/hooks/useThreadCreation";
 import CreateThreadForm from "./CreateThreadForm";
 import type { Thread } from "@/types/thread";
-import type { User } from "@/utils/authCache";
+import type { User } from "@supabase/supabase-js";
 import type { ThreadTopic } from "@/constants/thread-topics";
 
 interface CreateThreadDialogProps {
