@@ -26,6 +26,7 @@ const ThreadView = () => {
     handleSendMessage,
     handleSendReviewedMessage,
     setIsReviewDialogOpen,
+    loadMessages,
   } = useThreadDetails(threadId);
 
   const isThreadClosed = thread?.status === "closed";
@@ -67,6 +68,8 @@ const ThreadView = () => {
             isThreadClosed={isThreadClosed}
             onSendMessage={handleSendMessage}
             scrollToBottom={scrollToBottom}
+            threadId={threadId}
+            loadMessages={loadMessages}
           />
         </div>
       )}

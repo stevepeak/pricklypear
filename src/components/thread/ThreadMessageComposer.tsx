@@ -26,6 +26,8 @@ import {
   DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog.js";
+import { saveMessage } from "@/services/messageService/messages.js";
+import { Message } from "@/types/message";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -34,6 +36,8 @@ interface ThreadMessageComposerProps {
   isThreadClosed: boolean;
   onSendMessage: () => void;
   scrollToBottom?: () => void;
+  threadId: string;
+  loadMessages: () => Promise<Message[]>;
 }
 
 const ThreadMessageComposer = ({
@@ -43,9 +47,12 @@ const ThreadMessageComposer = ({
   isThreadClosed,
   onSendMessage,
   scrollToBottom,
+  threadId,
+  loadMessages,
 }: ThreadMessageComposerProps) => {
   const [autoAccept, setAutoAccept] = useState(false);
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
+  const [isRequestingClose, setIsRequestingClose] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Initialise from localStorage on mount
@@ -79,6 +86,23 @@ const ThreadMessageComposer = ({
         onSendMessage();
       }
     }
+  };
+
+  const handleRequestClose = async () => {
+    if (!threadId) return;
+    setIsRequestingClose(true);
+    const text = "Requested to close this thread.";
+    const success = await saveMessage(
+      text,
+      threadId,
+      undefined,
+      "request_close",
+    );
+    if (success) {
+      setIsRequestDialogOpen(false);
+      await loadMessages();
+    }
+    setIsRequestingClose(false);
   };
 
   return (
@@ -174,8 +198,16 @@ const ThreadMessageComposer = ({
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button onClick={() => setIsRequestDialogOpen(false)}>
-              Make request to close
+            <Button
+              onClick={handleRequestClose}
+              disabled={isRequestingClose}
+              variant="default"
+            >
+              {isRequestingClose ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Make request to close"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

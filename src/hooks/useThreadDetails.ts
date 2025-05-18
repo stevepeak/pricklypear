@@ -55,5 +55,6 @@ export const useThreadDetails = (threadId: string | undefined) => {
     handleSendMessage,
     handleSendReviewedMessage,
     setIsReviewDialogOpen,
+    loadMessages,
   };
 };
