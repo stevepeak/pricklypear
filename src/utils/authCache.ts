@@ -11,7 +11,7 @@ export type User = Database["public"]["Tables"]["profiles"]["Row"] & {
 };
 
 export async function getCurrentUser(
-  forceRefresh = false
+  forceRefresh = false,
 ): Promise<User | null> {
   // If we have a cached value and aren't forcing refresh, return it
   if (!forceRefresh && cachedUser !== undefined) return cachedUser;

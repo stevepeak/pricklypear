@@ -9,12 +9,22 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Label } from "@/components/ui/label";
-import { Loader2, Send, Plus, Mic } from "lucide-react";
+import {
+  Loader2,
+  Send,
+  Plus,
+  Mic,
+  FilePlus,
+  Lock,
+  Check,
+  Zap,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu.js";
 import {
   Dialog,
@@ -136,7 +146,11 @@ const ThreadMessageComposer = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuItem onSelect={() => setIsRequestDialogOpen(true)}>
-                Request to close thread
+                <Lock className="h-4 w-4 mr-2" /> Request to close
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <FilePlus className="h-4 w-4 mr-2" /> Add photos and files
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -159,31 +173,31 @@ const ThreadMessageComposer = ({
                     checked={autoAccept}
                     disabled={isThreadClosed}
                     onCheckedChange={handleToggleAutoAccept}
+                    checkedIcon={<Zap className="h-4 w-4 text-primary" />}
+                    uncheckedIcon={
+                      <Check className="h-4 w-4 text-muted-foreground" />
+                    }
                   />
-                  <Label
-                    htmlFor="auto-accept-toggle"
-                    className="cursor-pointer select-none"
-                  >
-                    Auto-accept AI suggestions
-                  </Label>
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top">
-                Automatically send the AI-reviewed message without opening the
-                review dialog.
+              ⚡️ Auto-accept AI suggestions
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
           <Button
             onClick={onSendMessage}
             disabled={!newMessage.trim() || isSending || isThreadClosed}
-            size="icon"
-            className="shrink-0"
+            size="default"
+            className="shrink-0 flex items-center gap-1"
           >
             {isSending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <Send className="h-4 w-4" />
+              <>
+                <Send className="h-4 w-4" />
+                <span className="sr-only md:not-sr-only md:inline">Send</span>
+              </>
             )}
           </Button>
         </div>
