@@ -10,7 +10,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Loader2, Mail } from "lucide-react";
-import { Label } from "@/components/ui/label";
 
 interface InviteConnectionDialogProps {
   open: boolean;
