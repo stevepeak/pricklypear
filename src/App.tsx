@@ -38,7 +38,7 @@ const App = () => (
                   <AppSidebar />
                 </Sidebar>
                 <SidebarInset>
-                  <SidebarTrigger />
+                  <SidebarTrigger className="m-3" />
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/threads" element={<Threads />} />

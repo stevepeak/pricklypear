@@ -12,21 +12,19 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuBadge,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { NotificationBadge } from "@/components/ui/notification-badge";
 import {
   MessageSquare,
   LogIn,
   LogOut,
   Users,
-  Settings,
   FileText,
-  Search,
   ChevronDownIcon,
   ChevronUpIcon,
   Sparkles,
@@ -45,7 +43,6 @@ import {
 export function AppSidebar() {
   const { user, signOut } = useAuth();
   const { toast } = useToast();
-  const location = useLocation();
   const navigate = useNavigate();
   const { totalUnread } = useUnreadMessages();
   const [profileEmoji, setProfileEmoji] = React.useState<string | null>(null);
@@ -95,11 +92,13 @@ export function AppSidebar() {
           path: "/threads",
           label: "Threads",
           icon: <MessageSquare className="h-4 w-4 mr-2" />,
+          badge: totalUnread > 0 ? totalUnread : undefined,
         },
         {
           path: "/connections",
           label: "Connections",
           icon: <Users className="h-4 w-4 mr-2" />,
+          // TODO if connection waiting show badge
         },
         {
           path: "/documents",
@@ -115,11 +114,10 @@ export function AppSidebar() {
           path: "/expenses",
           label: "Expenses",
           icon: <Receipt className="h-4 w-4 mr-2" />,
+          // TODO if new expense show badge
         },
       ]
     : [];
-
-  const isActive = (path: string) => location.pathname === path;
 
   return (
     <Sidebar>
@@ -147,13 +145,11 @@ export function AppSidebar() {
                     >
                       {item.icon}
                       <span>{item.label}</span>
-                      {item.path === "/threads" && totalUnread > 0 && (
-                        <NotificationBadge label={totalUnread} className="ml-2">
-                          {""}
-                        </NotificationBadge>
-                      )}
                     </Link>
                   </SidebarMenuButton>
+                  {item.badge !== undefined && (
+                    <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
