@@ -14,9 +14,10 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
   const topicLabel = `${icon} ${label}`;
 
   return (
-    <div className="sticky top-12 bg-white border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 p-6 space-y-4 ">
-      <div className="flex justify-between">
-        <div className="space-y-1">
+    <div className="sticky top-12 bg-white border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 p-6">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
+        {/* Left Side */}
+        <div className="flex-1 min-w-0 space-y-4">
           <div className="flex items-center gap-2 mb-2">
             <Badge variant="outline" className="bg-white">
               {topicLabel}
@@ -25,9 +26,36 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
               Created {thread.createdAt.toLocaleDateString()}
             </span>
           </div>
-          <h1 className="text-2xl font-bold">{thread.title}</h1>
+          <h1 className="text-2xl font-bold break-words">{thread.title}</h1>
+          <div className="flex flex-col space-y-2 mt-2">
+            {thread.participants && thread.participants.length > 0 ? (
+              <div className="flex items-center gap-2 flex-wrap">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Participants:</span>
+                <div className="flex flex-wrap gap-4">
+                  {thread.participants.map((participant) => (
+                    <AvatarName
+                      key={participant}
+                      name={participant}
+                      size="xs"
+                      /* border already applied inside the component */
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                No other participants
+              </div>
+            )}
+          </div>
+        </div>
+        {/* Right Side */}
+        <div className="md:w-1/2 flex flex-col gap-2 min-w-0">
           {thread.summary ? (
-            <p className="text-muted-foreground text-sm">{thread.summary}</p>
+            <p className="text-muted-foreground text-sm break-words">
+              {thread.summary}
+            </p>
           ) : (
             <p className="text-muted-foreground/70 text-sm italic">
               No summary provided
@@ -40,29 +68,6 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
             </p>
           )}
         </div>
-      </div>
-
-      <div className="flex flex-col space-y-2">
-        {thread.participants && thread.participants.length > 0 ? (
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Participants:</span>
-            <div className="flex flex-wrap gap-4">
-              {thread.participants.map((participant) => (
-                <AvatarName
-                  key={participant}
-                  name={participant}
-                  size="xs"
-                  /* border already applied inside the component */
-                />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="text-sm text-muted-foreground">
-            No other participants
-          </div>
-        )}
       </div>
     </div>
   );
