@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { useTheme } from "next-themes";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,8 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import {
   Form,
   FormControl,
@@ -27,8 +23,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Sun, Moon, ScreenShare, MessageSquareText } from "lucide-react";
+import { MessageSquareText } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -48,7 +43,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const Preferences = () => {
-  const { theme, setTheme } = useTheme();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -287,7 +281,6 @@ const Preferences = () => {
                     <Picker
                       data={emojiData}
                       onEmojiSelect={handleEmojiSelect}
-                      theme={theme === "dark" ? "dark" : "light"}
                     />
                   )}
                 </div>
@@ -360,78 +353,6 @@ const Preferences = () => {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Appearance</CardTitle>
-          <CardDescription>Customize how the application looks</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {!mounted ? (
-            <div className="flex justify-center py-4">
-              Loading theme preferences...
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Theme</h3>
-                <RadioGroup
-                  defaultValue={theme}
-                  onValueChange={(value) => setTheme(value)}
-                  className="flex flex-col space-y-3"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="light" id="theme-light" />
-                    <Label
-                      htmlFor="theme-light"
-                      className="flex items-center gap-2"
-                    >
-                      <Sun className="h-5 w-5" />
-                      Light
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="dark" id="theme-dark" />
-                    <Label
-                      htmlFor="theme-dark"
-                      className="flex items-center gap-2"
-                    >
-                      <Moon className="h-5 w-5" />
-                      Dark
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="system" id="theme-system" />
-                    <Label
-                      htmlFor="theme-system"
-                      className="flex items-center gap-2"
-                    >
-                      <ScreenShare className="h-5 w-5" />
-                      System
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="dark-mode">Dark Mode</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Toggle between light and dark mode
-                  </p>
-                </div>
-                <Switch
-                  id="dark-mode"
-                  checked={theme === "dark"}
-                  onCheckedChange={(checked) =>
-                    setTheme(checked ? "dark" : "light")
-                  }
-                />
-              </div>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>
