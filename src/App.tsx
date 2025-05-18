@@ -1,7 +1,8 @@
+import React from "react";
 import { Sonner } from "@/components/ui/sonner.js";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Home from "./pages/Home";
 import Threads from "./pages/Threads";
@@ -18,12 +19,53 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 // Import CSS but don't include App.css anymore
 import "./index.css";
 import { AppSidebar } from "./components/AppSidebar";
 
 const queryClient = new QueryClient();
+
+function Breadcrumbs() {
+  const location = useLocation();
+  const pathnames = location.pathname.split("/").filter(Boolean);
+
+  return (
+    <Breadcrumb className="m-3">
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <SidebarTrigger className="" />
+        </BreadcrumbItem>
+        {pathnames.map((value, idx) => {
+          const to = `/${pathnames.slice(0, idx + 1).join("/")}`;
+          const isLast = idx === pathnames.length - 1;
+          return (
+            <React.Fragment key={to}>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                {isLast ? (
+                  <BreadcrumbPage>{decodeURIComponent(value)}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink href={to}>
+                    {decodeURIComponent(value)}
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+            </React.Fragment>
+          );
+        })}
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -38,7 +80,7 @@ const App = () => (
                   <AppSidebar />
                 </Sidebar>
                 <SidebarInset>
-                  <SidebarTrigger className="m-3" />
+                  <Breadcrumbs />
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/threads" element={<Threads />} />
