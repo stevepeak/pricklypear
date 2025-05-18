@@ -60,7 +60,7 @@ const CreateThreadDialog = ({
       loadConnections();
       setNewThreadTitle("");
       setSelectedContactId("");
-      setSelectedTopic("other" as ThreadTopic);
+      setSelectedTopic(undefined);
     }
   };
 

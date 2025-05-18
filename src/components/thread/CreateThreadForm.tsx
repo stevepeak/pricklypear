@@ -13,6 +13,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import type { Connection } from "@/types/connection";
+import React from "react";
 
 interface CreateThreadFormProps {
   newThreadTitle: string;
@@ -20,7 +21,7 @@ interface CreateThreadFormProps {
   selectedContactId: string;
   setSelectedContactId: (contactId: string) => void;
   selectedTopic?: ThreadTopic;
-  setSelectedTopic?: (topic: ThreadTopic) => void;
+  setSelectedTopic?: (topic: ThreadTopic | undefined) => void;
   connections: Connection[];
   isLoadingContacts: boolean;
   isCreating: boolean;
@@ -33,7 +34,7 @@ const CreateThreadForm = ({
   setNewThreadTitle,
   selectedContactId,
   setSelectedContactId,
-  selectedTopic = "other",
+  selectedTopic,
   setSelectedTopic,
   connections,
   isLoadingContacts,
@@ -42,6 +43,7 @@ const CreateThreadForm = ({
   onCancel,
 }: CreateThreadFormProps) => {
   const topicInfo = THREAD_TOPIC_INFO;
+  const [showTopicError, setShowTopicError] = React.useState(false);
 
   return (
     <div className="space-y-4 mt-2">
@@ -97,19 +99,10 @@ const CreateThreadForm = ({
           <Label className="text-sm font-medium">Thread Topic</Label>
           <RadioGroup
             value={selectedTopic}
-            onValueChange={(value) =>
-              setSelectedTopic(
-                value as
-                  | "travel"
-                  | "parenting_time"
-                  | "health"
-                  | "education"
-                  | "activity"
-                  | "legal"
-                  | "expense"
-                  | "other",
-              )
-            }
+            onValueChange={(value) => {
+              setSelectedTopic(value as ThreadTopic);
+              setShowTopicError(false);
+            }}
             className="grid grid-cols-2 gap-2"
           >
             {Object.entries(topicInfo).map(([value, info]) => (
@@ -125,6 +118,9 @@ const CreateThreadForm = ({
               </div>
             ))}
           </RadioGroup>
+          {showTopicError && (
+            <div className="text-xs text-red-500">Please select a topic.</div>
+          )}
         </div>
       )}
 
@@ -133,8 +129,19 @@ const CreateThreadForm = ({
           Cancel
         </Button>
         <Button
-          onClick={onSubmit}
-          disabled={!newThreadTitle.trim() || !selectedContactId || isCreating}
+          onClick={() => {
+            if (!selectedTopic) {
+              setShowTopicError(true);
+              return;
+            }
+            onSubmit();
+          }}
+          disabled={
+            !newThreadTitle.trim() ||
+            !selectedContactId ||
+            !selectedTopic ||
+            isCreating
+          }
         >
           {isCreating ? (
             <>

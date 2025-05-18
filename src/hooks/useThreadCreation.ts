@@ -12,7 +12,9 @@ export const useThreadCreation = (
 ) => {
   const [newThreadTitle, setNewThreadTitle] = useState("");
   const [selectedContactId, setSelectedContactId] = useState<string>("");
-  const [selectedTopic, setSelectedTopic] = useState<ThreadTopic>("other");
+  const [selectedTopic, setSelectedTopic] = useState<ThreadTopic | undefined>(
+    undefined,
+  );
   const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -47,6 +49,15 @@ export const useThreadCreation = (
       return;
     }
 
+    if (!selectedTopic) {
+      toast({
+        title: "Topic required",
+        description: "Please select a topic for the thread",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsCreating(true);
 
     const newThread = await createThread(
@@ -61,7 +72,7 @@ export const useThreadCreation = (
       onThreadCreated(newThread);
       setNewThreadTitle("");
       setSelectedContactId("");
-      setSelectedTopic("other");
+      setSelectedTopic(undefined);
       onClose();
       // Redirect the user to the newly-created thread
       navigate(`/threads/${newThread.id}`);
