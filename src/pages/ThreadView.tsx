@@ -38,9 +38,9 @@ const ThreadView = () => {
   }
 
   return (
-    <div className="container py-8">
+    <div className="min-h-[calc(100vh-50px)] flex flex-col py-8 container">
       {thread && (
-        <div className="flex flex-col h-[calc(100vh-12rem)]">
+        <div className="flex flex-col flex-1">
           <ThreadHeader
             thread={thread}
             isGeneratingSummary={isGeneratingSummary}
