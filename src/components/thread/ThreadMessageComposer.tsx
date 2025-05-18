@@ -16,6 +16,16 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu.js";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "@/components/ui/dialog.js";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -35,6 +45,7 @@ const ThreadMessageComposer = ({
   scrollToBottom,
 }: ThreadMessageComposerProps) => {
   const [autoAccept, setAutoAccept] = useState(false);
+  const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Initialise from localStorage on mount
@@ -98,8 +109,8 @@ const ThreadMessageComposer = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem onSelect={() => {}}>
-                Close thread
+              <DropdownMenuItem onSelect={() => setIsRequestDialogOpen(true)}>
+                Request to close thread
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -151,6 +162,24 @@ const ThreadMessageComposer = ({
           </Button>
         </div>
       </div>
+      <Dialog open={isRequestDialogOpen} onOpenChange={setIsRequestDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request to close thread</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to request to close this thread?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button onClick={() => setIsRequestDialogOpen(false)}>
+              Make request to close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
