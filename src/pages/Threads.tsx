@@ -54,7 +54,7 @@ const Threads = () => {
   };
 
   return (
-    <div className="container py-8">
+    <div className="py-8">
       <div className="flex justify-end mb-8 mr-8">
         <div className="flex items-center gap-3">
           <ThreadViewToggle value={view} onValueChange={handleViewChange} />

@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarMenuBadge,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -48,6 +49,7 @@ export function AppSidebar() {
   const { totalUnread } = useUnreadMessages();
   const [profileEmoji, setProfileEmoji] = React.useState<string | null>(null);
   const { connections } = useConnections();
+  const { state } = useSidebar();
 
   // Calculate pending incoming connections
   const pendingIncomingCount = connections.filter(
@@ -130,9 +132,8 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <Link to="/" className="flex items-center space-x-2 px-2 py-4">
-          <span className="font-bold flex items-center">
-            <span className="mr-1">🌵</span> Prickly Pear
-          </span>
+          <span className="mr-1">🌵</span>
+          {state === "expanded" && <span>Prickly Pear</span>}
         </Link>
       </SidebarHeader>
       <SidebarContent>

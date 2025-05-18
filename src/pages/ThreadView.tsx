@@ -46,7 +46,7 @@ const ThreadView = () => {
   }
 
   return (
-    <div className="container">
+    <>
       <div className="flex flex-col flex-1 min-h-0">
         <ThreadHeader
           thread={thread}
@@ -83,7 +83,7 @@ const ThreadView = () => {
         onAccept={handleSendReviewedMessage}
         isLoading={isReviewingMessage}
       />
-    </div>
+      </>
   );
 };
 
