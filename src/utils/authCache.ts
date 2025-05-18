@@ -7,7 +7,7 @@ let cachedUser: User | null | undefined; // undefined = not yet fetched
 let inFlightRequest: Promise<User | null> | null = null; // Track in-flight request
 
 export async function getCurrentUser(
-  forceRefresh = false
+  forceRefresh = false,
 ): Promise<User | null> {
   // If we have a cached value and aren't forcing refresh, return it
   if (!forceRefresh && cachedUser !== undefined) return cachedUser;
@@ -33,7 +33,7 @@ export async function getCurrentUser(
 }
 
 export async function getUserProfile(
-  user: User
+  user: User,
 ): Promise<Database["public"]["Tables"]["profiles"]["Row"]> {
   const { data: profile } = await supabase
     .from("profiles")
