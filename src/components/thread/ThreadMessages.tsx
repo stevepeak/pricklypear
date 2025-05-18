@@ -47,7 +47,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   };
 
   return (
-    <div className="flex-grow overflow-y-auto px-4 py-6 border rounded-md mb-4 bg-white dark:bg-transparent">
+    <div className="flex-grow overflow-y-auto px-4 py-6 border rounded-md mb-4 bg-white dark:bg-transparent pt-[140px]">
       {messages.length > 0 ? (
         <>
           {messages.map((message) => (

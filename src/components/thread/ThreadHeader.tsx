@@ -14,7 +14,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
   const topicLabel = `${icon} ${label}`;
 
   return (
-    <div className="space-y-4 mb-6">
+    <div className="sticky top-0 z-20 bg-white dark:bg-background shadow-md rounded-md mx-[10px] p-6 space-y-4 mb-6">
       <div className="flex justify-between">
         <div className="space-y-1">
           {thread.topic && (
