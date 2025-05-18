@@ -1,3 +1,7 @@
+# IMPORTANT
+- Do not ask me permission to proceed with changes. Do it.
+- Run `bun run fix` after you make changes
+
 # Coding Instructions
 
 This documentation is intended to provide comprehensive guidelines for contributing to the codebase.

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
@@ -17,6 +17,7 @@ interface ThreadMessageComposerProps {
   isSending: boolean;
   isThreadClosed: boolean;
   onSendMessage: () => void;
+  scrollToBottom?: () => void;
 }
 
 const ThreadMessageComposer = ({
@@ -25,14 +26,28 @@ const ThreadMessageComposer = ({
   isSending,
   isThreadClosed,
   onSendMessage,
+  scrollToBottom,
 }: ThreadMessageComposerProps) => {
   const [autoAccept, setAutoAccept] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Initialise from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem("autoAcceptAISuggestions");
     setAutoAccept(stored === "true");
   }, []);
+
+  // Auto-resize textarea when newMessage changes
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+    if (scrollToBottom) {
+      scrollToBottom();
+    }
+  }, [newMessage, scrollToBottom]);
 
   const handleToggleAutoAccept = (value: boolean) => {
     setAutoAccept(value);
@@ -52,6 +67,7 @@ const ThreadMessageComposer = ({
   return (
     <div className="relative bg-white dark:bg-transparent border rounded-md">
       <Textarea
+        ref={textareaRef}
         placeholder={
           isThreadClosed ? "Thread is closed" : "Type your message..."
         }
@@ -59,7 +75,7 @@ const ThreadMessageComposer = ({
         onChange={(e) => setNewMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         disabled={isSending || isThreadClosed}
-        className="w-full min-h-[60px] max-h-[200px] resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-4 pt-4"
+        className="w-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-4 pt-4"
         rows={1}
       />
       <div className="flex justify-between items-center px-4 pb-4">

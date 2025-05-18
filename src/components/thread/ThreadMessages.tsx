@@ -11,14 +11,17 @@ interface ThreadMessagesProps {
   messages: Message[];
   user: User | null;
   thread: Thread;
+  messagesEndRef?: React.RefObject<HTMLDivElement>;
 }
 
 const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   messages,
   user,
   thread,
+  messagesEndRef: externalMessagesEndRef,
 }) => {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const localMessagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = externalMessagesEndRef || localMessagesEndRef;
   const { user: authUser } = useAuth();
 
   useEffect(() => {

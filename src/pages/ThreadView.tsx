@@ -6,6 +6,7 @@ import ThreadMessages from "@/components/thread/ThreadMessages";
 import ThreadMessageComposer from "@/components/thread/ThreadMessageComposer";
 import MessageReviewDialog from "@/components/MessageReviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRef } from "react";
 
 const ThreadView = () => {
   const { threadId } = useParams<{ threadId: string }>();
@@ -29,6 +30,12 @@ const ThreadView = () => {
 
   const isThreadClosed = thread?.status === "closed";
 
+  // Ref for scrolling to bottom
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -46,7 +53,7 @@ const ThreadView = () => {
             isGeneratingSummary={isGeneratingSummary}
           />
 
-          <ThreadMessages messages={messages} user={user} thread={thread} />
+          <ThreadMessages messages={messages} user={user} thread={thread} messagesEndRef={messagesEndRef} />
 
           <ThreadMessageComposer
             newMessage={newMessage}
@@ -54,6 +61,7 @@ const ThreadView = () => {
             isSending={isSending || isReviewingMessage}
             isThreadClosed={isThreadClosed}
             onSendMessage={handleSendMessage}
+            scrollToBottom={scrollToBottom}
           />
         </div>
       )}
