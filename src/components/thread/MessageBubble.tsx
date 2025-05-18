@@ -31,8 +31,8 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
             message.type !== "user_message"
               ? "bg-gray-200 text-gray-700 mx-auto"
               : message.isCurrentUser
-                ? "bg-chat-sender1 text-white rounded-tr-none"
-                : "bg-chat-gray rounded-tl-none",
+                ? "bg-sky-500 text-white rounded-tr-none"
+                : "bg-gray-200 rounded-tl-none",
           )}
         >
           <ReactMarkdown>{message.text}</ReactMarkdown>

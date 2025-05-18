@@ -60,7 +60,7 @@ The repo contains _both_ the React front-end **and** the Supabase Edge Functions
 High-level code layout:
 
 - **src/** – React front-end
-  - **components/** – UI and headless primitives (Radix + Tailwind)
+  - **components/** – UI and headless primitives
   - **pages/** – top-level routes rendered by `react-router`
   - **contexts/** – global providers (`AuthContext` wraps Supabase auth)
   - **hooks/** – custom hooks for threads, connections, toast, etc.

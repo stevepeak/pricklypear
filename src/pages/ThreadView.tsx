@@ -4,7 +4,7 @@ import { useThreadDetails } from "@/hooks/useThreadDetails";
 import ThreadHeader from "@/components/thread/ThreadHeader";
 import ThreadMessages from "@/components/thread/ThreadMessages";
 import ThreadMessageComposer from "@/components/thread/ThreadMessageComposer";
-import MessageReviewDialog from "@/components/MessageReviewDialog";
+import MessageReviewDialog from "@/components/thread/MessageReviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRef } from "react";
 

@@ -1,15 +1,25 @@
 import * as React from "react";
 
-import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
+import type { ReactNode } from "react";
 
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 1000000;
 
-type ToasterToast = ToastProps & {
+type SonnerToast = ToastProps & {
   id: string;
   title?: React.ReactNode;
   description?: React.ReactNode;
-  action?: ToastActionElement;
+  action?: React.ReactNode;
+};
+
+// Define a local ToastProps type for Sonner
+type ToastProps = {
+  title?: ReactNode;
+  description?: ReactNode;
+  action?: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  // Add other props as needed for your toast implementation
 };
 
 const actionTypes = {
@@ -31,23 +41,23 @@ type ActionType = typeof actionTypes;
 type Action =
   | {
       type: ActionType["ADD_TOAST"];
-      toast: ToasterToast;
+      toast: SonnerToast;
     }
   | {
       type: ActionType["UPDATE_TOAST"];
-      toast: Partial<ToasterToast>;
+      toast: Partial<SonnerToast>;
     }
   | {
       type: ActionType["DISMISS_TOAST"];
-      toastId?: ToasterToast["id"];
+      toastId?: SonnerToast["id"];
     }
   | {
       type: ActionType["REMOVE_TOAST"];
-      toastId?: ToasterToast["id"];
+      toastId?: SonnerToast["id"];
     };
 
 interface State {
-  toasts: ToasterToast[];
+  toasts: SonnerToast[];
 }
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
@@ -132,12 +142,12 @@ function dispatch(action: Action) {
   });
 }
 
-type Toast = Omit<ToasterToast, "id">;
+type Toast = Omit<SonnerToast, "id">;
 
 function toast({ ...props }: Toast) {
   const id = genId();
 
-  const update = (props: ToasterToast) =>
+  const update = (props: SonnerToast) =>
     dispatch({
       type: "UPDATE_TOAST",
       toast: { ...props, id },

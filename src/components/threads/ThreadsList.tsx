@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Loader2 } from "lucide-react";
-import ThreadCard from "@/components/ThreadCard";
+import ThreadCard from "./ThreadCard";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import type { Thread } from "@/types/thread";
 import type { User } from "@supabase/supabase-js";

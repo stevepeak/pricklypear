@@ -18,12 +18,12 @@ vi.mock("@/services/threadService", () => ({
   getThreads: vi.fn().mockResolvedValue([]),
 }));
 
-vi.mock("@/components/ThreadsList", () => ({
+vi.mock("@/components/threads/ThreadsList", () => ({
   __esModule: true,
   default: () => <div data-testid="threads-list">ThreadsList</div>,
 }));
 
-vi.mock("@/components/ThreadsTable", () => ({
+vi.mock("@/components/threads/ThreadsTable", () => ({
   __esModule: true,
   default: () => <div data-testid="threads-table">ThreadsTable</div>,
 }));

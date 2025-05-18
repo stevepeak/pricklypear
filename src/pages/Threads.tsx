@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import { getThreads } from "@/services/threadService";
 import { useAuth } from "@/contexts/AuthContext";
 import type { Thread } from "@/types/thread";
-import ThreadsList from "@/components/ThreadsList";
-import ThreadsTable from "@/components/ThreadsTable";
-import CreateThreadDialog from "@/components/thread/CreateThreadDialog";
-import ThreadViewToggle from "@/components/thread/ThreadViewToggle"; // DD-90
+import ThreadsList from "@/components/threads/ThreadsList";
+import ThreadsTable from "@/components/threads/ThreadsTable";
+import CreateThreadDialog from "@/components/threads/CreateThreadDialog";
+import ThreadViewToggle from "@/components/threads/ThreadViewToggle"; // DD-90
 
 const Threads = () => {
   const [threads, setThreads] = useState<Thread[]>([]);

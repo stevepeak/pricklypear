@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import MessageBubble from "@/components/MessageBubble";
+import MessageBubble from "@/components/thread/MessageBubble";
 import type { Message } from "@/types/message";
 import { markMessagesAsRead } from "@/services/messageService";
 import type { User } from "@supabase/supabase-js";
@@ -44,7 +44,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   };
 
   return (
-    <div className="flex-grow overflow-y-auto px-4 py-6 border rounded-md mb-4 bg-white dark:bg-transparent">
+    <div className="flex-grow px-4 py-6 mb-4">
       {messages.length > 0 ? (
         <>
           {messages.map((message) => (

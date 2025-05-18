@@ -1,24 +1,39 @@
+import { Badge } from "./badge";
 import { cn } from "@/lib/utils";
 
-interface NotificationBadgeProps {
-  count: number;
+export interface NotificationBadgeProps {
   className?: string;
+  label?: string | number;
+  show?: boolean;
+  children: React.ReactNode;
 }
 
-const NotificationBadge = ({ count, className }: NotificationBadgeProps) => {
-  if (count <= 0) return null;
-
+export const NotificationBadge = ({
+  label,
+  className,
+  show,
+  children,
+  ...props
+}: NotificationBadgeProps) => {
+  const showBadge =
+    typeof label !== "undefined" && (typeof show === "undefined" || show);
   return (
-    <div
-      className={cn(
-        "absolute -top-1 -right-1 bg-accent text-white text-xs font-medium rounded-full min-w-[18px] h-[18px]",
-        "flex items-center justify-center px-1",
-        className,
+    <div className="inline-flex relative">
+      {children}
+      {showBadge && (
+        <Badge
+          className={cn(
+            "absolute top-0 right-0 rounded-full",
+            typeof label !== "undefined" && ("" + label).length === 0
+              ? "translate-x-1 -translate-y-1 px-1.5 py-1.5"
+              : "translate-x-1.5 -translate-y-1.5 px-2",
+            className,
+          )}
+          {...props}
+        >
+          {"" + label}
+        </Badge>
       )}
-    >
-      {count > 99 ? "99+" : count}
     </div>
   );
 };
-
-export default NotificationBadge;

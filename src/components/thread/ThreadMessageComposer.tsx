@@ -115,7 +115,7 @@ const ThreadMessageComposer = ({
   };
 
   return (
-    <div className="relative bg-white dark:bg-transparent border rounded-md">
+    <div className="sticky bottom-10 bg-white border rounded-md shadow-md m-10">
       <Textarea
         ref={textareaRef}
         placeholder={
@@ -125,8 +125,8 @@ const ThreadMessageComposer = ({
         onChange={(e) => setNewMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         disabled={isSending || isThreadClosed}
-        className="w-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent px-4 pt-4"
-        rows={1}
+        className="w-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none px-4 pt-4 shadow-none"
+        rows={3}
       />
       <div className="flex justify-between items-center px-4 pb-4">
         <div className="flex gap-2">
