@@ -1,13 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { UserPlus, Loader2 } from "lucide-react";
 import { DialogTrigger, Dialog } from "@/components/ui/dialog";
 import React from "react";
 
 import {
-  Connection,
   ConnectionStatus,
-  getConnections,
   updateConnectionStatus,
   disableConnection,
   InviteResponse,
@@ -24,17 +22,8 @@ import DisabledConnectionsList from "@/components/connections/DisabledConnection
 import InviteConnectionDialog from "@/components/connections/InviteConnectionDialog";
 import { deleteConnection } from "@/services/connections/manageConnections.js";
 
-import { Connection as ConnectionType } from "@/types/connection";
 import { useConnections } from "@/hooks/useConnections";
 import { setConnectionsCache } from "@/services/messageService/messages.js";
-
-type FormattedConnection = ConnectionType & {
-  isUserSender: boolean;
-  username?: string;
-  avatarUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 const Connections = () => {
   const [isInviting, setIsInviting] = useState(false);
@@ -182,7 +171,7 @@ const Connections = () => {
   }
 
   return (
-    <div className="container py-8">
+    <div className="container p-10">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold flex items-center">Connections</h1>
 
