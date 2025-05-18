@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/select";
 import Picker from "@emoji-mart/react";
 import emojiData from "@emoji-mart/data";
-import { requireCurrentUser } from "@/utils/authCache";
+import { getUserProfile, requireCurrentUser } from "@/utils/authCache";
 
 const formSchema = z.object({
   name: z.string().min(1, "Full name is required"),
@@ -47,7 +47,7 @@ const Preferences = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [profileLoading, setProfileLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
+  const [_, setMounted] = useState(false);
   const [messageTone, setMessageTone] = useState<string>("friendly");
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -74,19 +74,21 @@ const Preferences = () => {
       try {
         const user = await requireCurrentUser();
 
+        const profile = await getUserProfile(user);
+
         setProfileLoading(true);
 
         // Update form with fetched data
         form.reset({
-          name: user.name,
-          email: user.auth.email,
+          name: profile.name,
+          email: user.email,
         });
 
         // Set message tone if it exists in profile
-        setMessageTone(user.message_tone);
+        setMessageTone(profile.message_tone);
 
         // Set selected emoji if it exists in profile
-        setSelectedEmoji(user.profile_emoji);
+        setSelectedEmoji(profile.profile_emoji);
       } catch (error) {
         console.error("Error loading user data:", error);
         toast({
@@ -116,7 +118,7 @@ const Preferences = () => {
       if (metadataError) throw metadataError;
 
       // Update email if changed
-      if (data.email !== user.auth.email) {
+      if (data.email !== user.email) {
         setEmailUpdating(true);
         const { error: emailError } = await supabase.auth.updateUser({
           email: data.email,
@@ -156,7 +158,7 @@ const Preferences = () => {
   };
 
   const handleMessageToneChange = async (value: string) => {
-    if (!user) return;
+    const user = await requireCurrentUser();
 
     setMessageTone(value);
 
