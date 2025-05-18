@@ -83,7 +83,6 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
             <TableRow
               key={thread.id}
               onClick={() => navigate(`/threads/${thread.id}`)}
-              className={cn("cursor-pointer hover:bg-yellow-50", baseBgClass)}
             >
               {/* Participants */}
               <TableCell className="px-4 py-2">
