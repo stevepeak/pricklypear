@@ -28,7 +28,7 @@ export const SUBSCRIPTION_PLANS: readonly SubscriptionPlan[] = [
     features: [
       "10 AI-assisted messages / month",
       "Secure, private conversations",
-      "Basic tone & clarity suggestions",
+      "Basic clarity suggestions",
     ],
     ctaPath: "/signup?plan=free",
   },

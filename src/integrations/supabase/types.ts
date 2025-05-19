@@ -139,7 +139,6 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          message_tone: string | null
           name: string
           notifications: Json | null
           profile_emoji: string | null
@@ -147,15 +146,13 @@ export type Database = {
         Insert: {
           created_at?: string
           id: string
-          message_tone?: string | null
-          name: string
+          name?: string
           notifications?: Json | null
           profile_emoji?: string | null
         }
         Update: {
           created_at?: string
           id?: string
-          message_tone?: string | null
           name?: string
           notifications?: Json | null
           profile_emoji?: string | null
