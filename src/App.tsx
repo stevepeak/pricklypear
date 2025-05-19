@@ -14,7 +14,7 @@ import Account from "./pages/Account";
 import Documents from "./pages/Documents";
 import Integrations from "./pages/Integrations";
 import { ConnectionsProvider } from "@/contexts/ConnectionsContext";
-import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import "./index.css";
 import { AppSidebar } from "./components/AppSidebar";
 import { CommandMenu } from "./components/CommandMenu";
