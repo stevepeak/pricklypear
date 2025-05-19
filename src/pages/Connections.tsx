@@ -29,7 +29,7 @@ const Connections = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
-  
+
   const { connections, acceptedConnections, isLoading, refreshConnections } =
     useConnections();
 
