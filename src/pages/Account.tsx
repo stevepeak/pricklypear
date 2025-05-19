@@ -13,7 +13,10 @@ import {
   handleMessageToneChange as handleMessageToneChangeUtil,
 } from "@/components/account/message-preferences";
 import { NotificationPreferences } from "@/components/account/notifications";
-import { formSchema, FormValues } from "@/components/account/account-types";
+import {
+  formSchema,
+  type FormValues,
+} from "@/components/account/personal-info/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { getUserProfile, requireCurrentUser } from "@/utils/authCache";

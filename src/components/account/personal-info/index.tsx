@@ -11,12 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Picker from "@emoji-mart/react";
 import emojiData from "@emoji-mart/data";
-import {
-  formSchema,
-  type FormValues,
-  type PersonalInfoFormProps,
-} from "./types";
-import { UseFormReturn } from "react-hook-form";
+import { type FormValues, type PersonalInfoFormProps } from "./types";
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { updatePersonalInfo } from "./update";
