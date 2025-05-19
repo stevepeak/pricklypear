@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PersonalInfoForm } from "@/components/account/personal-info-form";
 import {
   MessagePreferences,
   handleMessageToneChange as handleMessageToneChangeUtil,
@@ -24,6 +23,7 @@ import {
 } from "@/components/account/notifications/types";
 import { handleError } from "@/services/messageService/utils";
 import { update } from "@/components/account/notifications/update";
+import { PersonalInfoForm } from "@/components/account/personal-info";
 
 const Account = () => {
   const { toast } = useToast();

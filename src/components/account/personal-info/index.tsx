@@ -11,18 +11,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Picker from "@emoji-mart/react";
 import emojiData from "@emoji-mart/data";
-import { FormValues } from "./account-types";
+import {
+  formSchema,
+  type FormValues,
+  type PersonalInfoFormProps,
+} from "./types";
 import { UseFormReturn } from "react-hook-form";
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { requireCurrentUser } from "@/utils/authCache";
-
-interface PersonalInfoFormProps {
-  form: UseFormReturn<FormValues>;
-  profileLoading: boolean;
-  onProfileUpdated?: () => void;
-}
+import { updatePersonalInfo } from "./update";
 
 export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const { form, profileLoading, onProfileUpdated } = props;
@@ -43,45 +40,37 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
     setIsLoading(true);
     setEmailUpdating(false);
     setEmailConfirmationSent(false);
-    const user = await requireCurrentUser();
     try {
-      // Update user metadata (full name)
-      const { error: metadataError } = await supabase.auth.updateUser({
-        data: { name: data.name },
+      await updatePersonalInfo({
+        name: data.name,
+        email: data.email,
+        profile_emoji: selectedEmoji,
       });
-      if (metadataError) throw metadataError;
-      // Update email if changed
-      if (data.email !== user.email) {
-        setEmailUpdating(true);
-        const { error: emailError } = await supabase.auth.updateUser({
-          email: data.email,
-        });
-        setEmailUpdating(false);
-        if (emailError) throw emailError;
+      toast({
+        title: "Profile updated",
+        description: "Your profile information has been updated successfully.",
+      });
+      if (onProfileUpdated) onProfileUpdated();
+    } catch (error: unknown) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "message" in error &&
+        typeof (error as { message?: string }).message === "string" &&
+        (error as { message: string }).message.includes("confirmation")
+      ) {
         setEmailConfirmationSent(true);
         toast({
           title: "Email update initiated",
           description:
             "A confirmation link has been sent to your new email. Please check your inbox to confirm the change.",
         });
+      } else {
+        toast({
+          title: "Update failed",
+          description: "There was a problem updating your profile.",
+        });
       }
-      // Also update the profile name and emoji for consistency
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({ name: data.name, profile_emoji: selectedEmoji })
-        .eq("id", user.id);
-      if (profileError) throw profileError;
-      toast({
-        title: "Profile updated",
-        description: "Your profile information has been updated successfully.",
-      });
-      if (onProfileUpdated) onProfileUpdated();
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast({
-        title: "Update failed",
-        description: "There was a problem updating your profile.",
-      });
     } finally {
       setIsLoading(false);
       setEmailUpdating(false);
