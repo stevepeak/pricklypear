@@ -122,6 +122,7 @@ export const useThreadMessages = (
         id: crypto.randomUUID(), // Generate a temporary ID
         text: selectedMessage,
         sender: user.id,
+        type: "user_message",
         timestamp: new Date(),
         threadId: threadId,
         isCurrentUser: true, // Explicitly set isCurrentUser to true
