@@ -15,6 +15,7 @@ export const useThreadMessages = (
   threadId: string | undefined,
   thread: Thread | null,
   setThread: (thread: Thread | null) => void,
+  composerRef?: React.RefObject<{ focusInput: () => void }>,
 ) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
@@ -60,11 +61,37 @@ export const useThreadMessages = (
 
     let reviewedText: string;
     try {
-      reviewedText = await reviewMessage(newMessage);
+      const { kindMessage, error } = await reviewMessage(newMessage);
+      if (error) {
+        setIsReviewDialogOpen(false);
+        toast({
+          title: "Error reviewing message",
+          description:
+            typeof error === "string"
+              ? error
+              : "An error occurred while reviewing your message.",
+        });
+        // Refocus the input
+        if (composerRef && composerRef.current) {
+          composerRef.current.focusInput();
+        }
+        return;
+      }
+      reviewedText = kindMessage;
     } catch (error) {
       console.error("Error reviewing message:", error);
-      // Fall back to original message on failure
-      reviewedText = newMessage;
+      setIsReviewDialogOpen(false);
+      toast({
+        title: "Error reviewing message",
+        description:
+          typeof error === "string"
+            ? error
+            : "An error occurred while reviewing your message.",
+      });
+      if (composerRef && composerRef.current) {
+        composerRef.current.focusInput();
+      }
+      return;
     }
 
     setIsReviewingMessage(false);
@@ -140,7 +167,6 @@ export const useThreadMessages = (
       toast({
         title: "Error",
         description: "Failed to send message. Please try again.",
-        variant: "destructive",
       });
     }
 

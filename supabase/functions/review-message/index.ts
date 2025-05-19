@@ -166,7 +166,6 @@ serve(async (req) => {
           kindMessage: null,
         }),
         {
-          status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         },
       );

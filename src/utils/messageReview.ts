@@ -1,7 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
-import { getCurrentUser } from "@/utils/authCache";
 
-export async function reviewMessage(message: string): Promise<string> {
+export async function reviewMessage(
+  message: string,
+): Promise<{ kindMessage: string; error: unknown }> {
   try {
     // Remove all tone logic, just call the review-message function with the message
     const { data, error } = await supabase.functions.invoke("review-message", {
@@ -9,11 +10,12 @@ export async function reviewMessage(message: string): Promise<string> {
     });
     if (error) {
       console.error("Error calling review-message function:", error);
-      return message;
+      return { kindMessage: message, error };
     }
-    return data?.kindMessage || message;
+
+    return { kindMessage: data?.kindMessage || message, error: null };
   } catch (error) {
     console.error("Exception reviewing message:", error);
-    return message;
+    return { kindMessage: message, error };
   }
 }
