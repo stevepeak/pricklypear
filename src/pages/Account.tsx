@@ -37,7 +37,6 @@ const Account = () => {
   const [notificationPrefs, setNotificationPrefs] =
     useState<UserNotification>(userDefaults);
 
-  // Form with validation
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -63,6 +62,7 @@ const Account = () => {
         form.reset({
           name: profile.name,
           email: user.email,
+          profile_emoji: profile.profile_emoji,
         });
         // Set message tone if it exists in profile
         setMessageTone(profile.message_tone);

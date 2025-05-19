@@ -23,7 +23,9 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const [emailUpdating, setEmailUpdating] = React.useState(false);
   const [emailConfirmationSent, setEmailConfirmationSent] =
     React.useState(false);
-  const [selectedEmoji, setSelectedEmoji] = React.useState<string | null>(null);
+  const [selectedEmoji, setSelectedEmoji] = React.useState<string | null>(
+    form.getValues("profile_emoji") ?? null,
+  );
   const [showEmojiPicker, setShowEmojiPicker] = React.useState(false);
 
   const handleEmojiSelect = (emoji: { native: string }) => {
