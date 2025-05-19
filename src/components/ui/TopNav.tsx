@@ -51,3 +51,5 @@ export function TopNav() {
     </div>
   );
 }
+
+export default TopNav;
