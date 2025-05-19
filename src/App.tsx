@@ -29,10 +29,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-// Import CSS but don't include App.css anymore
 import "./index.css";
 import { AppSidebar } from "./components/AppSidebar";
 import { CommandMenu } from "./components/CommandMenu";
+import TopNav from "./components/TopNav";
 
 const queryClient = new QueryClient();
 
@@ -84,7 +84,7 @@ const App = () => (
               <div className="flex min-h-screen w-full flex-col md:flex-row">
                 <AppSidebar />
                 <SidebarInset>
-                  <Breadcrumbs />
+                  <TopNav />
                   <CommandMenu />
                   <div className="flex-1 min-h-0">
                     <Routes>
