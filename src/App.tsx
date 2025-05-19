@@ -12,6 +12,7 @@ import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import Account from "./pages/Account";
 import Documents from "./pages/Documents";
+import Integrations from "./pages/Integrations";
 import { ConnectionsProvider } from "@/contexts/ConnectionsContext";
 import {
   SidebarProvider,
@@ -95,6 +96,7 @@ const App = () => (
                       />
                       <Route path="/connections" element={<Connections />} />
                       <Route path="/documents" element={<Documents />} />
+                      <Route path="/integrations" element={<Integrations />} />
                       <Route path="/auth" element={<AuthPage />} />
                       <Route path="/account" element={<Account />} />
                       <Route path="*" element={<NotFound />} />

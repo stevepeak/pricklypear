@@ -24,7 +24,7 @@ async function fetchInviteeUser({ supabase, email }) {
   const { data, error } = await supabase.auth.admin.listUsers({ email });
   if (error) throw error;
   const user = data.users.find(
-    (u) => u.email && u.email.toLowerCase() === email.toLowerCase()
+    (u) => u.email && u.email.toLowerCase() === email.toLowerCase(),
   );
   return user ?? null;
 }
@@ -100,7 +100,7 @@ serve(async (req) => {
         {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        },
       );
     }
     const supabase = getSupabaseServiceClient();
@@ -120,7 +120,7 @@ serve(async (req) => {
             success: false,
             message: "Connection already exists",
           }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
 
@@ -147,10 +147,9 @@ serve(async (req) => {
             id: connection.id,
           },
         }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     } else {
-
       // Invitee not yet a user: email sent, create pending connection with NULL connected_user_id
       const { data: connection, error } = await supabase
         .from("connections")
@@ -169,7 +168,7 @@ serve(async (req) => {
             success: false,
             message: `Failed to create pending invitation: ${error.message}`,
           }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
 
@@ -189,10 +188,9 @@ serve(async (req) => {
             id: connection.id,
           },
         }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
-
   } catch (error) {
     console.error("invite-by-email error:", error);
     return new Response(
@@ -203,7 +201,7 @@ serve(async (req) => {
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      },
     );
   }
 });

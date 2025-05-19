@@ -32,6 +32,7 @@ import {
   BadgeCheck,
   Calendar,
   Receipt,
+  Link2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -248,6 +249,14 @@ export function AppSidebar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center w-full">
                     <FileText className="h-4 w-4 mr-2" /> Billing
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center w-full">
+                    <Link
+                      className="flex items-center w-full"
+                      to="/integrations"
+                    >
+                      <Link2 className="h-4 w-4 mr-2" /> Integrations
+                    </Link>
                   </DropdownMenuItem>
                   <div className="my-1">
                     <hr className="border-border" />
