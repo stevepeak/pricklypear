@@ -13,19 +13,17 @@ import {
   MessagePreferences,
   handleMessageToneChange as handleMessageToneChangeUtil,
 } from "@/components/account/message-preferences";
-import {
-  NotificationPreferences,
-  handleNotificationChangeMulti,
-} from "@/components/account/notification-preferences";
-import {
-  formSchema,
-  FormValues,
-  NotificationPrefsMulti,
-  NotificationFrequency,
-} from "@/components/account/account-types";
+import { NotificationPreferences } from "@/components/account/notifications/notification";
+import { formSchema, FormValues } from "@/components/account/account-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { getUserProfile, requireCurrentUser } from "@/utils/authCache";
+import {
+  userDefaults,
+  UserNotification,
+} from "@/components/account/notifications/types";
+import { handleError } from "@/services/messageService/utils";
+import { update } from "@/components/account/notifications/update";
 
 const Account = () => {
   const { toast } = useToast();
@@ -34,17 +32,7 @@ const Account = () => {
   const [_, setMounted] = useState(false);
   const [messageTone, setMessageTone] = useState<string>("friendly");
   const [notificationPrefs, setNotificationPrefs] =
-    useState<NotificationPrefsMulti>(() => {
-      // Default: all off
-      const initial: NotificationPrefsMulti = {
-        newMessages: { browser: ["off"], email: ["off"], sms: ["off"] },
-        newExpenses: { browser: ["off"], email: ["off"], sms: ["off"] },
-        accountChanges: { browser: ["off"], email: ["off"], sms: ["off"] },
-        newFeatures: { browser: ["off"], email: ["off"], sms: ["off"] },
-      };
-      // Optionally, load from localStorage here
-      return initial;
-    });
+    useState<UserNotification>(userDefaults);
 
   // Form with validation
   const form = useForm<FormValues>({
@@ -67,6 +55,7 @@ const Account = () => {
         const user = await requireCurrentUser();
         const profile = await getUserProfile(user);
         setProfileLoading(true);
+        setNotificationPrefs(profile.notifications as UserNotification);
         // Update form with fetched data
         form.reset({
           name: profile.name,
@@ -111,15 +100,31 @@ const Account = () => {
         </CardHeader>
         <CardContent>
           <NotificationPreferences
-            notificationPrefs={notificationPrefs}
-            onNotificationChange={(eventKey, channel, value) =>
-              handleNotificationChangeMulti(
-                eventKey,
-                channel,
-                value,
-                setNotificationPrefs,
-              )
-            }
+            currentUserNotificationSettings={notificationPrefs}
+            onNotificationChange={async (eventKey, channel, value) => {
+              setNotificationPrefs((prev) => ({
+                ...prev,
+                [eventKey]: {
+                  ...prev[eventKey],
+                  [channel]: value,
+                },
+              }));
+              try {
+                // TODO debounce this
+                await update(notificationPrefs);
+                toast({
+                  title: "Notification preferences updated",
+                  description: "Your notification settings have been saved.",
+                });
+              } catch (error) {
+                handleError(error, "Error updating notification preferences");
+                toast({
+                  title: "Update failed",
+                  description:
+                    "There was a problem saving your notification preferences.",
+                });
+              }
+            }}
           />
         </CardContent>
       </Card>

@@ -83,7 +83,7 @@ const ThreadView = () => {
         onAccept={handleSendReviewedMessage}
         isLoading={isReviewingMessage}
       />
-      </>
+    </>
   );
 };
 

@@ -141,6 +141,7 @@ export type Database = {
           id: string
           message_tone: string | null
           name: string
+          notifications: Json | null
           profile_emoji: string | null
         }
         Insert: {
@@ -148,6 +149,7 @@ export type Database = {
           id: string
           message_tone?: string | null
           name: string
+          notifications?: Json | null
           profile_emoji?: string | null
         }
         Update: {
@@ -155,6 +157,7 @@ export type Database = {
           id?: string
           message_tone?: string | null
           name?: string
+          notifications?: Json | null
           profile_emoji?: string | null
         }
         Relationships: []
