@@ -39,7 +39,10 @@ const App = () => (
                     <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/threads" element={<Threads />} />
-                      <Route path="/threads/:threadId" element={<ThreadView />} />
+                      <Route
+                        path="/threads/:threadId"
+                        element={<ThreadView />}
+                      />
                       <Route path="/connections" element={<Connections />} />
                       <Route path="/documents" element={<Documents />} />
                       <Route path="/integrations" element={<Integrations />} />

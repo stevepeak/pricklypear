@@ -1,5 +1,12 @@
 import type { Detector } from "i18next-browser-languagedetector";
 
+// Describe just the parts of ipapi.co’s response that we use.
+type IpApiResponse = {
+  languages?: string; // e.g. "en-US,es-US"
+  country_code?: string; // e.g. "US"
+  [key: string]: unknown; // allow other unused properties
+};
+
 // Custom asynchronous detector that attempts to determine the user’s
 // preferred language from their IP-based geolocation (via ipapi.co).
 //
@@ -20,7 +27,7 @@ export const geolocationDetector: Detector = {
     try {
       const res = await fetch("https://ipapi.co/json/");
       if (!res.ok) return undefined;
-      const data: Record<string, any> = await res.json();
+      const data = (await res.json()) as IpApiResponse;
 
       // ipapi returns comma-separated language list (e.g. "en-US,es-US")
       // Pick the first value if present, otherwise map country_code to a
