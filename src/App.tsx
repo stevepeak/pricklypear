@@ -14,64 +14,13 @@ import Account from "./pages/Account";
 import Documents from "./pages/Documents";
 import Integrations from "./pages/Integrations";
 import { ConnectionsProvider } from "@/contexts/ConnectionsContext";
-import {
-  SidebarProvider,
-  Sidebar,
-  SidebarInset,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-
+import { SidebarProvider, Sidebar, SidebarInset } from "@/components/ui/sidebar";
 import "./index.css";
 import { AppSidebar } from "./components/AppSidebar";
 import { CommandMenu } from "./components/CommandMenu";
-import TopNav from "./components/TopNav";
+import TopNav from "@/components/ui/TopNav";
 
 const queryClient = new QueryClient();
-
-function capitalize(str: string) {
-  if (!str) return "";
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function Breadcrumbs() {
-  const location = useLocation();
-  const pathnames = location.pathname.split("/").filter(Boolean);
-
-  return (
-    <Breadcrumb className="p-3 sticky top-0 z-20 bg-white">
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <SidebarTrigger className="" />
-        </BreadcrumbItem>
-        {pathnames.map((value, idx) => {
-          const to = `/${pathnames.slice(0, idx + 1).join("/")}`;
-          const isLast = idx === pathnames.length - 1;
-          const label = capitalize(decodeURIComponent(value));
-          return (
-            <React.Fragment key={to}>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                {isLast ? (
-                  <BreadcrumbPage>{label}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink href={to}>{label}</BreadcrumbLink>
-                )}
-              </BreadcrumbItem>
-            </React.Fragment>
-          );
-        })}
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -90,10 +39,7 @@ const App = () => (
                     <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/threads" element={<Threads />} />
-                      <Route
-                        path="/threads/:threadId"
-                        element={<ThreadView />}
-                      />
+                      <Route path="/threads/:threadId" element={<ThreadView />} />
                       <Route path="/connections" element={<Connections />} />
                       <Route path="/documents" element={<Documents />} />
                       <Route path="/integrations" element={<Integrations />} />
