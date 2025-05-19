@@ -24,23 +24,28 @@ async function fetchInviteeUser({ supabase, email }) {
   const { data, error } = await supabase.auth.admin.listUsers({ email });
   if (error) throw error;
   const user = data.users.find(
-    (u) => u.email && u.email.toLowerCase() === email.toLowerCase(),
+    (u) => u.email && u.email.toLowerCase() === email.toLowerCase()
   );
   return user ?? null;
 }
 
-async function sendInvitationEmail({ to, inviterName, isExistingUser }) {
-  const subject = `${inviterName} invited you on PricklyPear`;
+async function sendInvitationEmail({
+  to,
+  inviterName,
+  isExistingUser,
+  connectionId,
+}) {
+  const subject = `${inviterName} invited you on The Prickly Pear`;
   const htmlExisting = `
     <p>Hi there,</p>
-    <p><strong>${inviterName}</strong> has invited you to connect on PricklyPear.</p>
+    <p><strong>${inviterName}</strong> has invited you to connect on The Prickly Pear.</p>
     <p>Please <a href="${APP_CONNECTIONS_URL}">visit your connections</a> to accept the request.</p>
     <p>See you soon!</p>
   `;
   const htmlNew = `
     <p>Hi there,</p>
-    <p><strong>${inviterName}</strong> has invited you to join PricklyPear.</p>
-    <p>Create an account and connect at <a href="${APP_CONNECTIONS_URL}">PricklyPear</a>.</p>
+    <p><strong>${inviterName}</strong> has invited you to join The Prickly Pear.</p>
+    <p><a href="${APP_CONNECTIONS_URL}">Create an account</a> to start the conversation with ${inviterName}</a>.</p>
     <p>We look forward to having you!</p>
   `;
   await sendEmail({
@@ -95,18 +100,15 @@ serve(async (req) => {
         {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
+        }
       );
     }
     const supabase = getSupabaseServiceClient();
     const inviterName = await fetchInviterName({ supabase, userId });
     const inviteeUser = await fetchInviteeUser({ supabase, email });
-    await sendInvitationEmail({
-      to: email,
-      inviterName,
-      isExistingUser: Boolean(inviteeUser),
-    });
+
     if (inviteeUser) {
+      // Check if connection already exists
       const exists = await connectionExists({
         supabase,
         userId,
@@ -118,64 +120,79 @@ serve(async (req) => {
             success: false,
             message: "Connection already exists",
           }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
+
+      // Create pending connection
       const connection = await createPendingConnection({
         supabase,
         userId,
         inviteeUser,
       });
-      const avatarUrl =
-        (inviteeUser.user_metadata as { avatar_url?: string } | null)
-          ?.avatar_url ?? undefined;
+
+      // Send email
+      await sendInvitationEmail({
+        to: email,
+        inviterName,
+        isExistingUser: Boolean(inviteeUser),
+        connectionId: connection.id,
+      });
+
       return new Response(
         JSON.stringify({
           success: true,
           message: `Connection request sent to ${inviteeUser.email}`,
           connection: {
             id: connection.id,
-            otherUserId: inviteeUser.id,
-            username: inviteeUser.email ?? "Unknown User",
-            avatarUrl,
-            status: connection.status,
-            createdAt: connection.created_at,
-            updatedAt: connection.updated_at,
-            isUserSender: true,
           },
         }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
-    }
-    // Invitee not yet a user: email sent, create pending connection with NULL connected_user_id
-    const { data: connection, error } = await supabase
-      .from("connections")
-      .insert({
-        user_id: userId,
-        connected_user_id: null,
-        status: "pending",
-        invitee_email: email,
-      })
-      .select()
-      .single();
+    } else {
 
-    if (error) {
+      // Invitee not yet a user: email sent, create pending connection with NULL connected_user_id
+      const { data: connection, error } = await supabase
+        .from("connections")
+        .insert({
+          user_id: userId,
+          connected_user_id: null,
+          status: "pending",
+          invitee_email: email,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: `Failed to create pending invitation: ${error.message}`,
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Send email
+      await sendInvitationEmail({
+        to: email,
+        inviterName,
+        isExistingUser: Boolean(inviteeUser),
+        connectionId: connection.id,
+      });
+
       return new Response(
         JSON.stringify({
-          success: false,
-          message: `Failed to create pending invitation: ${error.message}`,
+          success: true,
+          message: `Invitation email sent to ${email} and pending connection created`,
+          connection: {
+            id: connection.id,
+          },
         }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: `Invitation email sent to ${email} and pending connection created`,
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
   } catch (error) {
     console.error("invite-by-email error:", error);
     return new Response(
@@ -186,7 +203,7 @@ serve(async (req) => {
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
+      }
     );
   }
 });

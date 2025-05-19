@@ -29,6 +29,7 @@ const Connections = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  
   const { connections, acceptedConnections, isLoading, refreshConnections } =
     useConnections();
 
@@ -55,7 +56,6 @@ const Connections = () => {
       toast({
         title: "Invalid email",
         description: "Please enter a valid email address",
-        variant: "destructive",
       });
       return;
     }
@@ -87,7 +87,6 @@ const Connections = () => {
         toast({
           title: "Error",
           description: response.message,
-          variant: "destructive",
         });
       }
     } catch (error) {
@@ -95,7 +94,6 @@ const Connections = () => {
       toast({
         title: "Error",
         description: "Failed to send invitation",
-        variant: "destructive",
       });
     } finally {
       setIsInviting(false);
@@ -119,7 +117,6 @@ const Connections = () => {
       toast({
         title: "Error",
         description: "Failed to update connection",
-        variant: "destructive",
       });
     }
   };
@@ -138,7 +135,6 @@ const Connections = () => {
       toast({
         title: "Error",
         description: "Failed to disable connection",
-        variant: "destructive",
       });
     }
   };
@@ -156,7 +152,6 @@ const Connections = () => {
       toast({
         title: "Error",
         description: "Failed to cancel connection request.",
-        variant: "destructive",
       });
     }
   };
