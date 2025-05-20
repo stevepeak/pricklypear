@@ -23,3 +23,20 @@ export async function updatePersonalInfo(data: PersonalInfoUpdate) {
     .eq("id", user.id);
   if (profileError) throw profileError;
 }
+
+export async function updatePassword(args: {
+  currentPassword: string;
+  newPassword: string;
+}) {
+  const user = await requireCurrentUser();
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: args.currentPassword,
+  });
+  if (signInError) throw new Error("Current password is incorrect");
+
+  const { error: passwordError } = await supabase.auth.updateUser({
+    password: args.newPassword,
+  });
+  if (passwordError) throw passwordError;
+}

@@ -14,6 +14,10 @@ import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { updatePersonalInfo } from "./update";
 import { LanguageSelector } from "@/components/ui/LanguageSelector";
+import { passwordSchema, type PasswordFormValues } from "./types";
+import { updatePassword } from "./update";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const { form, profileLoading, onProfileUpdated } = props;
@@ -22,6 +26,17 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const [emailUpdating, setEmailUpdating] = React.useState(false);
   const [emailConfirmationSent, setEmailConfirmationSent] =
     React.useState(false);
+
+  // Password form state
+  const passwordForm = useForm<PasswordFormValues>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+  });
+  const [passwordLoading, setPasswordLoading] = React.useState(false);
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
@@ -60,6 +75,31 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
     } finally {
       setIsLoading(false);
       setEmailUpdating(false);
+    }
+  };
+
+  const onPasswordSubmit = async (data: PasswordFormValues) => {
+    setPasswordLoading(true);
+    try {
+      await updatePassword({
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      });
+      toast({
+        title: "Password was updated",
+        description: "Your password has been changed successfully.",
+      });
+      passwordForm.reset();
+    } catch (error) {
+      toast({
+        title: "Password update failed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "There was a problem updating your password.",
+      });
+    } finally {
+      setPasswordLoading(false);
     }
   };
 
@@ -131,6 +171,73 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
             </Button>
           </form>
         </Form>
+      )}
+      {profileLoading ? null : (
+        <div className="mt-10">
+          <h2 className="text-lg font-semibold mb-2">Change Password</h2>
+          <Form {...passwordForm}>
+            <form
+              onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
+              className="space-y-4 max-w-md"
+              autoComplete="off"
+            >
+              <FormField
+                control={passwordForm.control}
+                name="currentPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Current Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        autoComplete="current-password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={passwordForm.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        autoComplete="new-password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={passwordForm.control}
+                name="confirmNewPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm New Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        autoComplete="new-password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" disabled={passwordLoading}>
+                {passwordLoading ? "Updating..." : "Change Password"}
+              </Button>
+            </form>
+          </Form>
+        </div>
       )}
     </>
   );
