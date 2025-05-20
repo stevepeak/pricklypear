@@ -124,7 +124,6 @@ export function AppSidebar() {
           path: "/expenses",
           label: "Expenses",
           icon: <Receipt className="h-4 w-4 mr-2" />,
-          // TODO if new expense show badge
         },
       ]
     : [];
@@ -233,12 +232,14 @@ export function AppSidebar() {
                   <div className="my-1">
                     <hr className="border-border" />
                   </div>
+                  {/* 
                   <DropdownMenuItem className="flex items-center w-full">
                     <Sparkles className="h-4 w-4 mr-2" /> Upgrade plan
                   </DropdownMenuItem>
                   <div className="my-1">
                     <hr className="border-border" />
                   </div>
+                  */}
                   <DropdownMenuItem
                     className="flex items-center w-full"
                     asChild
@@ -247,8 +248,13 @@ export function AppSidebar() {
                       <BadgeCheck className="h-4 w-4 mr-2" /> Account
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center w-full">
-                    <FileText className="h-4 w-4 mr-2" /> Billing
+                  <DropdownMenuItem
+                    className="flex items-center w-full"
+                    asChild
+                  >
+                    <Link to="/billing" className="flex items-center w-full">
+                      <FileText className="h-4 w-4 mr-2" /> Billing
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center w-full">
                     <Link

@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import Account from "./pages/Account";
 import Documents from "./pages/Documents";
 import Integrations from "./pages/Integrations";
+import Billing from "./pages/Billing";
 import { ConnectionsProvider } from "@/contexts/ConnectionsContext";
 import {
   SidebarProvider,
@@ -33,6 +34,8 @@ import {
 import "./index.css";
 import { AppSidebar } from "./components/AppSidebar";
 import { CommandMenu } from "./components/CommandMenu";
+import Calendar from "./pages/Calendar";
+import Expenses from "./pages/Expenses";
 
 const queryClient = new QueryClient();
 
@@ -96,7 +99,10 @@ const App = () => (
                       />
                       <Route path="/connections" element={<Connections />} />
                       <Route path="/documents" element={<Documents />} />
+                      <Route path="/calendar" element={<Calendar />} />
+                      <Route path="/expenses" element={<Expenses />} />
                       <Route path="/integrations" element={<Integrations />} />
+                      <Route path="/billing" element={<Billing />} />
                       <Route path="/auth" element={<AuthPage />} />
                       <Route path="/account" element={<Account />} />
                       <Route path="*" element={<NotFound />} />
