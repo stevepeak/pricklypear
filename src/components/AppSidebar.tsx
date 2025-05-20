@@ -137,11 +137,13 @@ export function AppSidebar() {
         </Link>
       </SidebarHeader>
       <SidebarContent>
+        {/*
         <SidebarGroup>
           <SidebarGroupLabel>Starred</SidebarGroupLabel>
         </SidebarGroup>
+        */}
         <SidebarGroup>
-          <SidebarGroupLabel>Tools</SidebarGroupLabel>
+          {/* <SidebarGroupLabel>Tools</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
