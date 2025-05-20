@@ -52,21 +52,16 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
         </div>
         {/* Right Side */}
         <div className="md:w-1/2 flex flex-col gap-2 min-w-0">
-          {thread.summary ? (
-            <p className="text-muted-foreground text-sm break-words">
-              {thread.summary}
-            </p>
-          ) : (
-            <p className="text-muted-foreground/70 text-sm italic">
-              No summary provided
-            </p>
-          )}
-          {isGeneratingSummary && (
-            <p className="text-xs text-muted-foreground flex items-center gap-2">
-              <Loader2 className="h-3 w-3 animate-spin" />
-              Generating summary...
-            </p>
-          )}
+          <div className="text-muted-foreground text-sm break-words">
+            {isGeneratingSummary ? (
+              <p className="text-xs flex items-center gap-2">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Generating summary...
+              </p>
+            ) : (
+              <p>{thread.summary ?? "No summary provided"}</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

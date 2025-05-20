@@ -1,12 +1,12 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Thread, ThreadStatus } from "@/types/thread";
 import type { ThreadTopic } from "@/constants/thread-topics";
-import { requireCurrentUser } from "@/utils/authCache";
+import { requireCurrentUser, getUserProfile } from "@/utils/authCache";
 
 export const createThread = async (
   title: string,
   participantIds: string[],
-  topic: ThreadTopic = "other",
+  topic: ThreadTopic = "other"
 ): Promise<Thread | null> => {
   const MAX_THREAD_TITLE_LENGTH = 50;
 
@@ -17,13 +17,14 @@ export const createThread = async (
     trimmedTitle.length > MAX_THREAD_TITLE_LENGTH
   ) {
     console.error(
-      `Thread title must be between 1 and ${MAX_THREAD_TITLE_LENGTH} characters.`,
+      `Thread title must be between 1 and ${MAX_THREAD_TITLE_LENGTH} characters.`
     );
     return null;
   }
 
   try {
     const user = await requireCurrentUser();
+    const profile = await getUserProfile(user);
 
     // Call the database function to create the thread and add participants
     const { data: threadId, error: threadError } = await supabase.rpc(
@@ -32,7 +33,7 @@ export const createThread = async (
         title: trimmedTitle,
         topic,
         participant_ids: participantIds,
-      },
+      }
     );
 
     if (threadError || !threadId) {
@@ -47,7 +48,7 @@ export const createThread = async (
       createdAt: new Date(),
       status: "open" as ThreadStatus,
       participants: participantIds,
-      summary: null,
+      summary: `New thread created by ${profile.name}`,
       topic,
     };
   } catch (error) {
