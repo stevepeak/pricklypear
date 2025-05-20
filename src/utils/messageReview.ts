@@ -1,21 +1,28 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export async function reviewMessage(
-  message: string,
-): Promise<{ kindMessage: string; error: unknown }> {
+export async function reviewMessage(args: {
+  message: string;
+  threadId: string;
+}): Promise<{
+  rephrasedMessage: string | null;
+  rejected: boolean;
+  reason: string | null;
+}> {
+  const { message, threadId } = args;
   try {
-    // Remove all tone logic, just call the review-message function with the message
     const { data, error } = await supabase.functions.invoke("review-message", {
-      body: { message },
+      body: { message, threadId },
     });
     if (error) {
-      console.error("Error calling review-message function:", error);
-      return { kindMessage: message, error };
+      throw new Error(error);
     }
-
-    return { kindMessage: data?.kindMessage || message, error: null };
+    return data;
   } catch (error) {
     console.error("Exception reviewing message:", error);
-    return { kindMessage: message, error };
+    return {
+      rephrasedMessage: message,
+      rejected: true,
+      reason: (error as Error).message,
+    };
   }
 }

@@ -61,23 +61,23 @@ export const useThreadMessages = (
 
     let reviewedText: string;
     try {
-      const { kindMessage, error } = await reviewMessage(newMessage);
-      if (error) {
+      const { rephrasedMessage, rejected, reason } = await reviewMessage({
+        message: newMessage,
+        threadId,
+      });
+      if (rejected) {
         setIsReviewDialogOpen(false);
         toast({
-          title: "Error reviewing message",
-          description:
-            typeof error === "string"
-              ? error
-              : "An error occurred while reviewing your message.",
+          title: "Message rejected",
+          description: reason || "Your message was rejected.",
         });
-        // Refocus the input
         if (composerRef && composerRef.current) {
           composerRef.current.focusInput();
         }
+        setIsReviewingMessage(false);
         return;
       }
-      reviewedText = kindMessage;
+      reviewedText = rephrasedMessage;
     } catch (error) {
       console.error("Error reviewing message:", error);
       setIsReviewDialogOpen(false);
@@ -91,6 +91,7 @@ export const useThreadMessages = (
       if (composerRef && composerRef.current) {
         composerRef.current.focusInput();
       }
+      setIsReviewingMessage(false);
       return;
     }
 

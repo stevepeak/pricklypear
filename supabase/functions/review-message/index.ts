@@ -112,11 +112,15 @@ serve(async (req) => {
 
     if (!message || !threadId) {
       return new Response(
-        JSON.stringify({ error: "Message and threadId are required" }),
+        JSON.stringify({
+          rejected: true,
+          reason: "Message and threadId are required",
+          rephrasedMessage: null,
+        }),
         {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
@@ -136,19 +140,20 @@ serve(async (req) => {
     } catch (err) {
       return new Response(
         JSON.stringify({
-          error: "Could not fetch thread topic or messages",
-          kindMessage: null,
+          rejected: true,
+          reason: "Could not fetch thread topic or messages",
+          rephrasedMessage: null,
         }),
         {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
     const contextText = formatContextText(contextMessages);
 
-    const [isOnTopic, kindMessage] = await Promise.all([
+    const [isOnTopic, rephrasedMessage] = await Promise.all([
       // Check if the message is on topic
       checkIfOnTopic(openai, {
         threadTopic,
@@ -162,27 +167,35 @@ serve(async (req) => {
     if (!isOnTopic) {
       return new Response(
         JSON.stringify({
-          error: "Message is off-topic for this thread.",
-          kindMessage: null,
+          rejected: true,
+          reason: "Message is off-topic for this thread.",
+          rephrasedMessage: null,
         }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
-    return new Response(JSON.stringify({ kindMessage }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ rejected: false, reason: null, rephrasedMessage }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
     console.error("Error reviewing message:", error);
 
     return new Response(
-      JSON.stringify({ error: error.message, kindMessage: null }),
+      JSON.stringify({
+        rejected: true,
+        reason: error.message,
+        rephrasedMessage: null,
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
+      }
     );
   }
 });
