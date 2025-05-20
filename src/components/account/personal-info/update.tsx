@@ -19,7 +19,7 @@ export async function updatePersonalInfo(data: PersonalInfoUpdate) {
   // Also update the profile name and emoji for consistency
   const { error: profileError } = await supabase
     .from("profiles")
-    .update({ name: data.name, profile_emoji: data.profile_emoji })
+    .update({ name: data.name })
     .eq("id", user.id);
   if (profileError) throw profileError;
 }

@@ -57,7 +57,6 @@ const Account = () => {
         form.reset({
           name: profile.name,
           email: user.email,
-          profile_emoji: profile.profile_emoji,
         });
       } catch (error) {
         console.error("Error loading user data:", error);

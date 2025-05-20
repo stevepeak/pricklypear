@@ -48,7 +48,6 @@ export function AppSidebar() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { totalUnread } = useUnreadMessages();
-  const [profileEmoji, setProfileEmoji] = React.useState<string | null>(null);
   const { connections } = useConnections();
   const { state } = useSidebar();
 
@@ -56,24 +55,6 @@ export function AppSidebar() {
   const pendingIncomingCount = connections.filter(
     (c) => c.status === "pending" && !c.isUserSender,
   ).length;
-
-  React.useEffect(() => {
-    const loadEmoji = async () => {
-      if (!user) {
-        setProfileEmoji(null);
-        return;
-      }
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("profile_emoji")
-        .eq("id", user.id)
-        .maybeSingle();
-      if (!error && data) {
-        setProfileEmoji(data.profile_emoji ?? null);
-      }
-    };
-    loadEmoji();
-  }, [user]);
 
   const handleLogout = async () => {
     await signOut();
@@ -175,19 +156,11 @@ export function AppSidebar() {
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton className="w-full px-2 py-2 flex items-center gap-2">
                     <Avatar className="h-8 w-8">
-                      {profileEmoji ? (
-                        <span className="text-xl flex items-center justify-center w-full h-full">
-                          {profileEmoji}
-                        </span>
-                      ) : (
-                        <>
-                          <AvatarImage
-                            src={user.user_metadata?.avatar_url}
-                            alt="User avatar"
-                          />
-                          <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                        </>
-                      )}
+                      <AvatarImage
+                        src={user.user_metadata?.avatar_url}
+                        alt="User avatar"
+                      />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
                     </Avatar>
                     <span className="truncate">
                       {user.user_metadata?.username ||
@@ -206,19 +179,11 @@ export function AppSidebar() {
                 >
                   <div className="flex items-center gap-3 px-2 py-2">
                     <Avatar className="h-8 w-8">
-                      {profileEmoji ? (
-                        <span className="text-xl flex items-center justify-center w-full h-full">
-                          {profileEmoji}
-                        </span>
-                      ) : (
-                        <>
-                          <AvatarImage
-                            src={user.user_metadata?.avatar_url}
-                            alt="User avatar"
-                          />
-                          <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                        </>
-                      )}
+                      <AvatarImage
+                        src={user.user_metadata?.avatar_url}
+                        alt="User avatar"
+                      />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col min-w-0">
                       <span className="font-medium truncate">
