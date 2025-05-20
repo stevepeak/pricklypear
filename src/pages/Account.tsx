@@ -8,10 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  MessagePreferences,
-  handleMessageToneChange as handleMessageToneChangeUtil,
-} from "@/components/account/message-preferences";
 import { NotificationPreferences } from "@/components/account/notifications";
 import {
   formSchema,
@@ -33,7 +29,6 @@ const Account = () => {
   const navigate = useNavigate();
   const [profileLoading, setProfileLoading] = useState(true);
   const [_, setMounted] = useState(false);
-  const [messageTone, setMessageTone] = useState<string>("friendly");
   const [notificationPrefs, setNotificationPrefs] =
     useState<UserNotification>(userDefaults);
 
@@ -62,10 +57,7 @@ const Account = () => {
         form.reset({
           name: profile.name,
           email: user.email,
-          profile_emoji: profile.profile_emoji,
         });
-        // Set message tone if it exists in profile
-        setMessageTone(profile.message_tone);
       } catch (error) {
         console.error("Error loading user data:", error);
         toast({
@@ -78,10 +70,6 @@ const Account = () => {
     };
     fetchUserProfile();
   }, [navigate, form, toast]);
-
-  const onMessageToneChange = async (value: string) => {
-    await handleMessageToneChangeUtil({ value, setMessageTone, toast });
-  };
 
   return (
     <div className="container max-w-3xl py-10 mx-10">
@@ -128,20 +116,6 @@ const Account = () => {
                 });
               }
             }}
-          />
-        </CardContent>
-      </Card>
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Message Preferences</CardTitle>
-          <CardDescription>
-            Customize how your messages are rephrased
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <MessagePreferences
-            messageTone={messageTone}
-            onMessageToneChange={onMessageToneChange}
           />
         </CardContent>
       </Card>

@@ -10,9 +10,10 @@ export default function Integrations() {
         </CardHeader>
         <CardContent>
           <p className="mb-4 text-muted-foreground">
-            Connect your account to an external MCP server to enable chat
-            integrations. This will allow you to sync messages and threads with
-            your MCP chat server.
+            Expose your MCP server to integrate The Prickly Pear with external
+            services. This enables seamless communication between your MCP
+            server and The Prickly Pear platform, allowing for message
+            synchronization and thread management across both systems.
           </p>
           <Button disabled variant="outline">
             Connect MCP Server

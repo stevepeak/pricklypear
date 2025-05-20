@@ -7,11 +7,13 @@ import ThreadMessageComposer from "@/components/thread/ThreadMessageComposer";
 import MessageReviewDialog from "@/components/thread/MessageReviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRef } from "react";
+import React from "react";
 
 const ThreadView = () => {
   const { threadId } = useParams<{ threadId: string }>();
   const { user } = useAuth();
 
+  const composerRef = useRef<{ focusInput: () => void }>(null);
   const {
     thread,
     messages,
@@ -27,7 +29,7 @@ const ThreadView = () => {
     handleSendReviewedMessage,
     setIsReviewDialogOpen,
     loadMessages,
-  } = useThreadDetails(threadId);
+  } = useThreadDetails(threadId, composerRef);
 
   const isThreadClosed = thread?.status === "closed";
 
@@ -62,6 +64,7 @@ const ThreadView = () => {
           />
 
           <ThreadMessageComposer
+            ref={composerRef}
             newMessage={newMessage}
             setNewMessage={setNewMessage}
             isSending={isSending || isReviewingMessage}

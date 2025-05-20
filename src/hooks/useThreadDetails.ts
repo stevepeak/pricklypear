@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import { useThreadState } from "./useThreadState";
 import { useThreadMessages } from "./useThreadMessages";
 
-export const useThreadDetails = (threadId: string | undefined) => {
+export const useThreadDetails = (
+  threadId: string | undefined,
+  composerRef?: React.RefObject<{ focusInput: () => void }>,
+) => {
   // Get thread state management
   const { thread, setThread, isLoading, setIsLoading, loadThread } =
     useThreadState(threadId);
@@ -21,7 +24,7 @@ export const useThreadDetails = (threadId: string | undefined) => {
     handleSendReviewedMessage,
     setIsReviewDialogOpen,
     loadMessages,
-  } = useThreadMessages(threadId, thread, setThread);
+  } = useThreadMessages(threadId, thread, setThread, composerRef);
 
   // Initialize thread and messages
   useEffect(() => {

@@ -23,15 +23,6 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const [emailUpdating, setEmailUpdating] = React.useState(false);
   const [emailConfirmationSent, setEmailConfirmationSent] =
     React.useState(false);
-  const [selectedEmoji, setSelectedEmoji] = React.useState<string | null>(
-    form.getValues("profile_emoji") ?? null,
-  );
-  const [showEmojiPicker, setShowEmojiPicker] = React.useState(false);
-
-  const handleEmojiSelect = (emoji: { native: string }) => {
-    setSelectedEmoji(emoji.native);
-    setShowEmojiPicker(false);
-  };
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
@@ -41,7 +32,6 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
       await updatePersonalInfo({
         name: data.name,
         email: data.email,
-        profile_emoji: selectedEmoji,
       });
       toast({
         title: "Profile updated",
@@ -128,34 +118,6 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
                 </FormItem>
               )}
             />
-            <FormLabel>Avatar Emoji</FormLabel>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                {selectedEmoji ? (
-                  <span
-                    className="text-3xl cursor-pointer"
-                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    title="Click to change your emoji"
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ")
-                        setShowEmojiPicker(!showEmojiPicker);
-                    }}
-                    aria-label="Change avatar emoji"
-                  >
-                    {selectedEmoji}
-                  </span>
-                ) : (
-                  <span className="text-sm text-muted-foreground">
-                    No emoji selected
-                  </span>
-                )}
-              </div>
-              {showEmojiPicker && (
-                <Picker data={emojiData} onEmojiSelect={handleEmojiSelect} />
-              )}
-            </div>
             <Button type="submit" disabled={isLoading || emailUpdating}>
               {isLoading || emailUpdating ? "Saving..." : "Save Changes"}
             </Button>

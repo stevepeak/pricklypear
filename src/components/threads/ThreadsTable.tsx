@@ -66,7 +66,6 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
           </TableHead>
           <TableHead className="px-4 py-2 font-semibold">Topic</TableHead>
           <TableHead className="px-4 py-2 font-semibold">Title</TableHead>
-          <TableHead className="px-4 py-2 font-semibold">Created</TableHead>
           <TableHead className="px-4 py-2 font-semibold">Summary</TableHead>
         </TableRow>
       </TableHeader>
@@ -116,11 +115,6 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               {/* Title */}
               <TableCell className="px-4 py-2 font-medium">
                 {thread.title}
-              </TableCell>
-
-              {/* Date Created */}
-              <TableCell className="px-4 py-2 text-muted-foreground">
-                {thread.createdAt.toLocaleDateString()}
               </TableCell>
 
               {/* Summary */}
