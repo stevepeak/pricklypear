@@ -2,12 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getThreadTopicInfo } from "@/constants/thread-topics";
 import type { Thread } from "@/types/thread";
 import { NotificationBadge } from "@/components/ui/notification-badge";

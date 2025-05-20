@@ -9,12 +9,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Picker from "@emoji-mart/react";
-import emojiData from "@emoji-mart/data";
 import { type FormValues, type PersonalInfoFormProps } from "./types";
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { updatePersonalInfo } from "./update";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
 
 export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const { form, profileLoading, onProfileUpdated } = props;
@@ -118,6 +117,11 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
                 </FormItem>
               )}
             />
+            {/* Language Selector Dropdown */}
+            <div>
+              <label className="block text-sm font-medium mb-1">Language</label>
+              <LanguageSelector />
+            </div>
             <Button type="submit" disabled={isLoading || emailUpdating}>
               {isLoading || emailUpdating ? "Saving..." : "Save Changes"}
             </Button>

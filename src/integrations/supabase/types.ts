@@ -139,18 +139,21 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          message_tone: string | null
           name: string
           notifications: Json | null
         }
         Insert: {
           created_at?: string
           id: string
-          name?: string
+          message_tone?: string | null
+          name: string
           notifications?: Json | null
         }
         Update: {
           created_at?: string
           id?: string
+          message_tone?: string | null
           name?: string
           notifications?: Json | null
         }
