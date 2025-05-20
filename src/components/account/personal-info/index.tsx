@@ -121,6 +121,10 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
             <div>
               <label className="block text-sm font-medium mb-1">Language</label>
               <LanguageSelector />
+              <FormDescription>
+                Change the language in Prickly Pear. This does not affect thread
+                messages.
+              </FormDescription>
             </div>
             <Button type="submit" disabled={isLoading || emailUpdating}>
               {isLoading || emailUpdating ? "Saving..." : "Save Changes"}
