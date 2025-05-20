@@ -37,21 +37,12 @@ const ThreadsList = ({
     return (
       <div className="py-12 text-center">
         <p className="mb-6 text-lg">No threads found.</p>
-        {user && (
-          <Button
-            onClick={onNewThreadClick}
-            className="gap-2 bg-secondary hover:bg-secondary/90 text-primary font-semibold"
-          >
-            <Plus className="h-5 w-5" />
-            Start a new conversation
-          </Button>
-        )}
       </div>
     );
   }
 
   return (
-    <div className="space-y-10">
+    <div className="m-10 space-y-10">
       {/* Open Threads Section */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Open Threads</h2>
@@ -64,23 +55,6 @@ const ThreadsList = ({
                 unreadCount={threadCounts[thread.id] || 0}
               />
             ))}
-
-            {user && (
-              <div className="flex items-center justify-center min-h-64 border-2 border-dashed rounded-xl p-4 hover:border-secondary/60 transition-colors">
-                <Button
-                  onClick={onNewThreadClick}
-                  variant="ghost"
-                  className="flex flex-col gap-3 h-auto py-8 hover:bg-transparent"
-                >
-                  <div className="rounded-full bg-secondary/20 p-4">
-                    <Plus className="h-8 w-8 text-secondary" />
-                  </div>
-                  <span className="text-lg font-semibold">
-                    Start a new conversation
-                  </span>
-                </Button>
-              </div>
-            )}
           </div>
         ) : (
           <p className="text-muted-foreground">No open threads found.</p>
