@@ -37,7 +37,7 @@ export function NotificationPreferences({
             <TableHead>Event</TableHead>
             <TableHead>Browser</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>SMS</TableHead>
+            {/* <TableHead>SMS</TableHead> */}
           </TableRow>
         </TableHeader>
         <TableBody>

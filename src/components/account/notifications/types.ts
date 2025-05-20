@@ -33,7 +33,7 @@ export const notifications = [
   },
 ] as const;
 
-export const notificationChannels = ["browser", "email", "sms"] as const;
+export const notificationChannels = ["browser", "email"] as const;
 
 export type NotificationEventKey = (typeof notifications)[number]["key"];
 export type NotificationChannel = (typeof notificationChannels)[number];
@@ -47,31 +47,31 @@ export const userDefaults: UserNotification = {
   newMessages: {
     browser: true,
     email: true,
-    sms: true,
+    // sms: true,
   },
   accountChanges: {
     browser: true,
     email: true,
-    sms: false,
+    // sms: false,
   },
-  dailySummary: {
-    browser: false,
-    email: false,
-    sms: false,
-  },
-  weeklySummary: {
-    browser: false,
-    email: true,
-    sms: false,
-  },
-  monthlySummary: {
-    browser: false,
-    email: true,
-    sms: false,
-  },
+  // dailySummary: {
+  //   browser: false,
+  //   email: false,
+  //   // sms: false,
+  // },
+  // weeklySummary: {
+  //   browser: false,
+  //   email: true,
+  //   // sms: false,
+  // },
+  // monthlySummary: {
+  //   browser: false,
+  //   email: true,
+  //   // sms: false,
+  // },
   newFeatures: {
     browser: true,
     email: true,
-    sms: true,
+    // sms: true,
   },
 };
