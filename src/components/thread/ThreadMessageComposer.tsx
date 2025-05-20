@@ -15,8 +15,6 @@ import {
   Mic,
   FilePlus,
   Lock,
-  Check,
-  Zap,
   FileDown,
   Copy,
   MessageSquarePlus,
@@ -51,6 +49,7 @@ interface ThreadMessageComposerProps {
   threadId: string;
   loadMessages: () => Promise<Message[]>;
   autoFocus?: boolean;
+  messagesEndRef?: React.RefObject<HTMLDivElement>;
 }
 
 const ThreadMessageComposer = React.forwardRef<
@@ -68,6 +67,7 @@ const ThreadMessageComposer = React.forwardRef<
       threadId,
       loadMessages,
       autoFocus = false,
+      messagesEndRef,
     },
     ref,
   ) => {
@@ -76,6 +76,7 @@ const ThreadMessageComposer = React.forwardRef<
     const [isRequestingClose, setIsRequestingClose] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { toast } = useToast();
+    const [showJumpToLatest, setShowJumpToLatest] = useState(false);
 
     // Initialise from localStorage on mount
     useEffect(() => {
@@ -101,6 +102,18 @@ const ThreadMessageComposer = React.forwardRef<
         textareaRef.current.focus();
       }
     }, [autoFocus, isSending, isThreadClosed]);
+
+    // Show 'Jump to latest message' button if bottom is not visible
+    useEffect(() => {
+      const handleScroll = () => {
+        if (!messagesEndRef?.current) return;
+        const rect = messagesEndRef.current.getBoundingClientRect();
+        const atBottom = rect.bottom <= window.innerHeight - 40;
+        setShowJumpToLatest(!atBottom);
+      };
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }, [messagesEndRef]);
 
     // Expose focusInput method via ref
     React.useImperativeHandle(ref, () => ({
@@ -178,128 +191,141 @@ const ThreadMessageComposer = React.forwardRef<
     };
 
     return (
-      <div className="sticky bottom-10 bg-white border rounded-md shadow-md m-10">
-        <Textarea
-          ref={textareaRef}
-          placeholder={
-            isThreadClosed ? "Thread is closed" : "Type your message..."
-          }
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={isSending || isThreadClosed}
-          className="w-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none px-4 pt-4 shadow-none"
-          rows={3}
-          autoFocus={autoFocus && !isSending && !isThreadClosed}
-        />
-        <div className="flex justify-between items-center px-4 pb-4">
-          <div className="flex gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="shrink-0"
-                  disabled={isThreadClosed}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" align="start">
-                <DropdownMenuItem onSelect={() => setIsRequestDialogOpen(true)}>
-                  <Lock className="h-4 w-4 mr-2" /> Request to close thread
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <FileDown className="h-4 w-4 mr-2" /> Export as PDF
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => handleCopy()}>
-                  <Copy className="h-4 w-4 mr-2" /> Copy to your clipboard
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <MessageSquarePlus className="h-4 w-4 mr-2" /> Add as context
-                  in new AI chat
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <FilePlus className="h-4 w-4 mr-2" /> Add photos and files
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="shrink-0"
-              disabled={isThreadClosed}
-            >
-              <Mic className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex items-center gap-2">
-            <TooltipProvider delayDuration={300}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center gap-1">
-                    <Switch
-                      id="auto-accept-switch"
-                      checked={autoAccept}
-                      disabled={isThreadClosed}
-                      onCheckedChange={handleToggleAutoAccept}
-                    />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="top">
-                  ⚡️ Auto-accept AI suggestions
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <Button
-              onClick={onSendMessage}
-              disabled={!newMessage.trim() || isSending || isThreadClosed}
-              size="default"
-              className="shrink-0 flex items-center gap-1"
-            >
-              {isSending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <>
-                  <Send className="h-4 w-4" />
-                  <span className="sr-only md:not-sr-only md:inline">Send</span>
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-        <Dialog
-          open={isRequestDialogOpen}
-          onOpenChange={setIsRequestDialogOpen}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Request to close thread</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to request to close this thread?
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogClose>
+      <>
+        <div className="sticky bottom-10 bg-white border rounded-md shadow-md m-10">
+          {showJumpToLatest && scrollToBottom && (
+            <div className="absolute left-1/2 -translate-x-1/2 mb-2 -top-10">
+              <Button size="sm" variant="secondary" onClick={scrollToBottom}>
+                Jump to latest message
+              </Button>
+            </div>
+          )}
+          <Textarea
+            ref={textareaRef}
+            placeholder={
+              isThreadClosed ? "Thread is closed" : "Type your message..."
+            }
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={isSending || isThreadClosed}
+            className="w-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none px-4 pt-4 shadow-none"
+            rows={3}
+            autoFocus={autoFocus && !isSending && !isThreadClosed}
+          />
+          <div className="flex justify-between items-center px-4 pb-4">
+            <div className="flex gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="shrink-0"
+                    disabled={isThreadClosed}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="top" align="start">
+                  <DropdownMenuItem
+                    onSelect={() => setIsRequestDialogOpen(true)}
+                  >
+                    <Lock className="h-4 w-4 mr-2" /> Request to close thread
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <FileDown className="h-4 w-4 mr-2" /> Export as PDF
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => handleCopy()}>
+                    <Copy className="h-4 w-4 mr-2" /> Copy to your clipboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <MessageSquarePlus className="h-4 w-4 mr-2" /> Add as
+                    context in new AI chat
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <FilePlus className="h-4 w-4 mr-2" /> Add photos and files
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button
-                onClick={handleRequestClose}
-                disabled={isRequestingClose}
-                variant="default"
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                disabled={isThreadClosed}
               >
-                {isRequestingClose ? (
+                <Mic className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex items-center gap-2">
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1">
+                      <Switch
+                        id="auto-accept-switch"
+                        checked={autoAccept}
+                        disabled={isThreadClosed}
+                        onCheckedChange={handleToggleAutoAccept}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    ⚡️ Auto-accept AI suggestions
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <Button
+                onClick={onSendMessage}
+                disabled={!newMessage.trim() || isSending || isThreadClosed}
+                size="default"
+                className="shrink-0 flex items-center gap-1"
+              >
+                {isSending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  "Make request to close"
+                  <>
+                    <Send className="h-4 w-4" />
+                    <span className="sr-only md:not-sr-only md:inline">
+                      Send
+                    </span>
+                  </>
                 )}
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+            </div>
+          </div>
+          <Dialog
+            open={isRequestDialogOpen}
+            onOpenChange={setIsRequestDialogOpen}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Request to close thread</DialogTitle>
+                <DialogDescription>
+                  Are you sure you want to request to close this thread?
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DialogClose>
+                <Button
+                  onClick={handleRequestClose}
+                  disabled={isRequestingClose}
+                  variant="default"
+                >
+                  {isRequestingClose ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Make request to close"
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </>
     );
   },
 );

@@ -74,6 +74,7 @@ const ThreadView = () => {
             threadId={threadId}
             loadMessages={loadMessages}
             autoFocus={true}
+            messagesEndRef={messagesEndRef}
           />
         </div>
       </div>
