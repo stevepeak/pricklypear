@@ -6,7 +6,7 @@ import { requireCurrentUser, getUserProfile } from "@/utils/authCache";
 export const createThread = async (
   title: string,
   participantIds: string[],
-  topic: ThreadTopic = "other"
+  topic: ThreadTopic = "other",
 ): Promise<Thread | null> => {
   const MAX_THREAD_TITLE_LENGTH = 50;
 
@@ -17,7 +17,7 @@ export const createThread = async (
     trimmedTitle.length > MAX_THREAD_TITLE_LENGTH
   ) {
     console.error(
-      `Thread title must be between 1 and ${MAX_THREAD_TITLE_LENGTH} characters.`
+      `Thread title must be between 1 and ${MAX_THREAD_TITLE_LENGTH} characters.`,
     );
     return null;
   }
@@ -33,7 +33,7 @@ export const createThread = async (
         title: trimmedTitle,
         topic,
         participant_ids: participantIds,
-      }
+      },
     );
 
     if (threadError || !threadId) {

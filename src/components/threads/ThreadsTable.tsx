@@ -59,14 +59,26 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
 
   return (
     <Table>
+      <colgroup>
+        <col style={{ width: "1%", whiteSpace: "nowrap" }} />
+        <col style={{ width: "1%", whiteSpace: "nowrap" }} />
+        <col style={{ width: "1%", whiteSpace: "nowrap" }} />
+        <col />
+      </colgroup>
       <TableHeader className="bg-secondary/20 text-left">
         <TableRow>
-          <TableHead className="px-4 py-2 font-semibold">
+          <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
             Participants
           </TableHead>
-          <TableHead className="px-4 py-2 font-semibold">Topic</TableHead>
-          <TableHead className="px-4 py-2 font-semibold">Title</TableHead>
-          <TableHead className="px-4 py-2 font-semibold">Summary</TableHead>
+          <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+            Topic
+          </TableHead>
+          <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+            Title
+          </TableHead>
+          <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+            Summary
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="divide-y divide-muted">
