@@ -255,7 +255,7 @@ export function AppSidebar() {
                       className="flex items-center w-full"
                       to="/integrations"
                     >
-                      <Link2 className="h-4 w-4 mr-2" /> Integrations
+                      <Link2 className="h-4 w-4 mr-4" /> Integrations
                     </Link>
                   </DropdownMenuItem>
                   <div className="my-1">
