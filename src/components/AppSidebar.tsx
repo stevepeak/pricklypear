@@ -34,7 +34,6 @@ import {
   Receipt,
   Link2,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -66,15 +65,7 @@ export function AppSidebar() {
   };
 
   const getUserInitials = () => {
-    if (!user) return "?";
-    const displayName = user.user_metadata?.username || user.email;
-    if (!displayName) return "?";
-    if (user.user_metadata?.username) {
-      return displayName.charAt(0).toUpperCase();
-    } else if (user.email) {
-      return user.email.charAt(0).toUpperCase();
-    }
-    return "?";
+    return user.user_metadata.username.charAt(0).toUpperCase();
   };
 
   const navItems = user
@@ -163,9 +154,7 @@ export function AppSidebar() {
                       <AvatarFallback>{getUserInitials()}</AvatarFallback>
                     </Avatar>
                     <span className="truncate">
-                      {user.user_metadata?.username ||
-                        user.email ||
-                        "My Account"}
+                      {user.user_metadata.username}
                     </span>
                     <span className="ml-auto flex flex-col justify-center">
                       <ChevronUpIcon className="h-3 w-4" />
