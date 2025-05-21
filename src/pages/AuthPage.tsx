@@ -14,12 +14,11 @@ const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [forgotEmail, setForgotEmail] = useState("");
   const [forgotIsLoading, setForgotIsLoading] = useState(false);
   const [forgotMessage, setForgotMessage] = useState<string | null>(null);
   const [forgotError, setForgotError] = useState<string | null>(null);
 
-  const { signIn, signUp, signUpWithMagicLink, user } = useAuth();
+  const { signIn, signUpWithMagicLink, user } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already logged in
@@ -62,7 +61,7 @@ const AuthPage = () => {
     setForgotError(null);
     try {
       // Use supabase directly, as useAuth does not expose resetPassword
-      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: window.location.origin + "/update-password",
       });
       if (error) {
@@ -106,8 +105,8 @@ const AuthPage = () => {
                       type="email"
                       placeholder="m@example.com"
                       required
-                      value={forgotEmail}
-                      onChange={(e) => setForgotEmail(e.target.value)}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <Button
