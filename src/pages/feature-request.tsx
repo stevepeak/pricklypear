@@ -13,6 +13,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { requireCurrentUser } from "@/utils/authCache";
+import { toast } from "@/hooks/use-toast";
+import { handleError } from "@/services/messageService/utils";
+import { Loader2 } from "lucide-react";
 
 export default function FeatureRequestPage() {
   const form = useForm({ defaultValues: { title: "", description: "" } });
@@ -20,10 +23,12 @@ export default function FeatureRequestPage() {
     type: "success" | "error";
     message: string;
   }>(null);
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(values: { title: string; description: string }) {
-    const user  = await requireCurrentUser();
+    const user = await requireCurrentUser();
     setStatus(null);
+    setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke(
         "feature-request",
@@ -35,23 +40,47 @@ export default function FeatureRequestPage() {
         },
       );
       if (error) {
+        handleError(error, "Feature request submission");
         setStatus({
           type: "error",
           message: error.message || "Submission failed.",
+        });
+        toast({
+          title: "Submission failed",
+          description:
+            error.message ||
+            "There was a problem submitting your feature request.",
         });
         return;
       }
       if (data?.success) {
         setStatus({ type: "success", message: "Feature request submitted!" });
+        toast({
+          title: "Feature request submitted!",
+          description: "Thank you for your feedback.",
+        });
         form.reset();
       } else {
         setStatus({
           type: "error",
           message: data?.message || "Submission failed.",
         });
+        toast({
+          title: "Submission failed",
+          description:
+            data?.message ||
+            "There was a problem submitting your feature request.",
+        });
       }
     } catch (err) {
+      handleError(err, "Feature request submission");
       setStatus({ type: "error", message: "Network error. Please try again." });
+      toast({
+        title: "Network error",
+        description: "Please try again.",
+      });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -92,8 +121,12 @@ export default function FeatureRequestPage() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
-            Submit
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? (
+              <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+            ) : (
+              "Submit"
+            )}
           </Button>
         </form>
       </Form>
