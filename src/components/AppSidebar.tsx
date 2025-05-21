@@ -84,17 +84,17 @@ export function AppSidebar() {
         },
         {
           path: "/documents",
-          label: "Documents",
+          label: "Documents (coming soon)",
           icon: <FileText className="h-4 w-4 mr-2" />,
         },
         {
           path: "/calendar",
-          label: "Calendar",
+          label: "Calendar (coming soon)",
           icon: <Calendar className="h-4 w-4 mr-2" />,
         },
         {
           path: "/expenses",
-          label: "Expenses",
+          label: "Expenses (coming soon)",
           icon: <Receipt className="h-4 w-4 mr-2" />,
         },
       ]
@@ -134,6 +134,18 @@ export function AppSidebar() {
                   )}
                 </SidebarMenuItem>
               ))}
+              {/* Feature Request Button */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link
+                    to="/feature-request"
+                    className="flex items-center w-full justify-start mb-1"
+                  >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    <span>Feature Request</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

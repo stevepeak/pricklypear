@@ -31,6 +31,7 @@ import {
 import UpdatePassword from "./pages/update-password";
 import TermsOfService from "./pages/terms-of-service";
 import PrivacyPolicy from "./pages/privacy-policy";
+import FeatureRequestPage from "./pages/feature-request";
 
 // Import CSS but don't include App.css anymore
 import "./index.css";
@@ -116,6 +117,10 @@ function AppRoutes() {
                       <Route path="/integrations" element={<Integrations />} />
                       <Route path="/billing" element={<Billing />} />
                       <Route path="/account" element={<Account />} />
+                      <Route
+                        path="/feature-request"
+                        element={<FeatureRequestPage />}
+                      />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </div>
