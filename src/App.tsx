@@ -29,6 +29,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import ForgotPassword from "./pages/ForgotPassword";
 
 // Import CSS but don't include App.css anymore
 import "./index.css";
@@ -84,6 +85,7 @@ function AppRoutes() {
     <Routes>
       {/* Auth page: always without sidebar */}
       <Route path="/auth" element={<AuthPage />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       {/* Home page: no sidebar if logged out */}
       <Route path="/" element={<Home />} />
       {/* All other routes: require auth, show sidebar */}
