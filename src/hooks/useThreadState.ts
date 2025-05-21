@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { getThread } from "@/services/threadService";
 import type { Thread } from "@/types/thread";
 
@@ -9,7 +9,6 @@ export const useThreadState = (threadId: string | undefined) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const loadThread = async () => {
     if (!threadId) {
@@ -19,8 +18,7 @@ export const useThreadState = (threadId: string | undefined) => {
 
     const threadData = await getThread(threadId);
     if (!threadData) {
-      toast({
-        title: "Error",
+      toast("Error", {
         description: "Thread not found",
         variant: "destructive",
       });

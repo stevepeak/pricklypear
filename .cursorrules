@@ -2,6 +2,7 @@
 - Do not ask me permission to proceed with changes. Do it.
 - Run `bun run fix` after you make changes
 - Use components from `src/components/ui` whenever possible
+- use `import { toast } from "sonner";` and `toast(name, {description})`
 
 # Coding Instructions
 

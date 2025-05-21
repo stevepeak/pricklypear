@@ -7,9 +7,9 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 interface MessageReviewDialogProps {
   open: boolean;
@@ -28,14 +28,11 @@ const MessageReviewDialog = ({
   onAccept,
   isLoading,
 }: MessageReviewDialogProps) => {
-  const { toast } = useToast();
-
   const handleAccept = () => {
     if (kindMessage.trim()) {
       onAccept(kindMessage);
       onOpenChange(false);
-      toast({
-        title: "Message sent",
+      toast("Message sent", {
         description: "Your message has been reviewed and sent",
       });
     }

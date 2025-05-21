@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   getMessages,
@@ -10,6 +9,7 @@ import { reviewMessage } from "@/utils/messageReview";
 import { generateThreadSummary } from "@/services/threadService";
 import type { Message } from "@/types/message";
 import type { Thread } from "@/types/thread";
+import { toast } from "sonner";
 
 export const useThreadMessages = (
   threadId: string | undefined,
@@ -28,7 +28,6 @@ export const useThreadMessages = (
   const [kindMessage, setKindMessage] = useState("");
   const [isReviewingMessage, setIsReviewingMessage] = useState(false);
 
-  const { toast } = useToast();
   const { user } = useAuth();
 
   // Load unread count for the thread
@@ -67,8 +66,7 @@ export const useThreadMessages = (
       });
       if (rejected) {
         setIsReviewDialogOpen(false);
-        toast({
-          title: "Message rejected",
+        toast("Message rejected", {
           description: reason || "Your message was rejected.",
         });
         if (composerRef && composerRef.current) {
@@ -81,8 +79,7 @@ export const useThreadMessages = (
     } catch (error) {
       console.error("Error reviewing message:", error);
       setIsReviewDialogOpen(false);
-      toast({
-        title: "Error reviewing message",
+      toast("Error reviewing message", {
         description:
           typeof error === "string"
             ? error
@@ -165,8 +162,7 @@ export const useThreadMessages = (
         handleGenerateSummary();
       }
     } else {
-      toast({
-        title: "Error",
+      toast("Error", {
         description: "Failed to send message. Please try again.",
       });
     }

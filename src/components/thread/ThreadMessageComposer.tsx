@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/dialog.js";
 import { saveMessage } from "@/services/messageService/messages.js";
 import { Message } from "@/types/message";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -75,7 +75,6 @@ const ThreadMessageComposer = React.forwardRef<
     const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
     const [isRequestingClose, setIsRequestingClose] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const { toast } = useToast();
     const [showJumpToLatest, setShowJumpToLatest] = useState(false);
 
     // Initialise from localStorage on mount
@@ -161,8 +160,7 @@ const ThreadMessageComposer = React.forwardRef<
         );
         const messages = await getMessages(threadId);
         if (!messages.length) {
-          toast({
-            title: "Nothing to copy",
+          toast("Nothing to copy", {
             description: "No messages found in this thread.",
           });
           return;
@@ -178,13 +176,11 @@ const ThreadMessageComposer = React.forwardRef<
           })
           .join("\n\n");
         await navigator.clipboard.writeText(formatted);
-        toast({
-          title: "Copied!",
+        toast("Copied!", {
           description: "Thread messages copied to clipboard.",
         });
       } catch (err) {
-        toast({
-          title: "Copy failed",
+        toast("Copy failed", {
           description: "Failed to copy messages to clipboard.",
         });
       }

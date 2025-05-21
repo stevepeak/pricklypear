@@ -1,6 +1,9 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function Expenses() {
+
   return (
     <div className="max-w-2xl mx-auto py-10 px-4">
       <Card>
@@ -13,6 +16,15 @@ export default function Expenses() {
             Expense management features will help ensure transparency and
             accountability.
           </p>
+          <Button
+            onClick={() =>
+              toast("Expenses Feature Coming Soon!", {
+                description: "Stay tuned for updates on expense management."
+              })
+            }
+          >
+            Show Toast
+          </Button>
         </CardContent>
       </Card>
     </div>

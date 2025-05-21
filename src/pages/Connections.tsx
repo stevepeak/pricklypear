@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { UserPlus, Loader2 } from "lucide-react";
 import { DialogTrigger, Dialog } from "@/components/ui/dialog";
 import React from "react";
+import { toast } from "sonner";
 
 import {
   ConnectionStatus,
@@ -11,7 +12,6 @@ import {
   InviteResponse,
 } from "@/services/users/userService.js";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
 import PendingConnectionsList from "@/components/connections/PendingConnectionsList";
@@ -27,7 +27,6 @@ import { setConnectionsCache } from "@/services/messageService/messages.js";
 const Connections = () => {
   const [isInviting, setIsInviting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { toast } = useToast();
   const { user } = useAuth();
 
   const { connections, acceptedConnections, isLoading, refreshConnections } =
@@ -53,8 +52,7 @@ const Connections = () => {
 
   const handleInvite = async (email: string) => {
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast({
-        title: "Invalid email",
+      toast("Invalid email", {
         description: "Please enter a valid email address",
       });
       return;
@@ -79,20 +77,17 @@ const Connections = () => {
         setIsDialogOpen(false);
         await refreshConnections();
 
-        toast({
-          title: "Invitation sent",
+        toast("Invitation sent", {
           description: `You've sent a connection invitation to ${email}`,
         });
       } else {
-        toast({
-          title: "Error",
+        toast("Error", {
           description: response.message,
         });
       }
     } catch (error) {
       console.error("Error inviting connection:", error);
-      toast({
-        title: "Error",
+      toast("Error", {
         description: "Failed to send invitation",
       });
     } finally {
@@ -108,14 +103,12 @@ const Connections = () => {
       await updateConnectionStatus(connectionId, status);
       await refreshConnections();
 
-      toast({
-        title:
-          status === "accepted" ? "Connection accepted" : "Connection declined",
-      });
+      toast(
+        status === "accepted" ? "Connection accepted" : "Connection declined",
+      );
     } catch (error) {
       console.error("Error updating connection:", error);
-      toast({
-        title: "Error",
+      toast("Error", {
         description: "Failed to update connection",
       });
     }
@@ -126,14 +119,12 @@ const Connections = () => {
       await disableConnection(connectionId);
       await refreshConnections();
 
-      toast({
-        title: "Connection disabled",
+      toast("Connection disabled", {
         description: "This connection has been disabled",
       });
     } catch (error) {
       console.error("Error disabling connection:", error);
-      toast({
-        title: "Error",
+      toast("Error", {
         description: "Failed to disable connection",
       });
     }
@@ -143,14 +134,12 @@ const Connections = () => {
     try {
       await deleteConnection(connectionId);
       await refreshConnections();
-      toast({
-        title: "Request cancelled",
+      toast("Request cancelled", {
         description: "The connection request has been cancelled.",
       });
     } catch (error) {
       console.error("Error deleting connection:", error);
-      toast({
-        title: "Error",
+      toast("Error", {
         description: "Failed to cancel connection request.",
       });
     }

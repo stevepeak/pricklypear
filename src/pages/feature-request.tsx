@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { requireCurrentUser } from "@/utils/authCache";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { handleError } from "@/services/messageService/utils";
 import { Loader2 } from "lucide-react";
 
@@ -45,8 +45,7 @@ export default function FeatureRequestPage() {
           type: "error",
           message: error.message || "Submission failed.",
         });
-        toast({
-          title: "Submission failed",
+        toast("Submission failed", {
           description:
             error.message ||
             "There was a problem submitting your feature request.",
@@ -55,8 +54,7 @@ export default function FeatureRequestPage() {
       }
       if (data?.success) {
         setStatus({ type: "success", message: "Feature request submitted!" });
-        toast({
-          title: "Feature request submitted!",
+        toast("Feature request submitted!", {
           description: "Thank you for your feedback.",
         });
         form.reset();
@@ -65,8 +63,7 @@ export default function FeatureRequestPage() {
           type: "error",
           message: data?.message || "Submission failed.",
         });
-        toast({
-          title: "Submission failed",
+        toast("Submission failed", {
           description:
             data?.message ||
             "There was a problem submitting your feature request.",
@@ -75,8 +72,7 @@ export default function FeatureRequestPage() {
     } catch (err) {
       handleError(err, "Feature request submission");
       setStatus({ type: "error", message: "Network error. Please try again." });
-      toast({
-        title: "Network error",
+      toast("Network error", {
         description: "Please try again.",
       });
     } finally {

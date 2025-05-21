@@ -12,13 +12,13 @@ import { Button } from "@/components/ui/button";
 import { PasswordSchema } from "@/types/schemas";
 import { type FormValues, type PersonalInfoFormProps } from "./types";
 import React from "react";
-import { useToast } from "@/hooks/use-toast";
 import { updatePersonalInfo } from "./update";
 import { LanguageSelector } from "@/components/ui/LanguageSelector";
 import { updatePassword } from "./update";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "sonner";
 
 export const changePasswordFormSchema = z
   .object({
@@ -35,7 +35,6 @@ export type PasswordFormValues = z.infer<typeof changePasswordFormSchema>;
 
 export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const { form, profileLoading, onProfileUpdated } = props;
-  const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
   const [emailUpdating, setEmailUpdating] = React.useState(false);
   const [emailConfirmationSent, setEmailConfirmationSent] =
@@ -61,8 +60,7 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
         name: data.name,
         email: data.email,
       });
-      toast({
-        title: "Profile updated",
+      toast("Profile updated", {
         description: "Your profile information has been updated successfully.",
       });
       if (onProfileUpdated) onProfileUpdated();
@@ -75,14 +73,12 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
         (error as { message: string }).message.includes("confirmation")
       ) {
         setEmailConfirmationSent(true);
-        toast({
-          title: "Email update initiated",
+        toast("Email update initiated", {
           description:
             "A confirmation link has been sent to your new email. Please check your inbox to confirm the change.",
         });
       } else {
-        toast({
-          title: "Update failed",
+        toast("Update failed", {
           description: "There was a problem updating your profile.",
         });
       }
@@ -99,14 +95,12 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
         currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       });
-      toast({
-        title: "Password was updated",
+      toast("Password was updated", {
         description: "Your password has been changed successfully.",
       });
       passwordForm.reset();
     } catch (error) {
-      toast({
-        title: "Password update failed",
+      toast("Password update failed", {
         description:
           error instanceof Error
             ? error.message

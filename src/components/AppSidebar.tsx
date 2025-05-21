@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -42,10 +41,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useConnections } from "@/hooks/useConnections";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 export function AppSidebar() {
   const { user, signOut } = useAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
   const { totalUnread } = useUnreadMessages();
   const { connections } = useConnections();
@@ -58,8 +57,7 @@ export function AppSidebar() {
 
   const handleLogout = async () => {
     await signOut();
-    toast({
-      title: "Logged out",
+    toast("Logged out", {
       description: "You have been successfully logged out.",
     });
     navigate("/");

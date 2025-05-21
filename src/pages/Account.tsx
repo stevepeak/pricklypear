@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -25,7 +25,6 @@ import { update } from "@/components/account/notifications/update";
 import { PersonalInfoForm } from "@/components/account/personal-info";
 
 const Account = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
   const [profileLoading, setProfileLoading] = useState(true);
   const [_, setMounted] = useState(false);
@@ -60,8 +59,7 @@ const Account = () => {
         });
       } catch (error) {
         console.error("Error loading user data:", error);
-        toast({
-          title: "Error loading profile",
+        toast("Error loading profile", {
           description: "There was a problem loading your profile data.",
         });
       } finally {
@@ -69,7 +67,7 @@ const Account = () => {
       }
     };
     fetchUserProfile();
-  }, [navigate, form, toast]);
+  }, [navigate, form]);
 
   return (
     <div className="container max-w-3xl py-10 mx-10">
@@ -103,14 +101,12 @@ const Account = () => {
               try {
                 // TODO debounce this
                 await update(notificationPrefs);
-                toast({
-                  title: "Notification preferences updated",
+                toast("Notification preferences updated", {
                   description: "Your notification settings have been saved.",
                 });
               } catch (error) {
                 handleError(error, "Error updating notification preferences");
-                toast({
-                  title: "Update failed",
+                toast("Update failed", {
                   description:
                     "There was a problem saving your notification preferences.",
                 });

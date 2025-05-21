@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { createThread } from "@/services/threadService";
 import type { User } from "@supabase/supabase-js";
 import type { Thread } from "@/types/thread";
@@ -16,13 +16,11 @@ export const useThreadCreation = (
     undefined,
   );
   const [isCreating, setIsCreating] = useState(false);
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleCreateThread = async (user: User) => {
     if (!user) {
-      toast({
-        title: "Authentication required",
+      toast("Authentication required", {
         description: "Please sign in to create threads",
         variant: "destructive",
       });
@@ -32,8 +30,7 @@ export const useThreadCreation = (
     const trimmedTitle = newThreadTitle.trim();
 
     if (!trimmedTitle) {
-      toast({
-        title: "Title required",
+      toast("Title required", {
         description: "Please enter a title for the thread",
         variant: "destructive",
       });
@@ -41,8 +38,7 @@ export const useThreadCreation = (
     }
 
     if (!selectedContactId) {
-      toast({
-        title: "Contact required",
+      toast("Contact required", {
         description: "Please select a contact for the thread",
         variant: "destructive",
       });
@@ -50,8 +46,7 @@ export const useThreadCreation = (
     }
 
     if (!selectedTopic) {
-      toast({
-        title: "Topic required",
+      toast("Topic required", {
         description: "Please select a topic for the thread",
         variant: "destructive",
       });
@@ -77,13 +72,11 @@ export const useThreadCreation = (
       // Redirect the user to the newly-created thread
       navigate(`/threads/${newThread.id}`);
 
-      toast({
-        title: "Thread created",
+      toast("Thread created", {
         description: `"${trimmedTitle}" has been created successfully.`,
       });
     } else {
-      toast({
-        title: "Error",
+      toast("Error", {
         description: "Failed to create thread. Please try again.",
         variant: "destructive",
       });

@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { getCurrentUser } from "@/utils/authCache";
 
 type AuthContextType = {
@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
   useEffect(() => {
     // Set up the auth state listener first
@@ -63,20 +62,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
-        toast({
-          title: "Error signing in",
+        toast("Error signing in", {
           description: error.message,
         });
         throw error;
       }
 
-      toast({
-        title: "Welcome back!",
+      toast("Welcome back!", {
         description: "You have successfully signed in.",
       });
     } catch (error) {
-      toast({
-        title: "Error signing in",
+      toast("Error signing in", {
         description: error.message,
       });
       console.error("🔒 Error signing in:", error);
@@ -96,15 +92,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
-        toast({
-          title: "Error signing up",
+        toast("Error signing up", {
           description: error.message,
         });
         throw error;
       }
 
-      toast({
-        title: "Account created!",
+      toast("Account created!", {
         description: "You have successfully signed up.",
       });
     } catch (error) {
@@ -119,14 +113,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email,
       });
       if (error) {
-        toast({
-          title: "Error sending magic link",
+        toast("Error sending magic link", {
           description: error.message,
         });
         throw error;
       }
-      toast({
-        title: "Check your email!",
+      toast("Check your email!", {
         description: "A sign-up link has been sent to your email.",
       });
     } catch (error) {
@@ -144,8 +136,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!data.session) {
         setSession(null);
         setUser(null);
-        toast({
-          title: "Signed out",
+        toast("Signed out", {
           description: "You have successfully signed out.",
         });
         return;
@@ -155,8 +146,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error("Error during sign out:", error);
-        toast({
-          title: "Error signing out",
+        toast("Error signing out", {
           description: error.message,
         });
         throw error;
@@ -166,8 +156,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(null);
       setUser(null);
 
-      toast({
-        title: "Signed out",
+      toast("Signed out", {
         description: "You have successfully signed out.",
       });
     } catch (error) {
