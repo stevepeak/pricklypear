@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import ForgotPassword from "./pages/ForgotPassword";
 import UpdatePassword from "./pages/update-password";
+import TermsOfService from "./pages/terms-of-service";
+import PrivacyPolicy from "./pages/privacy-policy";
 
 // Import CSS but don't include App.css anymore
 import "./index.css";
@@ -87,6 +89,8 @@ function AppRoutes() {
       <Route path="/auth" element={<AuthPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/update-password" element={<UpdatePassword />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       {/* Home page: no sidebar if logged out */}
       <Route path="/" element={<Home />} />
       {/* All other routes: require auth, show sidebar */}
