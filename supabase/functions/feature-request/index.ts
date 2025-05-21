@@ -21,7 +21,7 @@ async function createLinearIssue({ title, description }) {
       title,
       description,
       priority: 1, // for Urgent
-      projectId: "customer-feedback-4c077f3db565",
+      projectId: "0bf5d056-5ee8-4198-a310-eba0786efe55", // Feature Requests
     },
   };
   const res = await fetch(LINEAR_API_URL, {
