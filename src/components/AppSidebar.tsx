@@ -65,7 +65,7 @@ export function AppSidebar() {
   };
 
   const getUserInitials = () => {
-    return user.user_metadata.username.charAt(0).toUpperCase();
+    return (user.user_metadata.username || user.email).charAt(0).toUpperCase();
   };
 
   const navItems = user
@@ -154,7 +154,7 @@ export function AppSidebar() {
                       <AvatarFallback>{getUserInitials()}</AvatarFallback>
                     </Avatar>
                     <span className="truncate">
-                      {user.user_metadata.username}
+                      {user.user_metadata?.username || user.email}
                     </span>
                     <span className="ml-auto flex flex-col justify-center">
                       <ChevronUpIcon className="h-3 w-4" />
