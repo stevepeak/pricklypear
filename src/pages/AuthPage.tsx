@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -124,6 +123,7 @@ const AuthPage = () => {
                         <a
                           href="/forgot-password"
                           className="ml-auto text-sm underline-offset-4 hover:underline"
+                          tabIndex={-1}
                         >
                           Forgot your password?
                         </a>

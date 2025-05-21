@@ -17,7 +17,6 @@ import Billing from "./pages/Billing";
 import { ConnectionsProvider } from "@/contexts/ConnectionsContext";
 import {
   SidebarProvider,
-  Sidebar,
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
@@ -30,6 +29,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import ForgotPassword from "./pages/ForgotPassword";
+import UpdatePassword from "./pages/update-password";
 
 // Import CSS but don't include App.css anymore
 import "./index.css";
@@ -86,6 +86,7 @@ function AppRoutes() {
       {/* Auth page: always without sidebar */}
       <Route path="/auth" element={<AuthPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/update-password" element={<UpdatePassword />} />
       {/* Home page: no sidebar if logged out */}
       <Route path="/" element={<Home />} />
       {/* All other routes: require auth, show sidebar */}

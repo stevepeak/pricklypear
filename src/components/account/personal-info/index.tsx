@@ -9,15 +9,29 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { PasswordSchema } from "@/types/schemas";
 import { type FormValues, type PersonalInfoFormProps } from "./types";
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
 import { updatePersonalInfo } from "./update";
 import { LanguageSelector } from "@/components/ui/LanguageSelector";
-import { passwordSchema, type PasswordFormValues } from "./types";
 import { updatePassword } from "./update";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+export const changePasswordFormSchema = z
+  .object({
+    currentPassword: PasswordSchema,
+    newPassword: PasswordSchema,
+    confirmNewPassword: PasswordSchema,
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Passwords do not match",
+    path: ["confirmNewPassword"],
+  });
+
+export type PasswordFormValues = z.infer<typeof changePasswordFormSchema>;
 
 export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const { form, profileLoading, onProfileUpdated } = props;
@@ -29,7 +43,7 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
 
   // Password form state
   const passwordForm = useForm<PasswordFormValues>({
-    resolver: zodResolver(passwordSchema),
+    resolver: zodResolver(changePasswordFormSchema),
     defaultValues: {
       currentPassword: "",
       newPassword: "",
