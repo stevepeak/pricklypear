@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,13 +6,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotIsLoading, setForgotIsLoading] = useState(false);
+  const [forgotMessage, setForgotMessage] = useState<string | null>(null);
+  const [forgotError, setForgotError] = useState<string | null>(null);
 
   const { signIn, signUp, signUpWithMagicLink, user } = useAuth();
   const navigate = useNavigate();
@@ -51,6 +55,30 @@ const AuthPage = () => {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotIsLoading(true);
+    setForgotMessage(null);
+    setForgotError(null);
+    try {
+      // Use supabase directly, as useAuth does not expose resetPassword
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+        redirectTo: window.location.origin + "/update-password",
+      });
+      if (error) {
+        setForgotError(error.message);
+      } else {
+        setForgotMessage(
+          "If an account with that email exists, a password reset link has been sent.",
+        );
+      }
+    } catch (err) {
+      setForgotError("Something went wrong. Please try again later.");
+    } finally {
+      setForgotIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -61,97 +89,150 @@ const AuthPage = () => {
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-xl">
-                {isSignUp ? "Create your account" : "Welcome back"}
+                {showForgotPassword
+                  ? "Reset your password"
+                  : isSignUp
+                    ? "Create your account"
+                    : "Welcome back"}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
-                <div className="grid gap-6">
-                  <div className="grid gap-6">
-                    <div className="grid gap-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="m@example.com"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
+              {showForgotPassword ? (
+                <form onSubmit={handleForgotPassword} className="grid gap-6">
+                  <div className="grid gap-2">
+                    <Label htmlFor="forgot-email">Email</Label>
+                    <Input
+                      id="forgot-email"
+                      type="email"
+                      placeholder="m@example.com"
+                      required
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={forgotIsLoading}
+                  >
+                    {forgotIsLoading ? "Sending..." : "Send reset link"}
+                  </Button>
+                  {forgotMessage && (
+                    <div className="text-green-600 text-center text-sm">
+                      {forgotMessage}
                     </div>
-                    {!isSignUp && (
-                      <div className="grid gap-2">
-                        <div className="flex items-center">
-                          <Label htmlFor="password">Password</Label>
-                          <a
-                            href="/forgot-password"
-                            className="ml-auto text-sm underline-offset-4 hover:underline"
-                            tabIndex={-1}
-                          >
-                            Forgot your password?
-                          </a>
-                        </div>
-                        <Input
-                          id="password"
-                          type="password"
-                          required
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <div className="text-xs text-muted-foreground mt-1">
-                          Password must be at least 8 characters and include at
-                          least one lowercase letter, one uppercase letter, and
-                          one number.
-                        </div>
-                      </div>
-                    )}
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={isLoading}
+                  )}
+                  {forgotError && (
+                    <div className="text-red-600 text-center text-sm">
+                      {forgotError}
+                    </div>
+                  )}
+                  <div className="text-center text-sm mt-2">
+                    <a
+                      href="#"
+                      className="underline underline-offset-4 cursor-pointer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowForgotPassword(false);
+                      }}
                     >
-                      {isLoading
-                        ? isSignUp
-                          ? "Sending magic link..."
-                          : "Logging in..."
-                        : isSignUp
-                          ? "Send magic link"
-                          : "Login"}
-                    </Button>
+                      Back to login
+                    </a>
                   </div>
-                  <div className="text-center text-sm">
-                    {isSignUp ? (
-                      <>
-                        Already have an account?{" "}
-                        <a
-                          href="#"
-                          className="underline underline-offset-4 cursor-pointer"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setIsSignUp(false);
-                          }}
-                        >
-                          Log in
-                        </a>
-                      </>
-                    ) : (
-                      <>
-                        Don&apos;t have an account?{" "}
-                        <a
-                          href="#"
-                          className="underline underline-offset-4 cursor-pointer"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setIsSignUp(true);
-                          }}
-                        >
-                          Sign up
-                        </a>
-                      </>
-                    )}
+                </form>
+              ) : (
+                <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
+                  <div className="grid gap-6">
+                    <div className="grid gap-6">
+                      <div className="grid gap-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="m@example.com"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
+                      </div>
+                      {!isSignUp && (
+                        <div className="grid gap-2">
+                          <div className="flex items-center">
+                            <Label htmlFor="password">Password</Label>
+                            <a
+                              href="#"
+                              className="ml-auto text-sm underline-offset-4 hover:underline"
+                              tabIndex={-1}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setShowForgotPassword(true);
+                              }}
+                            >
+                              Forgot your password?
+                            </a>
+                          </div>
+                          <Input
+                            id="password"
+                            type="password"
+                            required
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                          />
+                          <div className="text-xs text-muted-foreground mt-1">
+                            Password must be at least 8 characters and include
+                            at least one lowercase letter, one uppercase letter,
+                            and one number.
+                          </div>
+                        </div>
+                      )}
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={isLoading}
+                      >
+                        {isLoading
+                          ? isSignUp
+                            ? "Sending magic link..."
+                            : "Logging in..."
+                          : isSignUp
+                            ? "Send magic link"
+                            : "Login"}
+                      </Button>
+                    </div>
+                    <div className="text-center text-sm">
+                      {isSignUp ? (
+                        <>
+                          Already have an account?{" "}
+                          <a
+                            href="#"
+                            className="underline underline-offset-4 cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setIsSignUp(false);
+                            }}
+                          >
+                            Log in
+                          </a>
+                        </>
+                      ) : (
+                        <>
+                          Don&apos;t have an account?{" "}
+                          <a
+                            href="#"
+                            className="underline underline-offset-4 cursor-pointer"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setIsSignUp(true);
+                            }}
+                          >
+                            Sign up
+                          </a>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </form>
+                </form>
+              )}
             </CardContent>
           </Card>
           <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
