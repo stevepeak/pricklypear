@@ -20,7 +20,7 @@ async function createLinearIssue({ title, description }) {
       teamId: LINEAR_TEAM_ID,
       title,
       description,
-      priority: "urgent",
+      priority: 1, // for Urgent
       projectId: "customer-feedback-4c077f3db565",
     },
   };
