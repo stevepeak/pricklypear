@@ -16,6 +16,7 @@ type AuthContextType = {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName?: string) => Promise<void>;
+  signUpWithMagicLink: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -112,6 +113,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signUpWithMagicLink = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+      });
+      if (error) {
+        toast({
+          title: "Error sending magic link",
+          description: error.message,
+        });
+        throw error;
+      }
+      toast({
+        title: "Check your email!",
+        description: "A sign-up link has been sent to your email.",
+      });
+    } catch (error) {
+      console.error("Error sending magic link:", error);
+      throw error;
+    }
+  };
+
   const signOut = async () => {
     try {
       // First check if we have a valid session before attempting to sign out
@@ -164,6 +187,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loading,
         signIn,
         signUp,
+        signUpWithMagicLink,
         signOut,
       }}
     >
