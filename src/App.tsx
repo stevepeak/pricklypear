@@ -28,7 +28,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import ForgotPassword from "./pages/ForgotPassword";
 import UpdatePassword from "./pages/update-password";
 import TermsOfService from "./pages/terms-of-service";
 import PrivacyPolicy from "./pages/privacy-policy";
@@ -87,7 +86,6 @@ function AppRoutes() {
     <Routes>
       {/* Auth page: always without sidebar */}
       <Route path="/auth" element={<AuthPage />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/update-password" element={<UpdatePassword />} />
       <Route path="/terms-of-service" element={<TermsOfService />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
