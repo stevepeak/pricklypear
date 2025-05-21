@@ -86,7 +86,7 @@ const CreateThreadForm = ({
                   value={connection.otherUserId}
                   className="normal-case"
                 >
-                  {connection.username}
+                  {connection.name || connection.invitee_email}
                 </SelectItem>
               ))}
             </SelectContent>

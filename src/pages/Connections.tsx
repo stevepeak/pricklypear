@@ -40,11 +40,11 @@ const Connections = () => {
 
   // Filter connections by status and relation to current user
   const pendingIncomingConnections = connections.filter(
-    (c) => c.status === "pending" && !c.isUserSender,
+    (c) => c.status === "pending" && c.user_id !== user.id,
   );
 
   const pendingOutgoingConnections = connections.filter(
-    (c) => c.status === "pending" && c.isUserSender,
+    (c) => c.status === "pending" && c.user_id === user.id,
   );
 
   const disabledConnections = connections.filter(

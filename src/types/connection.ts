@@ -1,4 +1,6 @@
-export type ConnectionStatus = "pending" | "accepted" | "declined" | "disabled";
+import { Database } from "@/integrations/supabase/types";
+
+export type ConnectionStatus = Database["public"]["Enums"]["connection_status"];
 
 export interface InviteResponse {
   error?: Error;
@@ -6,18 +8,9 @@ export interface InviteResponse {
   message: string;
 }
 
-export interface Connection {
-  id: string;
-  user_id: string | null;
-  connected_user_id: string | null;
-  invitee_email?: string;
-  status: ConnectionStatus;
-  created_at: string;
-  updated_at: string;
-  otherUserId?: string | null;
-  username?: string;
-  avatarUrl?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  isUserSender?: boolean;
-}
+export type Connection = Database["public"]["Tables"]["connections"]["Row"] & {
+  /** The name of the connected user */
+  name: string | null;
+  /** The ID of the connected user */
+  otherUserId: string;
+};

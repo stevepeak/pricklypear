@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Connection, ConnectionStatus } from "@/types/connection";
+import { Connection } from "@/types/connection";
 import { requireCurrentUser } from "@/utils/authCache";
+import { handleError } from "@/services/messageService/utils";
 
 // Get all connections for the current user (both as sender and receiver)
 export const getConnections = async (): Promise<Connection[]> => {
@@ -9,84 +10,31 @@ export const getConnections = async (): Promise<Connection[]> => {
 
     const userId = user.id;
 
-    // Get connections where the user is the sender (user_id equals current user)
-    const { data: sentConnections, error: sentError } = await supabase
+    // Get my connections
+    const { data: connections, error: sentError } = await supabase
       .from("connections")
-      .select("*")
-      .eq("user_id", userId);
+      .select(
+        `
+        *,
+        profiles:connected_user_id ( name ) as a,
+        profiles:user_id ( name ) as b
+      `
+      )
+      .or(`user_id.eq.${userId},connected_user_id.eq.${userId}`);
 
-    if (sentError) throw sentError;
+    if (sentError)
+      return handleError(sentError, "fetching connections") ? [] : [];
 
-    // Get connections where the user is the receiver (connected_user_id equals current user)
-    const { data: receivedConnections, error: receivedError } = await supabase
-      .from("connections")
-      .select("*")
-      .eq("connected_user_id", userId);
+    if (!connections) return [];
 
-    if (receivedError) throw receivedError;
+    const result = connections.map((c) => ({
+      name: c.profiles?.name,
+      otherUserId: c.user_id === userId ? c.connected_user_id : c.user_id,
+      ...c,
+    }));
 
-    // Combined connections
-    const allConnections = [
-      ...(sentConnections || []),
-      ...(receivedConnections || []),
-    ];
-    
-    // Format the connections to include necessary information
-    const formattedConnections = await Promise.all(
-      allConnections.map(async (connection) => {
-        // If user_id is null, this is a pending invite with only invitee_email
-        if (connection.connected_user_id === null) {
-          return {
-            id: connection.id,
-            otherUserId: null,
-            username: connection.invitee_email,
-            avatarUrl: undefined,
-            status: connection.status as ConnectionStatus,
-            createdAt: connection.created_at,
-            updatedAt: connection.updated_at,
-            isUserSender: true,
-          };
-        }
-
-        // Determine if the current user is the sender
-        const isUserSender = connection.user_id === userId;
-
-        // Get ID of the other user in the connection
-        const otherUserId = isUserSender
-          ? connection.connected_user_id
-          : connection.user_id;
-
-        // Get the other user's details
-        const { data: otherUserData, error: profileError } = await supabase
-          .from("profiles")
-          .select("name")
-          .eq("id", otherUserId)
-          .single();
-
-        if (profileError) {
-          console.error("Error fetching profile:", profileError);
-        }
-
-        if (!otherUserData) {
-          throw new Error("RLS issue. User was not able to be selected.");
-        }
-
-        return {
-          id: connection.id,
-          otherUserId,
-          username: otherUserData.name,
-          avatarUrl: undefined,
-          status: connection.status as ConnectionStatus,
-          createdAt: connection.created_at,
-          updatedAt: connection.updated_at,
-          isUserSender, // Now correctly indicates if the user is the sender or receiver
-        };
-      }),
-    );
-
-    return formattedConnections;
+    return result;
   } catch (error) {
-    console.error("Error getting connections:", error);
-    return [];
+    return handleError(error, "fetching connections") ? [] : [];
   }
 };

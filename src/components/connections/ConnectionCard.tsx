@@ -134,7 +134,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
       <Card className={variant === "disabled" ? "opacity-60" : ""}>
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
-            <span>{connection.username}</span>
+            <span>{connection.name || connection.invitee_email}</span>
             {renderBadge()}
           </CardTitle>
         </CardHeader>
@@ -147,7 +147,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
         open={isDisableDialogOpen}
         onOpenChange={setIsDisableDialogOpen}
         onConfirm={handleDisableConfirmed}
-        connectionName={connection.username}
+        connectionName={connection.name || connection.invitee_email}
       />
     </>
   );
