@@ -3,7 +3,7 @@ import { Sonner } from "@/components/ui/sonner.js";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Home from "./pages/Home";
 import Threads from "./pages/Threads";
 import ThreadView from "./pages/ThreadView";
@@ -76,13 +76,21 @@ function Breadcrumbs() {
   );
 }
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <ConnectionsProvider>
-        <TooltipProvider>
-          <Sonner />
-          <BrowserRouter>
+function AppRoutes() {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+
+  return (
+    <Routes>
+      {/* Auth page: always without sidebar */}
+      <Route path="/auth" element={<AuthPage />} />
+      {/* Home page: no sidebar if logged out */}
+      <Route path="/" element={<Home />} />
+      {/* All other routes: require auth, show sidebar */}
+      <Route
+        path="*"
+        element={
+          user ? (
             <SidebarProvider>
               <div className="flex min-h-screen w-full flex-col md:flex-row">
                 <AppSidebar />
@@ -91,7 +99,6 @@ const App = () => (
                   <CommandMenu />
                   <div className="flex-1 min-h-0">
                     <Routes>
-                      <Route path="/" element={<Home />} />
                       <Route path="/threads" element={<Threads />} />
                       <Route
                         path="/threads/:threadId"
@@ -103,7 +110,6 @@ const App = () => (
                       <Route path="/expenses" element={<Expenses />} />
                       <Route path="/integrations" element={<Integrations />} />
                       <Route path="/billing" element={<Billing />} />
-                      <Route path="/auth" element={<AuthPage />} />
                       <Route path="/account" element={<Account />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
@@ -111,6 +117,24 @@ const App = () => (
                 </SidebarInset>
               </div>
             </SidebarProvider>
+          ) : (
+            // If not logged in, redirect to /auth for all other routes
+            <AuthPage />
+          )
+        }
+      />
+    </Routes>
+  );
+}
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <ConnectionsProvider>
+        <TooltipProvider>
+          <Sonner />
+          <BrowserRouter>
+            <AppRoutes />
           </BrowserRouter>
         </TooltipProvider>
       </ConnectionsProvider>
