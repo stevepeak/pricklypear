@@ -65,7 +65,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         toast({
           title: "Error signing in",
           description: error.message,
-          variant: "destructive",
         });
         throw error;
       }
@@ -75,8 +74,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: "You have successfully signed in.",
       });
     } catch (error) {
-      console.error("Error signing in:", error);
-      throw error;
+      toast({
+        title: "Error signing in",
+        description: error.message,
+      });
+      console.error("🔒 Error signing in:", error);
     }
   };
 
@@ -96,7 +98,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         toast({
           title: "Error signing up",
           description: error.message,
-          variant: "destructive",
         });
         throw error;
       }
@@ -134,7 +135,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         toast({
           title: "Error signing out",
           description: error.message,
-          variant: "destructive",
         });
         throw error;
       }
