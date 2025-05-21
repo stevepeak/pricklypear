@@ -64,7 +64,6 @@ const AuthPage = () => {
         </a>
         <div className={cn("flex flex-col gap-6")}>
           <Card>
-            
             <CardHeader className="text-center">
               <CardTitle className="text-xl">Welcome back</CardTitle>
               {/* <CardDescription>
@@ -136,6 +135,11 @@ const AuthPage = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                       />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        Password must be at least 8 characters and include at
+                        least one lowercase letter, one uppercase letter, and
+                        one number.
+                      </div>
                     </div>
                     <Button
                       type="submit"

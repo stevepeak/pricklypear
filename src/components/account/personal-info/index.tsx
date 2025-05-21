@@ -211,6 +211,11 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription>
+                      Password must be at least 8 characters and include at
+                      least one lowercase letter, one uppercase letter, and one
+                      number.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
