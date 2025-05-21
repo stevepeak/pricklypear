@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { requireCurrentUser } from "@/utils/authCache";
 
 export default function FeatureRequestPage() {
   const form = useForm({ defaultValues: { title: "", description: "" } });
@@ -21,12 +22,16 @@ export default function FeatureRequestPage() {
   }>(null);
 
   async function onSubmit(values: { title: string; description: string }) {
+    const user  = await requireCurrentUser();
     setStatus(null);
     try {
       const { data, error } = await supabase.functions.invoke(
         "feature-request",
         {
-          body: values,
+          body: {
+            title: values.title,
+            description: `${values.description}\n---\n\`\`\`\n${JSON.stringify(user, null, 2)}\n\`\`\``,
+          },
         },
       );
       if (error) {
