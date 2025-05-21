@@ -30,7 +30,7 @@ export const getConnections = async (): Promise<Connection[]> => {
       ...(sentConnections || []),
       ...(receivedConnections || []),
     ];
-
+    
     // Format the connections to include necessary information
     const formattedConnections = await Promise.all(
       allConnections.map(async (connection) => {

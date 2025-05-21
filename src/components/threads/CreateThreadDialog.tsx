@@ -14,7 +14,6 @@ import { useThreadCreation } from "@/hooks/useThreadCreation";
 import CreateThreadForm from "./CreateThreadForm";
 import type { Thread } from "@/types/thread";
 import type { User } from "@supabase/supabase-js";
-import type { ThreadTopic } from "@/constants/thread-topics";
 
 interface CreateThreadDialogProps {
   onThreadCreated: (newThread: Thread) => void;
