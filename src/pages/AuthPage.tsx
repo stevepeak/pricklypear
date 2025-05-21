@@ -17,6 +17,7 @@ const AuthPage = () => {
   const [forgotIsLoading, setForgotIsLoading] = useState(false);
   const [forgotMessage, setForgotMessage] = useState<string | null>(null);
   const [forgotError, setForgotError] = useState<string | null>(null);
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
 
   const { signIn, signUpWithMagicLink, user } = useAuth();
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const AuthPage = () => {
     setIsLoading(true);
     try {
       await signUpWithMagicLink(email);
-      // Optionally, show a message or redirect
+      setMagicLinkSent(true);
     } catch (error) {
       console.error("Signup error:", error);
     } finally {
@@ -85,68 +86,55 @@ const AuthPage = () => {
           🌵 Prickly Pear
         </a>
         <div className={cn("flex flex-col gap-6")}>
-          <Card>
-            <CardHeader className="text-center">
-              <CardTitle className="text-xl">
-                {showForgotPassword
-                  ? "Reset your password"
-                  : isSignUp
-                    ? "Create your account"
-                    : "Welcome back"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {showForgotPassword ? (
-                <form onSubmit={handleForgotPassword} className="grid gap-6">
-                  <div className="grid gap-2">
-                    <Label htmlFor="forgot-email">Email</Label>
-                    <Input
-                      id="forgot-email"
-                      type="email"
-                      placeholder="m@example.com"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={forgotIsLoading}
+          {magicLinkSent ? (
+            <Card>
+              <CardHeader className="text-center">
+                <CardTitle className="text-xl">Check your email</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center text-base mb-4">
+                  We sent a magic link to{" "}
+                  <span className="font-semibold">{email}</span>.<br />
+                  Please check your inbox and follow the link to activate your
+                  account.
+                </div>
+                <div className="text-center text-sm text-muted-foreground mt-2">
+                  Didn&apos;t get the email?{" "}
+                  <a
+                    href="#"
+                    className="underline underline-offset-4 cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setMagicLinkSent(false);
+                    }}
                   >
-                    {forgotIsLoading ? "Sending..." : "Send reset link"}
-                  </Button>
-                  {forgotMessage && (
-                    <div className="text-green-600 text-center text-sm">
-                      {forgotMessage}
-                    </div>
-                  )}
-                  {forgotError && (
-                    <div className="text-red-600 text-center text-sm">
-                      {forgotError}
-                    </div>
-                  )}
-                  <div className="text-center text-sm mt-2">
-                    <a
-                      href="#"
-                      className="underline underline-offset-4 cursor-pointer"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowForgotPassword(false);
-                      }}
+                    Try again
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              <Card>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-xl">
+                    {showForgotPassword
+                      ? "Reset your password"
+                      : isSignUp
+                        ? "Create your account"
+                        : "Welcome back"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {showForgotPassword ? (
+                    <form
+                      onSubmit={handleForgotPassword}
+                      className="grid gap-6"
                     >
-                      Back to login
-                    </a>
-                  </div>
-                </form>
-              ) : (
-                <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
-                  <div className="grid gap-6">
-                    <div className="grid gap-6">
                       <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="forgot-email">Email</Label>
                         <Input
-                          id="email"
+                          id="forgot-email"
                           type="email"
                           placeholder="m@example.com"
                           required
@@ -154,101 +142,152 @@ const AuthPage = () => {
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
-                      {!isSignUp && (
-                        <div className="grid gap-2">
-                          <div className="flex items-center">
-                            <Label htmlFor="password">Password</Label>
-                            <a
-                              href="#"
-                              className="ml-auto text-sm underline-offset-4 hover:underline"
-                              tabIndex={-1}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setShowForgotPassword(true);
-                              }}
-                            >
-                              Forgot your password?
-                            </a>
-                          </div>
-                          <Input
-                            id="password"
-                            type="password"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                          />
-                          <div className="text-xs text-muted-foreground mt-1">
-                            Password must be at least 8 characters and include
-                            at least one lowercase letter, one uppercase letter,
-                            and one number.
-                          </div>
-                        </div>
-                      )}
                       <Button
                         type="submit"
                         className="w-full"
-                        disabled={isLoading}
+                        disabled={forgotIsLoading}
                       >
-                        {isLoading
-                          ? isSignUp
-                            ? "Sending magic link..."
-                            : "Logging in..."
-                          : isSignUp
-                            ? "Send magic link"
-                            : "Login"}
+                        {forgotIsLoading ? "Sending..." : "Send reset link"}
                       </Button>
-                    </div>
-                    <div className="text-center text-sm">
-                      {isSignUp ? (
-                        <>
-                          Already have an account?{" "}
-                          <a
-                            href="#"
-                            className="underline underline-offset-4 cursor-pointer"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setIsSignUp(false);
-                            }}
-                          >
-                            Log in
-                          </a>
-                        </>
-                      ) : (
-                        <>
-                          Don&apos;t have an account?{" "}
-                          <a
-                            href="#"
-                            className="underline underline-offset-4 cursor-pointer"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setIsSignUp(true);
-                            }}
-                          >
-                            Sign up
-                          </a>
-                        </>
+                      {forgotMessage && (
+                        <div className="text-green-600 text-center text-sm">
+                          {forgotMessage}
+                        </div>
                       )}
-                    </div>
-                  </div>
-                </form>
-              )}
-            </CardContent>
-          </Card>
-          <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-            By clicking Login or Signup, you agree to our{" "}
-            <a
-              href="/terms-of-service"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
-              Privacy Policy
-            </a>
-            .
-          </div>
+                      {forgotError && (
+                        <div className="text-red-600 text-center text-sm">
+                          {forgotError}
+                        </div>
+                      )}
+                      <div className="text-center text-sm mt-2">
+                        <a
+                          href="#"
+                          className="underline underline-offset-4 cursor-pointer"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setShowForgotPassword(false);
+                          }}
+                        >
+                          Back to login
+                        </a>
+                      </div>
+                    </form>
+                  ) : (
+                    <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
+                      <div className="grid gap-6">
+                        <div className="grid gap-6">
+                          <div className="grid gap-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                              id="email"
+                              type="email"
+                              placeholder="m@example.com"
+                              required
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                            />
+                          </div>
+                          {!isSignUp && (
+                            <div className="grid gap-2">
+                              <div className="flex items-center">
+                                <Label htmlFor="password">Password</Label>
+                                <a
+                                  href="#"
+                                  className="ml-auto text-sm underline-offset-4 hover:underline"
+                                  tabIndex={-1}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowForgotPassword(true);
+                                  }}
+                                >
+                                  Forgot your password?
+                                </a>
+                              </div>
+                              <Input
+                                id="password"
+                                type="password"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                              />
+                              <div className="text-xs text-muted-foreground mt-1">
+                                Password must be at least 8 characters and
+                                include at least one lowercase letter, one
+                                uppercase letter, and one number.
+                              </div>
+                            </div>
+                          )}
+                          <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={isLoading}
+                          >
+                            {isLoading
+                              ? isSignUp
+                                ? "Sending magic link..."
+                                : "Logging in..."
+                              : isSignUp
+                                ? "Send magic link"
+                                : "Login"}
+                          </Button>
+                        </div>
+                        <div className="text-center text-sm">
+                          {isSignUp ? (
+                            <>
+                              Already have an account?{" "}
+                              <a
+                                href="#"
+                                className="underline underline-offset-4 cursor-pointer"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setIsSignUp(false);
+                                }}
+                              >
+                                Log in
+                              </a>
+                            </>
+                          ) : (
+                            <>
+                              Don&apos;t have an account?{" "}
+                              <a
+                                href="#"
+                                className="underline underline-offset-4 cursor-pointer"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setIsSignUp(true);
+                                }}
+                              >
+                                Sign up
+                              </a>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </form>
+                  )}
+                </CardContent>
+              </Card>
+              <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
+                By clicking Login or Signup, you agree to our{" "}
+                <a
+                  href="/terms-of-service"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Privacy Policy
+                </a>
+                .
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
