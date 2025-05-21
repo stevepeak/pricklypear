@@ -52,7 +52,7 @@ const Home = () => {
             asChild
             className="bg-secondary hover:bg-secondary/90 hover-rotate text-lg px-8 py-6 h-auto"
           >
-            <Link to="/threads">Get Started</Link>
+            <Link to="/auth">Get Started</Link>
           </Button>
         </div>
       </div>
