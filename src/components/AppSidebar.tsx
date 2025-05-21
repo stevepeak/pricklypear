@@ -41,6 +41,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { useConnections } from "@/hooks/useConnections";
+import { Badge } from "@/components/ui/badge";
 
 export function AppSidebar() {
   const { user, signOut } = useAuth();
@@ -84,17 +85,32 @@ export function AppSidebar() {
         },
         {
           path: "/documents",
-          label: "Documents (coming soon)",
+          label: [
+            "Documents",
+            <Badge key="coming-soon" variant="secondary" className="ml-2">
+              Coming soon
+            </Badge>,
+          ],
           icon: <FileText className="h-4 w-4 mr-2" />,
         },
         {
           path: "/calendar",
-          label: "Calendar (coming soon)",
+          label: [
+            "Calendar",
+            <Badge key="coming-soon" variant="secondary" className="ml-2">
+              Coming soon
+            </Badge>,
+          ],
           icon: <Calendar className="h-4 w-4 mr-2" />,
         },
         {
           path: "/expenses",
-          label: "Expenses (coming soon)",
+          label: [
+            "Expenses",
+            <Badge key="coming-soon" variant="secondary" className="ml-2">
+              Coming soon
+            </Badge>,
+          ],
           icon: <Receipt className="h-4 w-4 mr-2" />,
         },
       ]
@@ -126,7 +142,14 @@ export function AppSidebar() {
                       className="flex items-center w-full justify-start mb-1"
                     >
                       {item.icon}
-                      <span>{item.label}</span>
+                      {Array.isArray(item.label) ? (
+                        <span className="flex items-center gap-2">
+                          {item.label[0]}
+                          {item.label[1]}
+                        </span>
+                      ) : (
+                        <span>{item.label}</span>
+                      )}
                     </Link>
                   </SidebarMenuButton>
                   {item.badge !== undefined && (
