@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import sendEmail from "../send-email/index.ts";
 import { getSupabaseServiceClient } from "../utils/supabase.ts";
 
-const APP_CONNECTIONS_URL = "https://pricklypear-three.vercel.app/connections";
+const APP_CONNECTIONS_URL = "https://prickly.app";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -33,20 +33,20 @@ async function sendInvitationEmail({
   to,
   inviterName,
   isExistingUser,
-  connectionId,
 }) {
-  const subject = `${inviterName} invited you on The Prickly Pear`;
+  const subject = `${inviterName} invited you to connect on The Prickly Pear`;
   const htmlExisting = `
     <p>Hi there,</p>
     <p><strong>${inviterName}</strong> has invited you to connect on The Prickly Pear.</p>
-    <p>Please <a href="${APP_CONNECTIONS_URL}">visit your connections</a> to accept the request.</p>
-    <p>See you soon!</p>
+    <p>Please <a href="${APP_CONNECTIONS_URL}/connections">visit your connections</a> to accept the request.</p>
+    <p>- The Prickly Pear</p>
   `;
   const htmlNew = `
     <p>Hi there,</p>
     <p><strong>${inviterName}</strong> has invited you to join The Prickly Pear.</p>
-    <p><a href="${APP_CONNECTIONS_URL}">Create an account</a> to start the conversation with ${inviterName}</a>.</p>
-    <p>We look forward to having you!</p>
+    <p><a href="${APP_CONNECTIONS_URL}/auth">Create an account</a> to start the conversation with ${inviterName}</a>.</p>
+    <p>Best,</p>
+    <p>The Prickly Pear</p>
   `;
   await sendEmail({
     to,
@@ -136,7 +136,6 @@ serve(async (req) => {
         to: email,
         inviterName,
         isExistingUser: Boolean(inviteeUser),
-        connectionId: connection.id,
       });
 
       return new Response(
@@ -177,7 +176,6 @@ serve(async (req) => {
         to: email,
         inviterName,
         isExistingUser: Boolean(inviteeUser),
-        connectionId: connection.id,
       });
 
       return new Response(
