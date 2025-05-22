@@ -18,6 +18,7 @@ interface MessageReviewDialogProps {
   kindMessage: string;
   onAccept: (message: string) => void;
   isLoading: boolean;
+  requireAiApproval?: boolean;
 }
 
 const MessageReviewDialog = ({
@@ -27,6 +28,7 @@ const MessageReviewDialog = ({
   kindMessage,
   onAccept,
   isLoading,
+  requireAiApproval = true,
 }: MessageReviewDialogProps) => {
   const handleAccept = () => {
     if (kindMessage.trim()) {
@@ -34,6 +36,15 @@ const MessageReviewDialog = ({
       onOpenChange(false);
       toast("Message sent", {
         description: "Your message has been reviewed and sent",
+      });
+    }
+  };
+  const handleSendOriginal = () => {
+    if (newMessage.trim()) {
+      onAccept(newMessage);
+      onOpenChange(false);
+      toast("Message sent", {
+        description: "Your original message was sent without revision",
       });
     }
   };
@@ -75,6 +86,16 @@ const MessageReviewDialog = ({
           >
             Try Again
           </Button>
+          {!requireAiApproval && (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleSendOriginal}
+              disabled={!newMessage.trim() || isLoading}
+            >
+              Send without revision
+            </Button>
+          )}
           <Button
             type="button"
             onClick={handleAccept}

@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Thread } from "@/types/thread";
+import { Thread, ThreadControls, ThreadStatus, ThreadTopic } from "@/types/thread";
 import { requireCurrentUser } from "@/utils/authCache";
 
 export const getThread = async (threadId: string): Promise<Thread | null> => {
@@ -50,8 +50,10 @@ export const getThread = async (threadId: string): Promise<Thread | null> => {
       title: threadData.title,
       createdAt: new Date(threadData.created_at),
       participants: participants || [],
+      status: threadData.status as ThreadStatus,
       summary: threadData.summary,
-      topic: threadData.topic,
+      topic: threadData.topic as ThreadTopic,
+      controls: threadData.controls as ThreadControls,
     };
   } catch (error) {
     console.error("Exception fetching thread:", error);

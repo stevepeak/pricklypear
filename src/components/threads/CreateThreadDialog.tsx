@@ -30,6 +30,7 @@ const CreateThreadDialog = ({
 }: CreateThreadDialogProps) => {
   // Internal state for dialog open status
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [requireAiApproval, setRequireAiApproval] = React.useState(true);
 
   // Use controlled state if external state is provided
   const dialogOpen =
@@ -84,7 +85,9 @@ const CreateThreadDialog = ({
           connections={connections}
           isLoadingContacts={isLoadingContacts}
           isCreating={isCreating}
-          onSubmit={() => handleCreateThread(user)}
+          requireAiApproval={requireAiApproval}
+          setRequireAiApproval={setRequireAiApproval}
+          onSubmit={() => handleCreateThread(user, requireAiApproval)}
           onCancel={() => handleDialogOpen(false)}
         />
       </DialogContent>

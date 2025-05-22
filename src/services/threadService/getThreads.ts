@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Thread } from "@/types/thread";
+import { Thread, ThreadControls, ThreadStatus, ThreadTopic } from "@/types/thread";
 import { requireCurrentUser } from "@/utils/authCache";
 
 export const getThreads = async (): Promise<Thread[]> => {
@@ -52,9 +52,10 @@ export const getThreads = async (): Promise<Thread[]> => {
           title: thread.title,
           createdAt: new Date(thread.created_at),
           participants,
-          status: thread.status,
+          status: thread.status as ThreadStatus,
           summary: thread.summary,
-          topic: thread.topic || "other", // Ensure topic is properly mapped
+          topic: thread.topic as ThreadTopic,
+          controls: thread.controls as ThreadControls,
         };
       }),
     );

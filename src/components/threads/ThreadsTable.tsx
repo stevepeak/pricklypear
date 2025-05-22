@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { AvatarName } from "@/components/ui/avatar-name";
 import { cn } from "@/lib/utils";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
-import { getThreadTopicInfo } from "@/constants/thread-topics";
+import { getThreadTopicInfo } from "@/types/thread";
 import type { Thread } from "@/types/thread";
 import {
   Table,

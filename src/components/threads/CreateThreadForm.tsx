@@ -1,4 +1,4 @@
-import { THREAD_TOPIC_INFO, type ThreadTopic } from "@/constants/thread-topics";
+import { THREAD_TOPIC_INFO, type ThreadTopic } from "@/types/thread";
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,8 @@ interface CreateThreadFormProps {
   isCreating: boolean;
   onSubmit: () => void;
   onCancel: () => void;
+  requireAiApproval: boolean;
+  setRequireAiApproval: (value: boolean) => void;
 }
 
 const CreateThreadForm = ({
@@ -42,6 +44,8 @@ const CreateThreadForm = ({
   isCreating,
   onSubmit,
   onCancel,
+  requireAiApproval,
+  setRequireAiApproval,
 }: CreateThreadFormProps) => {
   const topicInfo = THREAD_TOPIC_INFO;
   const [showTopicError, setShowTopicError] = React.useState(false);
@@ -131,8 +135,8 @@ const CreateThreadForm = ({
       <div className="flex items-center space-x-2 mt-4">
         <Switch 
           id="require-ai-rephrased" 
-          checked={true}
-          onCheckedChange={() => {}}
+          checked={requireAiApproval}
+          onCheckedChange={setRequireAiApproval}
         />
         <Label htmlFor="require-ai-approval">Only AI-rephrased messages can be sent</Label>
       </div>

@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { createThread } from "@/services/threadService";
 import type { User } from "@supabase/supabase-js";
-import type { Thread } from "@/types/thread";
-import type { ThreadTopic } from "@/constants/thread-topics";
+import type { Thread, ThreadTopic } from "@/types/thread";
 
 export const useThreadCreation = (
   onThreadCreated: (thread: Thread) => void,
@@ -18,11 +17,10 @@ export const useThreadCreation = (
   const [isCreating, setIsCreating] = useState(false);
   const navigate = useNavigate();
 
-  const handleCreateThread = async (user: User) => {
+  const handleCreateThread = async (user: User, requireAiApproval: boolean) => {
     if (!user) {
       toast("Authentication required", {
         description: "Please sign in to create threads",
-        variant: "destructive",
       });
       navigate("/auth");
       return;
@@ -32,7 +30,6 @@ export const useThreadCreation = (
     if (!trimmedTitle) {
       toast("Title required", {
         description: "Please enter a title for the thread",
-        variant: "destructive",
       });
       return;
     }
@@ -40,7 +37,6 @@ export const useThreadCreation = (
     if (!selectedContactId) {
       toast("Contact required", {
         description: "Please select a contact for the thread",
-        variant: "destructive",
       });
       return;
     }
@@ -48,7 +44,6 @@ export const useThreadCreation = (
     if (!selectedTopic) {
       toast("Topic required", {
         description: "Please select a topic for the thread",
-        variant: "destructive",
       });
       return;
     }
@@ -59,6 +54,7 @@ export const useThreadCreation = (
       trimmedTitle,
       [selectedContactId],
       selectedTopic,
+      { requireAiApproval }
     );
 
     setIsCreating(false);
@@ -78,7 +74,6 @@ export const useThreadCreation = (
     } else {
       toast("Error", {
         description: "Failed to create thread. Please try again.",
-        variant: "destructive",
       });
     }
   };

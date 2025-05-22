@@ -89,6 +89,7 @@ const ThreadView = () => {
         kindMessage={kindMessage}
         onAccept={handleSendReviewedMessage}
         isLoading={isReviewingMessage}
+        requireAiApproval={thread.controls?.requireAiApproval}
       />
     </>
   );

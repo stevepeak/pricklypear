@@ -227,8 +227,9 @@ export type Database = {
       create_thread: {
         Args: {
           title: string
-          topic: Database["public"]["Enums"]["thread_topic"]
-          participant_ids?: string[]
+          topic: string
+          controls: Json
+          participant_ids: string[]
         }
         Returns: string
       }

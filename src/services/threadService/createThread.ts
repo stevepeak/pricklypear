@@ -1,12 +1,12 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Thread, ThreadStatus } from "@/types/thread";
-import type { ThreadTopic } from "@/constants/thread-topics";
+import { Thread, ThreadStatus, ThreadTopic } from "@/types/thread";
 import { requireCurrentUser, getUserProfile } from "@/utils/authCache";
 
 export const createThread = async (
   title: string,
   participantIds: string[],
-  topic: ThreadTopic = "other",
+  topic: ThreadTopic,
+  controls?: { requireAiApproval?: boolean },
 ): Promise<Thread | null> => {
   const MAX_THREAD_TITLE_LENGTH = 50;
 
@@ -33,6 +33,7 @@ export const createThread = async (
         title: trimmedTitle,
         topic,
         participant_ids: participantIds,
+        controls,
       },
     );
 
@@ -50,6 +51,7 @@ export const createThread = async (
       participants: participantIds,
       summary: `New thread created by ${profile.name}`,
       topic,
+      controls,
     };
   } catch (error) {
     console.error("Error creating thread:", error);

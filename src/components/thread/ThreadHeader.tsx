@@ -1,8 +1,7 @@
 import { Loader2, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import type { Thread } from "@/types/thread";
+import { getThreadTopicInfo, type Thread } from "@/types/thread";
 import { AvatarName } from "@/components/ui/avatar-name";
-import { getThreadTopicInfo } from "@/constants/thread-topics";
 
 interface ThreadHeaderProps {
   thread: Thread;
@@ -22,6 +21,11 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
             <Badge variant="outline" className="bg-white">
               {topicLabel}
             </Badge>
+            {(thread.controls?.requireAiApproval ?? true) && (
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">
+                AI-Moderated
+              </Badge>
+            )}
             <span className="text-sm text-muted-foreground">
               Created {thread.createdAt.toLocaleDateString()}
             </span>
