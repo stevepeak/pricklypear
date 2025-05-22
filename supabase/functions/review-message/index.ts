@@ -65,8 +65,7 @@ async function checkIfOnTopic(openai, { threadTopic, threadTitle, message }) {
     messages: [
       {
         role: "system",
-        content:
-          `
+        content: `
           You are an assistant that checks if a user message is on-topic.
           When evaluating the message is on-topic, consider:
           - If relevant to the thread topic
