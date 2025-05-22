@@ -3,6 +3,7 @@
 - Run `bun run fix` after you make changes
 - Use components from `src/components/ui` whenever possible
 - use `import { toast } from "sonner";` and `toast(name, {description})`
+- Do not use `await fetch()` to call Supabase functions, use the `await supabase.functions.invoke()`
 
 # Coding Instructions
 
