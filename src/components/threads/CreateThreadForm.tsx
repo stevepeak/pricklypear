@@ -60,7 +60,7 @@ const CreateThreadForm = ({
         maxLength={50}
       />
 
-{setSelectedTopic && (
+      {setSelectedTopic && (
         <div className="space-y-3">
           <Label className="text-sm font-medium">Topic</Label>
           <RadioGroup
@@ -90,57 +90,56 @@ const CreateThreadForm = ({
         </div>
       )}
 
+      <label className="text-sm font-medium mb-1 block">Participants</label>
 
-        <label className="text-sm font-medium mb-1 block">Participants</label>
+      {isLoadingContacts ? (
+        <div className="flex items-center justify-center py-2">
+          <Loader2 className="h-4 w-4 animate-spin text-primary mr-2" />
+          <span className="text-sm">Loading contacts...</span>
+        </div>
+      ) : connections.length === 0 ? (
+        <div className="text-center py-2 border border-dashed rounded-md">
+          <p className="text-sm text-muted-foreground">
+            No contacts available. Add contacts first.
+          </p>
+          <Button variant="link" size="sm" asChild className="mt-1">
+            <Link to="/connections">Go to Connections</Link>
+          </Button>
+        </div>
+      ) : (
+        <Select value={selectedContactId} onValueChange={setSelectedContactId}>
+          <SelectTrigger className="normal-case">
+            <SelectValue placeholder="Select one or more connections" />
+          </SelectTrigger>
+          <SelectContent>
+            {connections.map((connection) => (
+              <SelectItem
+                key={connection.otherUserId}
+                value={connection.otherUserId}
+                className="normal-case"
+              >
+                {connection.name || connection.invitee_email}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
 
-        {isLoadingContacts ? (
-          <div className="flex items-center justify-center py-2">
-            <Loader2 className="h-4 w-4 animate-spin text-primary mr-2" />
-            <span className="text-sm">Loading contacts...</span>
-          </div>
-        ) : connections.length === 0 ? (
-          <div className="text-center py-2 border border-dashed rounded-md">
-            <p className="text-sm text-muted-foreground">
-              No contacts available. Add contacts first.
-            </p>
-            <Button variant="link" size="sm" asChild className="mt-1">
-              <Link to="/connections">Go to Connections</Link>
-            </Button>
-          </div>
-        ) : (
-          <Select
-            value={selectedContactId}
-            onValueChange={setSelectedContactId}
-          >
-            <SelectTrigger className="normal-case">
-              <SelectValue placeholder="Select one or more connections" />
-            </SelectTrigger>
-            <SelectContent>
-              {connections.map((connection) => (
-                <SelectItem
-                  key={connection.otherUserId}
-                  value={connection.otherUserId}
-                  className="normal-case"
-                >
-                  {connection.name || connection.invitee_email}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
+      <label className="text-sm font-medium mb-1 block">Controls</label>
 
-        <label className="text-sm font-medium mb-1 block">Controls</label>
-
-      
       <div className="flex items-center space-x-2 mt-4">
-        <Switch 
-          id="require-ai-rephrased" 
+        <Switch
+          id="require-ai-rephrased"
           checked={requireAiApproval}
           onCheckedChange={setRequireAiApproval}
         />
-        <Label htmlFor="require-ai-approval">Only AI-rephrased messages can be sent</Label>
+        <Label htmlFor="require-ai-approval">
+          {requireAiApproval
+            ? "AI must approve all messages"
+            : "AI will only suggest change"}
+        </Label>
       </div>
-     
+
       <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 mt-4">
         <Button variant="outline" onClick={onCancel} disabled={isCreating}>
           Cancel

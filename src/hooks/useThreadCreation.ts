@@ -54,7 +54,7 @@ export const useThreadCreation = (
       trimmedTitle,
       [selectedContactId],
       selectedTopic,
-      { requireAiApproval }
+      { requireAiApproval },
     );
 
     setIsCreating(false);

@@ -23,7 +23,7 @@ const AuthPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [invitedEmail, setInvitedEmail] = useState(searchParams.get("email"));
-  const inviterName = searchParams.get("inviterName")
+  const inviterName = searchParams.get("inviterName");
 
   // Redirect if already logged in
   React.useEffect(() => {
@@ -98,10 +98,13 @@ const AuthPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center text-base mb-4">
-                  <strong>{inviterName ?? "A friend"}</strong> has invited you to join them on Prickly Pear — your AI-assisted parenting communication app.
+                  <strong>{inviterName ?? "A friend"}</strong> has invited you
+                  to join them on Prickly Pear — your AI-assisted parenting
+                  communication app.
                 </div>
                 <div className="text-center text-sm text-muted-foreground">
-                  Signing up with: <span className="font-medium">{invitedEmail}</span>
+                  Signing up with:{" "}
+                  <span className="font-medium">{invitedEmail}</span>
                 </div>
                 <Button
                   className="w-full mt-4"
@@ -123,14 +126,15 @@ const AuthPage = () => {
                 </Button>
                 <div className="text-center text-xs text-muted-foreground mt-6">
                   Already have an account?{" "}
-                  <a href="#" className="underline underline-offset-4" onClick={(e) => {
-                    e.preventDefault();
-                    setInvitedEmail(null);
-                    setEmail(invitedEmail);
-                    // setIsSignUp(false);
-                    // setMagicLinkSent(false);
-                    // setEmail(invitedEmail);
-                  }}>
+                  <a
+                    href="#"
+                    className="underline underline-offset-4"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setInvitedEmail(null);
+                      setEmail(invitedEmail);
+                    }}
+                  >
                     Sign in
                   </a>
                 </div>

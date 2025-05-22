@@ -1,5 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Thread, ThreadControls, ThreadStatus, ThreadTopic } from "@/types/thread";
+import {
+  Thread,
+  ThreadControls,
+  ThreadStatus,
+  ThreadTopic,
+} from "@/types/thread";
 import { requireCurrentUser } from "@/utils/authCache";
 
 export const getThreads = async (): Promise<Thread[]> => {

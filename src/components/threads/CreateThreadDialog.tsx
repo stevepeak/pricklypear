@@ -71,7 +71,9 @@ const CreateThreadDialog = ({
         <DialogHeader>
           <DialogTitle>Create New Thread</DialogTitle>
           <DialogDescription>
-            Threads are focused conversations with specific topics and moderation rules. They help keep discussions on track and encourage quick resolution.
+            Threads are focused conversations with specific topics and
+            moderation rules. They help keep discussions on track and encourage
+            quick resolution.
           </DialogDescription>
         </DialogHeader>
 
