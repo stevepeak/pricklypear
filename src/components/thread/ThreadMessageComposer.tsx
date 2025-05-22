@@ -38,6 +38,7 @@ import {
 import { saveMessage } from "@/services/messageService/messages.js";
 import { Message } from "@/types/message";
 import { toast } from "sonner";
+import { Badge } from "../ui/badge";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -230,29 +231,38 @@ const ThreadMessageComposer = React.forwardRef<
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                    <FileDown className="h-4 w-4 mr-2" /> Export as PDF
+                    <FileDown className="h-4 w-4 mr-2" /> Export as PDF{" "}
+                    <Badge key="coming-soon" variant="secondary" className="ml-2">
+                      Coming soon
+                    </Badge>
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={() => handleCopy()}>
                     <Copy className="h-4 w-4 mr-2" /> Copy to your clipboard
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <MessageSquarePlus className="h-4 w-4 mr-2" /> Add as
-                    context in new AI chat
+                    context in new AI chat{" "}
+                    <Badge key="coming-soon" variant="secondary" className="ml-2">
+                      Coming soon
+                    </Badge>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                    <FilePlus className="h-4 w-4 mr-2" /> Add photos and files
+                    <FilePlus className="h-4 w-4 mr-2" /> Add photos and files{" "}
+                    <Badge key="coming-soon" variant="secondary" className="ml-2">
+                      Coming soon
+                    </Badge>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button
+              {/* <Button
                 variant="ghost"
                 size="icon"
                 className="shrink-0"
                 disabled={isThreadClosed}
               >
                 <Mic className="h-4 w-4" />
-              </Button>
+              </Button> */}
             </div>
             <div className="flex items-center gap-2">
               <TooltipProvider delayDuration={300}>
@@ -268,7 +278,7 @@ const ThreadMessageComposer = React.forwardRef<
                     </div>
                   </TooltipTrigger>
                   <TooltipContent side="top">
-                    ⚡️ Auto-accept AI suggestions
+                    ⚡️ Auto-accept AI rephrasing
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
