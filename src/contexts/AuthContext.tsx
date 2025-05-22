@@ -62,9 +62,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
-        toast("Error signing in", {
-          description: error.message,
-        });
         throw error;
       }
 
@@ -75,7 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       toast("Error signing in", {
         description: error.message,
       });
-      console.error("🔒 Error signing in:", error);
+      console.error("Error signing in:", error);
     }
   };
 
