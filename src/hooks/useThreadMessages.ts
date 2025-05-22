@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  getMessages,
-  saveMessage,
-  getUnreadMessageCount,
-} from "@/services/messageService";
+import { getMessages, getUnreadMessageCount } from "@/services/messageService";
+import { saveMessage } from "@/services/messageService/save-message";
 import { reviewMessage } from "@/utils/messageReview";
 import { generateThreadSummary } from "@/services/threadService";
 import type { Message } from "@/types/message";
 import type { Thread } from "@/types/thread";
 import { toast } from "sonner";
+import { useConnections } from "@/hooks/useConnections";
 
 export const useThreadMessages = (
   threadId: string | undefined,
@@ -29,6 +27,7 @@ export const useThreadMessages = (
   const [isReviewingMessage, setIsReviewingMessage] = useState(false);
 
   const { user } = useAuth();
+  const { connections } = useConnections();
 
   // Load unread count for the thread
   useEffect(() => {
@@ -48,7 +47,7 @@ export const useThreadMessages = (
   const loadMessages = async () => {
     if (!threadId) return [];
 
-    const messagesData = await getMessages(threadId);
+    const messagesData = await getMessages({ threadId, connections });
     setMessages(messagesData);
     return messagesData;
   };
@@ -135,11 +134,11 @@ export const useThreadMessages = (
     setIsSending(true);
 
     // Save the final message with kind version
-    const success = await saveMessage(
-      newMessage,
+    const success = await saveMessage({
       threadId,
-      selectedMessage, // Using the reviewed/selected text as the final text
-    );
+      text: selectedMessage,
+      type: "user_message",
+    });
 
     if (success) {
       // Add to local messages list immediately with isCurrentUser flag

@@ -22,7 +22,6 @@ import InviteConnectionDialog from "@/components/connections/InviteConnectionDia
 import { deleteConnection } from "@/services/connections/manageConnections.js";
 
 import { useConnections } from "@/hooks/useConnections";
-import { setConnectionsCache } from "@/services/messageService/messages.js";
 
 const Connections = () => {
   const [isInviting, setIsInviting] = useState(false);
@@ -31,11 +30,6 @@ const Connections = () => {
 
   const { connections, acceptedConnections, isLoading, refreshConnections } =
     useConnections();
-
-  // Keep messageService cache in sync
-  React.useEffect(() => {
-    setConnectionsCache(connections);
-  }, [connections]);
 
   // Filter connections by status and relation to current user
   const pendingIncomingConnections = connections.filter(

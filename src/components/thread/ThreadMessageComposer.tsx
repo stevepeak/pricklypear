@@ -35,10 +35,12 @@ import {
   DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog.js";
-import { saveMessage } from "@/services/messageService/messages.js";
+import { saveMessage } from "@/services/messageService/save-message";
 import { Message } from "@/types/message";
 import { toast } from "sonner";
 import { Badge } from "../ui/badge";
+import { useConnections } from "@/hooks/useConnections";
+import { getMessages } from "@/services/messageService/get-messages";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -77,6 +79,7 @@ const ThreadMessageComposer = React.forwardRef<
     const [isRequestingClose, setIsRequestingClose] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [showJumpToLatest, setShowJumpToLatest] = useState(false);
+    const { connections } = useConnections();
 
     // Initialise from localStorage on mount
     useEffect(() => {
@@ -141,12 +144,11 @@ const ThreadMessageComposer = React.forwardRef<
       if (!threadId) return;
       setIsRequestingClose(true);
       const text = "Requested to close this thread.";
-      const success = await saveMessage(
+      const success = await saveMessage({
         text,
         threadId,
-        undefined,
-        "request_close",
-      );
+        type: "request_close",
+      });
       if (success) {
         setIsRequestDialogOpen(false);
         await loadMessages();
@@ -156,10 +158,7 @@ const ThreadMessageComposer = React.forwardRef<
 
     const handleCopy = async () => {
       try {
-        const { getMessages } = await import(
-          "@/services/messageService/messages.js"
-        );
-        const messages = await getMessages(threadId);
+        const messages = await getMessages({ threadId, connections });
         if (!messages.length) {
           toast("Nothing to copy", {
             description: "No messages found in this thread.",
