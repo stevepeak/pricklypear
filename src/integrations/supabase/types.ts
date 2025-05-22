@@ -191,6 +191,7 @@ export type Database = {
       }
       threads: {
         Row: {
+          controls: Json | null
           created_at: string | null
           id: string
           status: string
@@ -199,6 +200,7 @@ export type Database = {
           topic: Database["public"]["Enums"]["thread_topic"] | null
         }
         Insert: {
+          controls?: Json | null
           created_at?: string | null
           id?: string
           status?: string
@@ -207,6 +209,7 @@ export type Database = {
           topic?: Database["public"]["Enums"]["thread_topic"] | null
         }
         Update: {
+          controls?: Json | null
           created_at?: string | null
           id?: string
           status?: string
