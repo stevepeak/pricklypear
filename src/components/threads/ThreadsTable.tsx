@@ -28,18 +28,13 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
   const navigate = useNavigate();
 
   const sortedThreads = useMemo(() => {
-    const sortDesc = (a: Thread, b: Thread) =>
-      b.createdAt.getTime() - a.createdAt.getTime();
-
-    const unreadPredicate = (t: Thread) => (threadCounts[t.id] || 0) > 0;
-
-    const withUnread = [...threads].filter(unreadPredicate).sort(sortDesc);
-    const withoutUnread = [...threads]
-      .filter((t) => !unreadPredicate(t))
-      .sort(sortDesc);
-
-    return [...withUnread, ...withoutUnread];
-  }, [threads, threadCounts]);
+    // Closed threads always at the bottom, then sort by createdAt desc
+    return [...threads].sort((a, b) => {
+      if (a.status === "closed" && b.status !== "closed") return 1;
+      if (a.status !== "closed" && b.status === "closed") return -1;
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+  }, [threads]);
 
   if (isLoading) {
     return (
@@ -68,6 +63,9 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
       <TableHeader className="bg-secondary/20 text-left">
         <TableRow>
           <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+            Status
+          </TableHead>
+          <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
             Participants
           </TableHead>
           <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
@@ -86,15 +84,26 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
           const topicInfo = getThreadTopicInfo(thread.topic);
           const participants = thread.participants ?? [];
 
-          // Closed threads get a subtle grey background, open threads stay white
-          const baseBgClass =
-            thread.status === "open" ? "bg-white" : "bg-gray-100";
-
           return (
             <TableRow
               key={thread.id}
               onClick={() => navigate(`/threads/${thread.id}`)}
+              className={cn(thread.status !== "open" && "bg-muted")}
             >
+              <TableCell className="px-4 py-2">
+              <Badge
+                  variant={thread.status === "open" ? "default" : "outline"}
+                  className={cn(
+                    "ml-2 px-2 py-0.5 text-xs",
+                    thread.status === "open"
+                      ? "bg-green-100 text-green-800 border-green-200"
+                      : "bg-muted text-muted-foreground border-muted",
+                  )}
+                >
+                  {thread.status === "open" ? "Open" : "Closed"}
+                </Badge>
+              </TableCell>
+
               {/* Participants */}
               <TableCell className="px-4 py-2">
                 <div className="flex items-center">
@@ -125,7 +134,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               </TableCell>
 
               {/* Title */}
-              <TableCell className="px-4 py-2 font-medium">
+              <TableCell className="px-4 py-2 font-medium flex items-center gap-2">
                 {thread.title}
               </TableCell>
 
