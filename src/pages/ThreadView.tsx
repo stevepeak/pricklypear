@@ -49,7 +49,10 @@ const ThreadView = () => {
 
   return (
     <>
-      <div className="flex flex-col flex-1 min-h-0">
+      <div
+        className="flex flex-col flex-1"
+        style={{ minHeight: "calc(100vh - 50px)" }}
+      >
         <ThreadHeader
           thread={thread}
           isGeneratingSummary={isGeneratingSummary}
