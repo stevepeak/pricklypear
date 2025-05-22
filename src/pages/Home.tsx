@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { MessageSquare, Lock, CircleCheck } from "lucide-react";
 import SubscriptionPlans from "@/components/SubscriptionPlans";
+import Footer from "@/components/ui/footer";
 
 const Home = () => {
   return (
@@ -59,6 +60,7 @@ const Home = () => {
 
       {/* Subscription / Pricing Section */}
       <SubscriptionPlans />
+      <Footer />
     </div>
   );
 };

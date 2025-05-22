@@ -1,7 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function Expenses() {
-
   return (
     <div className="max-w-2xl mx-auto py-10 px-4">
       <Card>
