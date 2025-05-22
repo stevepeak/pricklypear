@@ -232,7 +232,11 @@ const ThreadMessageComposer = React.forwardRef<
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <FileDown className="h-4 w-4 mr-2" /> Export as PDF{" "}
-                    <Badge key="coming-soon" variant="secondary" className="ml-2">
+                    <Badge
+                      key="coming-soon"
+                      variant="secondary"
+                      className="ml-2"
+                    >
                       Coming soon
                     </Badge>
                   </DropdownMenuItem>
@@ -242,14 +246,22 @@ const ThreadMessageComposer = React.forwardRef<
                   <DropdownMenuItem>
                     <MessageSquarePlus className="h-4 w-4 mr-2" /> Add as
                     context in new AI chat{" "}
-                    <Badge key="coming-soon" variant="secondary" className="ml-2">
+                    <Badge
+                      key="coming-soon"
+                      variant="secondary"
+                      className="ml-2"
+                    >
                       Coming soon
                     </Badge>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <FilePlus className="h-4 w-4 mr-2" /> Add photos and files{" "}
-                    <Badge key="coming-soon" variant="secondary" className="ml-2">
+                    <Badge
+                      key="coming-soon"
+                      variant="secondary"
+                      className="ml-2"
+                    >
                       Coming soon
                     </Badge>
                   </DropdownMenuItem>

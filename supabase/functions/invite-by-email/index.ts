@@ -29,11 +29,7 @@ async function fetchInviteeUser({ supabase, email }) {
   return user ?? null;
 }
 
-async function sendInvitationEmail({
-  to,
-  inviterName,
-  isExistingUser,
-}) {
+async function sendInvitationEmail({ to, inviterName, isExistingUser }) {
   const subject = `${inviterName} invited you to connect on The Prickly Pear`;
   const htmlExisting = `
     <p>Hi there,</p>
