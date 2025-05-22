@@ -56,21 +56,18 @@ export type Database = {
       }
       message_read_receipts: {
         Row: {
-          created_at: string
           id: string
           message_id: string
           read_at: string | null
           user_id: string
         }
         Insert: {
-          created_at?: string
           id?: string
           message_id: string
           read_at?: string | null
           user_id: string
         }
         Update: {
-          created_at?: string
           id?: string
           message_id?: string
           read_at?: string | null
@@ -139,21 +136,18 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          message_tone: string | null
           name: string
           notifications: Json | null
         }
         Insert: {
           created_at?: string
           id: string
-          message_tone?: string | null
           name: string
           notifications?: Json | null
         }
         Update: {
           created_at?: string
           id?: string
-          message_tone?: string | null
           name?: string
           notifications?: Json | null
         }
