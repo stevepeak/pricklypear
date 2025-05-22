@@ -40,7 +40,7 @@ async function sendInvitationEmail({ to, inviterName, isExistingUser }) {
   const htmlNew = `
     <p>Hi there,</p>
     <p><strong>${inviterName}</strong> has invited you to join The Prickly Pear.</p>
-    <p><a href="${APP_CONNECTIONS_URL}/auth">Create an account</a> to start the conversation with ${inviterName}</a>.</p>
+    <p><a href="${APP_CONNECTIONS_URL}/auth?email=${encodeURIComponent(to)}&inviterName=${encodeURIComponent(inviterName)}">Create an account</a> to start the conversation with ${inviterName}.</p>
     <p>Best,</p>
     <p>The Prickly Pear</p>
   `;
