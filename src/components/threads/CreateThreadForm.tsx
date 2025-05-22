@@ -14,6 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import type { Connection } from "@/types/connection";
 import React from "react";
+import { Switch } from "../ui/switch";
 
 interface CreateThreadFormProps {
   newThreadTitle: string;
@@ -47,56 +48,17 @@ const CreateThreadForm = ({
 
   return (
     <div className="space-y-4 mt-2">
+      <label className="text-sm font-medium mb-1 block">Title</label>
       <Input
-        placeholder="Thread title"
+        placeholder="What is this thread about?"
         value={newThreadTitle}
         onChange={(e) => setNewThreadTitle(e.target.value)}
         maxLength={50}
       />
 
-      <div>
-        <label className="text-sm font-medium mb-1 block">Select Contact</label>
-
-        {isLoadingContacts ? (
-          <div className="flex items-center justify-center py-2">
-            <Loader2 className="h-4 w-4 animate-spin text-primary mr-2" />
-            <span className="text-sm">Loading contacts...</span>
-          </div>
-        ) : connections.length === 0 ? (
-          <div className="text-center py-2 border border-dashed rounded-md">
-            <p className="text-sm text-muted-foreground">
-              No contacts available. Add contacts first.
-            </p>
-            <Button variant="link" size="sm" asChild className="mt-1">
-              <Link to="/connections">Go to Connections</Link>
-            </Button>
-          </div>
-        ) : (
-          <Select
-            value={selectedContactId}
-            onValueChange={setSelectedContactId}
-          >
-            <SelectTrigger className="normal-case">
-              <SelectValue placeholder="Select a contact" />
-            </SelectTrigger>
-            <SelectContent>
-              {connections.map((connection) => (
-                <SelectItem
-                  key={connection.otherUserId}
-                  value={connection.otherUserId}
-                  className="normal-case"
-                >
-                  {connection.name || connection.invitee_email}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
-      </div>
-
-      {setSelectedTopic && (
+{setSelectedTopic && (
         <div className="space-y-3">
-          <Label className="text-sm font-medium">Thread Topic</Label>
+          <Label className="text-sm font-medium">Topic</Label>
           <RadioGroup
             value={selectedTopic}
             onValueChange={(value) => {
@@ -124,6 +86,57 @@ const CreateThreadForm = ({
         </div>
       )}
 
+
+        <label className="text-sm font-medium mb-1 block">Participants</label>
+
+        {isLoadingContacts ? (
+          <div className="flex items-center justify-center py-2">
+            <Loader2 className="h-4 w-4 animate-spin text-primary mr-2" />
+            <span className="text-sm">Loading contacts...</span>
+          </div>
+        ) : connections.length === 0 ? (
+          <div className="text-center py-2 border border-dashed rounded-md">
+            <p className="text-sm text-muted-foreground">
+              No contacts available. Add contacts first.
+            </p>
+            <Button variant="link" size="sm" asChild className="mt-1">
+              <Link to="/connections">Go to Connections</Link>
+            </Button>
+          </div>
+        ) : (
+          <Select
+            value={selectedContactId}
+            onValueChange={setSelectedContactId}
+          >
+            <SelectTrigger className="normal-case">
+              <SelectValue placeholder="Select one or more connections" />
+            </SelectTrigger>
+            <SelectContent>
+              {connections.map((connection) => (
+                <SelectItem
+                  key={connection.otherUserId}
+                  value={connection.otherUserId}
+                  className="normal-case"
+                >
+                  {connection.name || connection.invitee_email}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+
+        <label className="text-sm font-medium mb-1 block">Controls</label>
+
+      
+      <div className="flex items-center space-x-2 mt-4">
+        <Switch 
+          id="require-ai-rephrased" 
+          checked={true}
+          onCheckedChange={() => {}}
+        />
+        <Label htmlFor="require-ai-approval">Only AI-rephrased messages can be sent</Label>
+      </div>
+     
       <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 mt-4">
         <Button variant="outline" onClick={onCancel} disabled={isCreating}>
           Cancel

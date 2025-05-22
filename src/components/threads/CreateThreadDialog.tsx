@@ -70,8 +70,7 @@ const CreateThreadDialog = ({
         <DialogHeader>
           <DialogTitle>Create New Thread</DialogTitle>
           <DialogDescription>
-            Give your conversation thread a name, select a topic, and choose a
-            contact to chat with.
+            Threads are focused conversations with specific topics and moderation rules. They help keep discussions on track and encourage quick resolution.
           </DialogDescription>
         </DialogHeader>
 
