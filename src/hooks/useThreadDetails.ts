@@ -28,6 +28,7 @@ export const useThreadDetails = (
 
   // Initialize thread and messages
   useEffect(() => {
+    console.log("useThreadDetails", { threadId });
     const initialize = async () => {
       setIsLoading(true);
       const threadData = await loadThread();

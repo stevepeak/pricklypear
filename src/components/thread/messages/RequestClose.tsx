@@ -10,11 +10,9 @@ import { toast } from "sonner";
 function RequestClose(props: {
   message: Message;
   threadStatus: "open" | "closed";
+  isPending: boolean;
 }) {
-  const { message, threadStatus } = props;
-  const isPending = Boolean(
-    message.details && (message.details as { pending?: boolean }).pending,
-  );
+  const { message, threadStatus, isPending } = props;
   const isCurrentUserSender = message.isCurrentUser;
 
   const handleAccept = async () => {
@@ -42,9 +40,28 @@ function RequestClose(props: {
     }
   };
 
-  const handleDecline = () => {
-    // TODO: Implement decline logic
-    // toast("Declined close request", { description: "You declined the close request." });
+  const handleDecline = async () => {
+    try {
+      const user = await requireCurrentUser();
+      const success = await saveMessage({
+        text: `${user.user_metadata.name} declined to close the thread.`,
+        threadId: message.threadId,
+        type: "close_declined",
+      });
+      if (success) {
+        toast("Declined close request", {
+          description: "You declined the close request.",
+        });
+      } else {
+        toast("Failed to decline close request", {
+          description: "Could not save message.",
+        });
+      }
+    } catch (err) {
+      toast("Failed to decline close request", {
+        description: err instanceof Error ? err.message : "Unknown error",
+      });
+    }
   };
 
   return (

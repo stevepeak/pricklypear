@@ -51,7 +51,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
     <div className="flex-grow px-4 py-6 mb-4 mx-10">
       {messages.length > 0 ? (
         <>
-          {messages.map((message) => {
+          {messages.map((message, idx) => {
             switch (message.type) {
               case "user_message":
                 return message.isCurrentUser ? (
@@ -59,14 +59,25 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
                 ) : (
                   <MessageFromParticipant key={message.id} message={message} />
                 );
-              case "request_close":
+              case "request_close": {
+                // isPending is true only if this is the newest request_close and there are no close_declined after it
+                const isNewestRequestClose =
+                  messages
+                    .slice(idx + 1)
+                    .find((m) => m.type === "request_close") === undefined;
+                const hasDeclinedAfter = messages
+                  .slice(idx + 1)
+                  .some((m) => m.type === "close_declined");
+                const isPending = isNewestRequestClose && !hasDeclinedAfter;
                 return (
                   <RequestClose
                     key={message.id}
                     message={message}
                     threadStatus={thread.status}
+                    isPending={isPending}
                   />
                 );
+              }
               case "close_declined":
               case "close_accepted":
                 return <CloseDecision key={message.id} message={message} />;

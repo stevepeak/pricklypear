@@ -20,7 +20,6 @@ export const useThreadState = (threadId: string | undefined) => {
     if (!threadData) {
       toast("Error", {
         description: "Thread not found",
-        variant: "destructive",
       });
       navigate("/threads");
       return null;
