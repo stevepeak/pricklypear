@@ -123,6 +123,26 @@ serve(async (req) => {
         },
       );
     }
+
+    if (type === "close_accepted") {
+      const { error: closeError } = await supabase
+        .from("threads")
+        .update({ status: "closed" })
+        .eq("id", threadId);
+
+      if (closeError) {
+        return new Response(
+          JSON.stringify({
+            error: closeError.message || "Failed to close thread",
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          },
+        );
+      }
+    }
+
     return new Response(JSON.stringify({ id: messageData.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
