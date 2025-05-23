@@ -66,7 +66,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
                 Generating summary...
               </p>
             ) : (
-              <p>{thread.summary ?? "No summary provided"}</p>
+              <p>{thread.summary ?? ""}</p>
             )}
           </div>
         </div>
