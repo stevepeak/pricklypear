@@ -6,7 +6,7 @@ export type Message = {
   sender: string;
   timestamp: Date;
 
-  threadId?: string;
+  threadId: string;
 
   // Flag to identify current user's messages
   isCurrentUser?: boolean;

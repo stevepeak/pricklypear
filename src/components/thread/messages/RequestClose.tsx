@@ -3,6 +3,9 @@ import { cn } from "@/lib/utils";
 import type { Message } from "@/types/message";
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
+import { saveMessage } from "@/services/messageService/save-message";
+import { requireCurrentUser } from "@/utils/authCache";
+import { toast } from "sonner";
 
 function RequestClose(props: { message: Message }) {
   const { message } = props;
@@ -11,9 +14,28 @@ function RequestClose(props: { message: Message }) {
   );
   const isCurrentUserSender = message.isCurrentUser;
 
-  const handleAccept = () => {
-    // TODO: Implement accept logic
-    // toast("Accepted close request", { description: "You accepted the close request." });
+  const handleAccept = async () => {
+    try {
+      const user = await requireCurrentUser();
+      const success = await saveMessage({
+        text: `${user.user_metadata.name} agreed to close the thread.`,
+        threadId: message.threadId,
+        type: "close_accepted",
+      });
+      if (success) {
+        toast("Accepted close request", {
+          description: "You accepted the close request.",
+        });
+      } else {
+        toast("Failed to accept close request", {
+          description: "Could not save message.",
+        });
+      }
+    } catch (err) {
+      toast("Failed to accept close request", {
+        description: err instanceof Error ? err.message : "Unknown error",
+      });
+    }
   };
   const handleDecline = () => {
     // TODO: Implement decline logic
