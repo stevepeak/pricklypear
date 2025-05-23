@@ -57,7 +57,6 @@ serve(async (req) => {
 
   try {
     const { text, threadId, userId, type } = await req.json();
-    console.log("insert-message", { text, threadId, userId, type });
 
     const messageSchema = z.object({
       text: z.string().min(1, "Message text is required"),
@@ -73,7 +72,6 @@ serve(async (req) => {
 
     const result = messageSchema.safeParse({ text, threadId, userId, type });
     if (!result.success) {
-      console.log("insert-message validation error", result);
       return new Response(
         JSON.stringify({ error: result.error.errors[0].message }),
         {
