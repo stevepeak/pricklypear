@@ -92,6 +92,7 @@ export type Database = {
       }
       messages: {
         Row: {
+          details: Json | null
           id: string
           text: string | null
           thread_id: string | null
@@ -100,6 +101,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          details?: Json | null
           id?: string
           text?: string | null
           thread_id?: string | null
@@ -108,6 +110,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          details?: Json | null
           id?: string
           text?: string | null
           thread_id?: string | null

@@ -17,4 +17,6 @@ export type Message = {
 
   // Message type (e.g., 'user_message', 'request_close', etc)
   type: Database["public"]["Enums"]["message_type"];
+
+  details: Record<string, unknown> | null;
 };

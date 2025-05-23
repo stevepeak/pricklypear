@@ -36,6 +36,7 @@ export const getMessages = async (args: {
         threadId: msg.thread_id || "",
         isCurrentUser: msg.user_id === user.id,
         type: msg.type,
+        details: msg.details,
       };
     });
 
