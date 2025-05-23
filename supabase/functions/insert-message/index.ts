@@ -57,6 +57,7 @@ serve(async (req) => {
 
   try {
     const { text, threadId, userId, type } = await req.json();
+    console.log("insert-message", { text, threadId, userId, type });
     if (!text || !threadId || !userId) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
