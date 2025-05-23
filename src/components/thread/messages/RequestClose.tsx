@@ -2,9 +2,24 @@ import { formatThreadTimestamp } from "@/utils/formatTimestamp";
 import { cn } from "@/lib/utils";
 import type { Message } from "@/types/message";
 import ReactMarkdown from "react-markdown";
+import { Button } from "@/components/ui/button";
 
 function RequestClose(props: { message: Message }) {
   const { message } = props;
+  const isPending = Boolean(
+    message.details && (message.details as { pending?: boolean }).pending,
+  );
+  const isCurrentUserSender = message.isCurrentUser;
+
+  const handleAccept = () => {
+    // TODO: Implement accept logic
+    // toast("Accepted close request", { description: "You accepted the close request." });
+  };
+  const handleDecline = () => {
+    // TODO: Implement decline logic
+    // toast("Declined close request", { description: "You declined the close request." });
+  };
+
   return (
     <div
       className={cn(
@@ -23,6 +38,18 @@ function RequestClose(props: { message: Message }) {
           )}
         >
           <ReactMarkdown>{message.text}</ReactMarkdown>
+          {isPending && !isCurrentUserSender && (
+            <div className="flex w-full mt-2 justify-center">
+              <div className="flex gap-2">
+                <Button size="sm" variant="default" onClick={handleAccept}>
+                  Accept
+                </Button>
+                <Button size="sm" variant="outline" onClick={handleDecline}>
+                  Decline
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
