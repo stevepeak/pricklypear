@@ -8,6 +8,13 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+function errorResponse(message, status = 500) {
+  return new Response(JSON.stringify({ error: message }), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
 async function createReadReceipts(
   supabase,
   messageId,
@@ -72,13 +79,7 @@ serve(async (req) => {
 
     const result = messageSchema.safeParse({ text, threadId, userId, type });
     if (!result.success) {
-      return new Response(
-        JSON.stringify({ error: result.error.errors[0].message }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
+      return errorResponse(result.error.errors[0].message, 400);
     }
 
     const supabase = getSupabaseServiceClient();
@@ -96,13 +97,7 @@ serve(async (req) => {
       .single();
 
     if (error || !messageData?.id) {
-      return new Response(
-        JSON.stringify({ error: error?.message || "Failed to insert message" }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
+      return errorResponse(error?.message || "Failed to insert message");
     }
 
     // Create read receipts
@@ -113,15 +108,7 @@ serve(async (req) => {
       userId,
     );
     if (rrError) {
-      return new Response(
-        JSON.stringify({
-          error: rrError.message || "Failed to create read receipts",
-        }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
+      return errorResponse(rrError.message || "Failed to create read receipts");
     }
 
     if (type === "close_accepted") {
@@ -131,15 +118,7 @@ serve(async (req) => {
         .eq("id", threadId);
 
       if (closeError) {
-        return new Response(
-          JSON.stringify({
-            error: closeError.message || "Failed to close thread",
-          }),
-          {
-            status: 500,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          },
-        );
+        return errorResponse(closeError.message || "Failed to close thread");
       }
     }
 
@@ -147,9 +126,6 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(error.message);
   }
 });
