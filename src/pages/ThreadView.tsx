@@ -31,7 +31,7 @@ const ThreadView = () => {
     loadMessages,
   } = useThreadDetails(threadId, composerRef);
 
-  const isThreadClosed = thread?.status === "closed";
+  const threadIsOpen = thread.status === "open";
 
   // Ref for scrolling to bottom
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -66,19 +66,20 @@ const ThreadView = () => {
             messagesEndRef={messagesEndRef}
           />
 
-          <ThreadMessageComposer
-            ref={composerRef}
-            newMessage={newMessage}
-            setNewMessage={setNewMessage}
-            isSending={isSending || isReviewingMessage}
-            isThreadClosed={isThreadClosed}
-            onSendMessage={handleSendMessage}
-            scrollToBottom={scrollToBottom}
-            threadId={threadId}
-            loadMessages={loadMessages}
-            autoFocus={true}
-            messagesEndRef={messagesEndRef}
-          />
+          {threadIsOpen && (
+            <ThreadMessageComposer
+              ref={composerRef}
+              newMessage={newMessage}
+              setNewMessage={setNewMessage}
+              isSending={isSending || isReviewingMessage}
+              onSendMessage={handleSendMessage}
+              scrollToBottom={scrollToBottom}
+              threadId={threadId}
+              loadMessages={loadMessages}
+              autoFocus={true}
+              messagesEndRef={messagesEndRef}
+            />
+          )}
         </div>
       </div>
 

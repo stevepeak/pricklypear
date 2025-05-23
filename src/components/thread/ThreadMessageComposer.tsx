@@ -46,7 +46,6 @@ interface ThreadMessageComposerProps {
   newMessage: string;
   setNewMessage: (message: string) => void;
   isSending: boolean;
-  isThreadClosed: boolean;
   onSendMessage: () => void;
   scrollToBottom?: () => void;
   threadId: string;
@@ -64,7 +63,6 @@ const ThreadMessageComposer = React.forwardRef<
       newMessage,
       setNewMessage,
       isSending,
-      isThreadClosed,
       onSendMessage,
       scrollToBottom,
       threadId,
@@ -101,10 +99,10 @@ const ThreadMessageComposer = React.forwardRef<
 
     // Focus textarea on mount if autoFocus is true and not disabled
     useEffect(() => {
-      if (autoFocus && !isSending && !isThreadClosed && textareaRef.current) {
+      if (autoFocus && !isSending && textareaRef.current) {
         textareaRef.current.focus();
       }
-    }, [autoFocus, isSending, isThreadClosed]);
+    }, [autoFocus, isSending]);
 
     // Show 'Jump to latest message' button if bottom is not visible
     useEffect(() => {
@@ -134,7 +132,7 @@ const ThreadMessageComposer = React.forwardRef<
       // Cmd+Enter (Mac) or Ctrl+Enter (Windows/Linux) sends the message
       if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
         e.preventDefault();
-        if (newMessage.trim() && !isSending && !isThreadClosed) {
+        if (newMessage.trim() && !isSending) {
           onSendMessage();
         }
       }
@@ -198,27 +196,20 @@ const ThreadMessageComposer = React.forwardRef<
           )}
           <Textarea
             ref={textareaRef}
-            placeholder={
-              isThreadClosed ? "Thread is closed" : "Type your message..."
-            }
+            placeholder={"Type your message..."}
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            disabled={isSending || isThreadClosed}
+            disabled={isSending}
             className="w-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none px-4 pt-4 shadow-none"
             rows={3}
-            autoFocus={autoFocus && !isSending && !isThreadClosed}
+            autoFocus={autoFocus && !isSending}
           />
           <div className="flex justify-between items-center px-4 pb-4">
             <div className="flex gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="shrink-0"
-                    disabled={isThreadClosed}
-                  >
+                  <Button variant="ghost" size="icon" className="shrink-0">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -283,7 +274,6 @@ const ThreadMessageComposer = React.forwardRef<
                       <Switch
                         id="auto-accept-switch"
                         checked={autoAccept}
-                        disabled={isThreadClosed}
                         onCheckedChange={handleToggleAutoAccept}
                       />
                     </div>
@@ -295,7 +285,7 @@ const ThreadMessageComposer = React.forwardRef<
               </TooltipProvider>
               <Button
                 onClick={onSendMessage}
-                disabled={!newMessage.trim() || isSending || isThreadClosed}
+                disabled={!newMessage.trim() || isSending}
                 size="default"
                 className="shrink-0 flex items-center gap-1"
               >
