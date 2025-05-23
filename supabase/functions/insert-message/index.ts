@@ -58,25 +58,22 @@ serve(async (req) => {
   try {
     const { text, threadId, userId, type } = await req.json();
     console.log("insert-message", { text, threadId, userId, type });
-    if (!text || !threadId || !userId) {
-      return new Response(
-        JSON.stringify({ error: "Missing required fields" }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
-    }
 
     const messageSchema = z.object({
       text: z.string().min(1, "Message text is required"),
       threadId: z.string().uuid("Invalid thread ID format"),
       userId: z.string().uuid("Invalid user ID format"),
-      type: z.enum(["user_message", "request_close"]),
+      type: z.enum([
+        "user_message",
+        "request_close",
+        "close_accepted",
+        "close_declined",
+      ]),
     });
 
     const result = messageSchema.safeParse({ text, threadId, userId, type });
     if (!result.success) {
+      console.log("insert-message validation error", result);
       return new Response(
         JSON.stringify({ error: result.error.errors[0].message }),
         {
