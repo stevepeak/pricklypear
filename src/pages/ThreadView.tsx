@@ -31,7 +31,7 @@ const ThreadView = () => {
     loadMessages,
   } = useThreadDetails(threadId, composerRef);
 
-  const threadIsOpen = thread.status === "open";
+  const threadIsOpen = thread?.status === "open";
 
   // Ref for scrolling to bottom
   const messagesEndRef = useRef<HTMLDivElement>(null);
