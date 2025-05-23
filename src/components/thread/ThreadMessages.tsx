@@ -7,6 +7,7 @@ import type { Thread } from "@/types/thread";
 import MessageFromMe from "@/components/thread/messages/MessageFromMe";
 import MessageFromParticipant from "@/components/thread/messages/MessageFromParticipant";
 import RequestClose from "@/components/thread/messages/RequestClose";
+import CloseDecision from "./messages/CloseDecision";
 
 interface ThreadMessagesProps {
   messages: Message[];
@@ -68,6 +69,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
                 );
               case "close_declined":
               case "close_accepted":
+                return <CloseDecision key={message.id} message={message} />;
               default:
                 return (
                   <div
