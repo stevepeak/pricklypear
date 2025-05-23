@@ -91,7 +91,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               className={cn(thread.status !== "open" && "bg-muted")}
             >
               <TableCell className="px-4 py-2">
-              <Badge
+                <Badge
                   variant={thread.status === "open" ? "default" : "outline"}
                   className={cn(
                     "ml-2 px-2 py-0.5 text-xs",
