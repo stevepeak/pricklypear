@@ -19,6 +19,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   messages,
   user,
   messagesEndRef: externalMessagesEndRef,
+  thread,
 }) => {
   const localMessagesEndRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = externalMessagesEndRef || localMessagesEndRef;
@@ -58,7 +59,13 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
                   <MessageFromParticipant key={message.id} message={message} />
                 );
               case "request_close":
-                return <RequestClose key={message.id} message={message} />;
+                return (
+                  <RequestClose
+                    key={message.id}
+                    message={message}
+                    threadStatus={thread.status}
+                  />
+                );
               case "close_declined":
               case "close_accepted":
               default:
