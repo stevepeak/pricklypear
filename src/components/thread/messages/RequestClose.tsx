@@ -26,6 +26,7 @@ function RequestClose(props: {
         type: "close_accepted",
       });
       if (success) {
+        window.location.reload();
         toast("Accepted close request", {
           description: "You accepted the close request.",
         });
@@ -40,6 +41,7 @@ function RequestClose(props: {
       });
     }
   };
+
   const handleDecline = () => {
     // TODO: Implement decline logic
     // toast("Declined close request", { description: "You declined the close request." });
