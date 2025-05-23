@@ -1,19 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { requireCurrentUser } from "@/utils/authCache";
 
-import {
-  ConnectionStatus,
-  Connection,
-  InviteResponse,
-} from "@/types/connection";
-
-/*
- * Re-export the connection helpers from this (now users) namespace so that the
- * rest of the app has a single import surface.
- *
- * NOTE: All helpers live in the same directory; therefore `"."` is the correct
- * path (instead of `"./connections"` that was used previously).
- */
 export {
   getConnections,
   updateConnectionStatus,
