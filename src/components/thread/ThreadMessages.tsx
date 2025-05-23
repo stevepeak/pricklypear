@@ -1,10 +1,12 @@
 import React, { useRef, useEffect } from "react";
-import MessageBubble from "@/components/thread/MessageBubble";
 import type { Message } from "@/types/message";
 import { markMessagesAsRead } from "@/services/messageService";
 import type { User } from "@supabase/supabase-js";
 import { MessageCircle } from "lucide-react";
 import type { Thread } from "@/types/thread";
+import MessageFromMe from "@/components/thread/messages/MessageFromMe";
+import MessageFromParticipant from "@/components/thread/messages/MessageFromParticipant";
+import RequestClose from "@/components/thread/messages/RequestClose";
 
 interface ThreadMessagesProps {
   messages: Message[];
@@ -47,9 +49,29 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
     <div className="flex-grow px-4 py-6 mb-4 mx-10">
       {messages.length > 0 ? (
         <>
-          {messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
-          ))}
+          {messages.map((message) => {
+            switch (message.type) {
+              case "user_message":
+                return message.isCurrentUser ? (
+                  <MessageFromMe key={message.id} message={message} />
+                ) : (
+                  <MessageFromParticipant key={message.id} message={message} />
+                );
+              case "request_close":
+                return <RequestClose key={message.id} message={message} />;
+              case "close_declined":
+              case "close_accepted":
+              default:
+                return (
+                  <div
+                    key={message.id}
+                    className="text-center text-xs text-gray-400 my-2"
+                  >
+                    Unhandled message type: {message.type}
+                  </div>
+                );
+            }
+          })}
         </>
       ) : (
         <div className="text-center text-muted-foreground/60 py-8">
