@@ -42,8 +42,8 @@ const CreateThreadDialog = ({
   const {
     newThreadTitle,
     setNewThreadTitle,
-    selectedContactId,
-    setSelectedContactId,
+    selectedContactIds,
+    setSelectedContactIds,
     selectedTopic,
     setSelectedTopic,
     isCreating,
@@ -54,7 +54,7 @@ const CreateThreadDialog = ({
     setDialogOpen(open);
     if (open) {
       setNewThreadTitle("");
-      setSelectedContactId("");
+      setSelectedContactIds([]);
       setSelectedTopic(undefined);
     }
   };
@@ -80,8 +80,8 @@ const CreateThreadDialog = ({
         <CreateThreadForm
           newThreadTitle={newThreadTitle}
           setNewThreadTitle={setNewThreadTitle}
-          selectedContactId={selectedContactId}
-          setSelectedContactId={setSelectedContactId}
+          selectedContactIds={selectedContactIds}
+          setSelectedContactIds={setSelectedContactIds}
           selectedTopic={selectedTopic}
           setSelectedTopic={setSelectedTopic}
           connections={connections}

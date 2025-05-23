@@ -10,7 +10,7 @@ export const useThreadCreation = (
   onClose: () => void,
 ) => {
   const [newThreadTitle, setNewThreadTitle] = useState("");
-  const [selectedContactId, setSelectedContactId] = useState<string>("");
+  const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<ThreadTopic | undefined>(
     undefined,
   );
@@ -34,9 +34,9 @@ export const useThreadCreation = (
       return;
     }
 
-    if (!selectedContactId) {
-      toast("Contact required", {
-        description: "Please select a contact for the thread",
+    if (selectedContactIds.length === 0) {
+      toast("Participants required", {
+        description: "Please select at least one participant for the thread",
       });
       return;
     }
@@ -52,7 +52,7 @@ export const useThreadCreation = (
 
     const newThread = await createThread(
       trimmedTitle,
-      [selectedContactId],
+      selectedContactIds,
       selectedTopic,
       { requireAiApproval },
     );
@@ -62,7 +62,7 @@ export const useThreadCreation = (
     if (newThread) {
       onThreadCreated(newThread);
       setNewThreadTitle("");
-      setSelectedContactId("");
+      setSelectedContactIds([]);
       setSelectedTopic(undefined);
       onClose();
       // Redirect the user to the newly-created thread
@@ -81,8 +81,8 @@ export const useThreadCreation = (
   return {
     newThreadTitle,
     setNewThreadTitle,
-    selectedContactId,
-    setSelectedContactId,
+    selectedContactIds,
+    setSelectedContactIds,
     selectedTopic,
     setSelectedTopic,
     isCreating,

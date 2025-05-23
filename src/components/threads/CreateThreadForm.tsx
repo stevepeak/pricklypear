@@ -1,15 +1,14 @@
 import { THREAD_TOPIC_INFO, type ThreadTopic } from "@/types/thread";
 import { Link } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import type { Connection } from "@/types/connection";
@@ -19,8 +18,8 @@ import { Switch } from "../ui/switch";
 interface CreateThreadFormProps {
   newThreadTitle: string;
   setNewThreadTitle: (title: string) => void;
-  selectedContactId: string;
-  setSelectedContactId: (contactId: string) => void;
+  selectedContactIds: string[];
+  setSelectedContactIds: (contactIds: string[]) => void;
   selectedTopic?: ThreadTopic;
   setSelectedTopic?: (topic: ThreadTopic | undefined) => void;
   connections: Connection[];
@@ -35,8 +34,8 @@ interface CreateThreadFormProps {
 const CreateThreadForm = ({
   newThreadTitle,
   setNewThreadTitle,
-  selectedContactId,
-  setSelectedContactId,
+  selectedContactIds,
+  setSelectedContactIds,
   selectedTopic,
   setSelectedTopic,
   connections,
@@ -107,22 +106,48 @@ const CreateThreadForm = ({
           </Button>
         </div>
       ) : (
-        <Select value={selectedContactId} onValueChange={setSelectedContactId}>
-          <SelectTrigger className="normal-case">
-            <SelectValue placeholder="Select one or more connections" />
-          </SelectTrigger>
-          <SelectContent>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="justify-between normal-case">
+              {selectedContactIds.length === 0
+                ? "Select participants"
+                : selectedContactIds.length === 1
+                ? connections.find((c) => c.otherUserId === selectedContactIds[0])
+                    ?.name ||
+                  connections.find((c) => c.otherUserId === selectedContactIds[0])
+                    ?.invitee_email ||
+                  "1 participant"
+                : `${selectedContactIds.length} people`}
+              <ChevronDown className="h-4 w-4 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="start">
             {connections.map((connection) => (
-              <SelectItem
+              <DropdownMenuCheckboxItem
                 key={connection.otherUserId}
-                value={connection.otherUserId}
+                checked={selectedContactIds.includes(connection.otherUserId)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setSelectedContactIds([
+                      ...selectedContactIds,
+                      connection.otherUserId,
+                    ]);
+                  } else {
+                    setSelectedContactIds(
+                      selectedContactIds.filter(
+                        (id) => id !== connection.otherUserId,
+                      ),
+                    );
+                  }
+                }}
+                onSelect={(e) => e.preventDefault()}
                 className="normal-case"
               >
                 {connection.name || connection.invitee_email}
-              </SelectItem>
+              </DropdownMenuCheckboxItem>
             ))}
-          </SelectContent>
-        </Select>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
 
       <label className="text-sm font-medium mb-1 block">Controls</label>
@@ -154,7 +179,7 @@ const CreateThreadForm = ({
           }}
           disabled={
             !newThreadTitle.trim() ||
-            !selectedContactId ||
+            selectedContactIds.length === 0 ||
             !selectedTopic ||
             isCreating
           }
