@@ -17,6 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Prickly Pear is an AI-assisted co-parenting chat application built with React + Supabase. The codebase includes both the frontend and Supabase Edge Functions.
 
 **Tech Stack:**
+
 - Frontend: React 19 + TypeScript + Tailwind CSS 4
 - UI Components: Radix UI primitives with shadcn/ui patterns
 - Backend: Supabase (Auth, PostgreSQL, Real-time, Edge Functions)
@@ -25,6 +26,7 @@ Prickly Pear is an AI-assisted co-parenting chat application built with React + 
 - AI Features: OpenAI integration via Edge Functions
 
 **Key Data Flow:**
+
 - Authentication managed by Supabase Auth with AuthContext provider
 - Real-time updates via Supabase subscriptions for messages/threads
 - AI assistance through Edge Functions (review-message, summarize-thread)
@@ -34,18 +36,21 @@ Prickly Pear is an AI-assisted co-parenting chat application built with React + 
 ## Code Organization
 
 **Services Pattern:**
+
 - `src/services/` - Data access layer for threads, messages, connections
 - `src/hooks/` - Custom React hooks for state management
 - `src/contexts/` - Global providers (AuthContext, ConnectionsContext)
 - `src/types/` - Shared TypeScript models
 
 **UI Components:**
+
 - `src/components/ui/` - Reusable primitives (buttons, dialogs, forms)
 - `src/components/` - Feature-specific components organized by domain
 - Layout uses SidebarProvider + breadcrumb navigation
 - Forms use React Hook Form + Zod validation
 
 **Key Files:**
+
 - `src/integrations/supabase/client.ts` - Supabase client configuration
 - `src/App.tsx` - Main routing and auth-gated layout
 - `build.ts` - Custom Bun bundler with Tailwind plugin

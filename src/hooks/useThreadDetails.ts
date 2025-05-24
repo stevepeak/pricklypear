@@ -40,7 +40,6 @@ export const useThreadDetails = (
     initialize();
   }, [threadId]);
 
-
   // Return all the hooks' values and methods
   return {
     // From useThreadState
