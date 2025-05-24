@@ -112,12 +112,14 @@ const CreateThreadForm = ({
               {selectedContactIds.length === 0
                 ? "Select participants"
                 : selectedContactIds.length === 1
-                ? connections.find((c) => c.otherUserId === selectedContactIds[0])
-                    ?.name ||
-                  connections.find((c) => c.otherUserId === selectedContactIds[0])
-                    ?.invitee_email ||
-                  "1 participant"
-                : `${selectedContactIds.length} people`}
+                  ? connections.find(
+                      (c) => c.otherUserId === selectedContactIds[0],
+                    )?.name ||
+                    connections.find(
+                      (c) => c.otherUserId === selectedContactIds[0],
+                    )?.invitee_email ||
+                    "1 participant"
+                  : `${selectedContactIds.length} people`}
               <ChevronDown className="h-4 w-4 ml-2" />
             </Button>
           </DropdownMenuTrigger>
