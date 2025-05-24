@@ -15,14 +15,14 @@ export default async function sendEmail(args: {
   }
 
   const resend = new Resend(apiKey);
-  const from = Deno.env.get("RESEND_FROM_EMAIL");
-  if (!from) {
+  const fromEmail = Deno.env.get("RESEND_FROM_EMAIL");
+  if (!fromEmail) {
     console.warn("RESEND_FROM_EMAIL missing – skipping email send");
     return;
   }
 
   const { error } = await resend.emails.send({
-    from: `The Prickly Pear <${from}>`,
+    from: `The Prickly Pear <${fromEmail}>`,
     to: args.to,
     subject: args.subject,
     html: args.html,
