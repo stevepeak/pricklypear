@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getSupabaseServiceClient } from "../utils/supabase.ts";
 import { z } from "https://deno.land/x/zod@v3.24.2/mod.ts";
 import sendEmail from "../send-email/index.ts";
+import { sendSlackNotification } from "../utils/send-slack-notification.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -126,6 +127,19 @@ serve(async (req) => {
             .update({ status: "closed" })
             .eq("id", threadId)
         : null,
+      // Send Slack notification
+      sendSlackNotification({
+        text: result.data.text,
+        blocks: [
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `*Thread ID:* ${threadId}\n*Sender:* ${senderName}`
+            }
+          }
+        ]
+      }),
       // Send emails to participants
       ...participants
         // remove sender
