@@ -62,7 +62,7 @@ const CreateThreadDialog = ({
   return (
     <Dialog open={dialogOpen} onOpenChange={handleDialogOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button variant="ghost">
           <MessageCirclePlus className="mr-2 h-4 w-4" />
           New Thread
         </Button>

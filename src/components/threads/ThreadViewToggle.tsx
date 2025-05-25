@@ -1,7 +1,12 @@
 import React from "react";
 import { List, LayoutGrid } from "lucide-react";
-
-import { Switch } from "@/components/ui/switch";
+import { Toggle } from "@/components/ui/toggle";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 
 /**
  * DD-90
@@ -21,43 +26,34 @@ interface ThreadViewToggleProps {
   className?: string;
 }
 
-const iconClass =
-  "pointer-events-none absolute top-1/2 -translate-y-1/2 h-3 w-3 transition-colors";
-
-/**
- * Wrapper around the generic Switch that shows the relevant icons in the
- * track and maps the boolean `checked` state to a string view value.
- */
 function ThreadViewToggle(props: ThreadViewToggleProps) {
   const { value, onValueChange, className } = props;
-  const checked = value === "cards";
+  const isCards = value === "cards";
+  const nextView = isCards ? "table" : "cards";
+  const tooltipText = `Change view to ${nextView === "cards" ? "cards" : "table"}`;
 
   return (
-    <div
-      className={
-        className ? `relative inline-flex ${className}` : "relative inline-flex"
-      }
-    >
-      <Switch
-        checked={checked}
-        onCheckedChange={(isChecked) =>
-          onValueChange(isChecked ? "cards" : "table")
-        }
-        aria-label="Toggle thread view"
-      />
-      {/* Left icon – table view */}
-      <List
-        className={`${iconClass} left-1 ${
-          checked ? "text-muted-foreground" : "text-secondary"
-        }`}
-      />
-      {/* Right icon – cards view */}
-      <LayoutGrid
-        className={`${iconClass} right-1 ${
-          checked ? "text-secondary" : "text-muted-foreground"
-        }`}
-      />
-    </div>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Toggle
+            aria-label={tooltipText}
+            pressed={isCards}
+            onPressedChange={(pressed) =>
+              onValueChange(pressed ? "cards" : "table")
+            }
+            className={className}
+          >
+            {isCards ? (
+              <List className="h-4 w-4" />
+            ) : (
+              <LayoutGrid className="h-4 w-4" />
+            )}
+          </Toggle>
+        </TooltipTrigger>
+        <TooltipContent side="top">{tooltipText}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 
