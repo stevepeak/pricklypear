@@ -158,7 +158,7 @@ export default function Documents() {
                 </TableCell>
                 <TableCell className="flex gap-2 justify-end">
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
                     aria-label={`Download ${doc.original_filename}`}
                     onClick={() => {
@@ -167,16 +167,14 @@ export default function Documents() {
                     }}
                   >
                     <Download className="mr-1" size={16} />
-                    Download
                   </Button>
                   <Button
-                    variant="destructive"
+                    variant="ghost"
                     size="sm"
                     aria-label={`Delete ${doc.original_filename}`}
                     onClick={() => handleDelete(doc.id)}
                   >
                     <Trash2 className="mr-1" size={16} />
-                    Delete
                   </Button>
                 </TableCell>
               </TableRow>
