@@ -122,7 +122,6 @@ serve(async (req) => {
 
     if (participantsError) {
       handleError(participantsError);
-      console.error("participantsError:", participantsError);
       return errorResponse(
         participantsError?.message || "No participants found",
       );

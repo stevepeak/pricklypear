@@ -22,8 +22,8 @@ function initSentry() {
  * Safe to call in any catch block.
  */
 export function handleError(error: unknown) {
+  console.error("Error:", error);
   initSentry();
-  console.error(error);
   if (sentryInitialized) {
     Sentry.captureException(error);
     // Optionally flush events for serverless/short-lived functions
