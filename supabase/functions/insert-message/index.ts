@@ -109,9 +109,11 @@ serve(async (req) => {
 
     // Fetch all participants
     const { data, error: participantsError } = await supabase
-      .from("private.participants")
+      .from("participants")
       .select(`*`)
       .eq("thread_id", threadId);
+    
+    console.log(data);
 
     const participants = participantSchema.parse(data);
 
