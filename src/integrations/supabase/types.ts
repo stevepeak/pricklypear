@@ -242,12 +242,15 @@ export type Database = {
     }
     Functions: {
       create_thread: {
-        Args: {
-          title: string
-          topic: Database["public"]["Enums"]["thread_topic"]
-          controls: Json
-          participant_ids: string[]
-        }
+        Args:
+          | { title: string; ai: boolean }
+          | {
+              title: string
+              ai: boolean
+              topic: string
+              controls: Json
+              participant_ids: string[]
+            }
         Returns: string
       }
       is_thread_participant: {

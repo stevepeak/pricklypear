@@ -7,17 +7,18 @@ import type { Thread, ThreadTopic } from "@/types/thread";
 
 export const useThreadCreation = (
   onThreadCreated: (thread: Thread) => void,
-  onClose: () => void,
+  onClose: () => void
 ) => {
   const [newThreadTitle, setNewThreadTitle] = useState("");
   const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<ThreadTopic | undefined>(
-    undefined,
+    undefined
   );
+  const [requireAiApproval, setRequireAiApproval] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const navigate = useNavigate();
 
-  const handleCreateThread = async (user: User, requireAiApproval: boolean) => {
+  const handleCreateThread = async (user: User) => {
     if (!user) {
       toast("Authentication required", {
         description: "Please sign in to create threads",
@@ -25,6 +26,7 @@ export const useThreadCreation = (
       navigate("/auth");
       return;
     }
+
     const trimmedTitle = newThreadTitle.trim();
 
     if (!trimmedTitle) {
@@ -50,32 +52,54 @@ export const useThreadCreation = (
 
     setIsCreating(true);
 
-    const newThread = await createThread(
-      trimmedTitle,
-      selectedContactIds,
-      selectedTopic,
-      { requireAiApproval },
-    );
+    const newThread = await createThread({
+      title: trimmedTitle,
+      ai: false,
+      participantIds: selectedContactIds,
+      topic: selectedTopic,
+      controls: { requireAiApproval },
+    });
 
     setIsCreating(false);
 
     if (newThread) {
-      onThreadCreated(newThread);
-      setNewThreadTitle("");
-      setSelectedContactIds([]);
-      setSelectedTopic(undefined);
-      onClose();
-      // Redirect the user to the newly-created thread
-      navigate(`/threads/${newThread.id}`);
-
-      toast("Thread created", {
-        description: `"${trimmedTitle}" has been created successfully.`,
-      });
+      resetFormAndNavigate(newThread);
     } else {
       toast("Error", {
         description: "Failed to create thread. Please try again.",
       });
     }
+  };
+
+  const handleCreateAIChat = async (user: User) => {
+    setIsCreating(true);
+
+    const newThread = await createThread({ title: "AI Chat", ai: true });
+
+    setIsCreating(false);
+
+    if (newThread) {
+      resetFormAndNavigate(newThread);
+    } else {
+      toast("Error", {
+        description: "Failed to create thread. Please try again.",
+      });
+    }
+  };
+
+  const resetFormAndNavigate = (thread: Thread) => {
+    onThreadCreated(thread);
+    setNewThreadTitle("");
+    setSelectedContactIds([]);
+    setRequireAiApproval(true);
+    setSelectedTopic(undefined);
+    onClose();
+    // Redirect the user to the newly-created thread
+    navigate(`/threads/${thread.id}`);
+
+    toast("Thread created", {
+      description: `"${thread.title}" has been created successfully.`,
+    });
   };
 
   return {
@@ -86,6 +110,9 @@ export const useThreadCreation = (
     selectedTopic,
     setSelectedTopic,
     isCreating,
+    requireAiApproval,
+    setRequireAiApproval,
     handleCreateThread,
+    handleCreateAIChat,
   };
 };

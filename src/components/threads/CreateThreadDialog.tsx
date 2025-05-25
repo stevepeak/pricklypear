@@ -1,5 +1,5 @@
 import React from "react";
-import { MessageCirclePlus } from "lucide-react";
+import { Bot, Loader2, MessageCircle, MessageCirclePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,6 +14,7 @@ import { useThreadCreation } from "@/hooks/useThreadCreation";
 import CreateThreadForm from "./CreateThreadForm";
 import type { Thread } from "@/types/thread";
 import type { User } from "@supabase/supabase-js";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface CreateThreadDialogProps {
   onThreadCreated: (newThread: Thread) => void;
@@ -30,7 +31,6 @@ const CreateThreadDialog = ({
 }: CreateThreadDialogProps) => {
   // Internal state for dialog open status
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const [requireAiApproval, setRequireAiApproval] = React.useState(true);
 
   // Use controlled state if external state is provided
   const dialogOpen =
@@ -47,7 +47,10 @@ const CreateThreadDialog = ({
     selectedTopic,
     setSelectedTopic,
     isCreating,
+    requireAiApproval,
+    setRequireAiApproval,
     handleCreateThread,
+    handleCreateAIChat,
   } = useThreadCreation(onThreadCreated, () => setDialogOpen(false));
 
   const handleDialogOpen = (open: boolean) => {
@@ -71,27 +74,61 @@ const CreateThreadDialog = ({
         <DialogHeader>
           <DialogTitle>Create New Thread</DialogTitle>
           <DialogDescription>
-            Threads are focused conversations with specific topics and
-            moderation rules. They help keep discussions on track and encourage
-            quick resolution.
+            Choose a conversation between you and contacts, or an AI chat.
           </DialogDescription>
         </DialogHeader>
 
-        <CreateThreadForm
-          newThreadTitle={newThreadTitle}
-          setNewThreadTitle={setNewThreadTitle}
-          selectedContactIds={selectedContactIds}
-          setSelectedContactIds={setSelectedContactIds}
-          selectedTopic={selectedTopic}
-          setSelectedTopic={setSelectedTopic}
-          connections={connections}
-          isLoadingContacts={isLoadingContacts}
-          isCreating={isCreating}
-          requireAiApproval={requireAiApproval}
-          setRequireAiApproval={setRequireAiApproval}
-          onSubmit={() => handleCreateThread(user, requireAiApproval)}
-          onCancel={() => handleDialogOpen(false)}
-        />
+        <Tabs defaultValue="conversation" className="w-full mt-4">
+          <TabsList className="w-full">
+            <TabsTrigger value="conversation" className="flex-1">
+              <MessageCircle className="mr-2 h-4 w-4" /> Conversation
+            </TabsTrigger>
+            <TabsTrigger value="ai-chat" className="flex-1">
+              <Bot className="mr-2 h-4 w-4" /> AI Chat
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="conversation">
+            <CreateThreadForm
+              newThreadTitle={newThreadTitle}
+              setNewThreadTitle={setNewThreadTitle}
+              selectedContactIds={selectedContactIds}
+              setSelectedContactIds={setSelectedContactIds}
+              selectedTopic={selectedTopic}
+              setSelectedTopic={setSelectedTopic}
+              connections={connections}
+              isLoadingContacts={isLoadingContacts}
+              isCreating={isCreating}
+              requireAiApproval={requireAiApproval}
+              setRequireAiApproval={setRequireAiApproval}
+              onSubmit={() => handleCreateThread(user)}
+              onCancel={() => handleDialogOpen(false)}
+            />
+          </TabsContent>
+          <TabsContent value="ai-chat">
+            <div className="py-8 text-center text-muted-foreground">
+              <p className="mb-4">
+                Start a new, private AI chat to ask questions with all the context from your threads and documents.
+                </p>
+            <Button
+              onClick={() => handleCreateAIChat(user)}
+              disabled={isCreating}
+              className="w-2/3"
+            >
+              {isCreating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <Bot className="mr-2 h-4 w-4" />
+                  Start AI Chat
+                </>
+              )}
+            </Button>
+            </div>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

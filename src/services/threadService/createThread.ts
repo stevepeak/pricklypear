@@ -2,12 +2,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Thread, ThreadStatus, ThreadTopic } from "@/types/thread";
 import { requireCurrentUser, getUserProfile } from "@/utils/authCache";
 
-export const createThread = async (
-  title: string,
-  participantIds: string[],
-  topic: ThreadTopic,
-  controls?: { requireAiApproval?: boolean },
-): Promise<Thread | null> => {
+export const createThread = async (args: {
+  title: string;
+  ai: boolean;
+  participantIds?: string[];
+  topic?: ThreadTopic;
+  controls?: { requireAiApproval?: boolean };
+}): Promise<Thread | null> => {
+  const { title, ai, participantIds, topic, controls } = args;
+
   const MAX_THREAD_TITLE_LENGTH = 50;
 
   // Trim and validate before we do anything expensive.
@@ -17,7 +20,7 @@ export const createThread = async (
     trimmedTitle.length > MAX_THREAD_TITLE_LENGTH
   ) {
     console.error(
-      `Thread title must be between 1 and ${MAX_THREAD_TITLE_LENGTH} characters.`,
+      `Thread title must be between 1 and ${MAX_THREAD_TITLE_LENGTH} characters.`
     );
     return null;
   }
@@ -31,10 +34,11 @@ export const createThread = async (
       "create_thread",
       {
         title: trimmedTitle,
+        ai,
         topic,
         participant_ids: participantIds,
         controls,
-      },
+      }
     );
 
     if (threadError || !threadId) {
@@ -52,6 +56,7 @@ export const createThread = async (
       summary: `New thread created by ${profile.name}`,
       topic,
       controls,
+      ai,
     };
   } catch (error) {
     console.error("Error creating thread:", error);
