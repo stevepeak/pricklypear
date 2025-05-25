@@ -7,12 +7,12 @@ import type { Thread, ThreadTopic } from "@/types/thread";
 
 export const useThreadCreation = (
   onThreadCreated: (thread: Thread) => void,
-  onClose: () => void
+  onClose: () => void,
 ) => {
   const [newThreadTitle, setNewThreadTitle] = useState("");
   const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<ThreadTopic | undefined>(
-    undefined
+    undefined,
   );
   const [requireAiApproval, setRequireAiApproval] = useState(true);
   const [isCreating, setIsCreating] = useState(false);

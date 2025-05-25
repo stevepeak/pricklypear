@@ -47,7 +47,10 @@ export const useThreadMessages = (
   const loadMessages = async () => {
     if (!threadId) return [];
 
-    const messagesData = await getMessages({ threadId, connections });
+    const messagesData = await getMessages({
+      threadId,
+      connections,
+    });
     setMessages(messagesData);
     return messagesData;
   };
@@ -150,6 +153,7 @@ export const useThreadMessages = (
         timestamp: new Date(),
         threadId: threadId,
         isCurrentUser: true, // Explicitly set isCurrentUser to true
+        details: null,
       };
 
       setMessages((prev) => [...prev, newMsg]);
@@ -171,7 +175,13 @@ export const useThreadMessages = (
 
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
-    handleInitiateMessageReview();
+    if (thread.ai) {
+      handleSendReviewedMessage(newMessage.trim());
+      // TODO add some feedback that AI is thinking
+      // TODO have AI handle the question
+    } else {
+      handleInitiateMessageReview();
+    }
   };
 
   return {

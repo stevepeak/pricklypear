@@ -107,25 +107,26 @@ const CreateThreadDialog = ({
           <TabsContent value="ai-chat">
             <div className="py-8 text-center text-muted-foreground">
               <p className="mb-4">
-                Start a new, private AI chat to ask questions with all the context from your threads and documents.
-                </p>
-            <Button
-              onClick={() => handleCreateAIChat(user)}
-              disabled={isCreating}
-              className="w-2/3"
-            >
-              {isCreating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                <>
-                  <Bot className="mr-2 h-4 w-4" />
-                  Start AI Chat
-                </>
-              )}
-            </Button>
+                Start a new, private AI chat to ask questions with all the
+                context from your threads and documents.
+              </p>
+              <Button
+                onClick={() => handleCreateAIChat(user)}
+                disabled={isCreating}
+                className="w-2/3"
+              >
+                {isCreating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Bot className="mr-2 h-4 w-4" />
+                    Start AI Chat
+                  </>
+                )}
+              </Button>
             </div>
           </TabsContent>
         </Tabs>

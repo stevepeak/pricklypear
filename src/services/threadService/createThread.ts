@@ -20,7 +20,7 @@ export const createThread = async (args: {
     trimmedTitle.length > MAX_THREAD_TITLE_LENGTH
   ) {
     console.error(
-      `Thread title must be between 1 and ${MAX_THREAD_TITLE_LENGTH} characters.`
+      `Thread title must be between 1 and ${MAX_THREAD_TITLE_LENGTH} characters.`,
     );
     return null;
   }
@@ -38,7 +38,7 @@ export const createThread = async (args: {
         topic,
         participant_ids: participantIds,
         controls,
-      }
+      },
     );
 
     if (threadError || !threadId) {

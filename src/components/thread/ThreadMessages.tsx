@@ -48,9 +48,9 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   };
 
   return (
-    <div className="flex-grow px-4 py-6 mb-4 mx-10">
+    <>
       {messages.length > 0 ? (
-        <>
+        <div className="flex-grow px-4 py-6 mb-4 mx-10">
           {messages.map((message, idx) => {
             switch (message.type) {
               case "user_message":
@@ -92,19 +92,17 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
                 );
             }
           })}
-        </>
+        </div>
       ) : (
-        <div className="text-center text-muted-foreground/60 py-8">
-          <div className="flex flex-col items-center gap-2">
-            <MessageCircle className="h-12 w-12" />
-            <p className="italic">
-              No messages yet. Start the conversation below.
-            </p>
-          </div>
+        <div className="flex flex-col flex-1 items-center justify-center h-full text-center text-muted-foreground/60 px-4 py-6 mb-4 mx-10">
+          <MessageCircle className="h-12 w-12 mb-2" />
+          <p className="italic">
+            No messages yet. Start the conversation below.
+          </p>
         </div>
       )}
       <div ref={messagesEndRef} />
-    </div>
+    </>
   );
 };
 

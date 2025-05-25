@@ -18,9 +18,6 @@ import {
   Copy,
   MessageSquarePlus,
   ArrowUp,
-  SpellCheck2,
-  SpellCheck,
-  Eye,
   ShieldCheck,
   ShieldOff,
 } from "lucide-react";
@@ -87,7 +84,6 @@ const ThreadMessageComposer = React.forwardRef<
     const [showJumpToLatest, setShowJumpToLatest] = useState(false);
     const { connections } = useConnections();
 
-    // Initialise from localStorage on mount
     useEffect(() => {
       const stored = localStorage.getItem("autoAcceptAISuggestions");
       setAutoAccept(stored === "true");
@@ -147,7 +143,7 @@ const ThreadMessageComposer = React.forwardRef<
     };
 
     const handleRequestClose = async () => {
-      if (!thread.id) return;
+      if (!thread?.id) return;
       setIsRequestingClose(true);
       const text = "Requested to close this thread.";
       const success = await saveMessage({
@@ -323,7 +319,7 @@ const ThreadMessageComposer = React.forwardRef<
                 onClick={onSendMessage}
                 disabled={!newMessage.trim() || isSending}
                 size="default"
-                className="shrink-0 flex items-center gap-1"
+                className={`shrink-0 flex items-center gap-1 ${thread.ai ? "bg-purple-600 hover:bg-purple-700" : ""}`}
               >
                 {isSending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
