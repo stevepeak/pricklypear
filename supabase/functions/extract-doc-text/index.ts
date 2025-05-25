@@ -181,7 +181,7 @@ serve(async (req) => {
     const { data: document, error: insertError } = await supabase
       .from("documents")
       .insert({
-        user_id,
+        user_id: user.id,
         file_path,
         original_filename,
         extracted_text: extractedText,
