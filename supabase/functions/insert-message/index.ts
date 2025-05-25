@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getSupabaseServiceClient } from "../utils/supabase.ts";
 import { z } from "https://deno.land/x/zod@v3.24.2/mod.ts";
+import { handleError } from "../utils/handle-error.ts";
 import sendEmail from "../send-email/index.ts";
 import { sendSlackNotification } from "../utils/send-slack-notification.ts";
 
@@ -170,6 +171,7 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
+    handleError(error);
     return errorResponse(error.message);
   }
 });
