@@ -21,6 +21,8 @@ import {
   SpellCheck2,
   SpellCheck,
   Eye,
+  ShieldCheck,
+  ShieldOff,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -302,9 +304,9 @@ const ThreadMessageComposer = React.forwardRef<
                           onPressedChange={handleToggleAutoAccept}
                         >
                           {autoAccept ? (
-                            <SpellCheck className="h-4 w-4" />
+                            <ShieldCheck className="h-4 w-4" />
                           ) : (
-                            <Eye className="h-4 w-4" />
+                            <ShieldOff className="h-4 w-4" />
                           )}
                         </Toggle>
                       </div>
