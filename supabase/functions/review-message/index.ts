@@ -58,7 +58,10 @@ async function fetchThreadTopic(supabase, threadId) {
   return { topic: data.topic, title: data.title };
 }
 
-async function checkIfOnTopic(openai, { threadTopic, threadTitle, message }) {
+async function checkIfOnTopic(
+  openai,
+  { threadTopic, threadTitle, message },
+): Promise<boolean> {
   // TODO not working yet
   return true;
   const topicCheckPrompt = `Thread topic: ${threadTopic}\nThread title: ${threadTitle}\nMessage: ${message}\n\nIs this message on-topic for the thread? Reply with only 'yes' or 'no'.`;
