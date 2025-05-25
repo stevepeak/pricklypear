@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
+import { Toggle } from "@/components/ui/toggle";
 import {
   Tooltip,
   TooltipContent,
@@ -12,15 +12,15 @@ import {
   Loader2,
   Send,
   Plus,
-  Mic,
   FilePlus,
   Lock,
   FileDown,
   Copy,
   MessageSquarePlus,
-  MessageSquare,
-  MessageCircle,
   ArrowUp,
+  SpellCheck2,
+  SpellCheck,
+  Eye,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -296,15 +296,23 @@ const ThreadMessageComposer = React.forwardRef<
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1">
-                        <Switch
-                          id="auto-accept-switch"
-                          checked={autoAccept}
-                          onCheckedChange={handleToggleAutoAccept}
-                        />
+                        <Toggle
+                          aria-label="Auto-accept AI rephrasing"
+                          pressed={autoAccept}
+                          onPressedChange={handleToggleAutoAccept}
+                        >
+                          {autoAccept ? (
+                            <SpellCheck className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </Toggle>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent side="top">
-                      ⚡️ Auto-accept AI rephrasing
+                      {autoAccept
+                        ? "AI rephrasing is automatically accepted."
+                        : "You will confirm AI rephrasing before sending."}
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
