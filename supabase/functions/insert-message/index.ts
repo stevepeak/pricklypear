@@ -31,11 +31,15 @@ const participantSchema = z.array(
     user_id: z.string().uuid(),
     name: z.string(),
     email: z.string().email(),
-    notifications: z.object({
-      newMessages: z.object({
-        email: z.boolean(),
-      }).nullable(),
-    }).nullable(),
+    notifications: z
+      .object({
+        newMessages: z
+          .object({
+            email: z.boolean(),
+          })
+          .nullable(),
+      })
+      .nullable(),
   }),
 );
 
