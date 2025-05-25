@@ -8,6 +8,8 @@ import MessageReviewDialog from "@/components/thread/MessageReviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import React from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import ThreadViewSkeleton from "@/components/thread/ThreadViewSkeleton";
 
 const ThreadView = () => {
   const { threadId } = useParams<{ threadId: string }>();
@@ -66,11 +68,7 @@ const ThreadView = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <ThreadViewSkeleton />;
   }
 
   return (

@@ -85,7 +85,10 @@ export function AppSidebar() {
           path: "/documents",
           label: [
             "Documents",
-            <Badge key="coming-soon" className="ml-2 bg-lime-100 text-lime-800 border-lime-200">
+            <Badge
+              key="coming-soon"
+              className="ml-2 bg-lime-100 text-lime-800 border-lime-200"
+            >
               Coming soon
             </Badge>,
           ],
@@ -95,7 +98,10 @@ export function AppSidebar() {
           path: "/calendar",
           label: [
             "Calendar",
-            <Badge key="coming-soon" className="ml-2 bg-lime-100 text-lime-800 border-lime-200">
+            <Badge
+              key="coming-soon"
+              className="ml-2 bg-lime-100 text-lime-800 border-lime-200"
+            >
               Coming soon
             </Badge>,
           ],
@@ -105,7 +111,10 @@ export function AppSidebar() {
           path: "/expenses",
           label: [
             "Expenses",
-            <Badge key="coming-soon" className="ml-2 bg-lime-100 text-lime-800 border-lime-200">
+            <Badge
+              key="coming-soon"
+              className="ml-2 bg-lime-100 text-lime-800 border-lime-200"
+            >
               Coming soon
             </Badge>,
           ],
