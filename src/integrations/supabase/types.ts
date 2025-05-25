@@ -194,6 +194,7 @@ export type Database = {
       }
       threads: {
         Row: {
+          ai: boolean
           controls: Json | null
           created_at: string | null
           created_by: string | null
@@ -204,6 +205,7 @@ export type Database = {
           topic: Database["public"]["Enums"]["thread_topic"] | null
         }
         Insert: {
+          ai?: boolean
           controls?: Json | null
           created_at?: string | null
           created_by?: string | null
@@ -214,6 +216,7 @@ export type Database = {
           topic?: Database["public"]["Enums"]["thread_topic"] | null
         }
         Update: {
+          ai?: boolean
           controls?: Json | null
           created_at?: string | null
           created_by?: string | null
