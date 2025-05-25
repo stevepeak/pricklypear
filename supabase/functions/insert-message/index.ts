@@ -96,7 +96,7 @@ serve(async (req) => {
       .select(
         `
         user_id,
-        auth_users:user_id (
+        auth.users:user_id (
           email
         ),
         profiles:user_id (
@@ -114,6 +114,8 @@ serve(async (req) => {
         participantsError?.message || "No participants found",
       );
     }
+
+    console.log("participants:", participants);
 
     // Find sender's name for email body
     const sender = participants.find((p) => p.user_id === userId);
@@ -156,7 +158,7 @@ serve(async (req) => {
         )
         .map((participant) =>
           sendEmail({
-            to: participant.auth_users.email,
+            to: participant.auth.users.email,
             subject: `🌵 New message from ${senderName} via The Prickly Pear`,
             html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
           }),
