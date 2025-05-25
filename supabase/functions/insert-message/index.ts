@@ -159,7 +159,7 @@ serve(async (req) => {
         ),
     ]);
 
-    if (readReceiptsRes || closeThreadRes) {
+    if (readReceiptsRes?.error || closeThreadRes?.error) {
       return errorResponse(
         readReceiptsRes?.error?.message ||
           closeThreadRes?.error?.message ||
@@ -171,8 +171,8 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
+    console.error("insert-message error:", error);
     handleError(error);
-    console.error(error);
     return errorResponse(error.message);
   }
 });
