@@ -34,8 +34,8 @@ const participantSchema = z.array(
     notifications: z.object({
       newMessages: z.object({
         email: z.boolean(),
-      }),
-    }),
+      }).nullable(),
+    }).nullable(),
   }),
 );
 
