@@ -196,6 +196,7 @@ export type Database = {
         Row: {
           controls: Json | null
           created_at: string | null
+          created_by: string | null
           id: string
           status: string
           summary: string | null
@@ -205,6 +206,7 @@ export type Database = {
         Insert: {
           controls?: Json | null
           created_at?: string | null
+          created_by?: string | null
           id?: string
           status?: string
           summary?: string | null
@@ -214,23 +216,56 @@ export type Database = {
         Update: {
           controls?: Json | null
           created_at?: string | null
+          created_by?: string | null
           id?: string
           status?: string
           summary?: string | null
           title?: string
           topic?: Database["public"]["Enums"]["thread_topic"] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "threads_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
-      [_ in never]: never
+      participants: {
+        Row: {
+          email: string | null
+          name: string | null
+          notifications: Json | null
+          thread_id: string | null
+          user_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "thread_participants_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "threads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "thread_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       create_thread: {
         Args: {
           title: string
-          topic: string
+          topic: Database["public"]["Enums"]["thread_topic"]
           controls: Json
           participant_ids: string[]
         }
