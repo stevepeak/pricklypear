@@ -100,13 +100,13 @@ serve(async (req) => {
           full_name,
           notifications
         )
-      `
+      `,
       )
       .eq("thread_id", threadId);
 
     if (!participants || participantsError) {
       return errorResponse(
-        participantsError?.message || "No participants found"
+        participantsError?.message || "No participants found",
       );
     }
 
@@ -135,10 +135,10 @@ serve(async (req) => {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `*Thread ID:* ${threadId}\n*Sender:* ${senderName}`
-            }
-          }
-        ]
+              text: `*Thread ID:* ${threadId}\n*Sender:* ${senderName}`,
+            },
+          },
+        ],
       }),
       // Send emails to participants
       ...participants
@@ -147,14 +147,14 @@ serve(async (req) => {
         // remove if you have email notification disabled
         .filter(
           (participant) =>
-            participant.profiles.notifications?.newMessages?.email !== false
+            participant.profiles.notifications?.newMessages?.email !== false,
         )
         .map((participant) =>
           sendEmail({
             to: participant.auth_users.email,
             subject: `🌵 New message from ${senderName} via The Prickly Pear`,
             html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
-          })
+          }),
         ),
     ]);
 
@@ -162,7 +162,7 @@ serve(async (req) => {
       return errorResponse(
         readReceiptsRes?.error?.message ||
           closeThreadRes?.error?.message ||
-          "Failed to insert message"
+          "Failed to insert message",
       );
     }
 
