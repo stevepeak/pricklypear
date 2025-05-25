@@ -115,7 +115,7 @@ serve(async (req) => {
     const sender = participants.find((p) => p.user_id === userId);
     const senderName = sender?.profiles?.full_name || "Someone";
 
-    const [readReceiptsRes, closeThreadRes] = await Promise.all([
+    const [readReceiptsRes, closeThreadRes, slackNotificationRes] = await Promise.all([
       // Create read receipts using already-fetched participants
       createReadReceipts({
         messageId: messageData.id,
@@ -159,12 +159,19 @@ serve(async (req) => {
         ),
     ]);
 
-    if (readReceiptsRes?.error || closeThreadRes?.error) {
-      return errorResponse(
-        readReceiptsRes?.error?.message ||
-          closeThreadRes?.error?.message ||
-          "Failed to insert message",
-      );
+    if (readReceiptsRes?.error) {
+      handleError(readReceiptsRes.error);
+      console.error("readReceiptsRes.error:", readReceiptsRes.error);
+    }
+
+    if (closeThreadRes?.error) {
+      handleError(closeThreadRes.error);
+      console.error("closeThreadRes.error:", closeThreadRes.error);
+    }
+
+    if (slackNotificationRes?.error) {
+      handleError(slackNotificationRes.error);
+      console.error("slackNotificationRes.error:", slackNotificationRes.error);
     }
 
     return new Response(JSON.stringify({ id: messageData.id }), {
