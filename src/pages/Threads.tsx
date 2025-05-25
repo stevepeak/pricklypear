@@ -77,7 +77,7 @@ const Threads = () => {
           />
           <Input
             className="pl-9 pr-3 h-9 border-none shadow-none focus-visible:ring-0"
-            placeholder="Search threads..."
+            placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             type="search"
