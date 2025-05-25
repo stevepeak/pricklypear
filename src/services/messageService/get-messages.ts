@@ -23,7 +23,7 @@ export const getMessages = async (args: {
     const user = await requireCurrentUser();
 
     // Process messages in parallel for better performance
-    const messages = (messagesData || []).map((msg) => {
+    const messages: Message[] = (messagesData || []).map((msg) => {
       const connection = connections.find(
         (conn) =>
           conn.otherUserId === msg.user_id || conn.user_id === msg.user_id,
