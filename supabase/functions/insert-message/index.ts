@@ -26,6 +26,19 @@ const messageSchema = z.object({
   ]),
 });
 
+const participantSchema = z.array(
+  z.object({
+    user_id: z.string().uuid(),
+    name: z.string(),
+    email: z.string().email(),
+    notifications: z.object({
+      newMessages: z.object({
+        email: z.boolean(),
+      }),
+    }),
+  }),
+);
+
 function errorResponse(message, status = 500) {
   return new Response(JSON.stringify({ error: message }), {
     status,
@@ -91,21 +104,12 @@ serve(async (req) => {
     }
 
     // Fetch all participants
-    const { data: participants, error: participantsError } = await supabase
-      .from("thread_participants")
-      .select(
-        `
-        user_id,
-        auth.users:user_id (
-          email
-        ),
-        profiles:user_id (
-          full_name,
-          notifications
-        )
-      `,
-      )
+    const { data, error: participantsError } = await supabase
+      .from("participants")
+      .select(`*`)
       .eq("thread_id", threadId);
+
+    const participants = participantSchema.parse(data);
 
     if (!participants || participantsError) {
       handleError(participantsError);
@@ -115,55 +119,54 @@ serve(async (req) => {
       );
     }
 
-    console.log("participants:", participants);
-
     // Find sender's name for email body
-    const sender = participants.find((p) => p.user_id === userId);
-    const senderName = sender?.profiles?.full_name || "Someone";
+    const senderName =
+      participants.find((p) => p.user_id === userId)?.name || "Someone";
 
-    const [readReceiptsRes, closeThreadRes, slackNotificationRes] = await Promise.all([
-      // Create read receipts using already-fetched participants
-      createReadReceipts({
-        messageId: messageData.id,
-        participants: participants.filter((p) => p.user_id !== userId),
-      }),
-      // Mark thread as closed
-      type === "close_accepted"
-        ? supabase
-            .from("threads")
-            .update({ status: "closed" })
-            .eq("id", threadId)
-        : null,
-      // Send Slack notification
-      sendSlackNotification({
-        text: result.data.text,
-        blocks: [
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: `*Thread ID:* ${threadId}\n*Sender:* ${senderName}`,
+    const [readReceiptsRes, closeThreadRes, slackNotificationRes] =
+      await Promise.all([
+        // Create read receipts using already-fetched participants
+        createReadReceipts({
+          messageId: messageData.id,
+          participants: participants.filter((p) => p.user_id !== userId),
+        }),
+        // Mark thread as closed
+        type === "close_accepted"
+          ? supabase
+              .from("threads")
+              .update({ status: "closed" })
+              .eq("id", threadId)
+          : null,
+        // Send Slack notification
+        sendSlackNotification({
+          text: result.data.text,
+          blocks: [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `*Thread ID:* ${threadId}\n*Sender:* ${senderName}`,
+              },
             },
-          },
-        ],
-      }),
-      // Send emails to participants
-      ...participants
-        // remove sender
-        .filter((participant) => participant.user_id !== userId)
-        // remove if you have email notification disabled
-        .filter(
-          (participant) =>
-            participant.profiles.notifications?.newMessages?.email !== false,
-        )
-        .map((participant) =>
-          sendEmail({
-            to: participant.auth.users.email,
-            subject: `🌵 New message from ${senderName} via The Prickly Pear`,
-            html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
-          }),
-        ),
-    ]);
+          ],
+        }),
+        // Send emails to participants
+        ...participants
+          // remove sender
+          .filter((participant) => participant.user_id !== userId)
+          // remove if you have email notification disabled
+          .filter(
+            (participant) =>
+              participant.notifications?.newMessages?.email !== false,
+          )
+          .map((participant) =>
+            sendEmail({
+              to: participant.email,
+              subject: `🌵 New message from ${senderName} via The Prickly Pear`,
+              html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
+            }),
+          ),
+      ]);
 
     if (readReceiptsRes?.error) {
       handleError(readReceiptsRes.error);
