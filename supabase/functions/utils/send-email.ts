@@ -1,5 +1,5 @@
 import { Resend } from "https://esm.sh/resend@4.5.0";
-import { getSupabaseServiceClient } from "../utils/supabase";
+import { getSupabaseServiceClient } from "./supabase.js";
 
 /**
  * Send an email via the Resend SDK. Logs on failure but never throws.
