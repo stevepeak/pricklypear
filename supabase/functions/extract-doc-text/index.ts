@@ -185,8 +185,7 @@ serve(async (req) => {
         file_path,
         original_filename,
         extracted_text: extractedText,
-        embedding,
-        word_count: wordCount,
+        embedding
       })
       .select()
       .single();
