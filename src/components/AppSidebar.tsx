@@ -31,6 +31,7 @@ import {
   Link2,
   MessageSquareText,
   BookUser,
+  Baby,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -80,11 +81,16 @@ export function AppSidebar() {
           icon: <BookUser className="h-4 w-4 mr-2" />,
           badge: pendingIncomingCount > 0 ? pendingIncomingCount : undefined,
         },
-        // {
-        //   path: "/children",
-        //   label: "Children Profiles",
-        //   icon: <Baby className="h-4 w-4 mr-2" />,
-        // },
+        {
+          path: "/children",
+          label: ["Children Profiles", <Badge
+            key="coming-soon"
+            className="ml-2 bg-lime-100 text-lime-800 border-lime-200"
+          >
+            Coming soon
+          </Badge>],
+          icon: <Baby className="h-4 w-4 mr-2" />,
+        },
         {
           path: "/documents",
           label: "Documents",
