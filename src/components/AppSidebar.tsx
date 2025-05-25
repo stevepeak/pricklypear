@@ -87,15 +87,7 @@ export function AppSidebar() {
         // },
         {
           path: "/documents",
-          label: [
-            "Documents",
-            <Badge
-              key="coming-soon"
-              className="ml-2 bg-lime-100 text-lime-800 border-lime-200"
-            >
-              Coming soon
-            </Badge>,
-          ],
+          label: "Documents",
           icon: <FileText className="h-4 w-4 mr-2" />,
         },
         {
