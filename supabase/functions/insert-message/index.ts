@@ -34,12 +34,12 @@ const participantSchema = z.array(
       .object({
         newMessages: z
           .object({
-            email: z.boolean(),
+            email: z.boolean().nullable(),
           })
           .nullable(),
       })
       .nullable(),
-  }),
+  })
 );
 
 function errorResponse(message, status = 500) {
@@ -106,96 +106,97 @@ serve(async (req) => {
       return errorResponse(error?.message || "Failed to insert message");
     }
 
-    // Fetch all participants
-    const { data, error: participantsError } = await supabase
-      .from("thread_participants")
-      .select(
-        `
+    (async () => {
+      // Fetch all participants
+      const { data, error: participantsError } = await supabase
+        .from("thread_participants")
+        .select(
+          `
         profiles (
           id,
           name,
           notifications
         )
-      `,
-      )
-      .eq("thread_id", threadId);
+      `
+        )
+        .eq("thread_id", threadId);
 
-    if (participantsError) {
-      handleError(participantsError);
-      return errorResponse(
-        participantsError?.message || "No participants found",
-      );
-    }
+      if (participantsError) {
+        handleError(participantsError);
+        return errorResponse(
+          participantsError?.message || "No participants found"
+        );
+      }
 
-    console.log("participants", data);
+      const participants = participantSchema.parse(data.map((p) => p.profiles));
 
-    const participants = data.map((p) => p.profiles);
+      // Find sender's name for email body
+      const senderName =
+        participants.find((p) => p.id === userId)?.name || "Someone";
 
-    console.log("participants2", participants);
-
-    // Find sender's name for email body
-    const senderName =
-      participants.find((p) => p.id === userId)?.name || "Someone";
-
-    const [readReceiptsRes, closeThreadRes, slackNotificationRes] =
-      await Promise.all([
-        // Create read receipts using already-fetched participants
-        createReadReceipts({
-          messageId: messageData.id,
-          participants: participants.filter((p) => p.id !== userId),
-        }),
-        // Mark thread as closed
-        type === "close_accepted"
-          ? supabase
-              .from("threads")
-              .update({ status: "closed" })
-              .eq("id", threadId)
-          : null,
-        // Send Slack notification
-        sendSlackNotification({
-          text: result.data.text,
-          blocks: [
-            {
-              type: "section",
-              text: {
-                type: "mrkdwn",
-                text: `*Thread ID:* ${threadId}\n*Sender:* ${senderName}`,
+      const [readReceiptsRes, closeThreadRes, slackNotificationRes] =
+        await Promise.all([
+          // Create read receipts using already-fetched participants
+          createReadReceipts({
+            messageId: messageData.id,
+            participants: participants.filter((p) => p.id !== userId),
+          }),
+          // Mark thread as closed
+          type === "close_accepted"
+            ? supabase
+                .from("threads")
+                .update({ status: "closed" })
+                .eq("id", threadId)
+            : null,
+          // Send Slack notification
+          sendSlackNotification({
+            text: result.data.text,
+            blocks: [
+              {
+                type: "section",
+                text: {
+                  type: "mrkdwn",
+                  text: `*Thread ID:* ${threadId}\n*Sender:* ${senderName}`,
+                },
               },
-            },
-          ],
-        }),
-        // Send emails to participants
-        ...participants
-          // remove sender
-          .filter((participant) => participant.id !== userId)
-          // remove if you have email notification disabled
-          .filter(
-            (participant) =>
-              participant.notifications?.newMessages?.email !== false,
-          )
-          .map((participant) =>
-            sendEmail({
-              userId: participant.id,
-              subject: `🌵 New message from ${senderName} via The Prickly Pear`,
-              html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
-            }),
-          ),
-      ]);
+            ],
+          }),
+          // Send emails to participants
+          ...participants
+            // remove sender
+            .filter((participant) => participant.id !== userId)
+            // remove if you have email notification disabled
+            .filter(
+              (participant) =>
+                participant.notifications?.newMessages?.email !== false
+            )
+            .map((participant) =>
+              sendEmail({
+                userId: participant.id,
+                subject: `🌵 New message from ${senderName} via The Prickly Pear`,
+                html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
+              })
+            ),
+        ]);
 
-    if (readReceiptsRes?.error) {
-      handleError(readReceiptsRes.error);
-      console.error("readReceiptsRes.error:", readReceiptsRes.error);
-    }
+      if (readReceiptsRes?.error) {
+        handleError(readReceiptsRes.error);
+        console.error("readReceiptsRes.error:", readReceiptsRes.error);
+      }
 
-    if (closeThreadRes?.error) {
-      handleError(closeThreadRes.error);
-      console.error("closeThreadRes.error:", closeThreadRes.error);
-    }
+      if (closeThreadRes?.error) {
+        handleError(closeThreadRes.error);
+        console.error("closeThreadRes.error:", closeThreadRes.error);
+      }
 
-    if (slackNotificationRes?.error) {
-      handleError(slackNotificationRes.error);
-      console.error("slackNotificationRes.error:", slackNotificationRes.error);
-    }
+      if (slackNotificationRes?.error) {
+        handleError(slackNotificationRes.error);
+        console.error(
+          "slackNotificationRes.error:",
+          slackNotificationRes.error
+        );
+      }
+    })();
 
     return new Response(JSON.stringify({ id: messageData.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
