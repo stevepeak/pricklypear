@@ -59,21 +59,23 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
         <col />
       </colgroup>
       <TableHeader className="bg-secondary/20 text-left">
-        <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
-          Status
-        </TableHead>
-        <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
-          Participants
-        </TableHead>
-        <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
-          Topic
-        </TableHead>
-        <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
-          Title
-        </TableHead>
-        <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
-          Summary
-        </TableHead>
+        <TableRow>
+          <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+            Status
+          </TableHead>
+          <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+            Participants
+          </TableHead>
+          <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+            Topic
+          </TableHead>
+          <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+            Title
+          </TableHead>
+          <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+            Summary
+          </TableHead>
+        </TableRow>
       </TableHeader>
       <TableBody className="divide-y divide-muted">
         {sortedThreads.map((thread) => {
