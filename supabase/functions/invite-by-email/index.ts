@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import sendEmail from "../send-email/index.ts";
+import sendEmail from "../utils/send-email.ts";
 import { getSupabaseServiceClient } from "../utils/supabase.ts";
 
 const APP_CONNECTIONS_URL = "https://prickly.app";

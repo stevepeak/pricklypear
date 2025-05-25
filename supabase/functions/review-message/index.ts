@@ -59,6 +59,8 @@ async function fetchThreadTopic(supabase, threadId) {
 }
 
 async function checkIfOnTopic(openai, { threadTopic, threadTitle, message }) {
+  // TODO not working yet
+  return true;
   const topicCheckPrompt = `Thread topic: ${threadTopic}\nThread title: ${threadTitle}\nMessage: ${message}\n\nIs this message on-topic for the thread? Reply with only 'yes' or 'no'.`;
   const topicCheckResponse = await openai.chat.completions.create({
     model: "gpt-4o-mini",
