@@ -15,9 +15,30 @@ serve(async (req) => {
   }
 
   try {
-    const { user_id, file_path, original_filename } = await req.json();
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      global: { headers: { Authorization: req.headers.get("Authorization")! } },
+    });
 
-    if (!user_id || !file_path || !original_filename) {
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication token" }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    const { file_path, original_filename } = await req.json();
+
+    if (!file_path || !original_filename) {
       return new Response(
         JSON.stringify({
           error:
@@ -30,9 +51,18 @@ serve(async (req) => {
       );
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    // Verify that the file path belongs to the authenticated user
+    if (!file_path.startsWith(`${user.id}/`)) {
+      return new Response(
+        JSON.stringify({
+          error: "Unauthorized: File path does not belong to user",
+        }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
 
     // Download file from Supabase Storage
     const { data: fileData, error: downloadError } = await supabase.storage

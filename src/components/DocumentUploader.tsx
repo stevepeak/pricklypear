@@ -53,6 +53,9 @@ export function DocumentUploader({ onUploadComplete }: DocumentUploaderProps) {
               file_path: uploadData.path,
               original_filename: file.name,
             },
+            headers: {
+              Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+            },
           });
 
         if (extractError) throw extractError;

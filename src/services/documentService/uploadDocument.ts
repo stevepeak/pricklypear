@@ -20,9 +20,11 @@ export async function uploadDocument(
     const { data: extractData, error: extractError } =
       await supabase.functions.invoke("extract-doc-text", {
         body: {
-          user_id: userId,
           file_path: uploadData.path,
           original_filename: file.name,
+        },
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
         },
       });
 
