@@ -63,6 +63,7 @@ export const getThread = async (threadId: string): Promise<Thread | null> => {
       summary: threadData.summary,
       topic: threadData.topic as ThreadTopic,
       controls: threadData.controls as ThreadControls,
+      ai: threadData.ai,
     };
   } catch (error) {
     console.error("Exception fetching thread:", error);

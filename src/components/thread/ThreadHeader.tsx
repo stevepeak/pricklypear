@@ -1,4 +1,4 @@
-import { Loader2, Users } from "lucide-react";
+import { Bot, Loader2, Lock, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getThreadTopicInfo, type Thread } from "@/types/thread";
 import { AvatarName } from "@/components/ui/avatar-name";
@@ -18,17 +18,30 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
         {/* Left Side */}
         <div className="flex-1 min-w-0 space-y-4">
           <div className="flex items-center gap-2 mb-2">
-            <Badge variant="outline" className="bg-white">
-              {topicLabel}
-            </Badge>
-            {(thread.controls?.requireAiApproval ?? true) && (
+            {thread.ai ? (
               <Badge
                 variant="secondary"
-                className="bg-blue-100 text-blue-800 border-blue-200"
+                className="bg-purple-100 text-purple-800 border-purple-200"
               >
-                AI-Moderated
+                <Bot className="h-3 w-3 mr-1" />
+                AI Chat
               </Badge>
+            ) : (
+              <>
+                <Badge variant="outline" className="bg-white">
+                  {topicLabel}
+                </Badge>
+                {(thread.controls?.requireAiApproval ?? true) && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-100 text-blue-800 border-blue-200"
+                  >
+                    AI-Moderated
+                  </Badge>
+                )}
+              </>
             )}
+
             <span className="text-sm text-muted-foreground">
               Created {thread.createdAt.toLocaleDateString()}
             </span>
@@ -49,6 +62,11 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
                     />
                   ))}
                 </div>
+              </div>
+            ) : thread.ai ? (
+              <div className="text-sm">
+                <Lock className="h-4 w-4 inline-block mr-1 text-yellow-400" />
+                Private chat with Prickly AI.
               </div>
             ) : (
               <div className="text-sm text-muted-foreground">

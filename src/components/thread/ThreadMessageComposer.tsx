@@ -18,6 +18,9 @@ import {
   FileDown,
   Copy,
   MessageSquarePlus,
+  MessageSquare,
+  MessageCircle,
+  ArrowUp,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -41,6 +44,7 @@ import { toast } from "sonner";
 import { Badge } from "../ui/badge";
 import { useConnections } from "@/hooks/useConnections";
 import { getMessages } from "@/services/messageService/get-messages";
+import { Thread } from "@/types/thread";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -48,7 +52,7 @@ interface ThreadMessageComposerProps {
   isSending: boolean;
   onSendMessage: () => void;
   scrollToBottom?: () => void;
-  threadId: string;
+  thread: Thread;
   loadMessages: () => Promise<Message[]>;
   autoFocus?: boolean;
   messagesEndRef?: React.RefObject<HTMLDivElement>;
@@ -66,7 +70,7 @@ const ThreadMessageComposer = React.forwardRef<
       isSending,
       onSendMessage,
       scrollToBottom,
-      threadId,
+      thread,
       loadMessages,
       autoFocus = false,
       messagesEndRef,
@@ -74,7 +78,7 @@ const ThreadMessageComposer = React.forwardRef<
     },
     ref,
   ) => {
-    const [autoAccept, setAutoAccept] = useState(false);
+    const [autoAccept, setAutoAccept] = useState(thread.ai ? false : true);
     const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
     const [isRequestingClose, setIsRequestingClose] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -141,12 +145,12 @@ const ThreadMessageComposer = React.forwardRef<
     };
 
     const handleRequestClose = async () => {
-      if (!threadId) return;
+      if (!thread.id) return;
       setIsRequestingClose(true);
       const text = "Requested to close this thread.";
       const success = await saveMessage({
         text,
-        threadId,
+        threadId: thread.id,
         type: "request_close",
       });
       if (success) {
@@ -158,7 +162,10 @@ const ThreadMessageComposer = React.forwardRef<
 
     const handleCopy = async () => {
       try {
-        const messages = await getMessages({ threadId, connections });
+        const messages = await getMessages({
+          threadId: thread.id,
+          connections,
+        });
         if (!messages.length) {
           toast("Nothing to copy", {
             description: "No messages found in this thread.",
@@ -216,23 +223,27 @@ const ThreadMessageComposer = React.forwardRef<
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" align="start">
-                  <DropdownMenuItem
-                    onSelect={() => setIsRequestDialogOpen(true)}
-                    disabled={hasOpenCloseRequest}
-                  >
-                    {hasOpenCloseRequest ? (
-                      <>
-                        <Lock className="h-4 w-4 mr-2" /> Request to close
-                        thread pending...
-                      </>
-                    ) : (
-                      <>
-                        <Lock className="h-4 w-4 mr-2" /> Request to close
-                        thread
-                      </>
-                    )}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                  {!thread.ai && (
+                    <>
+                      <DropdownMenuItem
+                        onSelect={() => setIsRequestDialogOpen(true)}
+                        disabled={hasOpenCloseRequest}
+                      >
+                        {hasOpenCloseRequest ? (
+                          <>
+                            <Lock className="h-4 w-4 mr-2" /> Request to close
+                            thread pending...
+                          </>
+                        ) : (
+                          <>
+                            <Lock className="h-4 w-4 mr-2" /> Request to close
+                            thread
+                          </>
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
                   <DropdownMenuItem>
                     <FileDown className="h-4 w-4 mr-2" /> Export as PDF{" "}
                     <Badge
@@ -280,22 +291,24 @@ const ThreadMessageComposer = React.forwardRef<
               </Button> */}
             </div>
             <div className="flex items-center gap-2">
-              <TooltipProvider delayDuration={300}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-1">
-                      <Switch
-                        id="auto-accept-switch"
-                        checked={autoAccept}
-                        onCheckedChange={handleToggleAutoAccept}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">
-                    ⚡️ Auto-accept AI rephrasing
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              {!thread.ai && (
+                <TooltipProvider delayDuration={300}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1">
+                        <Switch
+                          id="auto-accept-switch"
+                          checked={autoAccept}
+                          onCheckedChange={handleToggleAutoAccept}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      ⚡️ Auto-accept AI rephrasing
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
               <Button
                 onClick={onSendMessage}
                 disabled={!newMessage.trim() || isSending}
@@ -306,10 +319,21 @@ const ThreadMessageComposer = React.forwardRef<
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                    <Send className="h-4 w-4" />
-                    <span className="sr-only md:not-sr-only md:inline">
-                      Send
-                    </span>
+                    {thread.ai ? (
+                      <>
+                        <ArrowUp className="h-4 w-4" />
+                        <span className="sr-only md:not-sr-only md:inline">
+                          Ask Prickly AI
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        <span className="sr-only md:not-sr-only md:inline">
+                          Send
+                        </span>
+                      </>
+                    )}
                   </>
                 )}
               </Button>

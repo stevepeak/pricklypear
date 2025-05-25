@@ -33,6 +33,7 @@ export type Thread = {
   summary?: string | null;
   topic: ThreadTopic;
   controls?: ThreadControls;
+  ai: boolean;
 };
 
 /** Display metadata (label and emoji icon) for every thread topic. */

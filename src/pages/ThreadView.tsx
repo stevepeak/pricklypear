@@ -99,7 +99,7 @@ const ThreadView = () => {
               onSendMessage={handleSendMessage}
               scrollToBottom={scrollToBottom}
               hasOpenCloseRequest={hasOpenCloseRequest}
-              threadId={threadId}
+              thread={thread}
               loadMessages={loadMessages}
               autoFocus={true}
               messagesEndRef={messagesEndRef}

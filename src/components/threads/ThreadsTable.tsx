@@ -6,7 +6,6 @@ import { Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AvatarName } from "@/components/ui/avatar-name";
 import { cn } from "@/lib/utils";
-import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { getThreadTopicInfo } from "@/types/thread";
 import type { Thread } from "@/types/thread";
 import {
@@ -24,7 +23,6 @@ interface ThreadsTableProps {
 }
 
 const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
-  const { threadCounts } = useUnreadMessages();
   const navigate = useNavigate();
 
   const sortedThreads = useMemo(() => {
@@ -93,12 +91,18 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
                   variant={thread.status === "open" ? "default" : "outline"}
                   className={cn(
                     "ml-2 px-2 py-0.5 text-xs",
-                    thread.status === "open"
-                      ? "bg-green-100 text-green-800 border-green-200"
-                      : "bg-muted text-muted-foreground border-muted",
+                    thread.ai
+                      ? "bg-purple-100 text-purple-800 border-purple-200"
+                      : thread.status === "open"
+                        ? "bg-green-100 text-green-800 border-green-200"
+                        : "bg-muted text-muted-foreground border-muted",
                   )}
                 >
-                  {thread.status === "open" ? "Open" : "Closed"}
+                  {thread.ai
+                    ? "AI Chat"
+                    : thread.status === "open"
+                      ? "Open"
+                      : "Closed"}
                 </Badge>
               </TableCell>
 
