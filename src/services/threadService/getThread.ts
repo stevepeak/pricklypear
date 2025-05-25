@@ -7,48 +7,52 @@ import {
 } from "@/types/thread";
 import { requireCurrentUser } from "@/utils/authCache";
 
+// Type for the joined participant result
+interface ThreadParticipantProfile {
+  profiles: {
+    id: string;
+    name: string;
+  } | null;
+}
+
 export const getThread = async (threadId: string): Promise<Thread | null> => {
   try {
     // Get the current authenticated user
     const user = await requireCurrentUser();
 
-    // Get the thread
+    // Fetch the thread and its participants (with profile names) in one query
     const { data: threadData, error: threadError } = await supabase
       .from("threads")
-      .select("*")
+      .select(
+        `
+        *,
+        thread_participants(
+          profiles(
+            id, name
+          )
+        )`,
+      )
       .eq("id", threadId)
       .single();
 
-    if (threadError) {
+    if (threadError || !threadData) {
       console.error("Error fetching thread:", threadError);
       return null;
     }
 
-    // Get participants for this thread
-    const { data: participantsData, error: participantsError } = await supabase
-      .from("thread_participants")
-      .select(
-        `
-        profiles:user_id (
-          id, name
-        )
-      `,
-      )
-      .eq("thread_id", threadId);
-
-    if (participantsError) {
-      console.error("Error fetching thread participants:", participantsError);
-    }
-
     // Extract participant names, excluding the current user
-    const participants = participantsData
-      ?.filter((item) => item.profiles?.id !== user.id)
+    const participants = (
+      (threadData.thread_participants as
+        | ThreadParticipantProfile[]
+        | undefined) || []
+    )
+      .filter((item) => item.profiles?.id !== user.id)
       .map((item) => ({
         id: item.profiles?.id,
         name: item.profiles?.name,
       }))
-      .filter((participant) => participant.name) // Filter out undefined names
-      .map((participant) => participant.name);
+      .filter((participant) => participant.name)
+      .map((participant) => participant.name as string);
 
     return {
       id: threadData.id,
