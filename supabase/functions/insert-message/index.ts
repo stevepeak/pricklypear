@@ -172,6 +172,7 @@ serve(async (req) => {
     });
   } catch (error) {
     handleError(error);
+    console.error(error);
     return errorResponse(error.message);
   }
 });
