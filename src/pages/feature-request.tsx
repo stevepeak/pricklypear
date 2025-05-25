@@ -85,9 +85,9 @@ export default function FeatureRequestPage() {
       <h1 className="text-2xl font-bold mb-6">Submit a Feature Request</h1>
       <div className="mb-6 text-sm text-muted-foreground">
         <p>
-          Thank you for your honest feedback. This form is{" "}
-          <b>only visible</b> to The Prickly Pear staff. We may email you with
-          follow up questions and feedback.
+          Thank you for your honest feedback. This form is <b>only visible</b>{" "}
+          to The Prickly Pear staff. We may email you with follow up questions
+          and feedback.
         </p>
       </div>
       <Form {...form}>

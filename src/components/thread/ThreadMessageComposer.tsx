@@ -221,9 +221,15 @@ const ThreadMessageComposer = React.forwardRef<
                     disabled={hasOpenCloseRequest}
                   >
                     {hasOpenCloseRequest ? (
-                      <><Lock className="h-4 w-4 mr-2" /> Request to close thread pending...</>
+                      <>
+                        <Lock className="h-4 w-4 mr-2" /> Request to close
+                        thread pending...
+                      </>
                     ) : (
-                      <><Lock className="h-4 w-4 mr-2" /> Request to close thread</>
+                      <>
+                        <Lock className="h-4 w-4 mr-2" /> Request to close
+                        thread
+                      </>
                     )}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />

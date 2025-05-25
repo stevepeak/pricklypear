@@ -35,23 +35,25 @@ const ThreadView = () => {
 
   useEffect(() => {
     // Find the latest request_close message
-    const latestRequestClose = [...messages].reverse().find(m => m.type === "request_close");
-    
+    const latestRequestClose = [...messages]
+      .reverse()
+      .find((m) => m.type === "request_close");
+
     if (!latestRequestClose) {
       setHasOpenCloseRequest(false);
       return;
     }
-    
+
     // Get all messages after the latest request_close
     const messagesAfterRequest = messages.slice(
-      messages.indexOf(latestRequestClose) + 1
+      messages.indexOf(latestRequestClose) + 1,
     );
 
     // If there are no messages after the request, or if there's no close_declined message,
     // then there is an open close request
     setHasOpenCloseRequest(
-      messagesAfterRequest.length === 0 || 
-      !messagesAfterRequest.some((m) => m.type === "close_declined")
+      messagesAfterRequest.length === 0 ||
+        !messagesAfterRequest.some((m) => m.type === "close_declined"),
     );
   }, [messages]);
 
