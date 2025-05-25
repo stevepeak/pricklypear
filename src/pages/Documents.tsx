@@ -8,30 +8,78 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Download, Trash2, Search, Plus } from "lucide-react";
-import React, { useState } from "react";
-
-// Sample documents (easy to remove)
-const SAMPLE_DOCUMENTS = [
-  {
-    id: "1",
-    name: "Parenting Plan.pdf",
-    type: "PDF",
-    uploaded: "2024-05-01",
-  },
-  {
-    id: "2",
-    name: "Court Order.docx",
-    type: "Word Document",
-    uploaded: "2024-04-15",
-  },
-];
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Download, Trash2, Search, Plus, FileText } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { DocumentUploader } from "@/components/DocumentUploader";
+import { getDocuments, deleteDocument } from "@/services/documentService";
+import type { Document } from "@/types/document";
+import { formatThreadTimestamp } from "@/utils/formatTimestamp";
 
 export default function Documents() {
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
-  // In a real app, this would be state, but for demo just filter the sample
-  const filtered = SAMPLE_DOCUMENTS.filter((doc) =>
-    doc.name.toLowerCase().includes(search.toLowerCase()),
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+
+  const loadDocuments = useCallback(async () => {
+    if (!user) return;
+
+    try {
+      setIsLoading(true);
+      const docs = await getDocuments(user.id);
+      setDocuments(docs);
+    } catch (error) {
+      console.error("Failed to load documents:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    loadDocuments();
+  }, [loadDocuments]);
+
+  const handleUploadComplete = () => {
+    setIsUploadDialogOpen(false);
+    loadDocuments();
+  };
+
+  const handleDelete = async (documentId: string) => {
+    if (!user || !confirm("Are you sure you want to delete this document?"))
+      return;
+
+    try {
+      await deleteDocument(documentId, user.id);
+      loadDocuments();
+    } catch (error) {
+      console.error("Failed to delete document:", error);
+      alert("Failed to delete document");
+    }
+  };
+
+  const getFileType = (filename: string) => {
+    const ext = filename.toLowerCase().split(".").pop();
+    switch (ext) {
+      case "pdf":
+        return "PDF";
+      case "docx":
+        return "Word Document";
+      default:
+        return "Document";
+    }
+  };
+
+  const filtered = documents.filter((doc) =>
+    doc.original_filename.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -51,9 +99,19 @@ export default function Documents() {
             aria-label="Search"
           />
         </div>
-        <Button className="ml-auto" size="sm" variant="default">
-          <Plus className="mr-2" size={16} /> Upload
-        </Button>
+        <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="ml-auto" size="sm" variant="default">
+              <Plus className="mr-2" size={16} /> Upload
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Upload Document</DialogTitle>
+            </DialogHeader>
+            <DocumentUploader onUploadComplete={handleUploadComplete} />
+          </DialogContent>
+        </Dialog>
       </div>
       <Table>
         <TableHeader>
@@ -65,26 +123,48 @@ export default function Documents() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filtered.length === 0 ? (
+          {isLoading ? (
             <TableRow>
               <TableCell
                 colSpan={4}
                 className="text-center text-muted-foreground"
               >
-                No documents found.
+                Loading documents...
+              </TableCell>
+            </TableRow>
+          ) : filtered.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={4}
+                className="text-center text-muted-foreground"
+              >
+                {search
+                  ? "No documents found matching your search."
+                  : "No documents uploaded yet."}
               </TableCell>
             </TableRow>
           ) : (
             filtered.map((doc) => (
               <TableRow key={doc.id}>
-                <TableCell>{doc.name}</TableCell>
-                <TableCell>{doc.type}</TableCell>
-                <TableCell>{doc.uploaded}</TableCell>
+                <TableCell>
+                  <div className="flex items-center space-x-2">
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                    <span>{doc.original_filename}</span>
+                  </div>
+                </TableCell>
+                <TableCell>{getFileType(doc.original_filename)}</TableCell>
+                <TableCell>
+                  {formatThreadTimestamp(new Date(doc.created_at))}
+                </TableCell>
                 <TableCell className="flex gap-2 justify-end">
                   <Button
                     variant="outline"
                     size="sm"
-                    aria-label={`Download ${doc.name}`}
+                    aria-label={`Download ${doc.original_filename}`}
+                    onClick={() => {
+                      // TODO: Implement download functionality
+                      alert("Download functionality coming soon!");
+                    }}
                   >
                     <Download className="mr-1" size={16} />
                     Download
@@ -92,7 +172,8 @@ export default function Documents() {
                   <Button
                     variant="destructive"
                     size="sm"
-                    aria-label={`Delete ${doc.name}`}
+                    aria-label={`Delete ${doc.original_filename}`}
+                    onClick={() => handleDelete(doc.id)}
                   >
                     <Trash2 className="mr-1" size={16} />
                     Delete

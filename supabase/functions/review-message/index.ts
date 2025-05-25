@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import OpenAI from "https://esm.sh/openai@4.28.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { getOpenAIClient } from "../utils/openai.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -38,12 +38,6 @@ function formatContextText(messages) {
       return `[${timestamp}] ${sender}: ${msg.text}`;
     })
     .join("\n\n");
-}
-
-function getOpenAIClient() {
-  return new OpenAI({
-    apiKey: Deno.env.get("OPENAI_API_KEY"),
-  });
 }
 
 async function fetchThreadTopic(supabase, threadId) {
