@@ -28,9 +28,8 @@ const messageSchema = z.object({
 
 const participantSchema = z.array(
   z.object({
-    user_id: z.string().uuid(),
+    id: z.string().uuid(),
     name: z.string(),
-    email: z.string().email(),
     notifications: z
       .object({
         newMessages: z
@@ -109,15 +108,19 @@ serve(async (req) => {
 
     // Fetch all participants
     const { data, error: participantsError } = await supabase
-      .from("participants")
-      .select(`*`)
+      .from("thread_participants")
+      .select(
+        `
+        profiles (
+          id,
+          name,
+          notifications
+        ),
+      `,
+      )
       .eq("thread_id", threadId);
-    
-    console.log(data);
 
-    const participants = participantSchema.parse(data);
-
-    if (!participants || participantsError) {
+    if (participantsError) {
       handleError(participantsError);
       console.error("participantsError:", participantsError);
       return errorResponse(
@@ -125,16 +128,20 @@ serve(async (req) => {
       );
     }
 
+    console.log("participants", data);
+
+    const participants = participantSchema.parse(data.map((p) => p.profiles));
+
     // Find sender's name for email body
     const senderName =
-      participants.find((p) => p.user_id === userId)?.name || "Someone";
+      participants.find((p) => p.id === userId)?.name || "Someone";
 
     const [readReceiptsRes, closeThreadRes, slackNotificationRes] =
       await Promise.all([
         // Create read receipts using already-fetched participants
         createReadReceipts({
           messageId: messageData.id,
-          participants: participants.filter((p) => p.user_id !== userId),
+          participants: participants.filter((p) => p.id !== userId),
         }),
         // Mark thread as closed
         type === "close_accepted"
@@ -159,7 +166,7 @@ serve(async (req) => {
         // Send emails to participants
         ...participants
           // remove sender
-          .filter((participant) => participant.user_id !== userId)
+          .filter((participant) => participant.id !== userId)
           // remove if you have email notification disabled
           .filter(
             (participant) =>
@@ -167,7 +174,7 @@ serve(async (req) => {
           )
           .map((participant) =>
             sendEmail({
-              to: participant.email,
+              userId: participant.id,
               subject: `🌵 New message from ${senderName} via The Prickly Pear`,
               html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
             }),
