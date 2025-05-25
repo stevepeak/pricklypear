@@ -6,7 +6,7 @@ import ThreadMessages from "@/components/thread/ThreadMessages";
 import ThreadMessageComposer from "@/components/thread/ThreadMessageComposer";
 import MessageReviewDialog from "@/components/thread/MessageReviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import React from "react";
 
 const ThreadView = () => {
@@ -30,6 +30,30 @@ const ThreadView = () => {
     setIsReviewDialogOpen,
     loadMessages,
   } = useThreadDetails(threadId, composerRef);
+
+  const [hasOpenCloseRequest, setHasOpenCloseRequest] = useState(false);
+
+  useEffect(() => {
+    // Find the latest request_close message
+    const latestRequestClose = [...messages].reverse().find(m => m.type === "request_close");
+    
+    if (!latestRequestClose) {
+      setHasOpenCloseRequest(false);
+      return;
+    }
+    
+    // Get all messages after the latest request_close
+    const messagesAfterRequest = messages.slice(
+      messages.indexOf(latestRequestClose) + 1
+    );
+
+    // If there are no messages after the request, or if there's no close_declined message,
+    // then there is an open close request
+    setHasOpenCloseRequest(
+      messagesAfterRequest.length === 0 || 
+      !messagesAfterRequest.some((m) => m.type === "close_declined")
+    );
+  }, [messages]);
 
   const threadIsOpen = thread?.status === "open";
 
@@ -74,6 +98,7 @@ const ThreadView = () => {
               isSending={isSending || isReviewingMessage}
               onSendMessage={handleSendMessage}
               scrollToBottom={scrollToBottom}
+              hasOpenCloseRequest={hasOpenCloseRequest}
               threadId={threadId}
               loadMessages={loadMessages}
               autoFocus={true}

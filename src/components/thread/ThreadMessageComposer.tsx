@@ -52,6 +52,7 @@ interface ThreadMessageComposerProps {
   loadMessages: () => Promise<Message[]>;
   autoFocus?: boolean;
   messagesEndRef?: React.RefObject<HTMLDivElement>;
+  hasOpenCloseRequest?: boolean;
 }
 
 const ThreadMessageComposer = React.forwardRef<
@@ -69,6 +70,7 @@ const ThreadMessageComposer = React.forwardRef<
       loadMessages,
       autoFocus = false,
       messagesEndRef,
+      hasOpenCloseRequest,
     },
     ref,
   ) => {
@@ -216,8 +218,13 @@ const ThreadMessageComposer = React.forwardRef<
                 <DropdownMenuContent side="top" align="start">
                   <DropdownMenuItem
                     onSelect={() => setIsRequestDialogOpen(true)}
+                    disabled={hasOpenCloseRequest}
                   >
-                    <Lock className="h-4 w-4 mr-2" /> Request to close thread
+                    {hasOpenCloseRequest ? (
+                      <><Lock className="h-4 w-4 mr-2" /> Request to close thread pending...</>
+                    ) : (
+                      <><Lock className="h-4 w-4 mr-2" /> Request to close thread</>
+                    )}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
