@@ -13,6 +13,11 @@ export default function Calendar() {
             Calendar integration will help you stay organized and ensure
             everyone is on the same page.
           </p>
+          <p className="text-muted-foreground">
+            We're working on integrations with <strong>Google Calendar</strong>{" "}
+            and <strong>Apple iCal</strong> to make it easy to sync your
+            parenting schedule across all your devices. Stay tuned for updates!
+          </p>
         </CardContent>
       </Card>
     </div>

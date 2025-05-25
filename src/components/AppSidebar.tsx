@@ -6,7 +6,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarSeparator,
   SidebarMenu,
@@ -20,10 +19,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  MessageSquare,
   LogIn,
   LogOut,
-  Users,
   FileText,
   ChevronDownIcon,
   ChevronUpIcon,
@@ -32,6 +29,8 @@ import {
   Calendar,
   Receipt,
   Link2,
+  MessageSquareText,
+  BookUser,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -72,15 +71,20 @@ export function AppSidebar() {
         {
           path: "/threads",
           label: "Threads",
-          icon: <MessageSquare className="h-4 w-4 mr-2" />,
+          icon: <MessageSquareText className="h-4 w-4 mr-2" />,
           badge: totalUnread > 0 ? totalUnread : undefined,
         },
         {
           path: "/connections",
           label: "Connections",
-          icon: <Users className="h-4 w-4 mr-2" />,
+          icon: <BookUser className="h-4 w-4 mr-2" />,
           badge: pendingIncomingCount > 0 ? pendingIncomingCount : undefined,
         },
+        // {
+        //   path: "/children",
+        //   label: "Children Profiles",
+        //   icon: <Baby className="h-4 w-4 mr-2" />,
+        // },
         {
           path: "/documents",
           label: [
