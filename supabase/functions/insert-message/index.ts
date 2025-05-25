@@ -85,6 +85,8 @@ serve(async (req) => {
       .single();
 
     if (error || !messageData?.id) {
+      handleError(error);
+      console.error("insert-message error:", error);
       return errorResponse(error?.message || "Failed to insert message");
     }
 
@@ -106,6 +108,8 @@ serve(async (req) => {
       .eq("thread_id", threadId);
 
     if (!participants || participantsError) {
+      handleError(participantsError);
+      console.error("participantsError:", participantsError);
       return errorResponse(
         participantsError?.message || "No participants found",
       );
