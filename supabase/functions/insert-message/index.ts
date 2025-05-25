@@ -130,7 +130,9 @@ serve(async (req) => {
 
     console.log("participants", data);
 
-    const participants = participantSchema.parse(data.map((p) => p.profiles));
+    const participants = data.map((p) => p.profiles);
+    
+    console.log("participants2", participants);
 
     // Find sender's name for email body
     const senderName =
