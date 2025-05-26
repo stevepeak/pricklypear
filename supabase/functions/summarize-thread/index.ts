@@ -38,12 +38,14 @@ serve(async (req) => {
     // Fetch messages from the database
     const { data: messagesData, error: messagesError } = await supabase
       .from("messages")
-      .select(`
+      .select(
+        `
         text,
         timestamp,
         profile:profiles!user_id ( name ),
         type
-      `)
+      `,
+      )
       .eq("thread_id", threadId)
       .order("timestamp", { ascending: true });
 
@@ -57,7 +59,7 @@ serve(async (req) => {
         {
           status: 404,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -116,12 +118,9 @@ Important guidelines:
   } catch (error) {
     console.error("Error summarizing thread:", error);
 
-    return new Response(
-      JSON.stringify({ error: getErrorMessage(error) }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
+    return new Response(JSON.stringify({ error: getErrorMessage(error) }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });

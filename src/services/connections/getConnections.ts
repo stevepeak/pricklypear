@@ -18,7 +18,7 @@ export const getConnections = async (): Promise<Connection[]> => {
         *,
         connected_profile:profiles!connected_user_id ( name ),
         user_profile:profiles!user_id ( name )
-      `
+      `,
       )
       .or(`user_id.eq.${userId},connected_user_id.eq.${userId}`);
 

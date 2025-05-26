@@ -15,10 +15,10 @@ type ErrorWithMessage = { message: string };
 /** Guard for an Error object with a string message property. */
 export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
   return (
-    typeof error === 'object' &&
+    typeof error === "object" &&
     error !== null &&
-    'message' in error &&
-    typeof (error as Record<string, unknown>).message === 'string'
+    "message" in error &&
+    typeof (error as Record<string, unknown>).message === "string"
   );
 }
 
@@ -36,7 +36,6 @@ export function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
     return new Error(String(maybeError));
   }
 }
-
 
 function initSentry() {
   if (sentryInitialized) return;
