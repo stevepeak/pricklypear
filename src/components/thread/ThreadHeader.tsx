@@ -13,12 +13,12 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
   const topicLabel = `${icon} ${label}`;
 
   return (
-    <div className="sticky top-12 bg-white border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 p-6">
+    <div className="sticky top-12 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 p-6">
       <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
         {/* Left Side */}
         <div className="flex-1 min-w-0 space-y-4">
           <div className="flex items-center gap-2 mb-2">
-            {thread.status === "closed" && (
+            {thread.status === "Closed" && (
               <Badge
                 variant="secondary"
                 className="text-xs px-2 py-0.5 font-semibold"

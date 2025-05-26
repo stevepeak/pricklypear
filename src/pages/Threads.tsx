@@ -35,7 +35,7 @@ const Threads = () => {
 
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<
-    ("open" | "closed" | "ai")[]
+    ("Open" | "Closed" | "Archived")[]
   >([]);
   const [filterParticipants, setFilterParticipants] = useState<string[]>([]);
   const [filterTopics, setFilterTopics] = useState<ThreadTopic[]>([]);
@@ -74,7 +74,7 @@ const Threads = () => {
     setIsDialogOpen(true);
   };
 
-  const toggleStatus = (status: "open" | "closed" | "ai") => {
+  const toggleStatus = (status: "Open" | "Closed" | "Archived") => {
     setFilterStatus((prev) =>
       prev.includes(status)
         ? prev.filter((s) => s !== status)
@@ -172,25 +172,25 @@ const Threads = () => {
                 <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   <DropdownMenuCheckboxItem
-                    checked={filterStatus.includes("open")}
-                    onCheckedChange={() => toggleStatus("open")}
+                    checked={filterStatus.includes("Open")}
+                    onCheckedChange={() => toggleStatus("Open")}
                     onSelect={(e) => e.preventDefault()}
                   >
                     Open
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={filterStatus.includes("closed")}
-                    onCheckedChange={() => toggleStatus("closed")}
+                    checked={filterStatus.includes("Closed")}
+                    onCheckedChange={() => toggleStatus("Closed")}
                     onSelect={(e) => e.preventDefault()}
                   >
                     Closed
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={filterStatus.includes("ai")}
-                    onCheckedChange={() => toggleStatus("ai")}
+                    checked={filterStatus.includes("Archived")}
+                    onCheckedChange={() => toggleStatus("Archived")}
                     onSelect={(e) => e.preventDefault()}
                   >
-                    AI Chat
+                    Archived
                   </DropdownMenuCheckboxItem>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>

@@ -144,7 +144,7 @@ serve(async (req) => {
         type === "close_accepted"
           ? supabase
               .from("threads")
-              .update({ status: "closed" })
+              .update({ status: "Closed" })
               .eq("id", threadId)
           : null,
         // Send Slack notification

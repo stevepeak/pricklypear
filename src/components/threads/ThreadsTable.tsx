@@ -26,10 +26,14 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
   const navigate = useNavigate();
 
   const sortedThreads = useMemo(() => {
-    // Closed threads always at the bottom, then sort by createdAt desc
+    // Closed and Archived threads always at the bottom, then sort by createdAt desc
+    const isClosedOrArchived = (status: string) =>
+      status === "Closed" || status === "Archived";
     return [...threads].sort((a, b) => {
-      if (a.status === "closed" && b.status !== "closed") return 1;
-      if (a.status !== "closed" && b.status === "closed") return -1;
+      if (isClosedOrArchived(a.status) && !isClosedOrArchived(b.status))
+        return 1;
+      if (!isClosedOrArchived(a.status) && isClosedOrArchived(b.status))
+        return -1;
       return b.createdAt.getTime() - a.createdAt.getTime();
     });
   }, [threads]);
@@ -100,9 +104,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
                         : "bg-muted text-muted-foreground border-muted",
                   )}
                 >
-                  {thread.ai
-                    ? "AI Chat"
-                    : thread.status}
+                  {thread.ai ? "AI Chat" : thread.status}
                 </Badge>
               </TableCell>
 
