@@ -104,6 +104,7 @@ const Threads = () => {
   };
 
   const participantOptions = Array.from(
+    // TODO better to use connections?
     new Set(threads.flatMap((t) => t.participants)),
   ).sort();
 
@@ -124,7 +125,6 @@ const Threads = () => {
     const matchesStatus =
       filterStatus.length === 0 ||
       filterStatus.some((status) => {
-        if (status === "ai") return thread.ai;
         return thread.status === status;
       });
 
