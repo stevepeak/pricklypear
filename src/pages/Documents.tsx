@@ -223,13 +223,17 @@ export default function Documents() {
                     {doc.labels?.map((label) => {
                       const info = getDocumentLabelInfo(label);
                       return (
-                        <Badge
-                          key={label}
-                          variant="secondary"
-                          className={`bg-${info.color}-100 text-${info.color}-800 border-${info.color}-200`}
-                        >
-                          {info.icon}
-                        </Badge>
+                        <Tooltip key={label}>
+                          <TooltipTrigger asChild>
+                            <Badge
+                              variant="secondary"
+                              className={`bg-${info.color}-100 text-${info.color}-800 border-${info.color}-200`}
+                            >
+                              {info.icon}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>{label}</TooltipContent>
+                        </Tooltip>
                       );
                     })}
                     <Button
