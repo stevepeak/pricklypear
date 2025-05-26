@@ -6,7 +6,7 @@ export async function updateDocumentTitle(
 ): Promise<void> {
   const { error } = await supabase
     .from("documents")
-    .update({ original_filename: newTitle })
+    .update({ filename: newTitle })
     .eq("id", documentId);
 
   if (error) {

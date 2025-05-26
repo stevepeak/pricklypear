@@ -51,7 +51,7 @@ export function DocumentUploader({ onUploadComplete }: DocumentUploaderProps) {
             body: {
               user_id: user.id,
               file_path: uploadData.path,
-              original_filename: file.name,
+              filename: file.name,
             },
             headers: {
               Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,

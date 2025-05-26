@@ -60,8 +60,8 @@ export type Database = {
           embedding: string | null
           extracted_text: string | null
           file_path: string
+          filename: string
           id: string
-          original_filename: string
           user_id: string
         }
         Insert: {
@@ -69,8 +69,8 @@ export type Database = {
           embedding?: string | null
           extracted_text?: string | null
           file_path: string
+          filename: string
           id?: string
-          original_filename: string
           user_id: string
         }
         Update: {
@@ -78,8 +78,8 @@ export type Database = {
           embedding?: string | null
           extracted_text?: string | null
           file_path?: string
+          filename?: string
           id?: string
-          original_filename?: string
           user_id?: string
         }
         Relationships: []

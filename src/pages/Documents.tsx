@@ -104,7 +104,7 @@ export default function Documents() {
   };
 
   const filtered = documents.filter((doc) =>
-    doc.original_filename.toLowerCase().includes(search.toLowerCase()),
+    doc.filename.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -178,10 +178,10 @@ export default function Documents() {
                           className="cursor-pointer hover:underline"
                           onClick={() => {
                             setRenameDoc(doc);
-                            setNewTitle(doc.original_filename);
+                            setNewTitle(doc.filename);
                           }}
                         >
-                          {doc.original_filename}
+                          {doc.filename}
                         </span>
                       </TooltipTrigger>
                       <TooltipContent>Click to edit title</TooltipContent>
@@ -195,7 +195,7 @@ export default function Documents() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    aria-label={`Download ${doc.original_filename}`}
+                    aria-label={`Download ${doc.filename}`}
                     onClick={() => {
                       // TODO: Implement download functionality
                       alert("Download functionality coming soon!");
@@ -206,7 +206,7 @@ export default function Documents() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    aria-label={`Delete ${doc.original_filename}`}
+                    aria-label={`Delete ${doc.filename}`}
                     onClick={() => handleDelete(doc.id)}
                   >
                     <Trash2 className="mr-1" size={16} />

@@ -2,7 +2,7 @@ export interface Document {
   id: string;
   user_id: string;
   file_path: string;
-  original_filename: string;
+  filename: string;
   extracted_text: string;
   embedding?: number[];
   word_count: number;

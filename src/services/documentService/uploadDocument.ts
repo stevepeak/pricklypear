@@ -21,7 +21,7 @@ export async function uploadDocument(
       await supabase.functions.invoke("extract-doc-text", {
         body: {
           file_path: uploadData.path,
-          original_filename: file.name,
+          filename: file.name,
         },
         headers: {
           Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,

@@ -36,13 +36,12 @@ serve(async (req) => {
       );
     }
 
-    const { file_path, original_filename } = await req.json();
+    const { file_path, filename } = await req.json();
 
-    if (!file_path || !original_filename) {
+    if (!file_path || !filename) {
       return new Response(
         JSON.stringify({
-          error:
-            "Missing required fields: user_id, file_path, original_filename",
+          error: "Missing required fields: user_id, file_path, filename",
         }),
         {
           status: 400,
@@ -75,7 +74,7 @@ serve(async (req) => {
 
     // Convert blob to buffer
     const buffer = await fileData.arrayBuffer();
-    const fileExtension = original_filename.toLowerCase().split(".").pop();
+    const fileExtension = filename.toLowerCase().split(".").pop();
 
     let extractedText = "";
     let wordCount = 0;
@@ -183,7 +182,7 @@ serve(async (req) => {
       .insert({
         user_id: user.id,
         file_path,
-        original_filename,
+        filename,
         extracted_text: extractedText,
         embedding,
       })
