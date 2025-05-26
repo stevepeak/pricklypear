@@ -74,7 +74,7 @@ serve(async (req) => {
           thread_id: z.string().default(threadId),
         }),
       )
-      .min(n)
+      .min(5)
       .parse(JSON.parse(aiRes.choices?.[0]?.message?.content ?? "[]"));
 
     const { error: insertError } = await supabase
