@@ -8,15 +8,12 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
 
 async function testSupabaseQuery() {
   try {
-    const { data, error } = await supabase
-      .from("connections")
-      .select(
-        `*,
+    const { data, error } = await supabase.from("connections").select(
+      `*,
       connected_profile:connected_user_id ( name ),
         user_profile:user_id ( name )
     `,
-      )
-
+    );
 
     if (error) {
       console.error("Error querying Supabase:", error);

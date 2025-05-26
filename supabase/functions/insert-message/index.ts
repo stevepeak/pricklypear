@@ -134,50 +134,49 @@ serve(async (req) => {
       const senderName =
         participants.find((p) => p.id === userId)?.name || "Someone";
 
-      const [readReceiptsRes, closeThreadRes] =
-        await Promise.all([
-          // Create read receipts using already-fetched participants
-          createReadReceipts({
-            messageId: messageData.id,
-            participants: participants.filter((p) => p.id !== userId),
-          }),
-          // Mark thread as closed
-          type === "close_accepted"
-            ? supabase
-                .from("threads")
-                .update({ status: "closed" })
-                .eq("id", threadId)
-            : null,
-          // Send Slack notification
-          sendSlackNotification({
-            text: result.data.text,
-            blocks: [
-              {
-                type: "section",
-                text: {
-                  type: "mrkdwn",
-                  text: `*Thread ID:* ${threadId}\n*Sender:* ${senderName}`,
-                },
+      const [readReceiptsRes, closeThreadRes] = await Promise.all([
+        // Create read receipts using already-fetched participants
+        createReadReceipts({
+          messageId: messageData.id,
+          participants: participants.filter((p) => p.id !== userId),
+        }),
+        // Mark thread as closed
+        type === "close_accepted"
+          ? supabase
+              .from("threads")
+              .update({ status: "closed" })
+              .eq("id", threadId)
+          : null,
+        // Send Slack notification
+        sendSlackNotification({
+          text: result.data.text,
+          blocks: [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `*Thread ID:* ${threadId}\n*Sender:* ${senderName}`,
               },
-            ],
-          }),
-          // Send emails to participants
-          ...participants
-            // remove sender
-            .filter((participant) => participant.id !== userId)
-            // remove if you have email notification disabled
-            .filter(
-              (participant) =>
-                participant.notifications?.newMessages?.email !== false,
-            )
-            .map((participant) =>
-              sendEmail({
-                userId: participant.id,
-                subject: `🌵 New message from ${senderName} via The Prickly Pear`,
-                html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
-              }),
-            ),
-        ]);
+            },
+          ],
+        }),
+        // Send emails to participants
+        ...participants
+          // remove sender
+          .filter((participant) => participant.id !== userId)
+          // remove if you have email notification disabled
+          .filter(
+            (participant) =>
+              participant.notifications?.newMessages?.email !== false,
+          )
+          .map((participant) =>
+            sendEmail({
+              userId: participant.id,
+              subject: `🌵 New message from ${senderName} via The Prickly Pear`,
+              html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
+            }),
+          ),
+      ]);
 
       if (readReceiptsRes?.error) {
         handleError(readReceiptsRes.error);
@@ -188,7 +187,6 @@ serve(async (req) => {
         handleError(closeThreadRes.error);
         console.error("closeThreadRes.error:", closeThreadRes.error);
       }
-
     })();
 
     return new Response(JSON.stringify({ id: messageData.id }), {

@@ -1,8 +1,6 @@
 {
   "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" }
-  ],
+  "references": [{ "path": "./tsconfig.app.json" }],
   "compilerOptions": {
     "baseUrl": ".",
 
@@ -25,7 +23,5 @@
     // This improves issue grouping in Sentry.
     "sourceRoot": "/"
   },
-  "exclude": [
-    "supabase/functions/**/*.ts"
-  ]
+  "exclude": ["supabase/functions/**/*.ts"]
 }
