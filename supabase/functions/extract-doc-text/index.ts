@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { handleError } from "../utils/handle-error.ts";
+import { getErrorMessage, handleError } from "../utils/handle-error.ts";
 import { getOpenAIClient } from "../utils/openai.ts";
 
 const corsHeaders = {
@@ -203,6 +203,10 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (error) {
-    return handleError(error);
+    handleError(error);
+    return new Response(JSON.stringify({ error: getErrorMessage(error) }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });

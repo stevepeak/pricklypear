@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { getOpenAIClient } from "../utils/openai.ts";
+import { getErrorMessage } from "../utils/handle-error.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -196,7 +197,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         rejected: true,
-        reason: error.message,
+        reason: getErrorMessage(error),
         rephrasedMessage: null,
       }),
       {

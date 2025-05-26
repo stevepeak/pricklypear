@@ -5,32 +5,20 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 const GEO_DETECTOR = {
   name: "geoDetector",
-  lookup: async () => {
-    try {
-      const res = await fetch("https://ipapi.co/json/");
-      if (!res.ok) return undefined;
-      const data = await res.json();
-      // Map country/language to supported locales
-      switch (data.country_code) {
-        case "ES":
-          return "es-ES";
-        case "FR":
-          return "fr-FR";
-        default:
-          return "en-US";
-      }
-    } catch {
-      return undefined;
-    }
+  lookup: () => {
+    return undefined;
   },
   cacheUserLanguage: () => {},
 };
 
 const supportedLngs = ["en-US", "es-ES", "fr-FR"];
 
+const languageDetector = new LanguageDetector();
+languageDetector.addDetector(GEO_DETECTOR);
+
 i18n
   .use(HttpApi)
-  .use(LanguageDetector)
+  .use(languageDetector)
   .use(initReactI18next)
   .init({
     supportedLngs,
@@ -39,7 +27,6 @@ i18n
       order: ["localStorage", "navigator", "geoDetector"],
       caches: ["localStorage"],
       lookupLocalStorage: "i18nextLng",
-      detectors: [GEO_DETECTOR],
     },
     backend: {
       loadPath: "/locales/{{lng}}/{{ns}}.json",

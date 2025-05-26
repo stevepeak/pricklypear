@@ -31,10 +31,7 @@ export function getDocumentLabelInfo(label: DocumentLabel) {
   return DOCUMENT_LABEL_INFO[label];
 }
 
-export interface Document
-  extends Database["public"]["Tables"]["documents"]["Row"] {
-  word_count?: number;
-}
+export type Document = Database["public"]["Tables"]["documents"]["Row"];
 
 export interface DocumentUploadResponse {
   status: "success" | "error";

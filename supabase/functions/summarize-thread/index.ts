@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { getOpenAIClient } from "../utils/openai.ts";
+import { getErrorMessage } from "../utils/handle-error.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -37,7 +38,12 @@ serve(async (req) => {
     // Fetch messages from the database
     const { data: messagesData, error: messagesError } = await supabase
       .from("messages")
-      .select("text, timestamp, profiles:user_id(name), type")
+      .select(`
+        text,
+        timestamp,
+        profile:profiles!user_id ( name ),
+        type
+      `)
       .eq("thread_id", threadId)
       .order("timestamp", { ascending: true });
 
@@ -51,14 +57,16 @@ serve(async (req) => {
         {
           status: 404,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
+        }
       );
     }
 
     // Format messages for OpenAI
     const conversationText = messagesData
       .map((msg) => {
-        const sender = msg.profiles.name;
+        // This is required below.
+        // @ts-expect-error - Property 'name' exists on profile object
+        const sender = msg.profile.name;
         const timestamp = new Date(msg.timestamp).toLocaleString();
         return `[${timestamp}] ${sender}: ${(msg.text ?? "").trim()}`;
       })
@@ -108,9 +116,12 @@ Important guidelines:
   } catch (error) {
     console.error("Error summarizing thread:", error);
 
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: getErrorMessage(error) }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
   }
 });

@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { z } from "https://deno.land/x/zod@v3.24.2/mod.ts";
 import { getOpenAIClient } from "../utils/openai.ts";
 import { getSupabaseServiceClient } from "../utils/supabase.ts";
+import { getErrorMessage } from "../utils/handle-error.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -91,7 +92,7 @@ serve(async (req) => {
     );
   } catch (err) {
     console.error("generate-conversation error:", err);
-    return new Response(JSON.stringify({ error: err.message }), {
+    return new Response(JSON.stringify({ error: getErrorMessage(err) }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

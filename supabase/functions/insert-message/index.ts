@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getSupabaseServiceClient } from "../utils/supabase.ts";
 import { z } from "https://deno.land/x/zod@v3.24.2/mod.ts";
-import { handleError } from "../utils/handle-error.ts";
+import { getErrorMessage, handleError } from "../utils/handle-error.ts";
 import sendEmail from "../utils/send-email.ts";
 import { sendSlackNotification } from "../utils/send-slack-notification.ts";
 
@@ -197,6 +197,6 @@ serve(async (req) => {
   } catch (error) {
     console.error("insert-message error:", error);
     handleError(error);
-    return errorResponse(error.message);
+    return errorResponse(getErrorMessage(error));
   }
 });
