@@ -145,3 +145,9 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 } */
+
+/* Remove the cancel search button */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  display: none;
+}
