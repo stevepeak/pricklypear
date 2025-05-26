@@ -14,6 +14,8 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
@@ -36,6 +38,11 @@ const Threads = () => {
   >([]);
   const [filterParticipants, setFilterParticipants] = useState<string[]>([]);
   const [filterTopics, setFilterTopics] = useState<ThreadTopic[]>([]);
+  const isFiltering =
+    search.trim() !== "" ||
+    filterStatus.length > 0 ||
+    filterParticipants.length > 0 ||
+    filterTopics.length > 0;
 
   // Load persisted view preference on mount
   useEffect(() => {
@@ -86,6 +93,13 @@ const Threads = () => {
     setFilterTopics((prev) =>
       prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
     );
+  };
+
+  const clearFilters = () => {
+    setSearch("");
+    setFilterStatus([]);
+    setFilterParticipants([]);
+    setFilterTopics([]);
   };
 
   const participantOptions = Array.from(
@@ -214,6 +228,14 @@ const Threads = () => {
                   })}
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
+              {isFiltering && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={clearFilters}>
+                    Clear filters
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
           <ThreadViewToggle value={view} onValueChange={handleViewChange} />
@@ -235,6 +257,17 @@ const Threads = () => {
         />
       ) : (
         <ThreadsTable threads={filteredThreads} isLoading={isLoading} />
+      )}
+      {isFiltering && (
+        <div className="flex justify-center mt-4">
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm hover:bg-accent"
+            onClick={clearFilters}
+          >
+            Filtering {filteredThreads.length} threads – Clear filters
+          </button>
+        </div>
       )}
     </div>
   );
