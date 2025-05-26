@@ -39,7 +39,7 @@ const participantSchema = z.array(
           .nullable(),
       })
       .nullable(),
-  })
+  }),
 );
 
 function errorResponse(message, status = 500) {
@@ -117,14 +117,14 @@ serve(async (req) => {
           name,
           notifications
         )
-      `
+      `,
         )
         .eq("thread_id", threadId);
 
       if (participantsError) {
         handleError(participantsError);
         return errorResponse(
-          participantsError?.message || "No participants found"
+          participantsError?.message || "No participants found",
         );
       }
 
@@ -169,14 +169,14 @@ serve(async (req) => {
           // remove if you have email notification disabled
           .filter(
             (participant) =>
-              participant.notifications?.newMessages?.email !== false
+              participant.notifications?.newMessages?.email !== false,
           )
           .map((participant) =>
             sendEmail({
               userId: participant.id,
               subject: `🌵 New message from ${senderName} via The Prickly Pear`,
               html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
-            })
+            }),
           ),
       ]);
 

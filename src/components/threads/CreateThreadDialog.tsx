@@ -1,5 +1,5 @@
 import React from "react";
-import { Bot, Loader2,  MessageCirclePlus, MessagesSquare } from "lucide-react";
+import { Bot, Loader2, MessageCirclePlus, MessagesSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
