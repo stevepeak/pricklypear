@@ -284,7 +284,7 @@ export type Database = {
           | {
               title: string
               ai: boolean
-              topic: string
+              topic: Database["public"]["Enums"]["thread_topic"]
               controls: Json
               participant_ids: string[]
             }
@@ -410,7 +410,7 @@ export type Database = {
         | "request_close"
         | "close_accepted"
         | "close_declined"
-      thread_status: "Open" | "Closed" | "Archived" | "Demo"
+      thread_status: "Open" | "Closed" | "Archived" | "(empty)"
       thread_topic:
         | "travel"
         | "parenting_time"
@@ -563,7 +563,7 @@ export const Constants = {
         "close_accepted",
         "close_declined",
       ],
-      thread_status: ["Open", "Closed", "Archived", "Demo"],
+      thread_status: ["Open", "Closed", "Archived", "(empty)"],
       thread_topic: [
         "travel",
         "parenting_time",

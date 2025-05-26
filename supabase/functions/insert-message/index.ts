@@ -39,7 +39,7 @@ const participantSchema = z.array(
           .nullable(),
       })
       .nullable(),
-  }),
+  })
 );
 
 function errorResponse(message, status = 500) {
@@ -51,14 +51,14 @@ function errorResponse(message, status = 500) {
 
 async function createReadReceipts(args: {
   messageId: string;
-  participants: { user_id: string }[];
+  participantIds: string[];
 }) {
   const supabase = getSupabaseServiceClient();
-  const { messageId, participants } = args;
+  const { messageId, participantIds } = args;
 
-  const readReceipts = participants.map(({ user_id }) => ({
+  const readReceipts = participantIds.map((id) => ({
     message_id: messageId,
-    user_id,
+    user_id: id,
     read_at: null,
   }));
 
@@ -117,14 +117,14 @@ serve(async (req) => {
           name,
           notifications
         )
-      `,
+      `
         )
         .eq("thread_id", threadId);
 
       if (participantsError) {
         handleError(participantsError);
         return errorResponse(
-          participantsError?.message || "No participants found",
+          participantsError?.message || "No participants found"
         );
       }
 
@@ -138,7 +138,9 @@ serve(async (req) => {
         // Create read receipts using already-fetched participants
         createReadReceipts({
           messageId: messageData.id,
-          participants: participants.filter((p) => p.id !== userId),
+          participantIds: participants
+            .filter((p) => p.id !== userId)
+            .map((p) => p.id),
         }),
         // Mark thread as closed
         type === "close_accepted"
@@ -167,14 +169,14 @@ serve(async (req) => {
           // remove if you have email notification disabled
           .filter(
             (participant) =>
-              participant.notifications?.newMessages?.email !== false,
+              participant.notifications?.newMessages?.email !== false
           )
           .map((participant) =>
             sendEmail({
               userId: participant.id,
               subject: `🌵 New message from ${senderName} via The Prickly Pear`,
               html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
-            }),
+            })
           ),
       ]);
 

@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import OpenAI from "https://esm.sh/openai@4.28.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { getOpenAIClient } from "../utils/openai";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -58,16 +58,14 @@ serve(async (req) => {
     // Format messages for OpenAI
     const conversationText = messagesData
       .map((msg) => {
-        const sender = msg.profiles?.name;
+        const sender = msg.profiles.name;
         const timestamp = new Date(msg.timestamp).toLocaleString();
         return `[${timestamp}] ${sender}: ${(msg.text ?? "").trim()}`;
       })
       .join("\n\n");
 
     // Initialize OpenAI with the API key from Supabase Secrets
-    const openai = new OpenAI({
-      apiKey: Deno.env.get("OPENAI_API_KEY"),
-    });
+    const openai = getOpenAIClient();
 
     // Generate a summary using OpenAI
     const response = await openai.chat.completions.create({

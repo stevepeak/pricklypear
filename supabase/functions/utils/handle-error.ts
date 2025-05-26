@@ -1,4 +1,4 @@
-import * as Sentry from "https://deno.land/x/sentry_deno@0.2.5/mod.ts";
+import * as Sentry from "https://deno.land/x/sentry_deno/main.ts";
 
 let sentryInitialized = false;
 
