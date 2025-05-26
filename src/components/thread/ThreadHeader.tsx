@@ -18,6 +18,14 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
         {/* Left Side */}
         <div className="flex-1 min-w-0 space-y-4">
           <div className="flex items-center gap-2 mb-2">
+            {thread.status === "closed" && (
+              <Badge
+                variant="secondary"
+                className="text-xs px-2 py-0.5 font-semibold"
+              >
+                Closed
+              </Badge>
+            )}
             {thread.ai ? (
               <Badge
                 variant="secondary"
