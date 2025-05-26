@@ -11,6 +11,7 @@ const corsHeaders = {
 
 const payloadSchema = z.object({
   threadId: z.string().uuid(),
+  n: z.number().default(15),
 });
 
 serve(async (req) => {
@@ -20,7 +21,7 @@ serve(async (req) => {
 
   try {
     const json = await req.json();
-    const { threadId } = payloadSchema.parse(json);
+    const { threadId, n } = payloadSchema.parse(json);
 
     const supabase = getSupabaseServiceClient();
 
@@ -40,7 +41,7 @@ serve(async (req) => {
     const prompt = `
       Create a short fictional conversation for a parenting app.
       Have the conversation seem natural, maybe one parent says two messages in a row, some messages are short, some are long.
-      Provide at least 15 back-and-forth messages.
+      Provide at least ${n} back-and-forth messages.
 
       Title: ${threadData.title}.
       Topic: ${threadData.topic}.
@@ -73,7 +74,7 @@ serve(async (req) => {
           thread_id: z.string().default(threadId),
         })
       )
-      .min(15)
+      .min(n)
       .parse(JSON.parse(aiRes.choices?.[0]?.message?.content ?? "[]"));
 
     const { error: insertError } = await supabase
