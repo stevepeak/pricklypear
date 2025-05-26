@@ -83,12 +83,15 @@ export function AppSidebar() {
         },
         {
           path: "/children",
-          label: ["Children Profiles", <Badge
-            key="coming-soon"
-            className="ml-2 bg-lime-100 text-lime-800 border-lime-200"
-          >
-            Coming soon
-          </Badge>],
+          label: [
+            "Children Profiles",
+            <Badge
+              key="coming-soon"
+              className="ml-2 bg-lime-100 text-lime-800 border-lime-200"
+            >
+              Coming soon
+            </Badge>,
+          ],
           icon: <Baby className="h-4 w-4 mr-2" />,
         },
         {
