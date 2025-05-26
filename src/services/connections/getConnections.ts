@@ -28,7 +28,8 @@ export const getConnections = async (): Promise<Connection[]> => {
     if (!connections) return [];
 
     const result = connections.map((c) => {
-      const otherUserId = c.user_id === userId ? c.connected_user_id : c.user_id;
+      const otherUserId =
+        c.user_id === userId ? c.connected_user_id : c.user_id;
       const name =
         c.user_id === userId
           ? (c.connected_profile as { name: string | null } | null)?.name

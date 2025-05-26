@@ -14,7 +14,7 @@ export async function reviewMessage(args: {
       body: { message, threadId },
     });
     if (error) {
-      throw new Error(error);
+      throw error;
     }
     return data;
   } catch (error) {
