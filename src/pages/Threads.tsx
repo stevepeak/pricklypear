@@ -21,6 +21,7 @@ import {
   DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
 import { Search, ListFilter } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Threads = () => {
   const [threads, setThreads] = useState<Thread[]>([]);
@@ -231,7 +232,10 @@ const Threads = () => {
               {isFiltering && (
                 <>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={clearFilters}>
+                  <DropdownMenuItem
+                    className="text-muted-foreground"
+                    onSelect={clearFilters}
+                  >
                     Clear filters
                   </DropdownMenuItem>
                 </>
@@ -260,13 +264,13 @@ const Threads = () => {
       )}
       {isFiltering && (
         <div className="flex justify-center mt-4">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm hover:bg-accent"
+          <Button
+            variant="ghost"
+            className="text-muted-foreground"
             onClick={clearFilters}
           >
-            Filtering {filteredThreads.length} threads – Clear filters
-          </button>
+            Clear filters
+          </Button>
         </div>
       )}
     </div>

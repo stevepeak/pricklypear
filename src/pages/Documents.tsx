@@ -221,7 +221,10 @@ export default function Documents() {
               {isFiltering && (
                 <>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={clearFilters}>
+                  <DropdownMenuItem
+                    className="text-muted-foreground"
+                    onSelect={clearFilters}
+                  >
                     Clear filters
                   </DropdownMenuItem>
                 </>
@@ -358,8 +361,12 @@ export default function Documents() {
       </Table>
       {isFiltering && (
         <div className="flex justify-center mt-4">
-          <Button variant="outline" onClick={clearFilters}>
-            Filtering {filtered.length} documents – Clear filters
+          <Button
+            variant="ghost"
+            className="text-muted-foreground"
+            onClick={clearFilters}
+          >
+            Clear filters
           </Button>
         </div>
       )}
