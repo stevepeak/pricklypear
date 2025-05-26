@@ -280,7 +280,11 @@ export type Database = {
       }
       create_thread: {
         Args:
-          | { title: string; ai: boolean }
+          | {
+              title: string
+              ai: boolean
+              topic: Database["public"]["Enums"]["thread_topic"]
+            }
           | {
               title: string
               ai: boolean

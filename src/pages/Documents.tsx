@@ -25,10 +25,10 @@ import {
   Download,
   Trash2,
   Search,
-  Plus,
   FileText,
   Tags,
   ListFilter,
+  FilePlus2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -236,8 +236,8 @@ export default function Documents() {
             onOpenChange={setIsUploadDialogOpen}
           >
             <DialogTrigger asChild>
-              <Button size="sm" variant="default">
-                <Plus className="mr-2" size={16} /> Upload
+              <Button size="sm" variant="ghost">
+                <FilePlus2 size={16} /> Upload
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-3xl">

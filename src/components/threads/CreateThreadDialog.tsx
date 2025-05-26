@@ -1,5 +1,5 @@
 import React from "react";
-import { Bot, Loader2, MessageCircle, MessageCirclePlus } from "lucide-react";
+import { Bot, Loader2,  MessageCirclePlus, MessagesSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -67,7 +67,7 @@ const CreateThreadDialog = ({
     <Dialog open={dialogOpen} onOpenChange={handleDialogOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost">
-          <MessageCirclePlus className="mr-2 h-4 w-4" />
+          <MessageCirclePlus size={16} />
           New Thread
         </Button>
       </DialogTrigger>
@@ -82,7 +82,7 @@ const CreateThreadDialog = ({
         <Tabs defaultValue="conversation" className="w-full mt-4">
           <TabsList className="w-full">
             <TabsTrigger value="conversation" className="flex-1">
-              <MessageCircle className="mr-2 h-4 w-4" /> Conversation
+              <MessagesSquare className="mr-2 h-4 w-4" /> Thread
             </TabsTrigger>
             <TabsTrigger value="ai-chat" className="flex-1">
               <Bot className="mr-2 h-4 w-4" /> AI Chat
