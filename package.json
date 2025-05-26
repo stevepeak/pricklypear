@@ -7,7 +7,7 @@
     "bun": "1"
   },
   "scripts": {
-    "build": "bun run build.ts && bun run sentry:sourcemaps",
+    "build": "bun run build.ts",
     "dev": "bun run --hot src/index.tsx",
     "lint": "eslint . && prettier --check .",
     "test": "bun test",
