@@ -28,7 +28,7 @@ import {
   Plus,
   FileText,
   Tags,
-  Filter as FilterIcon,
+  ListFilter,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -181,13 +181,13 @@ export default function Documents() {
         <div className="flex gap-2 ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <FilterIcon className="mr-2" size={16} /> Filter
+              <Button variant="ghost" size="sm">
+                <ListFilter />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuSub>
-                <DropdownMenuSubTrigger inset>Labels</DropdownMenuSubTrigger>
+                <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
                 <DropdownMenuSubContent className="w-48">
                   {Object.keys(DOCUMENT_LABEL_INFO).map((key) => {
                     const label = key as DocumentLabel;
