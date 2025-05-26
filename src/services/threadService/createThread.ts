@@ -6,7 +6,7 @@ export const createThread = async (args: {
   title: string;
   ai: boolean;
   participantIds?: string[];
-  topic?: ThreadTopic;
+  topic: ThreadTopic;
   controls?: { requireAiApproval?: boolean };
 }): Promise<Thread | null> => {
   const { title, ai, participantIds, topic, controls } = args;

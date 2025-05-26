@@ -77,7 +77,7 @@ export const useThreadCreation = (
   const handleCreateAIChat = async (user: User) => {
     setIsCreating(true);
 
-    const newThread = await createThread({ title: "AI Chat", ai: true });
+    const newThread = await createThread({ title: "AI Chat", ai: true, topic: "other" });
 
     setIsCreating(false);
 

@@ -68,8 +68,8 @@ serve(async (req) => {
           user_id: z.string().uuid(),
           text: z.string().min(1),
           timestamp: z.string().datetime(),
-          type: z.default("user_message"),
-          thread_id: z.default(threadId),
+          type: z.string().default("user_message"),
+          thread_id: z.string().default(threadId),
         })
       )
       .min(10)
