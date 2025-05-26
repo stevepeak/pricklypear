@@ -22,6 +22,7 @@ import { DocumentUploader } from "@/components/DocumentUploader";
 import { getDocuments, deleteDocument } from "@/services/documentService";
 import type { Document } from "@/types/document";
 import { formatThreadTimestamp } from "@/utils/formatTimestamp";
+import { DocumentTableSkeleton } from "@/components/documents/DocumentTableSkeleton";
 
 export default function Documents() {
   const { user } = useAuth();
@@ -66,18 +67,6 @@ export default function Documents() {
     }
   };
 
-  const getFileType = (filename: string) => {
-    const ext = filename.toLowerCase().split(".").pop();
-    switch (ext) {
-      case "pdf":
-        return "PDF";
-      case "docx":
-        return "Word Document";
-      default:
-        return "Document";
-    }
-  };
-
   const filtered = documents.filter((doc) =>
     doc.original_filename.toLowerCase().includes(search.toLowerCase()),
   );
@@ -117,21 +106,13 @@ export default function Documents() {
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Type</TableHead>
             <TableHead>Uploaded</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading ? (
-            <TableRow>
-              <TableCell
-                colSpan={4}
-                className="text-center text-muted-foreground"
-              >
-                Loading documents...
-              </TableCell>
-            </TableRow>
+            <DocumentTableSkeleton />
           ) : filtered.length === 0 ? (
             <TableRow>
               <TableCell
@@ -152,7 +133,6 @@ export default function Documents() {
                     <span>{doc.original_filename}</span>
                   </div>
                 </TableCell>
-                <TableCell>{getFileType(doc.original_filename)}</TableCell>
                 <TableCell>
                   {formatThreadTimestamp(new Date(doc.created_at))}
                 </TableCell>
