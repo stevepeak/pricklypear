@@ -191,22 +191,22 @@ export type Database = {
       }
       thread_participants: {
         Row: {
-          created_at: string | null
+          created_at: string
           id: string
-          thread_id: string | null
-          user_id: string | null
+          thread_id: string
+          user_id: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           id?: string
-          thread_id?: string | null
-          user_id?: string | null
+          thread_id: string
+          user_id: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           id?: string
-          thread_id?: string | null
-          user_id?: string | null
+          thread_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -229,35 +229,35 @@ export type Database = {
         Row: {
           ai: boolean
           controls: Json | null
-          created_at: string | null
-          created_by: string | null
+          created_at: string
+          created_by: string
           id: string
           status: Database["public"]["Enums"]["thread_status"]
           summary: string | null
           title: string
-          topic: Database["public"]["Enums"]["thread_topic"] | null
+          topic: Database["public"]["Enums"]["thread_topic"]
         }
         Insert: {
           ai?: boolean
           controls?: Json | null
-          created_at?: string | null
-          created_by?: string | null
+          created_at?: string
+          created_by: string
           id?: string
           status?: Database["public"]["Enums"]["thread_status"]
           summary?: string | null
           title: string
-          topic?: Database["public"]["Enums"]["thread_topic"] | null
+          topic?: Database["public"]["Enums"]["thread_topic"]
         }
         Update: {
           ai?: boolean
           controls?: Json | null
-          created_at?: string | null
-          created_by?: string | null
+          created_at?: string
+          created_by?: string
           id?: string
           status?: Database["public"]["Enums"]["thread_status"]
           summary?: string | null
           title?: string
-          topic?: Database["public"]["Enums"]["thread_topic"] | null
+          topic?: Database["public"]["Enums"]["thread_topic"]
         }
         Relationships: [
           {
@@ -410,7 +410,7 @@ export type Database = {
         | "request_close"
         | "close_accepted"
         | "close_declined"
-      thread_status: "Open" | "Closed" | "Archived"
+      thread_status: "Open" | "Closed" | "Archived" | "Demo"
       thread_topic:
         | "travel"
         | "parenting_time"
@@ -563,7 +563,7 @@ export const Constants = {
         "close_accepted",
         "close_declined",
       ],
-      thread_status: ["Open", "Closed", "Archived"],
+      thread_status: ["Open", "Closed", "Archived", "Demo"],
       thread_topic: [
         "travel",
         "parenting_time",
