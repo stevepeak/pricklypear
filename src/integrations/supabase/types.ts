@@ -62,6 +62,7 @@ export type Database = {
           file_path: string
           filename: string
           id: string
+          labels: Database["public"]["Enums"]["document_label"][] | null
           user_id: string
         }
         Insert: {
@@ -71,6 +72,7 @@ export type Database = {
           file_path: string
           filename: string
           id?: string
+          labels?: Database["public"]["Enums"]["document_label"][] | null
           user_id: string
         }
         Update: {
@@ -80,6 +82,7 @@ export type Database = {
           file_path?: string
           filename?: string
           id?: string
+          labels?: Database["public"]["Enums"]["document_label"][] | null
           user_id?: string
         }
         Relationships: []
@@ -382,6 +385,26 @@ export type Database = {
     }
     Enums: {
       connection_status: "pending" | "accepted" | "declined" | "disabled"
+      document_label:
+        | "Parenting"
+        | "Mediation"
+        | "Divorce"
+        | "Evidence"
+        | "CourtOrder"
+        | "Invoice"
+        | "Receipt"
+        | "Photo"
+        | "Medical"
+        | "School"
+        | "Travel"
+        | "Communication"
+        | "Legal"
+        | "Financial"
+        | "Custody"
+        | "Schedule"
+        | "Agreement"
+        | "Insurance"
+        | "Other"
       message_type:
         | "user_message"
         | "request_close"
@@ -512,6 +535,27 @@ export const Constants = {
   public: {
     Enums: {
       connection_status: ["pending", "accepted", "declined", "disabled"],
+      document_label: [
+        "Parenting",
+        "Mediation",
+        "Divorce",
+        "Evidence",
+        "CourtOrder",
+        "Invoice",
+        "Receipt",
+        "Photo",
+        "Medical",
+        "School",
+        "Travel",
+        "Communication",
+        "Legal",
+        "Financial",
+        "Custody",
+        "Schedule",
+        "Agreement",
+        "Insurance",
+        "Other",
+      ],
       message_type: [
         "user_message",
         "request_close",
