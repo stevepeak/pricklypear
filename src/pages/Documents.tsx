@@ -72,8 +72,8 @@ export default function Documents() {
   );
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6 gap-4">
+    <div>
+      <div className="flex items-center justify-between pr-4">
         <div className="flex w-full max-w-xs relative">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -105,9 +105,15 @@ export default function Documents() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Uploaded</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+              Name
+            </TableHead>
+            <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+              Uploaded
+            </TableHead>
+            <TableHead className="px-4 py-2 font-semibold whitespace-nowrap text-right">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

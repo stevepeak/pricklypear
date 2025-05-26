@@ -148,7 +148,7 @@ const Connections = () => {
   }
 
   return (
-    <div className="p-10">
+    <div className="p-6">
       <div className="flex justify-end mb-8">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
