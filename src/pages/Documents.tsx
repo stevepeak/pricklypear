@@ -36,6 +36,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
@@ -67,6 +69,7 @@ export default function Documents() {
   const [labelDoc, setLabelDoc] = useState<Document | null>(null);
   const [selectedLabels, setSelectedLabels] = useState<DocumentLabel[]>([]);
   const [filterLabels, setFilterLabels] = useState<DocumentLabel[]>([]);
+  const isFiltering = search.trim() !== "" || filterLabels.length > 0;
 
   const loadDocuments = useCallback(async () => {
     if (!user) return;
@@ -151,6 +154,11 @@ export default function Documents() {
     );
   };
 
+  const clearFilters = () => {
+    setSearch("");
+    setFilterLabels([]);
+  };
+
   const filtered = documents.filter((doc) => {
     const matchesSearch = doc.filename
       .toLowerCase()
@@ -210,6 +218,14 @@ export default function Documents() {
                   })}
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
+              {isFiltering && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={clearFilters}>
+                    Clear filters
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
           <Dialog
@@ -340,6 +356,13 @@ export default function Documents() {
           )}
         </TableBody>
       </Table>
+      {isFiltering && (
+        <div className="flex justify-center mt-4">
+          <Button variant="outline" onClick={clearFilters}>
+            Filtering {filtered.length} documents – Clear filters
+          </Button>
+        </div>
+      )}
       <Dialog
         open={Boolean(renameDoc)}
         onOpenChange={(open) => {
