@@ -21,8 +21,25 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import { Download, Trash2, Search, Plus, FileText, Tags } from "lucide-react";
+import {
+  Download,
+  Trash2,
+  Search,
+  Plus,
+  FileText,
+  Tags,
+  Filter as FilterIcon,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+} from "@/components/ui/dropdown-menu";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { DocumentUploader } from "@/components/DocumentUploader";
@@ -34,7 +51,7 @@ import {
 } from "@/services/documentService";
 import type { Document, DocumentLabel } from "@/types/document";
 import DocumentLabelsDialog from "@/components/documents/DocumentLabelsDialog";
-import { getDocumentLabelInfo } from "@/types/document";
+import { DOCUMENT_LABEL_INFO, getDocumentLabelInfo } from "@/types/document";
 import { formatThreadTimestamp } from "@/utils/formatTimestamp";
 import { DocumentTableSkeleton } from "@/components/documents/DocumentTableSkeleton";
 import { toast } from "sonner";
@@ -49,6 +66,7 @@ export default function Documents() {
   const [newTitle, setNewTitle] = useState("");
   const [labelDoc, setLabelDoc] = useState<Document | null>(null);
   const [selectedLabels, setSelectedLabels] = useState<DocumentLabel[]>([]);
+  const [filterLabels, setFilterLabels] = useState<DocumentLabel[]>([]);
 
   const loadDocuments = useCallback(async () => {
     if (!user) return;
@@ -127,9 +145,21 @@ export default function Documents() {
     }
   };
 
-  const filtered = documents.filter((doc) =>
-    doc.filename.toLowerCase().includes(search.toLowerCase()),
-  );
+  const toggleFilterLabel = (label: DocumentLabel) => {
+    setFilterLabels((prev) =>
+      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label],
+    );
+  };
+
+  const filtered = documents.filter((doc) => {
+    const matchesSearch = doc.filename
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    const matchesLabels =
+      filterLabels.length === 0 ||
+      (doc.labels ?? []).some((l) => filterLabels.includes(l));
+    return matchesSearch && matchesLabels;
+  });
 
   return (
     <div>
@@ -148,19 +178,53 @@ export default function Documents() {
             aria-label="Search"
           />
         </div>
-        <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="ml-auto" size="sm" variant="default">
-              <Plus className="mr-2" size={16} /> Upload
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-3xl">
-            <DialogHeader>
-              <DialogTitle>Upload Document</DialogTitle>
-            </DialogHeader>
-            <DocumentUploader onUploadComplete={handleUploadComplete} />
-          </DialogContent>
-        </Dialog>
+        <div className="flex gap-2 ml-auto">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <FilterIcon className="mr-2" size={16} /> Filter
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger inset>Labels</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="w-48">
+                  {Object.keys(DOCUMENT_LABEL_INFO).map((key) => {
+                    const label = key as DocumentLabel;
+                    const info = getDocumentLabelInfo(label);
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={label}
+                        checked={filterLabels.includes(label)}
+                        onCheckedChange={() => toggleFilterLabel(label)}
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        <span className="mr-2">{info.icon}</span>
+                        {label}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Dialog
+            open={isUploadDialogOpen}
+            onOpenChange={setIsUploadDialogOpen}
+          >
+            <DialogTrigger asChild>
+              <Button size="sm" variant="default">
+                <Plus className="mr-2" size={16} /> Upload
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl">
+              <DialogHeader>
+                <DialogTitle>Upload Document</DialogTitle>
+              </DialogHeader>
+              <DocumentUploader onUploadComplete={handleUploadComplete} />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
       <Table>
         <TableHeader>
