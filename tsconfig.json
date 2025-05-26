@@ -1,8 +1,7 @@
 {
   "files": [],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+    { "path": "./tsconfig.app.json" }
   ],
   "compilerOptions": {
     "baseUrl": ".",
@@ -19,10 +18,14 @@
     "strictNullChecks": false,
     "sourceMap": true,
     "inlineSources": true,
+    "jsx": "react-jsx",
 
     // Set `sourceRoot` to  "/" to strip the build path prefix
     // from generated source code references.
     // This improves issue grouping in Sentry.
     "sourceRoot": "/"
-  }
+  },
+  "exclude": [
+    "supabase/functions/**/*.ts"
+  ]
 }

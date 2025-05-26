@@ -56,7 +56,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
               <TooltipContent>
                 <p>
                   Connected since{" "}
-                  {new Date(connection.updatedAt).toLocaleDateString()}
+                  {new Date(connection.updated_at).toLocaleDateString()}
                 </p>
               </TooltipContent>
             </Tooltip>

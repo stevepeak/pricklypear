@@ -17,5 +17,8 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
-  }
+  },
+  "exclude": [
+    "supabase/functions/**/*.ts"
+  ]
 }

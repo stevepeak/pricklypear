@@ -56,28 +56,31 @@ export type Database = {
       }
       documents: {
         Row: {
-          created_at: string | null
+          created_at: string
           embedding: string | null
           extracted_text: string | null
-          file_path: string | null
+          file_path: string
           id: string
-          user_id: string | null
+          original_filename: string
+          user_id: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           embedding?: string | null
           extracted_text?: string | null
-          file_path?: string | null
+          file_path: string
           id?: string
-          user_id?: string | null
+          original_filename: string
+          user_id: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           embedding?: string | null
           extracted_text?: string | null
-          file_path?: string | null
+          file_path?: string
           id?: string
-          user_id?: string | null
+          original_filename?: string
+          user_id?: string
         }
         Relationships: []
       }

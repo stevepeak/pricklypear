@@ -134,7 +134,7 @@ serve(async (req) => {
       const senderName =
         participants.find((p) => p.id === userId)?.name || "Someone";
 
-      const [readReceiptsRes, closeThreadRes, slackNotificationRes] =
+      const [readReceiptsRes, closeThreadRes] =
         await Promise.all([
           // Create read receipts using already-fetched participants
           createReadReceipts({
@@ -189,13 +189,6 @@ serve(async (req) => {
         console.error("closeThreadRes.error:", closeThreadRes.error);
       }
 
-      if (slackNotificationRes?.error) {
-        handleError(slackNotificationRes.error);
-        console.error(
-          "slackNotificationRes.error:",
-          slackNotificationRes.error,
-        );
-      }
     })();
 
     return new Response(JSON.stringify({ id: messageData.id }), {
