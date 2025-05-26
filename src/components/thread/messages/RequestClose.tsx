@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { saveMessage } from "@/services/messageService/save-message";
 import { requireCurrentUser } from "@/utils/authCache";
 import { toast } from "sonner";
+import { ThreadStatus } from "@/types/thread";
 
 function RequestClose(props: {
   message: Message;
-  threadStatus: "open" | "closed";
+  threadStatus: ThreadStatus;
   isPending: boolean;
 }) {
   const { message, threadStatus, isPending } = props;
@@ -82,7 +83,7 @@ function RequestClose(props: {
           )}
         >
           <ReactMarkdown>{message.text}</ReactMarkdown>
-          {isPending && !isCurrentUserSender && threadStatus === "open" && (
+          {isPending && !isCurrentUserSender && threadStatus === "Open" && (
             <div className="flex w-full mt-2 justify-center">
               <div className="flex gap-2">
                 <Button size="sm" variant="default" onClick={handleAccept}>

@@ -59,7 +59,7 @@ const ThreadView = () => {
     );
   }, [messages]);
 
-  const threadIsOpen = thread?.status === "open";
+  const threadIsOpen = thread?.status === "Open";
 
   // Ref for scrolling to bottom
   const messagesEndRef = useRef<HTMLDivElement>(null);

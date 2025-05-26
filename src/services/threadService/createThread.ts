@@ -51,7 +51,7 @@ export const createThread = async (args: {
       id: threadId,
       title: trimmedTitle,
       createdAt: new Date(),
-      status: "open" as ThreadStatus,
+      status: "Open" as ThreadStatus,
       participants: participantIds,
       summary: `New thread created by ${profile.name}`,
       topic,

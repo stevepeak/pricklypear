@@ -25,10 +25,10 @@ const ThreadCard = ({ thread, unreadCount = 0 }: ThreadCardProps) => {
         <div className="flex justify-between items-start mb-2">
           <div className="flex gap-2 items-center">
             <Badge
-              variant={thread.status === "open" ? "default" : "secondary"}
-              className={`text-xs px-2 py-0.5 font-semibold ${thread.status === "open" ? "bg-secondary text-primary" : ""}`}
+              variant={thread.status === "Open" ? "default" : "secondary"}
+              className={`text-xs px-2 py-0.5 font-semibold ${thread.status === "Open" ? "bg-secondary text-primary" : ""}`}
             >
-              {thread.status === "open" ? "Open" : "Closed"}
+              {thread.status}
             </Badge>
             <Badge
               variant="outline"

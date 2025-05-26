@@ -7,6 +7,8 @@
 // Whenever you add a new topic, update the union and THREAD_TOPIC_INFO below -
 // every component and service picks them up automatically.
 
+import { Database } from "@/integrations/supabase/types";
+
 /** All valid thread topic identifiers used throughout the app. */
 export type ThreadTopic =
   | "travel"
@@ -22,7 +24,7 @@ export type ThreadControls = {
   requireAiApproval?: boolean;
 };
 
-export type ThreadStatus = "open" | "closed";
+export type ThreadStatus = Database["public"]["Enums"]["thread_status"];
 
 export type Thread = {
   id: string;

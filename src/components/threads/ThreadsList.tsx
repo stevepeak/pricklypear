@@ -22,8 +22,8 @@ const ThreadsList = ({
   const { threadCounts } = useUnreadMessages();
 
   // Separate threads into open and closed
-  const openThreads = threads.filter((thread) => thread.status === "open");
-  const closedThreads = threads.filter((thread) => thread.status === "closed");
+  const openThreads = threads.filter((thread) => thread.status === "Open");
+  const closedThreads = threads.filter((thread) => thread.status === "Closed");
 
   if (isLoading) {
     return (

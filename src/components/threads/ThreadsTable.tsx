@@ -86,25 +86,23 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
             <TableRow
               key={thread.id}
               onClick={() => navigate(`/threads/${thread.id}`)}
-              className={cn(thread.status !== "open" && "bg-muted")}
+              className={cn(thread.status !== "Open" && "bg-muted")}
             >
               <TableCell className="px-4 py-2">
                 <Badge
-                  variant={thread.status === "open" ? "default" : "outline"}
+                  variant={thread.status === "Open" ? "default" : "outline"}
                   className={cn(
                     "ml-2 px-2 py-0.5 text-xs",
                     thread.ai
                       ? "bg-purple-100 text-purple-800 border-purple-200"
-                      : thread.status === "open"
+                      : thread.status === "Open"
                         ? "bg-green-100 text-green-800 border-green-200"
                         : "bg-muted text-muted-foreground border-muted",
                   )}
                 >
                   {thread.ai
                     ? "AI Chat"
-                    : thread.status === "open"
-                      ? "Open"
-                      : "Closed"}
+                    : thread.status}
                 </Badge>
               </TableCell>
 
