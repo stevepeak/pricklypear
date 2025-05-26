@@ -21,7 +21,8 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import { Download, Trash2, Search, Plus, FileText } from "lucide-react";
+import { Download, Trash2, Search, Plus, FileText, Tags } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { DocumentUploader } from "@/components/DocumentUploader";
@@ -29,8 +30,11 @@ import {
   getDocuments,
   deleteDocument,
   updateDocumentTitle,
+  updateDocumentLabels,
 } from "@/services/documentService";
-import type { Document } from "@/types/document";
+import type { Document, DocumentLabel } from "@/types/document";
+import DocumentLabelsDialog from "@/components/documents/DocumentLabelsDialog";
+import { getDocumentLabelInfo } from "@/types/document";
 import { formatThreadTimestamp } from "@/utils/formatTimestamp";
 import { DocumentTableSkeleton } from "@/components/documents/DocumentTableSkeleton";
 import { toast } from "sonner";
@@ -43,6 +47,8 @@ export default function Documents() {
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [renameDoc, setRenameDoc] = useState<Document | null>(null);
   const [newTitle, setNewTitle] = useState("");
+  const [labelDoc, setLabelDoc] = useState<Document | null>(null);
+  const [selectedLabels, setSelectedLabels] = useState<DocumentLabel[]>([]);
 
   const loadDocuments = useCallback(async () => {
     if (!user) return;
@@ -103,6 +109,24 @@ export default function Documents() {
     }
   };
 
+  const openLabelDialog = (doc: Document) => {
+    setLabelDoc(doc);
+    setSelectedLabels(doc.labels ?? []);
+  };
+
+  const handleSaveLabels = async (labels: DocumentLabel[]) => {
+    if (!user || !labelDoc) return;
+    try {
+      await updateDocumentLabels(labelDoc.id, labels);
+      toast("Labels updated", { description: "Document labels saved." });
+      setLabelDoc(null);
+      loadDocuments();
+    } catch (error) {
+      console.error("Failed to update labels:", error);
+      toast("Error", { description: "Failed to update labels." });
+    }
+  };
+
   const filtered = documents.filter((doc) =>
     doc.filename.toLowerCase().includes(search.toLowerCase()),
   );
@@ -147,6 +171,9 @@ export default function Documents() {
             <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
               Uploaded
             </TableHead>
+            <TableHead className="px-4 py-2 font-semibold whitespace-nowrap">
+              Labels
+            </TableHead>
             <TableHead className="px-4 py-2 font-semibold whitespace-nowrap text-right">
               Actions
             </TableHead>
@@ -190,6 +217,30 @@ export default function Documents() {
                 </TableCell>
                 <TableCell>
                   {formatThreadTimestamp(new Date(doc.created_at))}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center flex-wrap gap-1">
+                    {doc.labels?.map((label) => {
+                      const info = getDocumentLabelInfo(label);
+                      return (
+                        <Badge
+                          key={label}
+                          variant="secondary"
+                          className={`bg-${info.color}-100 text-${info.color}-800 border-${info.color}-200`}
+                        >
+                          {info.icon}
+                        </Badge>
+                      );
+                    })}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      aria-label="Edit labels"
+                      onClick={() => openLabelDialog(doc)}
+                    >
+                      <Tags className="size-4" />
+                    </Button>
+                  </div>
                 </TableCell>
                 <TableCell className="flex gap-2 justify-end">
                   <Button
@@ -246,6 +297,14 @@ export default function Documents() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <DocumentLabelsDialog
+        open={Boolean(labelDoc)}
+        onOpenChange={(open) => {
+          if (!open) setLabelDoc(null);
+        }}
+        labels={selectedLabels}
+        onSave={handleSaveLabels}
+      />
     </div>
   );
 }
