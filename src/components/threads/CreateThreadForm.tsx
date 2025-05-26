@@ -26,9 +26,11 @@ interface CreateThreadFormProps {
   isLoadingContacts: boolean;
   isCreating: boolean;
   onSubmit: () => void;
+  onGenerate?: () => void;
   onCancel: () => void;
   requireAiApproval: boolean;
   setRequireAiApproval: (value: boolean) => void;
+  isAdmin?: boolean;
 }
 
 const CreateThreadForm = ({
@@ -42,9 +44,11 @@ const CreateThreadForm = ({
   isLoadingContacts,
   isCreating,
   onSubmit,
+  onGenerate,
   onCancel,
   requireAiApproval,
   setRequireAiApproval,
+  isAdmin,
 }: CreateThreadFormProps) => {
   const topicInfo = THREAD_TOPIC_INFO;
   const [showTopicError, setShowTopicError] = React.useState(false);
@@ -167,34 +171,45 @@ const CreateThreadForm = ({
         </Label>
       </div>
 
-      <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 mt-4">
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:space-x-2 mt-4">
         <Button variant="outline" onClick={onCancel} disabled={isCreating}>
           Cancel
         </Button>
-        <Button
-          onClick={() => {
-            if (!selectedTopic) {
-              setShowTopicError(true);
-              return;
-            }
-            onSubmit();
-          }}
-          disabled={
-            !newThreadTitle.trim() ||
-            selectedContactIds.length === 0 ||
-            !selectedTopic ||
-            isCreating
-          }
-        >
-          {isCreating ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating...
-            </>
-          ) : (
-            "Create"
+        <div className="flex justify-end space-x-2">
+          {isAdmin && (
+            <Button
+              onClick={onGenerate}
+              disabled={isCreating}
+              variant="secondary"
+            >
+              Generate
+            </Button>
           )}
-        </Button>
+          <Button
+            onClick={() => {
+              if (!selectedTopic) {
+                setShowTopicError(true);
+                return;
+              }
+              onSubmit();
+            }}
+            disabled={
+              !newThreadTitle.trim() ||
+              selectedContactIds.length === 0 ||
+              !selectedTopic ||
+              isCreating
+            }
+          >
+            {isCreating ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              "Create"
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

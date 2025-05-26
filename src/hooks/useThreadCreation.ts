@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { createThread } from "@/services/threadService";
+import {
+  createThread,
+  generateThreadConversation,
+} from "@/services/threadService";
 import type { User } from "@supabase/supabase-js";
 import type { Thread, ThreadTopic } from "@/types/thread";
 
@@ -87,6 +90,62 @@ export const useThreadCreation = (
     }
   };
 
+  const handleGenerateThread = async (user: User) => {
+    if (!user) {
+      toast("Authentication required", {
+        description: "Please sign in to create threads",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    const trimmedTitle = newThreadTitle.trim();
+
+    if (!trimmedTitle) {
+      toast("Title required", {
+        description: "Please enter a title for the thread",
+      });
+      return;
+    }
+
+    if (selectedContactIds.length === 0) {
+      toast("Participants required", {
+        description: "Please select at least one participant for the thread",
+      });
+      return;
+    }
+
+    if (!selectedTopic) {
+      toast("Topic required", {
+        description: "Please select a topic for the thread",
+      });
+      return;
+    }
+
+    setIsCreating(true);
+
+    const newThread = await createThread({
+      title: trimmedTitle,
+      ai: false,
+      participantIds: selectedContactIds,
+      topic: selectedTopic,
+      controls: { requireAiApproval },
+    });
+
+    if (newThread) {
+      await generateThreadConversation({
+        threadId: newThread.id,
+      });
+      setIsCreating(false);
+      resetFormAndNavigate(newThread);
+    } else {
+      setIsCreating(false);
+      toast("Error", {
+        description: "Failed to create thread. Please try again.",
+      });
+    }
+  };
+
   const resetFormAndNavigate = (thread: Thread) => {
     onThreadCreated(thread);
     setNewThreadTitle("");
@@ -114,5 +173,6 @@ export const useThreadCreation = (
     setRequireAiApproval,
     handleCreateThread,
     handleCreateAIChat,
+    handleGenerateThread,
   };
 };
