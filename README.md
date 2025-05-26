@@ -156,6 +156,6 @@ $ supabase functions serve summarize-thread
 
 Style & tooling:
 
-- Follow existing ESLint rules. No Prettier – keep formatting consistent.
+- Follow existing ESLint rules. Prettier runs via the `bun run lint` and `bun run fix` scripts.
 - Keep PRs small; large refactors should be split across multiple PRs.
 - Tests live next to the code they cover and use Vitest.
