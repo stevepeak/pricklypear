@@ -14,15 +14,26 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { Download, Trash2, Search, Plus, FileText } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { DocumentUploader } from "@/components/DocumentUploader";
-import { getDocuments, deleteDocument } from "@/services/documentService";
+import {
+  getDocuments,
+  deleteDocument,
+  updateDocumentTitle,
+} from "@/services/documentService";
 import type { Document } from "@/types/document";
 import { formatThreadTimestamp } from "@/utils/formatTimestamp";
 import { DocumentTableSkeleton } from "@/components/documents/DocumentTableSkeleton";
+import { toast } from "sonner";
 
 export default function Documents() {
   const { user } = useAuth();
@@ -30,6 +41,8 @@ export default function Documents() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [renameDoc, setRenameDoc] = useState<Document | null>(null);
+  const [newTitle, setNewTitle] = useState("");
 
   const loadDocuments = useCallback(async () => {
     if (!user) return;
@@ -64,6 +77,29 @@ export default function Documents() {
     } catch (error) {
       console.error("Failed to delete document:", error);
       alert("Failed to delete document");
+    }
+  };
+
+  const handleRename = async () => {
+    if (!user || !renameDoc) return;
+    const trimmed = newTitle.trim();
+    if (!trimmed) {
+      toast("Title required", {
+        description: "Please enter a document title.",
+      });
+      return;
+    }
+
+    try {
+      await updateDocumentTitle(renameDoc.id, user.id, trimmed);
+      toast("Document renamed", {
+        description: "The document title has been updated.",
+      });
+      setRenameDoc(null);
+      loadDocuments();
+    } catch (error) {
+      console.error("Failed to rename document:", error);
+      toast("Error", { description: "Failed to rename document." });
     }
   };
 
@@ -136,7 +172,20 @@ export default function Documents() {
                 <TableCell>
                   <div className="flex items-center space-x-2">
                     <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span>{doc.original_filename}</span>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span
+                          className="cursor-pointer hover:underline"
+                          onClick={() => {
+                            setRenameDoc(doc);
+                            setNewTitle(doc.original_filename);
+                          }}
+                        >
+                          {doc.original_filename}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>Click to edit title</TooltipContent>
+                    </Tooltip>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -168,6 +217,35 @@ export default function Documents() {
           )}
         </TableBody>
       </Table>
+      <Dialog
+        open={Boolean(renameDoc)}
+        onOpenChange={(open) => {
+          if (!open) setRenameDoc(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rename Document</DialogTitle>
+          </DialogHeader>
+          <Input
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            autoFocus
+          />
+          <DialogFooter className="mt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setRenameDoc(null)}
+            >
+              Cancel
+            </Button>
+            <Button type="button" onClick={handleRename}>
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
