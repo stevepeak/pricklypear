@@ -181,7 +181,11 @@ export default function Documents() {
         <div className="flex gap-2 ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="focus-visible:ring-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="focus-visible:ring-0"
+              >
                 <ListFilter />
               </Button>
             </DropdownMenuTrigger>
