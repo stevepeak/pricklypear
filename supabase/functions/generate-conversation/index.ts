@@ -72,7 +72,7 @@ serve(async (req) => {
           timestamp: z.string().datetime(),
           type: z.string().default("user_message"),
           thread_id: z.string().default(threadId),
-        })
+        }),
       )
       .min(n)
       .parse(JSON.parse(aiRes.choices?.[0]?.message?.content ?? "[]"));
@@ -87,7 +87,7 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ success: true, count: inserts.length }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
     console.error("generate-conversation error:", err);

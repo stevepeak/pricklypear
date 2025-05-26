@@ -138,8 +138,8 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               </TableCell>
 
               {/* Title */}
-              <TableCell className="px-4 py-2 font-medium flex items-center gap-2">
-                {thread.title}
+              <TableCell className="px-4 py-2">
+                <span className="font-medium">{thread.title}</span>
               </TableCell>
 
               {/* Summary */}
