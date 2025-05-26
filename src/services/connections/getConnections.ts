@@ -16,8 +16,8 @@ export const getConnections = async (): Promise<Connection[]> => {
       .select(
         `
         *,
-        profiles:connected_user_id ( name ) as a,
-        profiles:user_id ( name ) as b
+        connected_profile:connected_user_id ( name ),
+        user_profile:user_id ( name )
       `,
       )
       .or(`user_id.eq.${userId},connected_user_id.eq.${userId}`);
@@ -27,11 +27,18 @@ export const getConnections = async (): Promise<Connection[]> => {
 
     if (!connections) return [];
 
-    const result = connections.map((c) => ({
-      name: c.profiles?.name,
-      otherUserId: c.user_id === userId ? c.connected_user_id : c.user_id,
-      ...c,
-    }));
+    const result = connections.map((c) => {
+      const otherUserId = c.user_id === userId ? c.connected_user_id : c.user_id;
+      const name =
+        c.user_id === userId
+          ? (c.connected_profile as { name: string | null } | null)?.name
+          : (c.user_profile as { name: string | null } | null)?.name;
+      return {
+        name: name ?? null,
+        otherUserId,
+        ...c,
+      };
+    });
 
     return result;
   } catch (error) {
