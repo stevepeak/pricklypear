@@ -185,7 +185,7 @@ serve(async (req) => {
         file_path,
         original_filename,
         extracted_text: extractedText,
-        embedding
+        embedding,
       })
       .select()
       .single();
