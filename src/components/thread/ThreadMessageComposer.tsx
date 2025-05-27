@@ -56,6 +56,7 @@ interface ThreadMessageComposerProps {
   autoFocus?: boolean;
   messagesEndRef?: React.RefObject<HTMLDivElement>;
   hasOpenCloseRequest?: boolean;
+  onUploadImage: (file: File) => void;
 }
 
 const ThreadMessageComposer = React.forwardRef<
@@ -74,6 +75,7 @@ const ThreadMessageComposer = React.forwardRef<
       autoFocus = false,
       messagesEndRef,
       hasOpenCloseRequest,
+      onUploadImage,
     },
     ref,
   ) => {
@@ -81,6 +83,7 @@ const ThreadMessageComposer = React.forwardRef<
     const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
     const [isRequestingClose, setIsRequestingClose] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [showJumpToLatest, setShowJumpToLatest] = useState(false);
     const { connections } = useConnections();
 
@@ -191,6 +194,14 @@ const ThreadMessageComposer = React.forwardRef<
       }
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        onUploadImage(file);
+        e.target.value = "";
+      }
+    };
+
     return (
       <>
         <div className="sticky bottom-10 bg-white border rounded-md shadow-md m-10">
@@ -267,18 +278,20 @@ const ThreadMessageComposer = React.forwardRef<
                     </Badge>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <FilePlus className="h-4 w-4 mr-2" /> Add photos and files{" "}
-                    <Badge
-                      key="coming-soon"
-                      variant="secondary"
-                      className="ml-2"
-                    >
-                      Coming soon
-                    </Badge>
+                  <DropdownMenuItem
+                    onSelect={() => fileInputRef.current?.click()}
+                  >
+                    <FilePlus className="h-4 w-4 mr-2" /> Add photos and files
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
               {/* <Button
                 variant="ghost"
                 size="icon"

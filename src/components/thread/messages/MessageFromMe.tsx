@@ -22,7 +22,20 @@ function MessageFromMe(props: { message: Message }) {
             "px-4 py-2 rounded-xl shadow-sm bg-sky-500 text-white rounded-tr-none ml-20",
           )}
         >
-          <ReactMarkdown>{message.text}</ReactMarkdown>
+          {message.text && message.text !== "<img>" && (
+            <ReactMarkdown>{message.text}</ReactMarkdown>
+          )}
+          {message.details &&
+            (message.details as Record<string, string>).imageUrl && (
+              <img
+                src={(message.details as Record<string, string>).imageUrl}
+                alt={
+                  (message.details as Record<string, string>).filename ||
+                  "uploaded image"
+                }
+                className="mt-2 max-w-xs rounded"
+              />
+            )}
         </div>
       </div>
     </div>

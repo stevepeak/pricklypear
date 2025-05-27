@@ -22,6 +22,7 @@ export const useThreadDetails = (
     setNewMessage,
     handleSendMessage,
     handleSendReviewedMessage,
+    handleUploadImage,
     setIsReviewDialogOpen,
     loadMessages,
   } = useThreadMessages(threadId, thread, setThread, composerRef);
@@ -57,6 +58,7 @@ export const useThreadDetails = (
     setNewMessage,
     handleSendMessage,
     handleSendReviewedMessage,
+    handleUploadImage,
     setIsReviewDialogOpen,
     loadMessages,
   };

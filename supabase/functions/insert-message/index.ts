@@ -24,6 +24,7 @@ const messageSchema = z.object({
     "close_accepted",
     "close_declined",
   ]),
+  details: z.record(z.any()).optional(),
 });
 
 const participantSchema = z.array(
@@ -83,10 +84,16 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
   }
 
   try {
-    const { text, threadId, userId, type } = await req.json();
+    const { text, threadId, userId, type, details } = await req.json();
 
     // Validate the input
-    const result = messageSchema.safeParse({ text, threadId, userId, type });
+    const result = messageSchema.safeParse({
+      text,
+      threadId,
+      userId,
+      type,
+      details,
+    });
     if (!result.success) {
       return errorResponse(result.error.errors[0].message, 400);
     }
@@ -108,6 +115,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
         thread_id: threadId,
         timestamp: new Date().toISOString(),
         type,
+        details,
       })
       .select("id")
       .single();

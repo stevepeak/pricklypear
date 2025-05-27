@@ -29,6 +29,7 @@ const ThreadView = () => {
     setNewMessage,
     handleSendMessage,
     handleSendReviewedMessage,
+    handleUploadImage,
     setIsReviewDialogOpen,
     loadMessages,
   } = useThreadDetails(threadId, composerRef);
@@ -101,6 +102,7 @@ const ThreadView = () => {
               hasOpenCloseRequest={hasOpenCloseRequest}
               thread={thread}
               loadMessages={loadMessages}
+              onUploadImage={handleUploadImage}
               autoFocus={true}
               messagesEndRef={messagesEndRef}
             />

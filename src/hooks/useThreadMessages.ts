@@ -3,7 +3,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { getMessages, getUnreadMessageCount } from "@/services/messageService";
 import { saveMessage } from "@/services/messageService/save-message";
 import { reviewMessage } from "@/utils/messageReview";
-import { generateThreadSummary } from "@/services/threadService";
+import {
+  generateThreadSummary,
+  uploadThreadImage,
+} from "@/services/threadService";
 import type { Message } from "@/types/message";
 import type { Thread } from "@/types/thread";
 import { toast } from "sonner";
@@ -184,6 +187,38 @@ export const useThreadMessages = (
     }
   };
 
+  const handleUploadImage = async (file: File) => {
+    if (!threadId || !user) return;
+    setIsSending(true);
+    try {
+      const { publicUrl } = await uploadThreadImage(file, threadId);
+      const success = await saveMessage({
+        threadId,
+        text: "<img>",
+        type: "user_message",
+        details: { imageUrl: publicUrl, filename: file.name },
+      });
+      if (success) {
+        const newMsg: Message = {
+          id: crypto.randomUUID(),
+          text: "<img>",
+          sender: user.id,
+          type: "user_message",
+          timestamp: new Date(),
+          threadId,
+          isCurrentUser: true,
+          details: { imageUrl: publicUrl, filename: file.name },
+        };
+        setMessages((prev) => [...prev, newMsg]);
+      }
+    } catch (err) {
+      toast("Upload failed", {
+        description: err instanceof Error ? err.message : "Upload failed",
+      });
+    }
+    setIsSending(false);
+  };
+
   return {
     messages,
     newMessage,
@@ -196,6 +231,7 @@ export const useThreadMessages = (
     setNewMessage,
     handleSendMessage,
     handleSendReviewedMessage,
+    handleUploadImage,
     setIsReviewDialogOpen,
     loadMessages,
   };

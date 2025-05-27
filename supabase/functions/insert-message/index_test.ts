@@ -67,6 +67,7 @@ Deno.test("insert-message success", async () => {
     threadId: "1",
     userId: "2",
     type: "user_message",
+    details: { foo: "bar" },
   });
   const req = new Request("http://", { method: "POST", body });
   const res = await handler(req, {

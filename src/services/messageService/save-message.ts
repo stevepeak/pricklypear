@@ -7,8 +7,9 @@ export const saveMessage = async (args: {
   text: string;
   threadId: string;
   type: Database["public"]["Enums"]["message_type"];
+  details?: Record<string, unknown> | null;
 }): Promise<boolean> => {
-  const { text, threadId, type } = args;
+  const { text, threadId, type, details } = args;
   try {
     const user = await requireCurrentUser();
 
@@ -18,6 +19,7 @@ export const saveMessage = async (args: {
         threadId,
         userId: user.id,
         type,
+        details,
       },
     });
 

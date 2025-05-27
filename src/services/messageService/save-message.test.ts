@@ -34,6 +34,7 @@ describe("saveMessage", () => {
       text: "hi",
       threadId: "t1",
       type: msgType,
+      details: { imageUrl: "url" },
     });
     expect(result).toBe(true);
     expect(supabase.functions.invoke).toHaveBeenCalled();

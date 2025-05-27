@@ -39,6 +39,7 @@ vi.mock("@/services/messageService/save-message", () => ({
 
 vi.mock("@/services/threadService", () => ({
   generateThreadSummary: vi.fn().mockResolvedValue("summary"),
+  uploadThreadImage: vi.fn().mockResolvedValue({ publicUrl: "url" }),
 }));
 
 beforeEach(() => {
@@ -79,5 +80,28 @@ describe("useThreadMessages", () => {
       type: "user_message",
     });
     expect(result.current.messages[0].text).toBe("hi");
+  });
+
+  it("uploads image and saves message", async () => {
+    const setThread = vi.fn();
+    const { result } = renderHook(() =>
+      useThreadMessages("t1", null as unknown as Thread, setThread),
+    );
+
+    const file = new File(["foo"], "pic.png");
+    await act(async () => {
+      await result.current.handleUploadImage(file);
+    });
+
+    expect(saveMessage).toHaveBeenCalledWith({
+      threadId: "t1",
+      text: "<img>",
+      type: "user_message",
+      details: { imageUrl: "url", filename: "pic.png" },
+    });
+    expect(result.current.messages[0].details).toEqual({
+      imageUrl: "url",
+      filename: "pic.png",
+    });
   });
 });
