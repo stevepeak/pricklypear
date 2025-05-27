@@ -214,7 +214,8 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  side="right"
+                  side="top"
+                  align="end"
                   className="w-[--radix-popper-anchor-width] mb-4"
                 >
                   <div className="flex items-center gap-3 px-2 py-2">
