@@ -48,7 +48,7 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const { totalUnread } = useUnreadMessages();
   const { connections } = useConnections();
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
 
   // Calculate pending incoming connections
   const pendingIncomingCount = connections.filter(
@@ -148,21 +148,23 @@ export function AppSidebar() {
             <SidebarMenu>
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      to={item.path}
-                      className="flex items-center w-full justify-start mb-1"
-                    >
-                      {item.icon}
-                      {Array.isArray(item.label) ? (
-                        <span className="flex items-center gap-2">
-                          {item.label[0]}
-                          {item.label[1]}
-                        </span>
-                      ) : (
-                        <span>{item.label}</span>
-                      )}
-                    </Link>
+                  <SidebarMenuButton
+                    asChild={false}
+                    onClick={() => {
+                      navigate(item.path);
+                      if (isMobile) setOpenMobile(false);
+                    }}
+                    className="flex items-center w-full justify-start mb-1"
+                  >
+                    {item.icon}
+                    {Array.isArray(item.label) ? (
+                      <span className="flex items-center gap-2">
+                        {item.label[0]}
+                        {item.label[1]}
+                      </span>
+                    ) : (
+                      <span>{item.label}</span>
+                    )}
                   </SidebarMenuButton>
                   {item.badge !== undefined && (
                     <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
@@ -171,14 +173,16 @@ export function AppSidebar() {
               ))}
               {/* Feature Request Button */}
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link
-                    to="/feature-request"
-                    className="flex items-center w-full justify-start mb-1"
-                  >
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    <span>Feature Request</span>
-                  </Link>
+                <SidebarMenuButton
+                  asChild={false}
+                  onClick={() => {
+                    navigate("/feature-request");
+                    if (isMobile) setOpenMobile(false);
+                  }}
+                  className="flex items-center w-full justify-start mb-1"
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  <span>Feature Request</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
