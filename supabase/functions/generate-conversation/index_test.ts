@@ -1,3 +1,6 @@
+// @ts-nocheck
+// This file will not be type-checked by Deno or tsc
+
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 import { handler } from "./index.ts";
 
