@@ -70,7 +70,7 @@ const Account = () => {
   }, [navigate, form]);
 
   return (
-    <div className="container max-w-3xl py-10 mx-10">
+    <div className="w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl mx-auto px-2 sm:px-4 py-10">
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Personal Information</CardTitle>
