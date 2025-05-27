@@ -16,6 +16,7 @@ import { requireCurrentUser } from "@/utils/authCache";
 import { toast } from "sonner";
 import { handleError } from "@/services/messageService/utils";
 import { Loader2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 export default function FeatureRequestPage() {
   const form = useForm({ defaultValues: { title: "", description: "" } });
@@ -81,65 +82,67 @@ export default function FeatureRequestPage() {
   }
 
   return (
-    <div className="max-w-xl mx-auto py-12">
-      <h1 className="text-2xl font-bold mb-6">Submit a Feature Request</h1>
-      <div className="mb-6 text-sm text-muted-foreground">
-        <p>
-          Thank you for your honest feedback. This form is <b>only visible</b>{" "}
-          to The Prickly Pear staff. We may email you with follow up questions
-          and feedback.
-        </p>
-      </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            name="title"
-            control={form.control}
-            rules={{ required: "Title is required" }}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input placeholder="Short summary" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="description"
-            control={form.control}
-            rules={{ required: "Description is required" }}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Describe your feature idea in detail"
-                    rows={6}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin mx-auto" />
-            ) : (
-              "Submit"
-            )}
-          </Button>
-        </form>
-      </Form>
-      {status && (
-        <div
-          className={`mt-4 text-center ${status.type === "success" ? "text-green-600" : "text-red-600"}`}
-        >
-          {status.message}
+    <div className="max-w-xl mx-auto py-12 px-4 md:px-0">
+      <Card className="p-6">
+        <h1 className="text-2xl font-bold mb-6">Submit a Feature Request</h1>
+        <div className="mb-6 text-sm text-muted-foreground">
+          <p>
+            Thank you for your honest feedback. This form is <b>only visible</b>{" "}
+            to The Prickly Pear staff. We may email you with follow up questions
+            and feedback.
+          </p>
         </div>
-      )}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              name="title"
+              control={form.control}
+              rules={{ required: "Title is required" }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Short summary" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="description"
+              control={form.control}
+              rules={{ required: "Description is required" }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Describe your feature idea in detail"
+                      rows={6}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+              ) : (
+                "Submit"
+              )}
+            </Button>
+          </form>
+        </Form>
+        {status && (
+          <div
+            className={`mt-4 text-center ${status.type === "success" ? "text-green-600" : "text-red-600"}`}
+          >
+            {status.message}
+          </div>
+        )}
+      </Card>
     </div>
   );
 }
