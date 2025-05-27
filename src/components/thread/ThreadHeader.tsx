@@ -1,7 +1,16 @@
-import { Bot, Loader2, Lock, Users } from "lucide-react";
+import { Bot, Loader2, Lock, Users, BotMessageSquare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getThreadTopicInfo, type Thread } from "@/types/thread";
 import { AvatarName } from "@/components/ui/avatar-name";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 interface ThreadHeaderProps {
   thread: Thread;
@@ -14,6 +23,31 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
 
   return (
     <div className="sticky top-12 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 p-6">
+      {/* Mobile summary ghost icon trigger */}
+      <div className="md:hidden absolute right-6 top-6 z-10">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" aria-label="Show summary">
+              <BotMessageSquare className="size-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom">
+            <SheetHeader>
+              <SheetTitle>AI Summary</SheetTitle>
+              <SheetDescription>
+                {isGeneratingSummary ? (
+                  <span className="flex items-center gap-2 text-xs">
+                    <Loader2 className="h-3 w-3 animate-spin" /> Generating
+                    summary...
+                  </span>
+                ) : (
+                  <span className="text-sm">{thread.summary ?? ""}</span>
+                )}
+              </SheetDescription>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
+      </div>
       <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
         {/* Left Side */}
         <div className="flex-1 min-w-0 space-y-4">
@@ -83,8 +117,8 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
             )}
           </div>
         </div>
-        {/* Right Side */}
-        <div className="md:w-1/2 flex flex-col gap-2 min-w-0">
+        {/* Right Side: summary only on md+ */}
+        <div className="md:w-1/2 flex flex-col gap-2 min-w-0 hidden md:flex">
           <div className="text-muted-foreground text-sm break-words">
             {isGeneratingSummary ? (
               <p className="text-xs flex items-center gap-2">
