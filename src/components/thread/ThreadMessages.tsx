@@ -50,7 +50,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   return (
     <>
       {messages.length > 0 ? (
-        <div className="flex-grow px-4 py-6 mb-4 mx-10">
+        <div className="flex-grow px-2 py-3 mb-2 mx-2 md:px-4 md:py-6 md:mb-4 md:mx-10">
           {messages.map((message, idx) => {
             switch (message.type) {
               case "user_message":
@@ -94,7 +94,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
           })}
         </div>
       ) : (
-        <div className="flex flex-col flex-1 items-center justify-center h-full text-center text-muted-foreground/60 px-4 py-6 mb-4 mx-10">
+        <div className="flex flex-col flex-1 items-center justify-center h-full text-center text-muted-foreground/60 px-2 py-3 mb-2 mx-2 md:px-4 md:py-6 md:mb-4 md:mx-10">
           <MessageCircle className="h-12 w-12 mb-2" />
           <p className="italic">
             No messages yet. Start the conversation below.
