@@ -229,6 +229,7 @@
         "npm:typescript@5.8.3",
         "npm:uuid@11.1.0",
         "npm:vaul@1.1.2",
+        "npm:vitest@3.1.4",
         "npm:zod@3.24.4"
       ]
     }
