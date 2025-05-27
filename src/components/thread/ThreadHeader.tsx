@@ -28,7 +28,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" aria-label="Show summary">
-              <BotMessageSquare className="size-6" />
+              <BotMessageSquare className="size-6 text-muted-foreground" />
             </Button>
           </SheetTrigger>
           <SheetContent side="bottom">
