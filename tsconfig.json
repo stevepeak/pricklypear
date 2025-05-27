@@ -23,5 +23,5 @@
     // This improves issue grouping in Sentry.
     "sourceRoot": "/"
   },
-  "exclude": ["supabase/functions/**/*.ts", "**/*.test.ts"]
+  "exclude": ["supabase/functions/**/*.ts", "**/*.test.ts", "**/*_test.ts"]
 }

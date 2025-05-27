@@ -18,5 +18,5 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "exclude": ["supabase/functions/**/*.ts", "**/*.test.ts"]
+  "exclude": ["supabase/functions/**/*.ts", "**/*.test.ts", "**/*_test.ts"]
 }

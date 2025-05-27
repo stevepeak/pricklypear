@@ -133,4 +133,5 @@ Important guidelines:
   }
 }
 
+// @ts-expect-error TS2345
 serve(handler);

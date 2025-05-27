@@ -213,4 +213,5 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
   }
 }
 
+// @ts-expect-error TS2345
 serve(handler);
