@@ -54,7 +54,7 @@ Deno.test("review-message missing fields", async () => {
   });
   const res = await handler(req, {
     getOpenAIClient: () => openai,
-    getSupabaseClient: () => createSupabase(true),
+    getSupabaseServiceClient: () => createSupabase(true),
   });
   assertEquals(res.status, 400);
 });
@@ -64,7 +64,7 @@ Deno.test("review-message success", async () => {
   const req = new Request("http://", { method: "POST", body });
   const res = await handler(req, {
     getOpenAIClient: () => openai,
-    getSupabaseClient: () => createSupabase(true),
+    getSupabaseServiceClient: () => createSupabase(true),
   });
   const data = await res.json();
   assertEquals(res.status, 200);
@@ -77,7 +77,7 @@ Deno.test("review-message fetch error", async () => {
   const req = new Request("http://", { method: "POST", body });
   const res = await handler(req, {
     getOpenAIClient: () => openai,
-    getSupabaseClient: () => createSupabase(false),
+    getSupabaseServiceClient: () => createSupabase(false),
   });
   assertEquals(res.status, 500);
 });

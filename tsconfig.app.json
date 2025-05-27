@@ -26,6 +26,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "exclude": ["supabase/functions/**/*.ts"],
+  "exclude": ["supabase/functions/**/*.ts", "**/*.test.ts"],
   "include": ["src"]
 }

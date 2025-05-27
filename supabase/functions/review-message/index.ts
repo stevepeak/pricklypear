@@ -1,22 +1,13 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { getOpenAIClient } from "../utils/openai.ts";
 import { getErrorMessage } from "../utils/handle-error.ts";
+import { getSupabaseServiceClient } from "../utils/supabase.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
-
-function getSupabaseClient() {
-  const supabaseUrl = Deno.env.get("SUPABASE_URL");
-  const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error("Missing Supabase credentials");
-  }
-  return createClient(supabaseUrl, supabaseServiceKey);
-}
 
 async function fetchThreadMessages(supabase, threadId) {
   const { data, error } = await supabase
@@ -111,7 +102,7 @@ async function rephraseMessage(openai, { contextText, message }) {
 
 export type HandlerDeps = {
   getOpenAIClient?: typeof getOpenAIClient;
-  getSupabaseClient?: typeof getSupabaseClient;
+  getSupabaseServiceClient?: typeof getSupabaseServiceClient;
 };
 export async function handler(req: Request, deps: HandlerDeps = {}) {
   // Handle CORS preflight requests
@@ -136,7 +127,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       );
     }
 
-    const getSupabase = deps.getSupabaseClient ?? getSupabaseClient;
+    const getSupabase = deps.getSupabaseServiceClient ?? getSupabaseServiceClient;
     const getOpenAI = deps.getOpenAIClient ?? getOpenAIClient;
 
     const supabase = getSupabase();
