@@ -127,7 +127,8 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       );
     }
 
-    const getSupabase = deps.getSupabaseServiceClient ?? getSupabaseServiceClient;
+    const getSupabase =
+      deps.getSupabaseServiceClient ?? getSupabaseServiceClient;
     const getOpenAI = deps.getOpenAIClient ?? getOpenAIClient;
 
     const supabase = getSupabase();
