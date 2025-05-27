@@ -11,7 +11,7 @@
     "build": "bun run build.ts",
     "dev": "bun run --hot src/index.tsx",
     "lint": "eslint . && prettier --check .",
-    "test": "vitest",
+    "test": "vitest run",
     "fix": "eslint --fix --quiet . && prettier --log-level=silent --write .",
     "typecheck": "tsc -b --noEmit",
     "typecheck:deno": "deno check supabase/functions/**/*.ts",
