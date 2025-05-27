@@ -9,7 +9,12 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+export type HandlerDeps = {
+  createClient?: typeof createClient;
+  getOpenAIClient?: typeof getOpenAIClient;
+};
+
+export async function handler(req: Request, deps: HandlerDeps = {}) {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -33,7 +38,10 @@ serve(async (req) => {
       throw new Error("Missing Supabase credentials");
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const create = deps.createClient ?? createClient;
+    const getOpenAI = deps.getOpenAIClient ?? getOpenAIClient;
+
+    const supabase = create(supabaseUrl, supabaseServiceKey);
 
     // Fetch messages from the database
     const { data: messagesData, error: messagesError } = await supabase
@@ -75,7 +83,7 @@ serve(async (req) => {
       .join("\n\n");
 
     // Initialize OpenAI with the API key from Supabase Secrets
-    const openai = getOpenAIClient();
+    const openai = getOpenAI();
 
     // Generate a summary using OpenAI
     const response = await openai.chat.completions.create({
@@ -123,4 +131,6 @@ Important guidelines:
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
-});
+}
+
+serve(handler);

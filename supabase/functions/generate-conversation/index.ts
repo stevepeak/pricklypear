@@ -15,7 +15,12 @@ const payloadSchema = z.object({
   n: z.number().default(15),
 });
 
-serve(async (req) => {
+export type HandlerDeps = {
+  getOpenAIClient?: typeof getOpenAIClient;
+  getSupabaseServiceClient?: typeof getSupabaseServiceClient;
+};
+
+export async function handler(req: Request, deps: HandlerDeps = {}) {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -24,7 +29,12 @@ serve(async (req) => {
     const json = await req.json();
     const { threadId, n } = payloadSchema.parse(json);
 
-    const supabase = getSupabaseServiceClient();
+    const getSupabase =
+      deps.getSupabaseServiceClient ?? getSupabaseServiceClient;
+
+    const getOpenAI = deps.getOpenAIClient ?? getOpenAIClient;
+
+    const supabase = getSupabase();
 
     const { data: threadData, error: threadError } = await supabase
       .from("threads")
@@ -38,7 +48,7 @@ serve(async (req) => {
 
     const participantIds = threadData.thread_participants.map((p) => p.user_id);
 
-    const openai = getOpenAIClient();
+    const openai = getOpenAI();
     const prompt = `
       Create a short fictional conversation for a parenting app.
       Have the conversation seem natural, maybe one parent says two messages in a row, some messages are short, some are long.
@@ -97,4 +107,6 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
-});
+}
+
+serve(handler);

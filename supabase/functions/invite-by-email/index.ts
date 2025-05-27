@@ -29,7 +29,10 @@ async function fetchInviteeUser({ supabase, email }) {
   return user ?? null;
 }
 
-async function sendInvitationEmail({ to, inviterName, isExistingUser }) {
+async function sendInvitationEmail(
+  { to, inviterName, isExistingUser },
+  sendEmailFn: typeof sendEmail = sendEmail,
+) {
   const subject = `${inviterName} invited you to connect on The Prickly Pear`;
   const htmlExisting = `
     <p>Hi there,</p>
@@ -44,7 +47,7 @@ async function sendInvitationEmail({ to, inviterName, isExistingUser }) {
     <p>Best,</p>
     <p>The Prickly Pear</p>
   `;
-  await sendEmail({
+  await sendEmailFn({
     to,
     subject,
     html: isExistingUser ? htmlExisting : htmlNew,
@@ -81,7 +84,12 @@ async function createPendingConnection({ supabase, userId, inviteeUser }) {
   return connection;
 }
 
-serve(async (req) => {
+export type HandlerDeps = {
+  getSupabaseServiceClient?: typeof getSupabaseServiceClient;
+  sendEmail?: typeof sendEmail;
+};
+
+export async function handler(req: Request, deps: HandlerDeps = {}) {
   if (req.method === "OPTIONS")
     return new Response(null, { headers: corsHeaders });
 
@@ -99,7 +107,11 @@ serve(async (req) => {
         },
       );
     }
-    const supabase = getSupabaseServiceClient();
+    const getSupabase =
+      deps.getSupabaseServiceClient ?? getSupabaseServiceClient;
+    const sendEmailFn = deps.sendEmail ?? sendEmail;
+
+    const supabase = getSupabase();
     const inviterName = await fetchInviterName({ supabase, userId });
     const inviteeUser = await fetchInviteeUser({ supabase, email });
 
@@ -128,11 +140,10 @@ serve(async (req) => {
       });
 
       // Send email
-      await sendInvitationEmail({
-        to: email,
-        inviterName,
-        isExistingUser: Boolean(inviteeUser),
-      });
+      await sendInvitationEmail(
+        { to: email, inviterName, isExistingUser: Boolean(inviteeUser) },
+        sendEmailFn,
+      );
 
       return new Response(
         JSON.stringify({
@@ -168,11 +179,10 @@ serve(async (req) => {
       }
 
       // Send email
-      await sendInvitationEmail({
-        to: email,
-        inviterName,
-        isExistingUser: Boolean(inviteeUser),
-      });
+      await sendInvitationEmail(
+        { to: email, inviterName, isExistingUser: Boolean(inviteeUser) },
+        sendEmailFn,
+      );
 
       return new Response(
         JSON.stringify({
@@ -198,4 +208,6 @@ serve(async (req) => {
       },
     );
   }
-});
+}
+
+serve(handler);

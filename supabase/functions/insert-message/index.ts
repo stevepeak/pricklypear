@@ -71,7 +71,13 @@ async function createReadReceipts(args: {
   return { error: null };
 }
 
-serve(async (req) => {
+export type HandlerDeps = {
+  getSupabaseServiceClient?: typeof getSupabaseServiceClient;
+  sendEmail?: typeof sendEmail;
+  sendSlackNotification?: typeof sendSlackNotification;
+};
+
+export async function handler(req: Request, deps: HandlerDeps = {}) {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -85,7 +91,13 @@ serve(async (req) => {
       return errorResponse(result.error.errors[0].message, 400);
     }
 
-    const supabase = getSupabaseServiceClient();
+    const getSupabase =
+      deps.getSupabaseServiceClient ?? getSupabaseServiceClient;
+
+    const sendEmailFn = deps.sendEmail ?? sendEmail;
+    const sendSlackFn = deps.sendSlackNotification ?? sendSlackNotification;
+
+    const supabase = getSupabase();
 
     // Insert the message
     const { data: messageData, error } = await supabase
@@ -150,7 +162,7 @@ serve(async (req) => {
               .eq("id", threadId)
           : null,
         // Send Slack notification
-        sendSlackNotification({
+        sendSlackFn({
           text: result.data.text,
           blocks: [
             {
@@ -172,7 +184,7 @@ serve(async (req) => {
               participant.notifications?.newMessages?.email !== false,
           )
           .map((participant) =>
-            sendEmail({
+            sendEmailFn({
               userId: participant.id,
               subject: `🌵 New message from ${senderName} via The Prickly Pear`,
               html: `<p>${senderName} sent a new message: ${result.data.text}</p>`,
@@ -199,4 +211,6 @@ serve(async (req) => {
     handleError(error);
     return errorResponse(getErrorMessage(error));
   }
-});
+}
+
+serve(handler);

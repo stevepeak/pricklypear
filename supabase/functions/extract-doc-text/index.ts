@@ -9,7 +9,12 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+export type HandlerDeps = {
+  createClient?: typeof createClient;
+  getOpenAIClient?: typeof getOpenAIClient;
+};
+
+export async function handler(req: Request, deps: HandlerDeps = {}) {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -17,7 +22,10 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey, {
+    const create = deps.createClient ?? createClient;
+    const getOpenAI = deps.getOpenAIClient ?? getOpenAIClient;
+
+    const supabase = create(supabaseUrl, supabaseKey, {
       global: { headers: { Authorization: req.headers.get("Authorization")! } },
     });
 
@@ -157,7 +165,7 @@ serve(async (req) => {
 
     if (extractedText.length > 0) {
       try {
-        const openai = getOpenAIClient();
+        const openai = getOpenAI();
         const embeddingResponse = await openai.embeddings.create({
           model: "text-embedding-3-small",
           // TODO fix this to properly chunk the document
@@ -209,4 +217,6 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
-});
+}
+
+serve(handler);

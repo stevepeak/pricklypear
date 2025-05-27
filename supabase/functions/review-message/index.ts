@@ -109,7 +109,11 @@ async function rephraseMessage(openai, { contextText, message }) {
   return response.choices[0]?.message?.content || message;
 }
 
-serve(async (req) => {
+export type HandlerDeps = {
+  getOpenAIClient?: typeof getOpenAIClient;
+  getSupabaseClient?: typeof getSupabaseClient;
+};
+export async function handler(req: Request, deps: HandlerDeps = {}) {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -132,8 +136,11 @@ serve(async (req) => {
       );
     }
 
-    const supabase = getSupabaseClient();
-    const openai = getOpenAIClient();
+    const getSupabase = deps.getSupabaseClient ?? getSupabaseClient;
+    const getOpenAI = deps.getOpenAIClient ?? getOpenAIClient;
+
+    const supabase = getSupabase();
+    const openai = getOpenAI();
 
     // Fetch context
     let contextMessages, threadTopic, threadTitle;
@@ -206,4 +213,6 @@ serve(async (req) => {
       },
     );
   }
-});
+}
+
+serve(handler);

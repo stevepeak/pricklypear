@@ -10,7 +10,10 @@ const LINEAR_API_URL = "https://api.linear.app/graphql";
 const LINEAR_API_KEY = Deno.env.get("LINEAR_API_KEY");
 const LINEAR_TEAM_ID = Deno.env.get("LINEAR_TEAM_ID");
 
-async function createLinearIssue({ title, description }) {
+async function createLinearIssue(
+  { title, description },
+  fetchFn: typeof fetch = fetch,
+) {
   if (!LINEAR_API_KEY || !LINEAR_TEAM_ID) {
     throw new Error("Missing Linear API credentials");
   }
@@ -24,7 +27,7 @@ async function createLinearIssue({ title, description }) {
       projectId: "0bf5d056-5ee8-4198-a310-eba0786efe55", // Feature Requests
     },
   };
-  const res = await fetch(LINEAR_API_URL, {
+  const res = await fetchFn(LINEAR_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -41,7 +44,9 @@ async function createLinearIssue({ title, description }) {
   return data.data.issueCreate.issue;
 }
 
-serve(async (req) => {
+export type HandlerDeps = { fetch?: typeof fetch };
+
+export async function handler(req: Request, deps: HandlerDeps = {}) {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -59,7 +64,10 @@ serve(async (req) => {
         },
       );
     }
-    const issue = await createLinearIssue({ title, description });
+    const issue = await createLinearIssue(
+      { title, description },
+      deps.fetch ?? fetch,
+    );
     return new Response(JSON.stringify({ success: true, issue }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
@@ -76,4 +84,6 @@ serve(async (req) => {
       },
     );
   }
-});
+}
+
+serve(handler);
