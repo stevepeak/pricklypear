@@ -15,24 +15,25 @@ const southwestColors = {
 const Home = () => {
   return (
     <div className="flex flex-col min-h-screen">
+      <div className="h-14 p-2 flex items-center">
+        <img src="../public/logo.png" alt="Cactus" className="inline-block w-8 h-8" />
+        <span className="text-1xl font-bold ">Prickly Pear</span>
+      </div>
       {/* Hero Section with Background Image */}
       <div className="relative w-full min-h-[65vh] bg-[url('../public/jumbo.png')] bg-center bg-cover bg-no-repeat">
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/15"></div>
 
         {/* Content */}
-        <div className="relative container mx-auto max-w-4xl text-center py-20 px-4">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-rounded text-white mb-6">
-            Prickly Pear
+        <div className="relative container mx-auto max-w-4xl text-center py-10 px-4">
+          <h1 className="text-3xl text-white max-w-2xl mx-auto mb-4">
+            AI-powered, co-parenting communication.
           </h1>
-          <p className="text-xl text-white max-w-2xl mx-auto mb-10">
-            AI-powered co-parenting communication.
-          </p>
           <Button
             asChild
-            className="bg-[#D97D54] hover:bg-[#C96B3F] text-white px-8 py-3 shadow-lg border-2 border-[#E2B07A]"
+            className="bg-[#D97D54] hover:bg-[#C96B3F] text-white px-8 shadow-lg border-2 border-[#E2B07A]"
           >
-            <Link to="/auth">Get Started</Link>
+            <Link to="/auth">Get Started For Free</Link>
           </Button>
         </div>
       </div>
