@@ -16,10 +16,10 @@ const Home = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="h-14 p-2 flex items-center">
-        <img
-          src="../public/logo.png"
-          alt="Cactus"
-          className="inline-block w-8 h-8"
+        <div
+          className="inline-block w-8 h-8 bg-[url('../public/logo.png')] bg-center bg-cover bg-no-repeat"
+          role="img"
+          aria-label="Cactus"
         />
         <span className="text-1xl font-bold ">Prickly Pear</span>
       </div>
