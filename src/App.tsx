@@ -49,6 +49,7 @@ import { AppSidebar } from "./components/AppSidebar";
 import { CommandMenu } from "./components/CommandMenu";
 import Calendar from "./pages/Calendar";
 import Expenses from "./pages/Expenses";
+import Game from "./pages/Game";
 
 const queryClient = new QueryClient();
 
@@ -180,6 +181,7 @@ function AppRoutes() {
                       <Route path="/documents" element={<Documents />} />
                       <Route path="/calendar" element={<Calendar />} />
                       <Route path="/expenses" element={<Expenses />} />
+                      <Route path="/game" element={<Game />} />
                       <Route path="/integrations" element={<Integrations />} />
                       <Route path="/billing" element={<Billing />} />
                       <Route path="/account" element={<Account />} />

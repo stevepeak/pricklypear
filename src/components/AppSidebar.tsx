@@ -28,6 +28,7 @@ import {
   BadgeCheck,
   Calendar,
   Receipt,
+  Gamepad2,
   Link2,
   MessageSquareText,
   BookUser,
@@ -124,6 +125,11 @@ export function AppSidebar() {
             </Badge>,
           ],
           icon: <Receipt className="h-4 w-4 mr-2" />,
+        },
+        {
+          path: "/game",
+          label: "Zen Cactus Defense",
+          icon: <Gamepad2 className="h-4 w-4 mr-2" />,
         },
       ]
     : [];
