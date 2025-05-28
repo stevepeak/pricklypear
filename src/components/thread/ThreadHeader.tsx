@@ -89,33 +89,30 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
             </span>
           </div>
           <h1 className="text-2xl font-bold break-words">{thread.title}</h1>
-          <div className="flex flex-col space-y-2 mt-2">
-            {thread.participants && thread.participants.length > 0 ? (
-              <div className="flex items-center gap-2 flex-wrap">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Participants:</span>
-                <div className="flex flex-wrap gap-4">
-                  {thread.participants.map((participant) => (
-                    <AvatarName
-                      key={participant}
-                      name={participant}
-                      size="xs"
-                      /* border already applied inside the component */
-                    />
-                  ))}
+          {!thread.ai && (
+            <div className="flex flex-col space-y-2 mt-2">
+              {thread.participants && thread.participants.length > 0 ? (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Participants:</span>
+                  <div className="flex flex-wrap gap-4">
+                    {thread.participants.map((participant) => (
+                      <AvatarName
+                        key={participant}
+                        name={participant}
+                        size="xs"
+                        /* border already applied inside the component */
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ) : thread.ai ? (
-              <div className="text-sm">
-                <Lock className="h-4 w-4 inline-block mr-1 text-yellow-400" />
-                Private chat with Prickly AI.
-              </div>
-            ) : (
-              <div className="text-sm text-muted-foreground">
-                No other participants
-              </div>
-            )}
-          </div>
+              ) : (
+                <div className="text-sm text-muted-foreground">
+                  No other participants
+                </div>
+              )}
+            </div>
+          )}
         </div>
         {/* Right Side: summary only on md+ */}
         <div className="md:w-1/2 flex flex-col gap-2 min-w-0 hidden md:flex">
