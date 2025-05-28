@@ -16,7 +16,11 @@ const Home = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="h-14 p-2 flex items-center">
-        <img src="../public/logo.png" alt="Cactus" className="inline-block w-8 h-8" />
+        <img
+          src="../public/logo.png"
+          alt="Cactus"
+          className="inline-block w-8 h-8"
+        />
         <span className="text-1xl font-bold ">Prickly Pear</span>
       </div>
       {/* Hero Section with Background Image */}
@@ -43,8 +47,9 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <p className="text-lg text-[#7C4A03]/80">
-              <strong>AI is deeply rooted</strong> in every feature of Prickly Pear
-              to encourage healthy communication and productive co-parenting.
+              <strong>AI is deeply rooted</strong> in every feature of Prickly
+              Pear to encourage healthy communication and productive
+              co-parenting.
             </p>
           </div>
 
@@ -75,8 +80,8 @@ const Home = () => {
             Join the community.
           </h2>
           <p className="text-lg text-[#7C4A03]/80 mb-8 max-w-2xl mx-auto">
-            With the Prickly Pear you too can improve your communication
-            so your children thrive.
+            With the Prickly Pear you too can improve your communication so your
+            children thrive.
           </p>
           <Button
             asChild
