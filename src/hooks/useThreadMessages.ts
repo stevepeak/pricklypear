@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getMessages, getUnreadMessageCount } from "@/services/messageService";
-import { saveMessage } from "@/services/messageService/save-message";
+import {
+  saveMessage,
+  saveAiMessage,
+} from "@/services/messageService/save-message";
 import { reviewMessage } from "@/utils/messageReview";
 import { generateThreadSummary } from "@/services/threadService";
 import type { Message } from "@/types/message";
@@ -173,12 +176,34 @@ export const useThreadMessages = (
     setIsSending(false);
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-    if (thread.ai) {
-      handleSendReviewedMessage(newMessage.trim());
-      // TODO add some feedback that AI is thinking
-      // TODO have AI handle the question
+    if (thread && thread.ai) {
+      setIsSending(true);
+      try {
+        const aiResult = await saveAiMessage({
+          threadId: threadId!,
+          text: newMessage.trim(),
+        });
+        if (aiResult && aiResult.aiMessage) {
+          // Add the AI message to the local state
+          setMessages((prev) => [
+            ...prev,
+            {
+              ...aiResult.aiMessage,
+              isCurrentUser: false,
+              sender: "Prickly AI",
+              timestamp: new Date(aiResult.aiMessage.timestamp),
+            },
+          ]);
+          setNewMessage("");
+          toast("AI replied", { description: aiResult.aiMessage.text });
+        } else {
+          toast("Error", { description: "Failed to send AI message." });
+        }
+      } finally {
+        setIsSending(false);
+      }
     } else {
       handleInitiateMessageReview();
     }

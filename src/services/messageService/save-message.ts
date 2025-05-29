@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { requireCurrentUser } from "@/utils/authCache";
 import { handleError } from "./utils.js";
 import type { Database } from "@/integrations/supabase/types";
+import type { Message } from "@/types/message";
 
 export const saveMessage = async (args: {
   text: string;
@@ -31,5 +32,30 @@ export const saveMessage = async (args: {
     return false;
   } catch (error) {
     return handleError(error, "saving message");
+  }
+};
+
+export const saveAiMessage = async (args: {
+  text: string;
+  threadId: string;
+}): Promise<{ aiMessage: Message } | null> => {
+  const { text, threadId } = args;
+  try {
+    const user = await requireCurrentUser();
+    const { data, error } = await supabase.functions.invoke("ai-message", {
+      body: {
+        text,
+        threadId,
+        userId: user.id,
+      },
+    });
+    if (error) {
+      handleError(error, "saving AI message");
+      return null;
+    }
+    return data;
+  } catch (error) {
+    handleError(error, "saving AI message");
+    return null;
   }
 };
