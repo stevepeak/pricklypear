@@ -1,9 +1,10 @@
+// Extended to allow simple boolean records (e.g. controls?: Record<string, boolean>)
 export type Json =
   | string
   | number
   | boolean
   | null
-  | { [key: string]: Json | undefined }
+  | { [key: string]: Json | boolean | undefined }
   | Json[]
 
 export type Database = {

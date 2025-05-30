@@ -7,7 +7,11 @@ export const createThread = async (args: {
   ai: boolean;
   participantIds?: string[];
   topic: ThreadTopic;
-  controls?: { requireAiApproval?: boolean };
+  /**
+   * Arbitrary boolean feature-flags stored on the thread.
+   * For example: { requireAiApproval: true }
+   */
+  controls?: Record<string, boolean>;
 }): Promise<Thread | null> => {
   const { title, ai, participantIds, topic, controls } = args;
 
