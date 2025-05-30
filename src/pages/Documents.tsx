@@ -89,6 +89,34 @@ export default function Documents() {
     loadDocuments();
   }, [loadDocuments]);
 
+  // Load persisted filters on mount
+  useEffect(() => {
+    const storedFilters = localStorage.getItem("documents.filters");
+    if (storedFilters) {
+      try {
+        const parsed = JSON.parse(storedFilters);
+        if (typeof parsed.search === "string") setSearch(parsed.search);
+        if (Array.isArray(parsed.filterLabels))
+          setFilterLabels(parsed.filterLabels);
+      } catch {
+        // ignore JSON parse errors
+      }
+    }
+  }, []);
+
+  // Persist filters to localStorage whenever they change
+  useEffect(() => {
+    const filters = {
+      ...(search.trim() && { search }),
+      ...(filterLabels.length > 0 && { filterLabels }),
+    };
+    if (Object.keys(filters).length > 0) {
+      localStorage.setItem("documents.filters", JSON.stringify(filters));
+    } else {
+      localStorage.removeItem("documents.filters");
+    }
+  }, [search, filterLabels]);
+
   const handleUploadComplete = () => {
     setIsUploadDialogOpen(false);
     loadDocuments();

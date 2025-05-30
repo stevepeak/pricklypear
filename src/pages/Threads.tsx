@@ -45,13 +45,43 @@ const Threads = () => {
     filterParticipants.length > 0 ||
     filterTopics.length > 0;
 
-  // Load persisted view preference on mount
+  // Load persisted view preference and filters on mount
   useEffect(() => {
-    const stored = localStorage.getItem("threads.view");
-    if (stored === "cards" || stored === "table") {
-      setView(stored);
+    const storedView = localStorage.getItem("threads.view");
+    if (storedView === "cards" || storedView === "table") {
+      setView(storedView);
+    }
+    const storedFilters = localStorage.getItem("threads.filters");
+    if (storedFilters) {
+      try {
+        const parsed = JSON.parse(storedFilters);
+        if (typeof parsed.search === "string") setSearch(parsed.search);
+        if (Array.isArray(parsed.filterStatus))
+          setFilterStatus(parsed.filterStatus);
+        if (Array.isArray(parsed.filterParticipants))
+          setFilterParticipants(parsed.filterParticipants);
+        if (Array.isArray(parsed.filterTopics))
+          setFilterTopics(parsed.filterTopics);
+      } catch {
+        // ignore JSON parse errors
+      }
     }
   }, []);
+
+  // Persist filters to localStorage whenever they change
+  useEffect(() => {
+    const filters = {
+      ...(search.trim() && { search }),
+      ...(filterStatus.length > 0 && { filterStatus }),
+      ...(filterParticipants.length > 0 && { filterParticipants }),
+      ...(filterTopics.length > 0 && { filterTopics }),
+    };
+    if (Object.keys(filters).length > 0) {
+      localStorage.setItem("threads.filters", JSON.stringify(filters));
+    } else {
+      localStorage.removeItem("threads.filters");
+    }
+  }, [search, filterStatus, filterParticipants, filterTopics]);
 
   useEffect(() => {
     const fetchThreads = async () => {
