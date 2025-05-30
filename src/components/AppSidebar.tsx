@@ -83,15 +83,7 @@ export function AppSidebar() {
         },
         {
           path: "/children",
-          label: [
-            "Children Profiles",
-            <Badge
-              key="coming-soon"
-              className="ml-2 bg-lime-100 text-lime-800 border-lime-200"
-            >
-              Coming soon
-            </Badge>,
-          ],
+          label: "Children Profiles",
           icon: <Baby className="h-4 w-4 mr-2" />,
         },
         {
@@ -101,28 +93,12 @@ export function AppSidebar() {
         },
         {
           path: "/calendar",
-          label: [
-            "Calendar",
-            <Badge
-              key="coming-soon"
-              className="ml-2 bg-lime-100 text-lime-800 border-lime-200"
-            >
-              Coming soon
-            </Badge>,
-          ],
+          label: "Calendar",
           icon: <Calendar className="h-4 w-4 mr-2" />,
         },
         {
           path: "/expenses",
-          label: [
-            "Expenses",
-            <Badge
-              key="coming-soon"
-              className="ml-2 bg-lime-100 text-lime-800 border-lime-200"
-            >
-              Coming soon
-            </Badge>,
-          ],
+          label: "Expenses",
           icon: <Receipt className="h-4 w-4 mr-2" />,
         },
       ]
@@ -132,7 +108,11 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <Link to="/" className="flex items-center space-x-2 px-2 py-4">
-          <span className="mr-1">🌵</span>
+          <div
+            className="inline-block w-8 h-8 bg-[url('../public/logo.png')] bg-center bg-cover bg-no-repeat mr-1"
+            role="img"
+            aria-label="Cactus"
+          />
           {state === "expanded" && <span>Prickly Pear</span>}
         </Link>
       </SidebarHeader>
