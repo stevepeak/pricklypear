@@ -174,7 +174,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
               Created {thread.createdAt.toLocaleDateString()}
             </span>
           </div>
-          <div style={{ position: "relative", display: "inline-block" }}>
+          <div className="relative inline-block">
             {editing ? (
               <input
                 ref={inputRef}
@@ -187,22 +187,26 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
                 maxLength={50}
                 style={{ minWidth: 100 }}
               />
+            ) : thread.type === "default" ? (
+              <div className="text-2xl font-bold break-words">
+                {title}
+              </div>
             ) : (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <h1
+                  <div
                     className="text-2xl font-bold break-words cursor-pointer hover:underline"
                     onClick={() => setEditing(true)}
                   >
                     {title}
-                  </h1>
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent>Click to edit</TooltipContent>
               </Tooltip>
             )}
           </div>
           {!isAIThread(thread) && (
-            <div className="flex flex-col space-y-2 mt-2">
+            <div className="flex flex-col space-y-2">
               {thread.participants && thread.participants.length > 0 ? (
                 <div className="flex items-center gap-2 flex-wrap">
                   <Users className="h-4 w-4 text-muted-foreground" />
