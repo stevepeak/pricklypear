@@ -1,5 +1,11 @@
 import React from "react";
-import { Bot, Loader2, MessageCirclePlus, MessagesSquare } from "lucide-react";
+import {
+  Bot,
+  Loader2,
+  MessageCirclePlus,
+  MessagesSquare,
+  Headset,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -87,6 +93,9 @@ const CreateThreadDialog = ({
             <TabsTrigger value="ai-chat" className="flex-1">
               <Bot className="mr-2 h-4 w-4" /> AI Chat
             </TabsTrigger>
+            <TabsTrigger value="customer-support" className="flex-1">
+              <Headset className="mr-2 h-4 w-4" /> Customer Support
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="conversation">
             <CreateThreadForm
@@ -132,10 +141,79 @@ const CreateThreadDialog = ({
               </Button>
             </div>
           </TabsContent>
+          <TabsContent value="customer-support">
+            <CustomerSupportForm
+              onThreadCreated={onThreadCreated}
+              onClose={() => setDialogOpen(false)}
+              user={user}
+            />
+          </TabsContent>
         </Tabs>
       </DialogContent>
     </Dialog>
   );
 };
+
+function CustomerSupportForm({
+  onThreadCreated,
+  onClose,
+}: {
+  onThreadCreated: (thread: Thread) => void;
+  onClose: () => void;
+}) {
+  const [title, setTitle] = React.useState("");
+  const [isCreating, setIsCreating] = React.useState(false);
+  const handleCreate = async () => {
+    if (!title.trim()) return;
+    setIsCreating(true);
+    const { createThread } = await import("@/services/threadService");
+    const thread = await createThread({
+      title: title.trim(),
+      type: "customer_support",
+      topic: "other",
+    });
+    setIsCreating(false);
+    if (thread) {
+      onThreadCreated(thread);
+      setTitle("");
+      onClose();
+    }
+  };
+  return (
+    <div className="py-8 text-center text-muted-foreground">
+      <p className="mb-4">
+        Contact our support team for help with your account, billing, or
+        technical issues.
+      </p>
+      <input
+        className="border rounded px-3 py-2 w-2/3 mb-4"
+        placeholder="Describe your issue..."
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        maxLength={100}
+        disabled={isCreating}
+      />
+      <div>
+        <Button
+          onClick={handleCreate}
+          disabled={!title.trim() || isCreating}
+          className="w-2/3 mt-2"
+        >
+          {isCreating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Creating...
+            </>
+          ) : (
+            <>
+              <Headset className="mr-2 h-4 w-4" />
+              Submit to Support
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 export default CreateThreadDialog;

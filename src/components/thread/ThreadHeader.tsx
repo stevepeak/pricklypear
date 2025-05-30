@@ -1,4 +1,4 @@
-import { Bot, Loader2, Lock, Users, BotMessageSquare } from "lucide-react";
+import { Bot, Loader2, Lock, Users, BotMessageSquare, Headset } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getThreadTopicInfo, type Thread, isAIThread } from "@/types/thread";
 import { AvatarName } from "@/components/ui/avatar-name";
@@ -67,6 +67,14 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
               >
                 <Bot className="h-3 w-3 mr-1" />
                 AI Chat
+              </Badge>
+            ) : thread.type === "customer_support" ? (
+              <Badge
+                variant="secondary"
+                className="bg-blue-100 text-blue-800 border-blue-200"
+              >
+                <Headset className="h-3 w-3 mr-1" />
+                Customer Support
               </Badge>
             ) : (
               <>

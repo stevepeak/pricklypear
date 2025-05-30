@@ -9,6 +9,7 @@ import MessageFromParticipant from "@/components/thread/messages/MessageFromPart
 import MessageFromAI from "@/components/thread/messages/MessageFromAI";
 import RequestClose from "@/components/thread/messages/RequestClose";
 import CloseDecision from "./messages/CloseDecision";
+import CustomerSupportMessage from "./messages/CustomerSupport";
 
 interface ThreadMessagesProps {
   messages: Message[];
@@ -81,6 +82,8 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
                   />
                 );
               }
+              case "customer_support":
+                return <CustomerSupportMessage key={message.id} message={message} />;
               case "close_declined":
               case "close_accepted":
                 return <CloseDecision key={message.id} message={message} />;

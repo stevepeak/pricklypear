@@ -34,7 +34,7 @@ export const createThread = async (args: {
       "create_thread",
       {
         title: trimmedTitle,
-        ai: type === "ai_chat", // legacy, remove after migration
+        type,
         topic,
         participant_ids: participantIds,
         controls,

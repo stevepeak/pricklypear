@@ -285,12 +285,12 @@ export type Database = {
         Args:
           | {
               title: string
-              ai: boolean
+              type: Database["public"]["Enums"]["thread_type"]
               topic: Database["public"]["Enums"]["thread_topic"]
             }
           | {
               title: string
-              ai: boolean
+              type: Database["public"]["Enums"]["thread_type"]
               topic: Database["public"]["Enums"]["thread_topic"]
               controls: Json
               participant_ids: string[]
