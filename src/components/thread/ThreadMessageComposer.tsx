@@ -44,6 +44,7 @@ import { Badge } from "../ui/badge";
 import { useConnections } from "@/hooks/useConnections";
 import { getMessages } from "@/services/messageService/get-messages";
 import { Thread } from "@/types/thread";
+import { SystemPromptDialog } from "./composer/SystemPrompt";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -83,6 +84,8 @@ const ThreadMessageComposer = React.forwardRef<
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [showJumpToLatest, setShowJumpToLatest] = useState(false);
     const { connections } = useConnections();
+    const [isSystemPromptDialogOpen, setIsSystemPromptDialogOpen] =
+      useState(false);
 
     useEffect(() => {
       const stored = localStorage.getItem("autoAcceptAISuggestions");
@@ -242,6 +245,13 @@ const ThreadMessageComposer = React.forwardRef<
                       <DropdownMenuSeparator />
                     </>
                   )}
+                  <DropdownMenuItem
+                    onSelect={() => setIsSystemPromptDialogOpen(true)}
+                  >
+                    <MessageSquarePlus className="h-4 w-4 mr-2" /> Update System
+                    Prompt
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <FileDown className="h-4 w-4 mr-2" /> Export as PDF{" "}
                     <Badge
@@ -374,6 +384,10 @@ const ThreadMessageComposer = React.forwardRef<
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          <SystemPromptDialog
+            open={isSystemPromptDialogOpen}
+            onOpenChange={setIsSystemPromptDialogOpen}
+          />
         </div>
       </>
     );

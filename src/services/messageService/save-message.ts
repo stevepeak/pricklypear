@@ -47,6 +47,7 @@ export const saveAiMessage = async (args: {
         text,
         threadId,
         userId: user.id,
+        systemPrompt: localStorage.getItem("systemPrompt"),
       },
     });
     if (error) {
