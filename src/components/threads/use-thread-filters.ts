@@ -27,7 +27,7 @@ export function useThreadFilters(threads: Thread[]) {
             z.literal("Open"),
             z.literal("Closed"),
             z.literal("Archived"),
-          ])
+          ]),
         )
         .optional()
         .default(["Open"]),
@@ -71,7 +71,7 @@ export function useThreadFilters(threads: Thread[]) {
     setFilterStatus((prev) =>
       prev.includes(status)
         ? prev.filter((s) => s !== status)
-        : [...prev, status]
+        : [...prev, status],
     );
   };
 
@@ -79,13 +79,13 @@ export function useThreadFilters(threads: Thread[]) {
     setFilterParticipants((prev) =>
       prev.includes(participant)
         ? prev.filter((p) => p !== participant)
-        : [...prev, participant]
+        : [...prev, participant],
     );
   };
 
   const toggleTopic = (topic: ThreadTopic) => {
     setFilterTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
     );
   };
 
@@ -97,7 +97,7 @@ export function useThreadFilters(threads: Thread[]) {
   };
 
   const participantOptions = Array.from(
-    new Set(threads.flatMap((t) => t.participants))
+    new Set(threads.flatMap((t) => t.participants)),
   ).sort();
 
   const filteredThreads = threads.filter((thread) => {

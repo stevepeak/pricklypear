@@ -57,10 +57,10 @@ import { DOCUMENT_LABEL_INFO, getDocumentLabelInfo } from "@/types/document";
 import { formatThreadTimestamp } from "@/utils/formatTimestamp";
 import { DocumentTableSkeleton } from "@/components/documents/DocumentTableSkeleton";
 import { toast } from "sonner";
+import { useDocumentFilters } from "@/components/documents/use-document-filters";
 
 export default function Documents() {
   const { user } = useAuth();
-  const [search, setSearch] = useState("");
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
@@ -68,8 +68,18 @@ export default function Documents() {
   const [newTitle, setNewTitle] = useState("");
   const [labelDoc, setLabelDoc] = useState<Document | null>(null);
   const [selectedLabels, setSelectedLabels] = useState<DocumentLabel[]>([]);
-  const [filterLabels, setFilterLabels] = useState<DocumentLabel[]>([]);
-  const isFiltering = search.trim() !== "" || filterLabels.length > 0;
+
+  // Use the new filtering hook
+  const {
+    search,
+    setSearch,
+    filterLabels,
+    setFilterLabels,
+    isFiltering,
+    filtered,
+    toggleFilterLabel,
+    clearFilters,
+  } = useDocumentFilters({ documents });
 
   const loadDocuments = useCallback(async () => {
     if (!user) return;
@@ -175,27 +185,6 @@ export default function Documents() {
       toast("Error", { description: "Failed to update labels." });
     }
   };
-
-  const toggleFilterLabel = (label: DocumentLabel) => {
-    setFilterLabels((prev) =>
-      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label],
-    );
-  };
-
-  const clearFilters = () => {
-    setSearch("");
-    setFilterLabels([]);
-  };
-
-  const filtered = documents.filter((doc) => {
-    const matchesSearch = doc.filename
-      .toLowerCase()
-      .includes(search.toLowerCase());
-    const matchesLabels =
-      filterLabels.length === 0 ||
-      (doc.labels ?? []).some((l) => filterLabels.includes(l));
-    return matchesSearch && matchesLabels;
-  });
 
   return (
     <div>
