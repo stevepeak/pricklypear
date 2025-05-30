@@ -1,9 +1,16 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
 # IMPORTANT
 - Do not ask me permission to proceed with changes. Do it.
-- Run `bun run ci` after you make changes
-- Use components from `src/components/ui` whenever possible
-- use `import { toast } from "sonner";` and `toast(name, {description})`
+- Run `bun run fix && bun run ci` after you make changes
+- Find components in `src/components/ui` first
+- use `import { toast } from "sonner";` then `toast(name, {description})`
 - Do not use `await fetch()` to call Supabase functions, use the `await supabase.functions.invoke()`
+- Use zod whenever possible
+- Write tests when applicable
 
 # Coding Instructions
 
@@ -61,7 +68,3 @@ remains clean, maintainable, and efficient.
   - Using `.then` or `.catch` to handle Promise resolution
   - Returning a Promise to a calling function which itself has to handle the Promise. If you can't infer this from the available context, add a warning that the promise may not be handled properly.
 - Use `Promise.all()` for multiple independent async operations instead of sequential execution. For example, rather than `const foo = await getFoo(); const bar = await getBar();` (sequential), use `const [foo, bar] = await Promise.all([getFoo(), getBar()]);` (parallel) for better performance.
-
-# Lint and Fixing
-
-Run `bun run lint && bun run fix` after changes to code; fix the errors if any.
