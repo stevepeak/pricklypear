@@ -24,7 +24,7 @@ export type ThreadControls = {
   requireAiApproval?: boolean;
 };
 
-export type ThreadType = "ai" | "standard";
+export type ThreadType = "ai_chat" | "standard";
 
 export type ThreadStatus = Database["public"]["Enums"]["thread_status"];
 
@@ -38,7 +38,7 @@ export type Thread = {
   topic: ThreadTopic;
   controls?: ThreadControls;
   /**
-   * Indicates whether a thread is a pure AI chat ("ai") or a standard
+   * Indicates whether a thread is a pure AI chat ("ai_chat") or a standard
    * participant conversation ("standard").
    */
   type: ThreadType;

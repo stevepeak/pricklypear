@@ -79,7 +79,7 @@ export const useThreadCreation = (
 
     const newThread = await createThread({
       title: "AI Chat",
-      type: "ai" satisfies ThreadType,
+      type: "ai_chat" satisfies ThreadType,
       topic: "other",
     });
 

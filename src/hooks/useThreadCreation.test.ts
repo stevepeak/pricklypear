@@ -59,7 +59,7 @@ describe("useThreadCreation", () => {
 
     expect(createThread).toHaveBeenCalledWith({
       title: "AI Chat",
-      type: "ai",
+      type: "ai_chat",
       topic: "other",
     });
   });

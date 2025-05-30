@@ -86,7 +86,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
           const topicInfo = getThreadTopicInfo(thread.topic);
           const participants = thread.participants ?? [];
 
-          const isAiThread = thread.type === "ai";
+          const isAiThread = thread.type === "ai_chat";
 
           return (
             <TableRow

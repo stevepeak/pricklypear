@@ -20,7 +20,7 @@ interface ThreadHeaderProps {
 const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
   const { label, icon } = getThreadTopicInfo(thread.topic);
   const topicLabel = `${icon} ${label}`;
-  const isAiThread = thread.type === "ai";
+  const isAiThread = thread.type === "ai_chat";
 
   return (
     <div className="sticky top-12 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 p-6">

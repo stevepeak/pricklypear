@@ -178,7 +178,7 @@ export const useThreadMessages = (
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-    if (thread && thread.type === "ai") {
+    if (thread && thread.type === "ai_chat") {
       setIsSending(true);
       try {
         const aiResult = await saveAiMessage({

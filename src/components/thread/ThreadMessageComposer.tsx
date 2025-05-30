@@ -79,7 +79,7 @@ const ThreadMessageComposer = React.forwardRef<
     ref,
   ) => {
     const [autoAccept, setAutoAccept] = useState(
-      thread.type === "ai" ? false : true,
+      thread.type === "ai_chat" ? false : true,
     );
     const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
     const [isRequestingClose, setIsRequestingClose] = useState(false);
@@ -196,7 +196,7 @@ const ThreadMessageComposer = React.forwardRef<
       }
     };
 
-    const isAiThread = thread.type === "ai";
+    const isAiThread = thread.type === "ai_chat";
 
     return (
       <>
@@ -293,7 +293,20 @@ const ThreadMessageComposer = React.forwardRef<
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              {/* Voice input button placeholder */}
+              {/*
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Mic className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    Start voice input (coming soon)
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              */}
             </div>
             <div className="flex items-center gap-2">
               {!isAiThread && (
@@ -326,7 +339,9 @@ const ThreadMessageComposer = React.forwardRef<
                 onClick={onSendMessage}
                 disabled={!newMessage.trim() || isSending}
                 size="default"
-                className={`shrink-0 flex items-center gap-1 ${isAiThread ? "bg-purple-600 hover:bg-purple-700" : ""}`}
+                className={`shrink-0 flex items-center gap-1 ${
+                  isAiThread ? "bg-purple-600 hover:bg-purple-700" : ""
+                }`}
               >
                 {isSending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
