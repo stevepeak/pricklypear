@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type { Thread, ThreadTopic } from "@/types/thread";
+import { z } from "zod";
 
 export function useThreadFilters(threads: Thread[]) {
   const [search, setSearch] = useState("");
@@ -18,18 +19,35 @@ export function useThreadFilters(threads: Thread[]) {
   // Load persisted filters on mount
   useEffect(() => {
     const storedFilters = localStorage.getItem("threads.filters");
+    const filtersSchema = z.object({
+      search: z.string().optional(),
+      filterStatus: z
+        .array(
+          z.union([
+            z.literal("Open"),
+            z.literal("Closed"),
+            z.literal("Archived"),
+          ])
+        )
+        .optional()
+        .default(["Open"]),
+      filterParticipants: z.array(z.string()).optional(),
+      filterTopics: z.array(z.string()).optional(),
+    });
     if (storedFilters) {
-      try {
-        const parsed = JSON.parse(storedFilters);
-        if (typeof parsed.search === "string") setSearch(parsed.search);
-        if (Array.isArray(parsed.filterStatus))
-          setFilterStatus(parsed.filterStatus);
-        if (Array.isArray(parsed.filterParticipants))
-          setFilterParticipants(parsed.filterParticipants);
-        if (Array.isArray(parsed.filterTopics))
-          setFilterTopics(parsed.filterTopics);
-      } catch {
-        // ignore JSON parse errors
+      const parsed = filtersSchema.safeParse(JSON.parse(storedFilters));
+      if (parsed.success) {
+        const { search, filterStatus, filterParticipants, filterTopics } =
+          parsed.data;
+        setSearch(search);
+        setFilterStatus(filterStatus);
+        setFilterParticipants(filterParticipants);
+        setFilterTopics(filterTopics as ThreadTopic[]);
+      } else {
+        setSearch("");
+        setFilterStatus([]);
+        setFilterParticipants([]);
+        setFilterTopics([]);
       }
     }
   }, []);
@@ -53,7 +71,7 @@ export function useThreadFilters(threads: Thread[]) {
     setFilterStatus((prev) =>
       prev.includes(status)
         ? prev.filter((s) => s !== status)
-        : [...prev, status],
+        : [...prev, status]
     );
   };
 
@@ -61,13 +79,13 @@ export function useThreadFilters(threads: Thread[]) {
     setFilterParticipants((prev) =>
       prev.includes(participant)
         ? prev.filter((p) => p !== participant)
-        : [...prev, participant],
+        : [...prev, participant]
     );
   };
 
   const toggleTopic = (topic: ThreadTopic) => {
     setFilterTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
     );
   };
 
@@ -79,7 +97,7 @@ export function useThreadFilters(threads: Thread[]) {
   };
 
   const participantOptions = Array.from(
-    new Set(threads.flatMap((t) => t.participants)),
+    new Set(threads.flatMap((t) => t.participants))
   ).sort();
 
   const filteredThreads = threads.filter((thread) => {
