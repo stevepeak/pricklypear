@@ -194,7 +194,12 @@ const Threads = () => {
                 type="button"
                 className="flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent"
               >
-                <ListFilter className="h-4 w-4" />
+                <div className="relative">
+                  <ListFilter className="h-4 w-4" />
+                  {isFiltering && (
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-blue-500 rounded-full border border-white shadow" />
+                  )}
+                </div>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">

@@ -222,7 +222,12 @@ export default function Documents() {
                 size="sm"
                 className="focus-visible:ring-0"
               >
-                <ListFilter />
+                <div className="relative">
+                  <ListFilter />
+                  {isFiltering && (
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-blue-500 rounded-full border border-white shadow" />
+                  )}
+                </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
