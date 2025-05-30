@@ -23,6 +23,7 @@ import {
 import { Search, ListFilter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useThreadFilters } from "@/components/threads/use-thread-filters";
+import { z } from "zod";
 
 const Threads = () => {
   const [threads, setThreads] = useState<Thread[]>([]);
@@ -30,7 +31,9 @@ const Threads = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // DD-90: default to "table" view
-  const [view, setView] = useState<"cards" | "table">("table");
+  const [view, setView] = useState<"cards" | "table">(
+    window.innerWidth < 768 ? "cards" : "table",
+  );
 
   const { user } = useAuth();
 
@@ -52,9 +55,11 @@ const Threads = () => {
 
   // Load persisted view preference and filters on mount
   useEffect(() => {
+    const viewSchema = z.enum(["cards", "table"]);
     const storedView = localStorage.getItem("threads.view");
-    if (storedView === "cards" || storedView === "table") {
-      setView(storedView);
+    const result = viewSchema.safeParse(storedView);
+    if (result.success) {
+      setView(result.data);
     }
   }, []);
 
