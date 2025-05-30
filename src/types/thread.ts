@@ -18,10 +18,22 @@ export type ThreadTopic =
   | "activity"
   | "legal"
   | "expense"
+  | "customer_support"
   | "other";
 
 export type ThreadControls = {
   requireAiApproval?: boolean;
+  /**
+   * When true the thread is locked for customer-support –
+   * only members with the “support” role may reply and
+   * every assistant response has to be explicitly approved.
+   *
+   * NOTE: This flag is additive; it does not replace
+   * `requireAiApproval`.  Support-locked threads will
+   * always behave as if `requireAiApproval === true`
+   * even when the caller passes `false`.
+   */
+  supportLocked?: boolean;
 };
 
 export type ThreadStatus = Database["public"]["Enums"]["thread_status"];
@@ -50,6 +62,7 @@ export const THREAD_TOPIC_INFO: Record<
   activity: { label: "Activity", icon: "🏃" },
   legal: { label: "Legal", icon: "⚖️" },
   expense: { label: "Expense", icon: "💵" },
+  customer_support: { label: "Customer Support", icon: "💬" },
   other: { label: "Other", icon: "📝" },
 } as const;
 

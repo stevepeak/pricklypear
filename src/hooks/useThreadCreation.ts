@@ -150,6 +150,49 @@ export const useThreadCreation = (
     }
   };
 
+  /**
+   * Create a brand-new customer-support thread.
+   *
+   * Requirements:
+   * – No participants are selected manually; the
+   *   backend resolver will automatically add the
+   *   support team and the current user.
+   * – The thread is always locked for support.
+   */
+  const handleCreateSupportThread = async (user: User) => {
+    if (!user) {
+      toast("Authentication required", {
+        description: "Please sign in to contact support",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    setIsCreating(true);
+
+    const newThread = await createThread({
+      title: "Customer Support",
+      ai: false,
+      topic: "customer_support",
+      controls: {
+        // Force AI approval no matter what
+        requireAiApproval: true,
+        supportLocked: true,
+      },
+    });
+
+    setIsCreating(false);
+
+    if (newThread) {
+      resetFormAndNavigate(newThread);
+    } else {
+      toast("Error", {
+        description:
+          "Failed to open a support conversation. Please try again later.",
+      });
+    }
+  };
+
   const resetFormAndNavigate = (thread: Thread) => {
     onThreadCreated(thread);
     setNewThreadTitle("");
@@ -178,5 +221,6 @@ export const useThreadCreation = (
     handleCreateThread,
     handleCreateAIChat,
     handleGenerateThread,
+    handleCreateSupportThread,
   };
 };
