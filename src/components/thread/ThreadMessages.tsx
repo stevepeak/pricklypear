@@ -6,6 +6,7 @@ import { MessageCircle } from "lucide-react";
 import type { Thread } from "@/types/thread";
 import MessageFromMe from "@/components/thread/messages/MessageFromMe";
 import MessageFromParticipant from "@/components/thread/messages/MessageFromParticipant";
+import MessageFromAI from "@/components/thread/messages/MessageFromAI";
 import RequestClose from "@/components/thread/messages/RequestClose";
 import CloseDecision from "./messages/CloseDecision";
 
@@ -59,6 +60,8 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
                 ) : (
                   <MessageFromParticipant key={message.id} message={message} />
                 );
+              case "ai_message":
+                return <MessageFromAI key={message.id} message={message} />;
               case "request_close": {
                 // isPending is true only if this is the newest request_close and there are no close_declined after it
                 const isNewestRequestClose =

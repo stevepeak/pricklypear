@@ -197,7 +197,6 @@ export const useThreadMessages = (
             },
           ]);
           setNewMessage("");
-          toast("AI replied", { description: aiResult.aiMessage.text });
         } else {
           toast("Error", { description: "Failed to send AI message." });
         }

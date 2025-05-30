@@ -414,6 +414,7 @@ export type Database = {
         | "request_close"
         | "close_accepted"
         | "close_declined"
+        | "ai_message"
       thread_status: "Open" | "Closed" | "Archived" | "(empty)"
       thread_topic:
         | "travel"
@@ -566,6 +567,7 @@ export const Constants = {
         "request_close",
         "close_accepted",
         "close_declined",
+        "ai_message",
       ],
       thread_status: ["Open", "Closed", "Archived", "(empty)"],
       thread_topic: [
