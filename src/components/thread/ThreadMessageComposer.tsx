@@ -27,6 +27,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu.js";
 import {
   Dialog,
@@ -46,6 +47,7 @@ import { getMessages } from "@/services/messageService/get-messages";
 import { Thread } from "@/types/thread";
 import { SystemPromptDialog } from "./composer/SystemPrompt";
 import { archiveThread, unarchiveThread } from "@/services/threadService";
+import { Switch } from "@/components/ui/switch";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -259,52 +261,7 @@ const ThreadMessageComposer = React.forwardRef<
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" align="start">
-                  {!thread.ai && (
-                    <>
-                      <DropdownMenuItem
-                        onSelect={() => setIsRequestDialogOpen(true)}
-                        disabled={hasOpenCloseRequest}
-                      >
-                        {hasOpenCloseRequest ? (
-                          <>
-                            <Lock className="h-4 w-4 mr-2" /> Request to close
-                            thread pending...
-                          </>
-                        ) : (
-                          <>
-                            <Lock className="h-4 w-4 mr-2" /> Request to close
-                            thread
-                          </>
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </>
-                  )}
-                  {thread.ai && thread.status === "Open" && (
-                    <DropdownMenuItem
-                      onSelect={handleArchive}
-                      disabled={isArchiving}
-                    >
-                      <FileDown className="h-4 w-4 mr-2" />
-                      {isArchiving ? "Archiving..." : "Archive"}
-                    </DropdownMenuItem>
-                  )}
-                  {thread.ai && thread.status === "Archived" && (
-                    <DropdownMenuItem
-                      onSelect={handleUnarchive}
-                      disabled={isUnarchiving}
-                    >
-                      <FileDown className="h-4 w-4 mr-2" />
-                      {isUnarchiving ? "Unarchiving..." : "Unarchive"}
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem
-                    onSelect={() => setIsSystemPromptDialogOpen(true)}
-                  >
-                    <MessageSquarePlus className="h-4 w-4 mr-2" /> Update System
-                    Prompt
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Exporting</DropdownMenuLabel>
                   <DropdownMenuItem>
                     <FileDown className="h-4 w-4 mr-2" /> Export as PDF{" "}
                     <Badge
@@ -330,6 +287,66 @@ const ThreadMessageComposer = React.forwardRef<
                     </Badge>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Preferences</DropdownMenuLabel>
+                  <DropdownMenuItem
+                    onSelect={() => setIsSystemPromptDialogOpen(true)}
+                  >
+                    <MessageSquarePlus className="h-4 w-4 mr-2" /> Update System
+                    Prompt
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <div className="flex items-center justify-between w-full">
+                      <span className="flex items-center gap-2">
+                        <ShieldCheck className="h-4 w-4 mr-2" />
+                        Auto-accept AI rephrasing
+                      </span>
+                      <Switch
+                        checked={autoAccept}
+                        onCheckedChange={handleToggleAutoAccept}
+                        aria-label="Auto-accept AI rephrasing"
+                      />
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  {!thread.ai && (
+                    <>
+                      <DropdownMenuItem
+                        onSelect={() => setIsRequestDialogOpen(true)}
+                        disabled={hasOpenCloseRequest}
+                      >
+                        {hasOpenCloseRequest ? (
+                          <>
+                            <Lock className="h-4 w-4 mr-2" /> Request to close
+                            thread pending...
+                          </>
+                        ) : (
+                          <>
+                            <Lock className="h-4 w-4 mr-2" /> Request to close
+                            thread
+                          </>
+                        )}
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  {thread.ai && thread.status === "Open" && (
+                    <DropdownMenuItem
+                      onSelect={handleArchive}
+                      disabled={isArchiving}
+                    >
+                      <FileDown className="h-4 w-4 mr-2" />
+                      {isArchiving ? "Archiving..." : "Archive"}
+                    </DropdownMenuItem>
+                  )}
+                  {thread.ai && thread.status === "Archived" && (
+                    <DropdownMenuItem
+                      onSelect={handleUnarchive}
+                      disabled={isUnarchiving}
+                    >
+                      <FileDown className="h-4 w-4 mr-2" />
+                      {isUnarchiving ? "Unarchiving..." : "Unarchive"}
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem>
                     <FilePlus className="h-4 w-4 mr-2" /> Add photos and files{" "}
                     <Badge
@@ -352,32 +369,6 @@ const ThreadMessageComposer = React.forwardRef<
               </Button> */}
             </div>
             <div className="flex items-center gap-2">
-              {!thread.ai && (
-                <TooltipProvider delayDuration={300}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1">
-                        <Toggle
-                          aria-label="Auto-accept AI rephrasing"
-                          pressed={autoAccept}
-                          onPressedChange={handleToggleAutoAccept}
-                        >
-                          {autoAccept ? (
-                            <ShieldCheck className="h-4 w-4" />
-                          ) : (
-                            <ShieldOff className="h-4 w-4" />
-                          )}
-                        </Toggle>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="top">
-                      {autoAccept
-                        ? "AI rephrasing is automatically accepted."
-                        : "You will confirm AI rephrasing before sending."}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
               <Button
                 onClick={onSendMessage}
                 disabled={!newMessage.trim() || isSending}
