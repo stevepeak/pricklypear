@@ -20,7 +20,7 @@ export function useThreadFilters(threads: Thread[]) {
   useEffect(() => {
     const storedFilters = localStorage.getItem("threads.filters");
     const filtersSchema = z.object({
-      search: z.string().optional(),
+      search: z.string().optional().default(""),
       filterStatus: z
         .array(
           z.union([
@@ -31,8 +31,8 @@ export function useThreadFilters(threads: Thread[]) {
         )
         .optional()
         .default(["Open"]),
-      filterParticipants: z.array(z.string()).optional(),
-      filterTopics: z.array(z.string()).optional(),
+      filterParticipants: z.array(z.string()).optional().default([]),
+      filterTopics: z.array(z.string()).optional().default([]),
     });
     if (storedFilters) {
       const parsed = filtersSchema.safeParse(JSON.parse(storedFilters));
@@ -44,6 +44,7 @@ export function useThreadFilters(threads: Thread[]) {
         setFilterParticipants(filterParticipants);
         setFilterTopics(filterTopics as ThreadTopic[]);
       } else {
+        localStorage.removeItem("threads.filters");
         setSearch("");
         setFilterStatus(["Open"]);
         setFilterParticipants([]);

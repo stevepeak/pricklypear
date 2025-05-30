@@ -11,7 +11,7 @@ const documentLabelSchema = z.enum(
 );
 
 const filtersSchema = z.object({
-  search: z.string().optional(),
+  search: z.string().optional().default(""),
   filterLabels: z.array(documentLabelSchema).optional().default([]),
 });
 
@@ -24,14 +24,14 @@ export function useDocumentFilters(args: { documents: Document[] }) {
   useEffect(() => {
     const storedFilters = localStorage.getItem("documents.filters");
     if (storedFilters) {
-      try {
-        const parsed = filtersSchema.safeParse(JSON.parse(storedFilters));
-        if (parsed.success) {
-          setSearch(parsed.data.search);
-          setFilterLabels(parsed.data.filterLabels as DocumentLabel[]);
-        }
-      } catch {
-        // ignore JSON parse errors
+      const parsed = filtersSchema.safeParse(JSON.parse(storedFilters));
+      if (parsed.success) {
+        setSearch(parsed.data.search);
+        setFilterLabels(parsed.data.filterLabels as DocumentLabel[]);
+      } else {
+        localStorage.removeItem("documents.filters");
+        setSearch("");
+        setFilterLabels([]);
       }
     }
   }, []);
