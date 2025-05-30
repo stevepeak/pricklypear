@@ -82,15 +82,15 @@ const ThreadView = () => {
           isGeneratingSummary={isGeneratingSummary}
         />
 
-        <div className="flex flex-col items-center w-full mt-8 p-4">
-          <div className="max-w-[700px] mb-8">
+        <div className="flex flex-col items-center m-auto h-full p-4 w-full max-w-[700px] mb-8">
             <ThreadMessages
               messages={messages}
               user={user}
               thread={thread}
               messagesEndRef={messagesEndRef}
             />
-          </div>
+        </div>
+      </div>
           {threadIsOpen && (
             <ThreadMessageComposer
               ref={composerRef}
@@ -106,8 +106,6 @@ const ThreadView = () => {
               messagesEndRef={messagesEndRef}
             />
           )}
-        </div>
-      </div>
 
       <MessageReviewDialog
         open={isReviewDialogOpen}
