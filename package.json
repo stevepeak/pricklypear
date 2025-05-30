@@ -7,7 +7,7 @@
     "bun": "1"
   },
   "scripts": {
-    "ci": "bun run typecheck && bun run typecheck:deno && bun run fix && bun run lint && bun run build",
+    "ci": "bun run typecheck && bun run typecheck:deno && bun run fix && bun run lint && bun run build && bun run test",
     "build": "bun run build.ts",
     "dev": "bun run --hot src/index.tsx",
     "lint": "eslint . && prettier --check .",
