@@ -35,7 +35,7 @@ export type Thread = {
   summary?: string | null;
   topic: ThreadTopic;
   controls?: ThreadControls;
-  ai: boolean;
+  type: Database["public"]["Enums"]["thread_type"];
 };
 
 /** Display metadata (label and emoji icon) for every thread topic. */
@@ -57,8 +57,12 @@ export const THREAD_TOPIC_INFO: Record<
  * Retrieve label / icon information for a given thread topic.
  *
  * @param topic - The topic identifier (may be null/undefined).
- * @returns The topic’s metadata, or the "other" metadata if the topic is null/undefined.
+ * @returns The topic's metadata, or the "other" metadata if the topic is null/undefined.
  */
 export function getThreadTopicInfo(topic: ThreadTopic | null | undefined) {
   return THREAD_TOPIC_INFO[topic ?? "other"];
+}
+
+export function isAIThread(thread: Thread): boolean {
+  return thread.type === "ai_chat";
 }

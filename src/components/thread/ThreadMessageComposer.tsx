@@ -44,7 +44,7 @@ import { toast } from "sonner";
 import { Badge } from "../ui/badge";
 import { useConnections } from "@/hooks/useConnections";
 import { getMessages } from "@/services/messageService/get-messages";
-import { Thread } from "@/types/thread";
+import { Thread, isAIThread } from "@/types/thread";
 import { SystemPromptDialog } from "./composer/SystemPrompt";
 import { archiveThread, unarchiveThread } from "@/services/threadService";
 import { Switch } from "@/components/ui/switch";
@@ -81,7 +81,9 @@ const ThreadMessageComposer = React.forwardRef<
     },
     ref,
   ) => {
-    const [autoAccept, setAutoAccept] = useState(thread.ai ? false : true);
+    const [autoAccept, setAutoAccept] = useState(
+      isAIThread(thread) ? false : true,
+    );
     const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
     const [isRequestingClose, setIsRequestingClose] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -309,7 +311,7 @@ const ThreadMessageComposer = React.forwardRef<
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  {!thread.ai && (
+                  {!isAIThread(thread) && (
                     <>
                       <DropdownMenuItem
                         onSelect={() => setIsRequestDialogOpen(true)}
@@ -329,7 +331,7 @@ const ThreadMessageComposer = React.forwardRef<
                       </DropdownMenuItem>
                     </>
                   )}
-                  {thread.ai && thread.status === "Open" && (
+                  {isAIThread(thread) && thread.status === "Open" && (
                     <DropdownMenuItem
                       onSelect={handleArchive}
                       disabled={isArchiving}
@@ -338,7 +340,7 @@ const ThreadMessageComposer = React.forwardRef<
                       {isArchiving ? "Archiving..." : "Archive"}
                     </DropdownMenuItem>
                   )}
-                  {thread.ai && thread.status === "Archived" && (
+                  {isAIThread(thread) && thread.status === "Archived" && (
                     <DropdownMenuItem
                       onSelect={handleUnarchive}
                       disabled={isUnarchiving}
@@ -373,13 +375,13 @@ const ThreadMessageComposer = React.forwardRef<
                 onClick={onSendMessage}
                 disabled={!newMessage.trim() || isSending}
                 size="default"
-                className={`shrink-0 flex items-center gap-1 ${thread.ai ? "bg-purple-600 hover:bg-purple-700" : ""}`}
+                className={`shrink-0 flex items-center gap-1 ${isAIThread(thread) ? "bg-purple-600 hover:bg-purple-700" : ""}`}
               >
                 {isSending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                    {thread.ai ? (
+                    {isAIThread(thread) ? (
                       <>
                         <ArrowUp className="h-4 w-4" />
                         <span className="sr-only md:not-sr-only md:inline">

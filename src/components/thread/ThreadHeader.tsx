@@ -1,6 +1,6 @@
 import { Bot, Loader2, Lock, Users, BotMessageSquare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { getThreadTopicInfo, type Thread } from "@/types/thread";
+import { getThreadTopicInfo, type Thread, isAIThread } from "@/types/thread";
 import { AvatarName } from "@/components/ui/avatar-name";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,7 +60,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
                 Closed
               </Badge>
             )}
-            {thread.ai ? (
+            {isAIThread(thread) ? (
               <Badge
                 variant="secondary"
                 className="bg-purple-100 text-purple-800 border-purple-200"
@@ -89,7 +89,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
             </span>
           </div>
           <h1 className="text-2xl font-bold break-words">{thread.title}</h1>
-          {!thread.ai && (
+          {!isAIThread(thread) && (
             <div className="flex flex-col space-y-2 mt-2">
               {thread.participants && thread.participants.length > 0 ? (
                 <div className="flex items-center gap-2 flex-wrap">

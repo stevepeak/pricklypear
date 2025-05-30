@@ -61,7 +61,7 @@ export const getThreads = async (): Promise<Thread[]> => {
           summary: thread.summary,
           topic: thread.topic as ThreadTopic,
           controls: thread.controls as ThreadControls,
-          ai: thread.ai,
+          type: thread.type,
         };
       }),
     );

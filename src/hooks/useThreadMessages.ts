@@ -11,6 +11,7 @@ import type { Message } from "@/types/message";
 import type { Thread } from "@/types/thread";
 import { toast } from "sonner";
 import { useConnections } from "@/hooks/useConnections";
+import { isAIThread } from "@/types/thread";
 
 export const useThreadMessages = (
   threadId: string | undefined,
@@ -178,7 +179,7 @@ export const useThreadMessages = (
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-    if (thread && thread.ai) {
+    if (thread && isAIThread(thread)) {
       setIsSending(true);
       try {
         const aiResult = await saveAiMessage({

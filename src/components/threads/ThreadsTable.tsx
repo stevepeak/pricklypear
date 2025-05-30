@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AvatarName } from "@/components/ui/avatar-name";
 import { cn } from "@/lib/utils";
-import { getThreadTopicInfo } from "@/types/thread";
+import { getThreadTopicInfo, isAIThread } from "@/types/thread";
 import type { Thread } from "@/types/thread";
 import {
   Table,
@@ -97,14 +97,14 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
                   variant={thread.status === "Open" ? "default" : "outline"}
                   className={cn(
                     "ml-2 px-2 py-0.5 text-xs",
-                    thread.ai
+                    isAIThread(thread)
                       ? "bg-purple-100 text-purple-800 border-purple-200"
                       : thread.status === "Open"
                         ? "bg-green-100 text-green-800 border-green-200"
                         : "bg-muted text-muted-foreground border-muted",
                   )}
                 >
-                  {thread.ai ? "AI Chat" : thread.status}
+                  {isAIThread(thread) ? "AI Chat" : thread.status}
                 </Badge>
               </TableCell>
 

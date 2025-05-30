@@ -4,12 +4,12 @@ import { requireCurrentUser, getUserProfile } from "@/utils/authCache";
 
 export const createThread = async (args: {
   title: string;
-  ai: boolean;
+  type: Thread["type"];
   participantIds?: string[];
   topic: ThreadTopic;
   controls?: { requireAiApproval?: boolean };
 }): Promise<Thread | null> => {
-  const { title, ai, participantIds, topic, controls } = args;
+  const { title, type, participantIds, topic, controls } = args;
 
   const MAX_THREAD_TITLE_LENGTH = 50;
 
@@ -34,7 +34,7 @@ export const createThread = async (args: {
       "create_thread",
       {
         title: trimmedTitle,
-        ai,
+        ai: type === "ai_chat", // legacy, remove after migration
         topic,
         participant_ids: participantIds,
         controls,
@@ -56,7 +56,7 @@ export const createThread = async (args: {
       summary: `New thread created by ${profile.name}`,
       topic,
       controls,
-      ai,
+      type,
     };
   } catch (error) {
     console.error("Error creating thread:", error);

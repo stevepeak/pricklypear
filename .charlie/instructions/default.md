@@ -1,4 +1,5 @@
 # IMPORTANT
+
 - Do not ask me permission to proceed with changes. Do it.
 - Run `bun run ci` after you make changes
 - Use components from `src/components/ui` whenever possible

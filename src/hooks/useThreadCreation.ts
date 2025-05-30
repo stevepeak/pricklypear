@@ -57,7 +57,7 @@ export const useThreadCreation = (
 
     const newThread = await createThread({
       title: trimmedTitle,
-      ai: false,
+      type: "default",
       participantIds: selectedContactIds,
       topic: selectedTopic,
       controls: { requireAiApproval },
@@ -79,7 +79,7 @@ export const useThreadCreation = (
 
     const newThread = await createThread({
       title: "AI Chat",
-      ai: true,
+      type: "ai_chat",
       topic: "other",
     });
 
@@ -130,7 +130,7 @@ export const useThreadCreation = (
 
     const newThread = await createThread({
       title: trimmedTitle,
-      ai: false,
+      type: "default",
       participantIds: selectedContactIds,
       topic: selectedTopic,
       controls: { requireAiApproval },
