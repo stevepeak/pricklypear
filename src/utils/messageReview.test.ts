@@ -35,7 +35,7 @@ describe("reviewMessage", () => {
       reason: null,
     });
     expect(supabase.functions.invoke).toHaveBeenCalledWith("review-message", {
-      body: { message: "hello", threadId: "t1" },
+      body: { message: "hello", threadId: "t1", systemPrompt: null },
     });
   });
 
