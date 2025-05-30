@@ -18,6 +18,7 @@ const messageSchema = z.object({
     .transform((val) => val.trim()),
   threadId: z.string().uuid("Invalid thread ID format"),
   userId: z.string().uuid("Invalid user ID format"),
+  systemPrompt: z.string().optional(),
 });
 
 function errorResponse(message: string, status = 500) {
@@ -33,8 +34,13 @@ export async function handler(req: Request) {
   }
 
   try {
-    const { text, threadId, userId } = await req.json();
-    const result = messageSchema.safeParse({ text, threadId, userId });
+    const { text, threadId, userId, systemPrompt } = await req.json();
+    const result = messageSchema.safeParse({
+      text,
+      threadId,
+      userId,
+      systemPrompt,
+    });
     if (!result.success) {
       return errorResponse(result.error.errors[0].message, 400);
     }
@@ -87,7 +93,12 @@ export async function handler(req: Request) {
     const aiRes = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
-        { role: "system", content: "You are a helpful assistant." },
+        {
+          role: "system",
+          content:
+            systemPrompt ??
+            "You are a thoughtful, kind legal assistant and co-parenting expert.",
+        },
         ...openAIMessages,
       ],
       temperature: 0.7,
