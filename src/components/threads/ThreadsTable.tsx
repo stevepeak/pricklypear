@@ -99,12 +99,18 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
                     "ml-2 px-2 py-0.5 text-xs",
                     isAIThread(thread)
                       ? "bg-purple-100 text-purple-800 border-purple-200"
-                      : thread.status === "Open"
-                        ? "bg-green-100 text-green-800 border-green-200"
-                        : "bg-muted text-muted-foreground border-muted",
+                      : thread.type === "customer_support"
+                        ? "bg-blue-100 text-blue-800 border-blue-200"
+                        : thread.status === "Open"
+                          ? "bg-green-100 text-green-800 border-green-200"
+                          : "bg-muted text-muted-foreground border-muted",
                   )}
                 >
-                  {isAIThread(thread) ? "AI Chat" : thread.status}
+                  {isAIThread(thread)
+                    ? "AI Chat"
+                    : thread.type === "customer_support"
+                      ? "Support"
+                      : thread.status}
                 </Badge>
               </TableCell>
 
@@ -131,10 +137,12 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               </TableCell>
               {/* Topic */}
               <TableCell className="px-4 py-2">
-                <Badge variant="secondary">
-                  <span className="mr-1">{topicInfo.icon}</span>
-                  {topicInfo.label}
-                </Badge>
+                {!isAIThread(thread) && thread.type !== "customer_support" && (
+                  <Badge variant="secondary">
+                    <span className="mr-1">{topicInfo.icon}</span>
+                    {topicInfo.label}
+                  </Badge>
+                )}
               </TableCell>
 
               {/* Title */}
@@ -143,11 +151,8 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               </TableCell>
 
               {/* Summary */}
-              <TableCell
-                className="px-4 py-2 max-w-xs truncate whitespace-nowrap overflow-hidden text-ellipsis"
-                title={thread.summary ?? "No summary generated yet."}
-              >
-                {thread.summary ?? "No summary generated yet."}
+              <TableCell className="px-4 py-2 max-w-xs truncate whitespace-nowrap overflow-hidden text-ellipsis">
+                {thread.summary}
               </TableCell>
             </TableRow>
           );
