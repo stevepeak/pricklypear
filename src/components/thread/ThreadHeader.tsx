@@ -1,4 +1,11 @@
-import { Bot, Loader2, Lock, Users, BotMessageSquare, Headset } from "lucide-react";
+import {
+  Bot,
+  Loader2,
+  Lock,
+  Users,
+  BotMessageSquare,
+  Headset,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getThreadTopicInfo, type Thread, isAIThread } from "@/types/thread";
 import { AvatarName } from "@/components/ui/avatar-name";

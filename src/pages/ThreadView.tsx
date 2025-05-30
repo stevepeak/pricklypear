@@ -83,29 +83,29 @@ const ThreadView = () => {
         />
 
         <div className="flex flex-col items-center m-auto h-full p-4 w-full max-w-[700px] mb-8">
-            <ThreadMessages
-              messages={messages}
-              user={user}
-              thread={thread}
-              messagesEndRef={messagesEndRef}
-            />
+          <ThreadMessages
+            messages={messages}
+            user={user}
+            thread={thread}
+            messagesEndRef={messagesEndRef}
+          />
         </div>
       </div>
-          {threadIsOpen && (
-            <ThreadMessageComposer
-              ref={composerRef}
-              newMessage={newMessage}
-              setNewMessage={setNewMessage}
-              isSending={isSending || isReviewingMessage}
-              onSendMessage={handleSendMessage}
-              scrollToBottom={scrollToBottom}
-              hasOpenCloseRequest={hasOpenCloseRequest}
-              thread={thread}
-              loadMessages={loadMessages}
-              autoFocus={true}
-              messagesEndRef={messagesEndRef}
-            />
-          )}
+      {threadIsOpen && (
+        <ThreadMessageComposer
+          ref={composerRef}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          isSending={isSending || isReviewingMessage}
+          onSendMessage={handleSendMessage}
+          scrollToBottom={scrollToBottom}
+          hasOpenCloseRequest={hasOpenCloseRequest}
+          thread={thread}
+          loadMessages={loadMessages}
+          autoFocus={true}
+          messagesEndRef={messagesEndRef}
+        />
+      )}
 
       <MessageReviewDialog
         open={isReviewDialogOpen}

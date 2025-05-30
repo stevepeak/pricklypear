@@ -83,7 +83,9 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
                 );
               }
               case "customer_support":
-                return <CustomerSupportMessage key={message.id} message={message} />;
+                return (
+                  <CustomerSupportMessage key={message.id} message={message} />
+                );
               case "close_declined":
               case "close_accepted":
                 return <CloseDecision key={message.id} message={message} />;
