@@ -18,6 +18,15 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import { toast } from "sonner";
+import { updateThreadTitle } from "@/services/threadService";
+import React, { useState, useRef } from "react";
+import { z } from "zod";
 
 interface ThreadHeaderProps {
   thread: Thread;
@@ -27,6 +36,68 @@ interface ThreadHeaderProps {
 const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
   const { label, icon } = getThreadTopicInfo(thread.topic);
   const topicLabel = `${icon} ${label}`;
+  const [editing, setEditing] = useState(false);
+  const [title, setTitle] = useState(thread.title);
+  const [loading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const titleSchema = z
+    .string()
+    .trim()
+    .min(1, "Title is required")
+    .max(50, "Title must be 50 characters or less");
+
+  React.useEffect(() => {
+    setTitle(thread.title);
+  }, [thread.title]);
+
+  React.useEffect(() => {
+    if (editing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [editing]);
+
+  const handleSave = async () => {
+    const trimmed = title.trim();
+    const parse = titleSchema.safeParse(trimmed);
+    if (!parse.success) {
+      toast("Invalid title", { description: parse.error.errors[0].message });
+      if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.select();
+      }
+      return;
+    }
+    if (trimmed === thread.title) {
+      setEditing(false);
+      setTitle(thread.title);
+      return;
+    }
+    setLoading(true);
+    try {
+      await updateThreadTitle({ threadId: thread.id, title: trimmed });
+      toast("Title updated", {
+        description: "Thread title updated successfully.",
+      });
+      setEditing(false);
+    } catch (e) {
+      toast("Error", { description: "Failed to update thread title." });
+      setTitle(thread.title);
+      setEditing(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSave();
+    } else if (e.key === "Escape") {
+      setEditing(false);
+      setTitle(thread.title);
+    }
+  };
 
   return (
     <div className="sticky top-12 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 p-6">
@@ -103,7 +174,33 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
               Created {thread.createdAt.toLocaleDateString()}
             </span>
           </div>
-          <h1 className="text-2xl font-bold break-words">{thread.title}</h1>
+          <div style={{ position: "relative", display: "inline-block" }}>
+            {editing ? (
+              <input
+                ref={inputRef}
+                className="text-2xl font-bold break-words bg-transparent outline-none border-none p-0 m-0"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onBlur={handleSave}
+                onKeyDown={handleKeyDown}
+                disabled={loading}
+                maxLength={50}
+                style={{ minWidth: 100 }}
+              />
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <h1
+                    className="text-2xl font-bold break-words cursor-pointer hover:underline"
+                    onClick={() => setEditing(true)}
+                  >
+                    {title}
+                  </h1>
+                </TooltipTrigger>
+                <TooltipContent>Click to edit</TooltipContent>
+              </Tooltip>
+            )}
+          </div>
           {!isAIThread(thread) && (
             <div className="flex flex-col space-y-2 mt-2">
               {thread.participants && thread.participants.length > 0 ? (
