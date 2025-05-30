@@ -45,6 +45,7 @@ import { useConnections } from "@/hooks/useConnections";
 import { getMessages } from "@/services/messageService/get-messages";
 import { Thread } from "@/types/thread";
 import { SystemPromptDialog } from "./composer/SystemPrompt";
+import { archiveThread, unarchiveThread } from "@/services/threadService";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -86,6 +87,8 @@ const ThreadMessageComposer = React.forwardRef<
     const { connections } = useConnections();
     const [isSystemPromptDialogOpen, setIsSystemPromptDialogOpen] =
       useState(false);
+    const [isArchiving, setIsArchiving] = useState(false);
+    const [isUnarchiving, setIsUnarchiving] = useState(false);
 
     useEffect(() => {
       const stored = localStorage.getItem("autoAcceptAISuggestions");
@@ -194,6 +197,38 @@ const ThreadMessageComposer = React.forwardRef<
       }
     };
 
+    const handleArchive = async () => {
+      setIsArchiving(true);
+      const success = await archiveThread({ threadId: thread.id });
+      if (success) {
+        toast("Thread archived", {
+          description: "This thread has been archived.",
+        });
+        await loadMessages();
+      } else {
+        toast("Archive failed", {
+          description: "Could not archive the thread.",
+        });
+      }
+      setIsArchiving(false);
+    };
+
+    const handleUnarchive = async () => {
+      setIsUnarchiving(true);
+      const success = await unarchiveThread({ threadId: thread.id });
+      if (success) {
+        toast("Thread unarchived", {
+          description: "This thread has been unarchived.",
+        });
+        await loadMessages();
+      } else {
+        toast("Unarchive failed", {
+          description: "Could not unarchive the thread.",
+        });
+      }
+      setIsUnarchiving(false);
+    };
+
     return (
       <>
         <div className="sticky bottom-2 md:bottom-4 bg-white border rounded-md shadow-md m-2 w-full max-w-[800px]">
@@ -244,6 +279,24 @@ const ThreadMessageComposer = React.forwardRef<
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                     </>
+                  )}
+                  {thread.ai && thread.status === "Open" && (
+                    <DropdownMenuItem
+                      onSelect={handleArchive}
+                      disabled={isArchiving}
+                    >
+                      <FileDown className="h-4 w-4 mr-2" />
+                      {isArchiving ? "Archiving..." : "Archive"}
+                    </DropdownMenuItem>
+                  )}
+                  {thread.ai && thread.status === "Archived" && (
+                    <DropdownMenuItem
+                      onSelect={handleUnarchive}
+                      disabled={isUnarchiving}
+                    >
+                      <FileDown className="h-4 w-4 mr-2" />
+                      {isUnarchiving ? "Unarchiving..." : "Unarchive"}
+                    </DropdownMenuItem>
                   )}
                   <DropdownMenuItem
                     onSelect={() => setIsSystemPromptDialogOpen(true)}
