@@ -82,7 +82,7 @@ const ThreadView = () => {
           isGeneratingSummary={isGeneratingSummary}
         />
 
-        <div className="flex flex-col items-center w-full mt-8 p-4">
+        <div className="flex flex-col items-center w-full mt-8">
           <div className="max-w-[700px] mb-8">
             <ThreadMessages
               messages={messages}
