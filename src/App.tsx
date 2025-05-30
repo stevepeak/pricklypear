@@ -49,100 +49,13 @@ import { AppSidebar } from "./components/AppSidebar";
 import { CommandMenu } from "./components/CommandMenu";
 import Calendar from "./pages/Calendar";
 import Expenses from "./pages/Expenses";
+import Breadcrumbs from "@/components/app/Breadcrumbs";
 
 const queryClient = new QueryClient();
 
 function capitalize(str: string) {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function Breadcrumbs() {
-  const location = useLocation();
-  const { threadId } = useParams<{ threadId: string }>();
-  const pathnames = location.pathname.split("/").filter(Boolean);
-  const [threadTitle, setThreadTitle] = useState<string | null>(null);
-  const [loadingThread, setLoadingThread] = useState(false);
-
-  useEffect(() => {
-    let ignore = false;
-    async function fetchThreadTitle() {
-      if (
-        pathnames[0] === "threads" &&
-        pathnames[1] &&
-        pathnames.length === 2
-      ) {
-        setLoadingThread(true);
-        try {
-          const thread = await getThread(pathnames[1]);
-          if (!ignore) {
-            if (thread) {
-              setThreadTitle(thread.title);
-            } else {
-              setThreadTitle(null);
-              toast("Thread not found", {
-                description: "Could not load thread title.",
-              });
-            }
-          }
-        } catch (e) {
-          if (!ignore) {
-            setThreadTitle(null);
-            toast("Error", { description: "Failed to load thread title." });
-          }
-        } finally {
-          if (!ignore) setLoadingThread(false);
-        }
-      } else {
-        setThreadTitle(null);
-      }
-    }
-    fetchThreadTitle();
-    return () => {
-      ignore = true;
-    };
-  }, [location.pathname]);
-
-  return (
-    <Breadcrumb className="p-3 sticky top-0 z-20 bg-white">
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <SidebarTrigger className="" />
-        </BreadcrumbItem>
-        {pathnames.map((value, idx) => {
-          const to = `/${pathnames.slice(0, idx + 1).join("/")}`;
-          const isLast = idx === pathnames.length - 1;
-          let label = value;
-          if (pathnames[0] === "threads" && idx === 1 && threadTitle) {
-            label = threadTitle;
-          } else if (pathnames[0] === "threads" && idx === 1 && loadingThread) {
-            return (
-              <React.Fragment key={to}>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <Loader2 className="h-4 w-4 animate-spin text-primary inline-block align-middle" />
-                </BreadcrumbItem>
-              </React.Fragment>
-            );
-          } else {
-            label = label.charAt(0).toUpperCase() + label.slice(1);
-          }
-          return (
-            <React.Fragment key={to}>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                {isLast ? (
-                  <BreadcrumbPage>{label}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink href={to}>{label}</BreadcrumbLink>
-                )}
-              </BreadcrumbItem>
-            </React.Fragment>
-          );
-        })}
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
 }
 
 function AppRoutes() {
