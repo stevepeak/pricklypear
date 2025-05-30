@@ -27,6 +27,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu.js";
 import {
   Dialog,
@@ -45,6 +46,8 @@ import { useConnections } from "@/hooks/useConnections";
 import { getMessages } from "@/services/messageService/get-messages";
 import { Thread } from "@/types/thread";
 import { SystemPromptDialog } from "./composer/SystemPrompt";
+import { archiveThread, unarchiveThread } from "@/services/threadService";
+import { Switch } from "@/components/ui/switch";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -88,6 +91,8 @@ const ThreadMessageComposer = React.forwardRef<
     const { connections } = useConnections();
     const [isSystemPromptDialogOpen, setIsSystemPromptDialogOpen] =
       useState(false);
+    const [isArchiving, setIsArchiving] = useState(false);
+    const [isUnarchiving, setIsUnarchiving] = useState(false);
 
     useEffect(() => {
       const stored = localStorage.getItem("autoAcceptAISuggestions");
@@ -198,9 +203,41 @@ const ThreadMessageComposer = React.forwardRef<
 
     const isAiThread = thread.type === "ai_chat";
 
+    const handleArchive = async () => {
+      setIsArchiving(true);
+      const success = await archiveThread({ threadId: thread.id });
+      if (success) {
+        toast("Thread archived", {
+          description: "This thread has been archived.",
+        });
+        await loadMessages();
+      } else {
+        toast("Archive failed", {
+          description: "Could not archive the thread.",
+        });
+      }
+      setIsArchiving(false);
+    };
+
+    const handleUnarchive = async () => {
+      setIsUnarchiving(true);
+      const success = await unarchiveThread({ threadId: thread.id });
+      if (success) {
+        toast("Thread unarchived", {
+          description: "This thread has been unarchived.",
+        });
+        await loadMessages();
+      } else {
+        toast("Unarchive failed", {
+          description: "Could not unarchive the thread.",
+        });
+      }
+      setIsUnarchiving(false);
+    };
+
     return (
       <>
-        <div className="sticky bottom-2 md:bottom-4 bg-white border rounded-md shadow-md m-2 w-full max-w-[800px]">
+        <div className="sticky bottom-2 bg-white border rounded-md shadow-md w-full max-w-[800px]">
           {showJumpToLatest && scrollToBottom && (
             <div className="absolute left-1/2 -translate-x-1/2 mb-2 -top-10">
               <Button size="sm" variant="secondary" onClick={scrollToBottom}>
@@ -228,66 +265,87 @@ const ThreadMessageComposer = React.forwardRef<
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" align="start">
-                  {!isAiThread && (
-                    <>
-                      <DropdownMenuItem
-                        onSelect={() => setIsRequestDialogOpen(true)}
-                        disabled={hasOpenCloseRequest}
-                      >
-                        {hasOpenCloseRequest ? (
-                          <>
-                            <Lock className="h-4 w-4 mr-2" /> Request to close
-                            thread pending...
-                          </>
-                        ) : (
-                          <>
-                            <Lock className="h-4 w-4 mr-2" /> Request to close
-                            thread
-                          </>
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </>
-                  )}
+                  <DropdownMenuLabel>Exporting</DropdownMenuLabel>
+                  <DropdownMenuItem>
+                    <FileDown className="h-4 w-4 mr-2" /> Export as PDF{" "}
+                    <Badge variant="secondary" className="ml-2">
+                      Coming soon
+                    </Badge>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleCopy}>
+                    <Copy className="h-4 w-4 mr-2" /> Copy to your clipboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <MessageSquarePlus className="h-4 w-4 mr-2" /> Add as
+                    context in new AI chat{" "}
+                    <Badge variant="secondary" className="ml-2">
+                      Coming soon
+                    </Badge>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Preferences</DropdownMenuLabel>
                   <DropdownMenuItem
                     onSelect={() => setIsSystemPromptDialogOpen(true)}
                   >
                     <MessageSquarePlus className="h-4 w-4 mr-2" /> Update System
                     Prompt
                   </DropdownMenuItem>
+                  {!isAiThread && (
+                    <DropdownMenuItem asChild>
+                      <div className="flex items-center justify-between w-full">
+                        <span className="flex items-center gap-2">
+                          <ShieldCheck className="h-4 w-4 mr-2" />
+                          Auto-accept AI rephrasing
+                        </span>
+                        <Switch
+                          checked={autoAccept}
+                          onCheckedChange={handleToggleAutoAccept}
+                          aria-label="Auto-accept AI rephrasing"
+                        />
+                      </div>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <FileDown className="h-4 w-4 mr-2" /> Export as PDF{" "}
-                    <Badge
-                      key="coming-soon"
-                      variant="secondary"
-                      className="ml-2"
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  {!isAiThread && (
+                    <DropdownMenuItem
+                      onSelect={() => setIsRequestDialogOpen(true)}
+                      disabled={hasOpenCloseRequest}
                     >
-                      Coming soon
-                    </Badge>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => handleCopy()}>
-                    <Copy className="h-4 w-4 mr-2" /> Copy to your clipboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <MessageSquarePlus className="h-4 w-4 mr-2" /> Add as
-                    context in new AI chat{" "}
-                    <Badge
-                      key="coming-soon"
-                      variant="secondary"
-                      className="ml-2"
+                      {hasOpenCloseRequest ? (
+                        <>
+                          <Lock className="h-4 w-4 mr-2" /> Request to close
+                          thread pending...
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="h-4 w-4 mr-2" /> Request to close
+                          thread
+                        </>
+                      )}
+                    </DropdownMenuItem>
+                  )}
+                  {isAiThread && thread.status === "Open" && (
+                    <DropdownMenuItem
+                      onSelect={handleArchive}
+                      disabled={isArchiving}
                     >
-                      Coming soon
-                    </Badge>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                      <FileDown className="h-4 w-4 mr-2" />
+                      {isArchiving ? "Archiving..." : "Archive"}
+                    </DropdownMenuItem>
+                  )}
+                  {isAiThread && thread.status === "Archived" && (
+                    <DropdownMenuItem
+                      onSelect={handleUnarchive}
+                      disabled={isUnarchiving}
+                    >
+                      <FileDown className="h-4 w-4 mr-2" />
+                      {isUnarchiving ? "Unarchiving..." : "Unarchive"}
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem>
                     <FilePlus className="h-4 w-4 mr-2" /> Add photos and files{" "}
-                    <Badge
-                      key="coming-soon"
-                      variant="secondary"
-                      className="ml-2"
-                    >
+                    <Badge variant="secondary" className="ml-2">
                       Coming soon
                     </Badge>
                   </DropdownMenuItem>

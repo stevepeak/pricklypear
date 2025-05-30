@@ -236,6 +236,7 @@ export type Database = {
           summary: string | null
           title: string
           topic: Database["public"]["Enums"]["thread_topic"]
+          type: Database["public"]["Enums"]["thread_type"]
         }
         Insert: {
           ai?: boolean
@@ -247,6 +248,7 @@ export type Database = {
           summary?: string | null
           title: string
           topic?: Database["public"]["Enums"]["thread_topic"]
+          type?: Database["public"]["Enums"]["thread_type"]
         }
         Update: {
           ai?: boolean
@@ -258,6 +260,7 @@ export type Database = {
           summary?: string | null
           title?: string
           topic?: Database["public"]["Enums"]["thread_topic"]
+          type?: Database["public"]["Enums"]["thread_type"]
         }
         Relationships: [
           {
@@ -415,6 +418,7 @@ export type Database = {
         | "close_accepted"
         | "close_declined"
         | "ai_message"
+        | "customer_support"
       thread_status: "Open" | "Closed" | "Archived" | "(empty)"
       thread_topic:
         | "travel"
@@ -425,6 +429,7 @@ export type Database = {
         | "legal"
         | "other"
         | "expense"
+      thread_type: "ai_chat" | "customer_support" | "default"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -568,6 +573,7 @@ export const Constants = {
         "close_accepted",
         "close_declined",
         "ai_message",
+        "customer_support",
       ],
       thread_status: ["Open", "Closed", "Archived", "(empty)"],
       thread_topic: [
@@ -580,6 +586,7 @@ export const Constants = {
         "other",
         "expense",
       ],
+      thread_type: ["ai_chat", "customer_support", "default"],
     },
   },
 } as const
