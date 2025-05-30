@@ -8,10 +8,10 @@ function MessageFromMe(props: { message: Message }) {
   return (
     <div
       className={cn(
-        "flex flex-col mb-2 animate-message-appear self-end items-end",
+        "flex flex-col animate-message-appear self-end items-end",
       )}
     >
-      <div className="flex items-center gap-1 mb-1 text-xs text-gray-500">
+      <div className="flex items-center gap-1 text-xs text-gray-500">
         <span>You</span>
         <span>•</span>
         <span>{formatThreadTimestamp(message.timestamp)}</span>

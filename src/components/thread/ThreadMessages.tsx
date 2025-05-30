@@ -51,7 +51,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   return (
     <>
       {messages.length > 0 ? (
-        <div className="flex-grow px-2 py-3 mb-2 mx-2 md:px-4 md:py-6 md:mb-4 md:mx-10">
+        <div className="flex flex-col gap-4">
           {messages.map((message, idx) => {
             switch (message.type) {
               case "user_message":

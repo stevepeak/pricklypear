@@ -68,7 +68,7 @@ function RequestClose(props: {
   return (
     <div
       className={cn(
-        "flex flex-col mb-2 animate-message-appear items-center justify-center",
+        "flex flex-col animate-message-appear items-center justify-center",
       )}
     >
       <div className="flex items-center gap-1 mb-1 text-xs text-gray-500">

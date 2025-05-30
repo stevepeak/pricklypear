@@ -8,7 +8,7 @@ function MessageFromParticipant(props: { message: Message }) {
   return (
     <div
       className={cn(
-        "flex flex-col mb-2 animate-message-appear self-start items-start",
+        "flex flex-col animate-message-appear self-start items-start",
       )}
     >
       <div className="flex items-center gap-1 mb-1 text-xs text-gray-500">
