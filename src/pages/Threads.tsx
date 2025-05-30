@@ -87,7 +87,7 @@ const Threads = () => {
 
   return (
     <div>
-      <div className="sticky top-12 z-10 flex justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-4 py-2">
+      <div className="sticky top-12 z-10 flex justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-2 py-2">
         <div className="flex w-full max-w-xs relative">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -102,7 +102,7 @@ const Threads = () => {
             aria-label="Search threads"
           />
         </div>
-        <div className="flex items-center gap-3 ml-8 pr-8">
+        <div className="flex items-right gap-3 pr-2 sm:pr-8">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button

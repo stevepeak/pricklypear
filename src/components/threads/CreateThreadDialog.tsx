@@ -74,27 +74,28 @@ const CreateThreadDialog = ({
       <DialogTrigger asChild>
         <Button variant="ghost">
           <MessageCirclePlus size={16} />
-          New Thread
+          <span className="hidden sm:inline">New Thread</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Thread</DialogTitle>
           <DialogDescription>
-            Choose a conversation between you and contacts, or an AI chat.
+            Start a new conversation with your contacts, ask AI a question, or
+            contact our support team.
           </DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="conversation" className="w-full mt-4">
           <TabsList className="w-full">
             <TabsTrigger value="conversation" className="flex-1">
-              <MessagesSquare className="mr-2 h-4 w-4" /> Thread
+              <MessagesSquare className="mr-2 h-4 w-4" /> Chat
             </TabsTrigger>
             <TabsTrigger value="ai-chat" className="flex-1">
-              <Bot className="mr-2 h-4 w-4" /> AI Chat
+              <Bot className="mr-2 h-4 w-4" /> AI
             </TabsTrigger>
             <TabsTrigger value="customer-support" className="flex-1">
-              <Headset className="mr-2 h-4 w-4" /> Customer Support
+              <Headset className="mr-2 h-4 w-4" /> Support
             </TabsTrigger>
           </TabsList>
           <TabsContent value="conversation">
@@ -119,7 +120,7 @@ const CreateThreadDialog = ({
           <TabsContent value="ai-chat">
             <div className="py-8 text-center text-muted-foreground">
               <p className="mb-4">
-                Start a new, private AI chat to ask questions with all the
+                Start a <strong>private</strong> AI chat to ask questions with
                 context from your threads and documents.
               </p>
               <Button
@@ -160,21 +161,18 @@ function CustomerSupportForm({
   onThreadCreated: (thread: Thread) => void;
   onClose: () => void;
 }) {
-  const [title, setTitle] = React.useState("");
   const [isCreating, setIsCreating] = React.useState(false);
   const handleCreate = async () => {
-    if (!title.trim()) return;
     setIsCreating(true);
     const { createThread } = await import("@/services/threadService");
     const thread = await createThread({
-      title: title.trim(),
+      title: "New Support Chat",
       type: "customer_support",
       topic: "other",
     });
     setIsCreating(false);
     if (thread) {
       onThreadCreated(thread);
-      setTitle("");
       onClose();
     }
   };
@@ -184,18 +182,10 @@ function CustomerSupportForm({
         Contact our support team for help with your account, billing, or
         technical issues.
       </p>
-      <input
-        className="border rounded px-3 py-2 w-2/3 mb-4"
-        placeholder="Describe your issue..."
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        maxLength={100}
-        disabled={isCreating}
-      />
       <div>
         <Button
           onClick={handleCreate}
-          disabled={!title.trim() || isCreating}
+          disabled={isCreating}
           className="w-2/3 mt-2"
         >
           {isCreating ? (
@@ -206,7 +196,7 @@ function CustomerSupportForm({
           ) : (
             <>
               <Headset className="mr-2 h-4 w-4" />
-              Submit to Support
+              Start Support Chat
             </>
           )}
         </Button>

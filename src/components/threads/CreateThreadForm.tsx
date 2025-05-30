@@ -171,11 +171,13 @@ const CreateThreadForm = ({
         </Label>
       </div>
 
-      <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:space-x-2 mt-4">
-        <Button variant="outline" onClick={onCancel} disabled={isCreating}>
-          Cancel
-        </Button>
-        <div className="flex justify-end space-x-2">
+      <div className="flex flex-row justify-between items-center mt-4">
+        <div className="flex">
+          <Button variant="outline" onClick={onCancel} disabled={isCreating}>
+            Cancel
+          </Button>
+        </div>
+        <div className="flex space-x-2">
           {isAdmin && (
             <Button
               onClick={onGenerate}

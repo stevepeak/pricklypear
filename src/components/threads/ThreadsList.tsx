@@ -45,7 +45,7 @@ const ThreadsList = ({
   }
 
   return (
-    <div className="m-10 space-y-10">
+    <div className="m-4 space-y-4">
       {/* Open Threads Section */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Open Threads</h2>
