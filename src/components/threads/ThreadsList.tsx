@@ -24,6 +24,9 @@ const ThreadsList = ({
   // Separate threads into open and closed
   const openThreads = threads.filter((thread) => thread.status === "Open");
   const closedThreads = threads.filter((thread) => thread.status === "Closed");
+  const archivedThreads = threads.filter(
+    (thread) => thread.status === "Archived",
+  );
 
   if (isLoading) {
     return (
@@ -67,6 +70,22 @@ const ThreadsList = ({
           <h2 className="text-xl font-semibold mb-4">Closed Threads</h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {closedThreads.map((thread) => (
+              <ThreadCard
+                key={thread.id}
+                thread={thread}
+                unreadCount={threadCounts[thread.id] || 0}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Archived Threads Section */}
+      {archivedThreads.length > 0 && (
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Archived Threads</h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {archivedThreads.map((thread) => (
               <ThreadCard
                 key={thread.id}
                 thread={thread}

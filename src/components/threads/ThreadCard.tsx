@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getThreadTopicInfo } from "@/types/thread";
 import type { Thread } from "@/types/thread";
 import { NotificationBadge } from "@/components/ui/notification-badge";
+import { ThreadBadge } from "@/components/ui/thread-badge";
 
 interface ThreadCardProps {
   thread: Thread;
@@ -21,21 +22,24 @@ const ThreadCard = ({ thread, unreadCount = 0 }: ThreadCardProps) => {
       tabIndex={0}
       aria-label={`Open thread: ${thread.title}`}
     >
-      <Card className="rounded-xl shadow-card hover:bg-bgLight transition-all hover-tilt p-4 cursor-pointer group-focus:ring-2 group-focus:ring-primary group-focus:ring-offset-2">
+      <Card
+        className={`rounded-xl shadow-card hover:bg-bgLight transition-all hover-tilt p-4 cursor-pointer group-focus:ring-2 group-focus:ring-primary group-focus:ring-offset-2${
+          thread.status === "Closed" || thread.status === "Archived"
+            ? " opacity-70"
+            : ""
+        }`}
+      >
         <div className="flex justify-between items-start mb-2">
           <div className="flex gap-2 items-center">
-            <Badge
-              variant={thread.status === "Open" ? "default" : "secondary"}
-              className={`text-xs px-2 py-0.5 font-semibold ${thread.status === "Open" ? "bg-secondary text-primary" : ""}`}
-            >
-              {thread.status}
-            </Badge>
-            <Badge
-              variant="outline"
-              className="bg-white flex items-center gap-1 font-medium text-xs px-2 py-0.5"
-            >
-              <span>{topicInfo.icon}</span> {topicInfo.label}
-            </Badge>
+            <ThreadBadge thread={thread} />
+            {thread.type === "default" && (
+              <Badge
+                variant="outline"
+                className="bg-white flex items-center gap-1 font-medium text-xs px-2 py-0.5"
+              >
+                <span>{topicInfo.icon}</span> {topicInfo.label}
+              </Badge>
+            )}
           </div>
           <span className="text-xs text-muted-foreground font-medium">
             {thread.createdAt.toLocaleDateString()}

@@ -16,6 +16,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import { ThreadBadge } from "@/components/ui/thread-badge";
 
 interface ThreadsTableProps {
   threads: Thread[];
@@ -93,25 +94,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               className={cn(thread.status !== "Open" && "bg-muted")}
             >
               <TableCell className="px-4 py-2">
-                <Badge
-                  variant={thread.status === "Open" ? "default" : "outline"}
-                  className={cn(
-                    "ml-2 px-2 py-0.5 text-xs",
-                    isAIThread(thread)
-                      ? "bg-purple-100 text-purple-800 border-purple-200"
-                      : thread.type === "customer_support"
-                        ? "bg-blue-100 text-blue-800 border-blue-200"
-                        : thread.status === "Open"
-                          ? "bg-green-100 text-green-800 border-green-200"
-                          : "bg-muted text-muted-foreground border-muted",
-                  )}
-                >
-                  {isAIThread(thread)
-                    ? "AI Chat"
-                    : thread.type === "customer_support"
-                      ? "Support"
-                      : thread.status}
-                </Badge>
+                <ThreadBadge thread={thread} className="ml-2" />
               </TableCell>
 
               {/* Participants */}
