@@ -145,7 +145,6 @@ const CreateThreadDialog = ({
             <CustomerSupportForm
               onThreadCreated={onThreadCreated}
               onClose={() => setDialogOpen(false)}
-              user={user}
             />
           </TabsContent>
         </Tabs>
