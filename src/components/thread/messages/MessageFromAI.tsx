@@ -11,13 +11,8 @@ function MessageFromAI(props: { message: Message }) {
         "flex flex-col animate-message-appear self-start items-start",
       )}
     >
-      
       <div className="flex items-start gap-2">
-        <div
-          className={cn(
-            "px-4 py-2 mr-20",
-          )}
-        >
+        <div className={cn("px-4 py-2 mr-20")}>
           <ReactMarkdown>{message.text}</ReactMarkdown>
         </div>
       </div>

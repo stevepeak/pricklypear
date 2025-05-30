@@ -7,9 +7,7 @@ function MessageFromMe(props: { message: Message }) {
   const { message } = props;
   return (
     <div
-      className={cn(
-        "flex flex-col animate-message-appear self-end items-end",
-      )}
+      className={cn("flex flex-col animate-message-appear self-end items-end")}
     >
       <div className="flex items-center gap-1 text-xs text-gray-500">
         <span>You</span>
