@@ -188,9 +188,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
                 style={{ minWidth: 100 }}
               />
             ) : thread.type === "default" ? (
-              <div className="text-2xl font-bold break-words">
-                {title}
-              </div>
+              <div className="text-2xl font-bold break-words">{title}</div>
             ) : (
               <Tooltip>
                 <TooltipTrigger asChild>
