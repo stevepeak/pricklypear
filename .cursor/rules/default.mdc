@@ -1,5 +1,5 @@
 ---
-description: 
+description: General Rules
 globs: 
 alwaysApply: true
 ---
@@ -11,6 +11,7 @@ alwaysApply: true
 - Do not use `await fetch()` to call Supabase functions, use the `await supabase.functions.invoke()`
 - Use zod whenever possible
 - Write tests when applicable
+- Use `className` not `style={""}`
 
 # Coding Instructions
 
