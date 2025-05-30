@@ -11,7 +11,11 @@ export async function reviewMessage(args: {
   const { message, threadId } = args;
   try {
     const { data, error } = await supabase.functions.invoke("review-message", {
-      body: { message, threadId },
+      body: {
+        message,
+        threadId,
+        systemPrompt: localStorage.getItem("systemPrompt:message-review"),
+      },
     });
     if (error) {
       throw error;

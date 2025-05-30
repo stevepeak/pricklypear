@@ -80,9 +80,7 @@ async function checkIfOnTopic(
     .includes("yes");
 }
 
-async function rephraseMessage(openai, { contextText, message }) {
-  const systemPrompt =
-    "You are a helpful assistant that rephrases messages to be kinder and more constructive. Keep responses very concise and similar in length to the original message. Use the conversation context to ensure your rephrasing fits the ongoing discussion.";
+async function rephraseMessage(openai, { contextText, message, systemPrompt }) {
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
@@ -111,7 +109,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
   }
 
   try {
-    const { message, threadId } = await req.json();
+    const { message, threadId, systemPrompt } = await req.json();
 
     if (!message || !threadId) {
       return new Response(
@@ -168,7 +166,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
         message,
       }),
       // Rephrase the message
-      rephraseMessage(openai, { contextText, message }),
+      rephraseMessage(openai, { contextText, message, systemPrompt }),
     ]);
 
     if (!isOnTopic) {

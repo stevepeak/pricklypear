@@ -47,7 +47,7 @@ export const saveAiMessage = async (args: {
         text,
         threadId,
         userId: user.id,
-        systemPrompt: localStorage.getItem("systemPrompt"),
+        systemPrompt: localStorage.getItem("systemPrompt:ai-chat"),
       },
     });
     if (error) {

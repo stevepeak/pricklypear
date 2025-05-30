@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface SystemPromptDialogProps {
   open: boolean;
@@ -22,23 +23,28 @@ export function SystemPromptDialog({
   open,
   onOpenChange,
 }: SystemPromptDialogProps) {
-  const [systemPrompt, setSystemPrompt] = useState("");
+  const [activeTab, setActiveTab] = useState("ai-chat");
+  const [aiChatPrompt, setAiChatPrompt] = useState("");
+  const [messageReviewPrompt, setMessageReviewPrompt] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (open) {
-      const stored = localStorage.getItem("systemPrompt") || "";
-      setSystemPrompt(stored);
+      const aiChat = localStorage.getItem("systemPrompt:ai-chat") || "";
+      const review = localStorage.getItem("systemPrompt:message-review") || "";
+      setAiChatPrompt(aiChat);
+      setMessageReviewPrompt(review);
     }
   }, [open]);
 
   const handleSave = () => {
     setIsSaving(true);
-    localStorage.setItem("systemPrompt", systemPrompt);
+    localStorage.setItem("systemPrompt:ai-chat", aiChatPrompt);
+    localStorage.setItem("systemPrompt:message-review", messageReviewPrompt);
     setIsSaving(false);
     onOpenChange(false);
-    toast("System prompt updated", {
-      description: "Your system prompt has been saved.",
+    toast("System prompts updated", {
+      description: "Your system prompts have been saved.",
     });
   };
 
@@ -48,17 +54,34 @@ export function SystemPromptDialog({
         <DialogHeader>
           <DialogTitle>Update System Prompt</DialogTitle>
           <DialogDescription>
-            This prompt will be used as the system prompt for AI chats. It is
+            Set your system prompts for AI Chat and Message Review. Prompts are
             stored only in your browser.
           </DialogDescription>
         </DialogHeader>
-        <Textarea
-          value={systemPrompt}
-          onChange={(e) => setSystemPrompt(e.target.value)}
-          placeholder="Enter your system prompt here..."
-          className="mt-2 h-96"
-          autoFocus
-        />
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList>
+            <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
+            <TabsTrigger value="message-review">Message Review</TabsTrigger>
+          </TabsList>
+          <TabsContent value="ai-chat">
+            <Textarea
+              value={aiChatPrompt}
+              onChange={(e) => setAiChatPrompt(e.target.value)}
+              placeholder="Enter your AI Chat system prompt here..."
+              className="mt-2 h-96"
+              autoFocus={activeTab === "ai-chat"}
+            />
+          </TabsContent>
+          <TabsContent value="message-review">
+            <Textarea
+              value={messageReviewPrompt}
+              onChange={(e) => setMessageReviewPrompt(e.target.value)}
+              placeholder="Enter your Message Review system prompt here..."
+              className="mt-2 h-96"
+              autoFocus={activeTab === "message-review"}
+            />
+          </TabsContent>
+        </Tabs>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
