@@ -4,6 +4,7 @@ import {
   ThreadControls,
   ThreadStatus,
   ThreadTopic,
+  ThreadType,
 } from "@/types/thread";
 import { requireCurrentUser } from "@/utils/authCache";
 
@@ -11,7 +12,6 @@ export const getThreads = async (): Promise<Thread[]> => {
   try {
     const user = await requireCurrentUser();
 
-    // Get all threads the user participates in
     const { data: threadData, error: threadError } = await supabase
       .from("threads")
       .select("*")
@@ -22,10 +22,9 @@ export const getThreads = async (): Promise<Thread[]> => {
       return [];
     }
 
-    // For each thread, get the participants
     const threadsWithParticipants = await Promise.all(
-      (threadData || []).map(async (thread) => {
-        // Get participant profiles for this thread
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (threadData || []).map(async (thread: any) => {
         const { data: participantsData } = await supabase
           .from("thread_participants")
           .select(
@@ -37,7 +36,6 @@ export const getThreads = async (): Promise<Thread[]> => {
           )
           .eq("thread_id", thread.id);
 
-        // Extract participant names, excluding current user
         const participants =
           participantsData
             ?.map((item) => ({
@@ -61,7 +59,7 @@ export const getThreads = async (): Promise<Thread[]> => {
           summary: thread.summary,
           topic: thread.topic as ThreadTopic,
           controls: thread.controls as ThreadControls,
-          ai: thread.ai,
+          type: (thread.type ?? "standard") as ThreadType,
         };
       }),
     );

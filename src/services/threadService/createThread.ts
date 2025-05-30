@@ -1,15 +1,15 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Thread, ThreadStatus, ThreadTopic } from "@/types/thread";
+import { Thread, ThreadStatus, ThreadTopic, ThreadType } from "@/types/thread";
 import { requireCurrentUser, getUserProfile } from "@/utils/authCache";
 
 export const createThread = async (args: {
   title: string;
-  ai: boolean;
+  type: ThreadType;
   participantIds?: string[];
   topic: ThreadTopic;
   controls?: { requireAiApproval?: boolean };
 }): Promise<Thread | null> => {
-  const { title, ai, participantIds, topic, controls } = args;
+  const { title, type, participantIds, topic, controls } = args;
 
   const MAX_THREAD_TITLE_LENGTH = 50;
 
@@ -29,16 +29,20 @@ export const createThread = async (args: {
     const user = await requireCurrentUser();
     const profile = await getUserProfile(user);
 
+    // Cast payload to any until Supabase types are regenerated with `type`
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const payload: any = {
+      title: trimmedTitle,
+      type,
+      topic,
+      participant_ids: participantIds,
+      controls,
+    };
+
     // Call the database function to create the thread and add participants
     const { data: threadId, error: threadError } = await supabase.rpc(
       "create_thread",
-      {
-        title: trimmedTitle,
-        ai,
-        topic,
-        participant_ids: participantIds,
-        controls,
-      },
+      payload,
     );
 
     if (threadError || !threadId) {
@@ -56,7 +60,7 @@ export const createThread = async (args: {
       summary: `New thread created by ${profile.name}`,
       topic,
       controls,
-      ai,
+      type,
     };
   } catch (error) {
     console.error("Error creating thread:", error);

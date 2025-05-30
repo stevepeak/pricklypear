@@ -42,7 +42,7 @@ describe("useThreadCreation", () => {
 
     expect(createThread).toHaveBeenCalledWith({
       title: "My Thread",
-      ai: false,
+      type: "standard",
       participantIds: ["u1"],
       topic: "other",
       controls: { requireAiApproval: true },
@@ -59,7 +59,7 @@ describe("useThreadCreation", () => {
 
     expect(createThread).toHaveBeenCalledWith({
       title: "AI Chat",
-      ai: true,
+      type: "ai",
       topic: "other",
     });
   });

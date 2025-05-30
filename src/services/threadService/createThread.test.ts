@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createThread } from "./createThread";
 
 vi.mock("@/integrations/supabase/client", () => ({
@@ -25,7 +25,7 @@ describe("createThread", () => {
   it("returns null for blank titles", async () => {
     const result = await createThread({
       title: "   ",
-      ai: false,
+      type: "standard",
       participantIds: ["u1"],
       topic: "other",
     });
@@ -37,7 +37,7 @@ describe("createThread", () => {
     const longTitle = "a".repeat(51);
     const result = await createThread({
       title: longTitle,
-      ai: false,
+      type: "standard",
       participantIds: ["u1"],
       topic: "other",
     });
@@ -48,7 +48,7 @@ describe("createThread", () => {
   it("creates thread with trimmed title", async () => {
     const result = await createThread({
       title: " My Thread ",
-      ai: false,
+      type: "standard",
       participantIds: ["u1"],
       topic: "other",
     });
@@ -61,13 +61,13 @@ describe("createThread", () => {
       summary: "New thread created by Alice",
       topic: "other",
       controls: undefined,
-      ai: false,
+      type: "standard",
     });
     expect(requireCurrentUser).toHaveBeenCalledTimes(1);
     expect(getUserProfile).toHaveBeenCalledTimes(1);
     expect(supabase.rpc).toHaveBeenCalledWith("create_thread", {
       title: "My Thread",
-      ai: false,
+      type: "standard",
       topic: "other",
       participant_ids: ["u1"],
       controls: undefined,

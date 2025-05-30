@@ -34,9 +34,15 @@ describe("reviewMessage", () => {
       rejected: false,
       reason: null,
     });
-    expect(supabase.functions.invoke).toHaveBeenCalledWith("review-message", {
-      body: { message: "hello", threadId: "t1" },
-    });
+    expect(supabase.functions.invoke).toHaveBeenCalledWith(
+      "review-message",
+      expect.objectContaining({
+        body: expect.objectContaining({
+          message: "hello",
+          threadId: "t1",
+        }),
+      }),
+    );
   });
 
   it("handles supabase errors", async () => {

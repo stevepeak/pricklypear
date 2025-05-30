@@ -78,7 +78,9 @@ const ThreadMessageComposer = React.forwardRef<
     },
     ref,
   ) => {
-    const [autoAccept, setAutoAccept] = useState(thread.ai ? false : true);
+    const [autoAccept, setAutoAccept] = useState(
+      thread.type === "ai" ? false : true,
+    );
     const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
     const [isRequestingClose, setIsRequestingClose] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -194,6 +196,8 @@ const ThreadMessageComposer = React.forwardRef<
       }
     };
 
+    const isAiThread = thread.type === "ai";
+
     return (
       <>
         <div className="sticky bottom-2 md:bottom-4 bg-white border rounded-md shadow-md m-2 w-full max-w-[800px]">
@@ -224,7 +228,7 @@ const ThreadMessageComposer = React.forwardRef<
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" align="start">
-                  {!thread.ai && (
+                  {!isAiThread && (
                     <>
                       <DropdownMenuItem
                         onSelect={() => setIsRequestDialogOpen(true)}
@@ -289,17 +293,10 @@ const ThreadMessageComposer = React.forwardRef<
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              {/* <Button
-                variant="ghost"
-                size="icon"
-                className="shrink-0"
-                disabled={isThreadClosed}
-              >
-                <Mic className="h-4 w-4" />
-              </Button> */}
+              {/* Voice input button placeholder */}
             </div>
             <div className="flex items-center gap-2">
-              {!thread.ai && (
+              {!isAiThread && (
                 <TooltipProvider delayDuration={300}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -329,13 +326,13 @@ const ThreadMessageComposer = React.forwardRef<
                 onClick={onSendMessage}
                 disabled={!newMessage.trim() || isSending}
                 size="default"
-                className={`shrink-0 flex items-center gap-1 ${thread.ai ? "bg-purple-600 hover:bg-purple-700" : ""}`}
+                className={`shrink-0 flex items-center gap-1 ${isAiThread ? "bg-purple-600 hover:bg-purple-700" : ""}`}
               >
                 {isSending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                    {thread.ai ? (
+                    {isAiThread ? (
                       <>
                         <ArrowUp className="h-4 w-4" />
                         <span className="sr-only md:not-sr-only md:inline">

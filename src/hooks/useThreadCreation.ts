@@ -6,7 +6,7 @@ import {
   generateThreadConversation,
 } from "@/services/threadService";
 import type { User } from "@supabase/supabase-js";
-import type { Thread, ThreadTopic } from "@/types/thread";
+import type { Thread, ThreadTopic, ThreadType } from "@/types/thread";
 
 export const useThreadCreation = (
   onThreadCreated: (thread: Thread) => void,
@@ -57,7 +57,7 @@ export const useThreadCreation = (
 
     const newThread = await createThread({
       title: trimmedTitle,
-      ai: false,
+      type: "standard" satisfies ThreadType,
       participantIds: selectedContactIds,
       topic: selectedTopic,
       controls: { requireAiApproval },
@@ -79,7 +79,7 @@ export const useThreadCreation = (
 
     const newThread = await createThread({
       title: "AI Chat",
-      ai: true,
+      type: "ai" satisfies ThreadType,
       topic: "other",
     });
 
@@ -130,7 +130,7 @@ export const useThreadCreation = (
 
     const newThread = await createThread({
       title: trimmedTitle,
-      ai: false,
+      type: "standard" satisfies ThreadType,
       participantIds: selectedContactIds,
       topic: selectedTopic,
       controls: { requireAiApproval },

@@ -20,6 +20,7 @@ interface ThreadHeaderProps {
 const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
   const { label, icon } = getThreadTopicInfo(thread.topic);
   const topicLabel = `${icon} ${label}`;
+  const isAiThread = thread.type === "ai";
 
   return (
     <div className="sticky top-12 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 p-6">
@@ -60,7 +61,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
                 Closed
               </Badge>
             )}
-            {thread.ai ? (
+            {isAiThread ? (
               <Badge
                 variant="secondary"
                 className="bg-purple-100 text-purple-800 border-purple-200"
@@ -89,7 +90,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
             </span>
           </div>
           <h1 className="text-2xl font-bold break-words">{thread.title}</h1>
-          {!thread.ai && (
+          {!isAiThread && (
             <div className="flex flex-col space-y-2 mt-2">
               {thread.participants && thread.participants.length > 0 ? (
                 <div className="flex items-center gap-2 flex-wrap">

@@ -4,6 +4,7 @@ import {
   ThreadControls,
   ThreadStatus,
   ThreadTopic,
+  ThreadType,
 } from "@/types/thread";
 import { requireCurrentUser } from "@/utils/authCache";
 
@@ -17,10 +18,8 @@ interface ThreadParticipantProfile {
 
 export const getThread = async (threadId: string): Promise<Thread | null> => {
   try {
-    // Get the current authenticated user
     const user = await requireCurrentUser();
 
-    // Fetch the thread and its participants (with profile names) in one query
     const { data: threadData, error: threadError } = await supabase
       .from("threads")
       .select(
@@ -40,7 +39,6 @@ export const getThread = async (threadId: string): Promise<Thread | null> => {
       return null;
     }
 
-    // Extract participant names, excluding the current user
     const participants = (
       (threadData.thread_participants as
         | ThreadParticipantProfile[]
@@ -54,16 +52,20 @@ export const getThread = async (threadId: string): Promise<Thread | null> => {
       .filter((participant) => participant.name)
       .map((participant) => participant.name as string);
 
+    // Cast row until Supabase types are regenerated
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const row: any = threadData;
+
     return {
-      id: threadData.id,
-      title: threadData.title,
-      createdAt: new Date(threadData.created_at),
+      id: row.id,
+      title: row.title,
+      createdAt: new Date(row.created_at),
       participants: participants || [],
-      status: threadData.status as ThreadStatus,
-      summary: threadData.summary,
-      topic: threadData.topic as ThreadTopic,
-      controls: threadData.controls as ThreadControls,
-      ai: threadData.ai,
+      status: row.status as ThreadStatus,
+      summary: row.summary,
+      topic: row.topic as ThreadTopic,
+      controls: row.controls as ThreadControls,
+      type: (row.type ?? "standard") as ThreadType,
     };
   } catch (error) {
     console.error("Exception fetching thread:", error);

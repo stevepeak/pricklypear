@@ -86,6 +86,8 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
           const topicInfo = getThreadTopicInfo(thread.topic);
           const participants = thread.participants ?? [];
 
+          const isAiThread = thread.type === "ai";
+
           return (
             <TableRow
               key={thread.id}
@@ -97,14 +99,14 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
                   variant={thread.status === "Open" ? "default" : "outline"}
                   className={cn(
                     "ml-2 px-2 py-0.5 text-xs",
-                    thread.ai
+                    isAiThread
                       ? "bg-purple-100 text-purple-800 border-purple-200"
                       : thread.status === "Open"
                         ? "bg-green-100 text-green-800 border-green-200"
                         : "bg-muted text-muted-foreground border-muted",
                   )}
                 >
-                  {thread.ai ? "AI Chat" : thread.status}
+                  {isAiThread ? "AI Chat" : thread.status}
                 </Badge>
               </TableCell>
 
