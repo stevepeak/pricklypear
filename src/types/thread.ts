@@ -24,9 +24,8 @@ export type ThreadTopic =
 export type ThreadControls = {
   requireAiApproval?: boolean;
   /**
-   * When true the thread is locked for customer-support –
-   * only members with the “support” role may reply and
-   * every assistant response has to be explicitly approved.
+   * When true the thread is locked for customer-support -
+   * only members with the "support" role may reply and
    *
    * NOTE: This flag is additive; it does not replace
    * `requireAiApproval`.  Support-locked threads will
@@ -70,7 +69,7 @@ export const THREAD_TOPIC_INFO: Record<
  * Retrieve label / icon information for a given thread topic.
  *
  * @param topic - The topic identifier (may be null/undefined).
- * @returns The topic’s metadata, or the "other" metadata if the topic is null/undefined.
+ * @returns The topic's metadata, or the "other" metadata if the topic is null/undefined.
  */
 export function getThreadTopicInfo(topic: ThreadTopic | null | undefined) {
   return THREAD_TOPIC_INFO[topic ?? "other"];

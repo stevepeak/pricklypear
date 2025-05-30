@@ -154,10 +154,10 @@ export const useThreadCreation = (
    * Create a brand-new customer-support thread.
    *
    * Requirements:
-   * – No participants are selected manually; the
+   * - No participants are selected manually; the
    *   backend resolver will automatically add the
    *   support team and the current user.
-   * – The thread is always locked for support.
+   * - The thread is always locked for support.
    */
   const handleCreateSupportThread = async (user: User) => {
     if (!user) {
