@@ -7,7 +7,7 @@ import {
 import { z } from "zod";
 
 const documentLabelSchema = z.enum(
-  Object.keys(DOCUMENT_LABEL_INFO) as [string, ...string[]]
+  Object.keys(DOCUMENT_LABEL_INFO) as [string, ...string[]],
 );
 
 const filtersSchema = z.object({
@@ -63,7 +63,7 @@ export function useDocumentFilters(args: { documents: Document[] }) {
 
   const toggleFilterLabel = (label: DocumentLabel) => {
     setFilterLabels((prev) =>
-      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
+      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label],
     );
   };
 
