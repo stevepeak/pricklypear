@@ -231,7 +231,7 @@ const ThreadMessageComposer = React.forwardRef<
 
     return (
       <>
-        <div className="sticky bottom-2 md:bottom-4 bg-white border rounded-md shadow-md m-2 w-full max-w-[800px]">
+        <div className="sticky bottom-2 bg-white border rounded-md shadow-md w-full max-w-[800px]">
           {showJumpToLatest && scrollToBottom && (
             <div className="absolute left-1/2 -translate-x-1/2 mb-2 -top-10">
               <Button size="sm" variant="secondary" onClick={scrollToBottom}>
