@@ -1,27 +1,36 @@
 {
-  "files": [],
-  "references": [{ "path": "./tsconfig.app.json" }],
   "compilerOptions": {
-    "baseUrl": ".",
-
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-
-    "noImplicitAny": false,
-    "noUnusedParameters": false,
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
     "skipLibCheck": true,
-    "allowJs": true,
-    "noUnusedLocals": false,
-    "strictNullChecks": false,
-    "sourceMap": true,
-    "inlineSources": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
     "jsx": "react-jsx",
 
-    // Set `sourceRoot` to  "/" to strip the build path prefix
-    // from generated source code references.
-    // This improves issue grouping in Sentry.
-    "sourceRoot": "/"
+    /* Linting */
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noFallthroughCasesInSwitch": false,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "exclude": ["supabase/functions/**/*.ts", "**/*.test.ts", "**/*_test.ts"]
+  "exclude": [
+    "supabase/functions/**/*.ts",
+    "**/*.test.ts",
+    "**/*_test.ts",
+    "src/components/ui/**/*.tsx"
+  ],
+  "include": ["src"]
 }

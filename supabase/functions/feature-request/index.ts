@@ -11,9 +11,10 @@ const LINEAR_API_KEY = Deno.env.get("LINEAR_API_KEY");
 const LINEAR_TEAM_ID = Deno.env.get("LINEAR_TEAM_ID");
 
 async function createLinearIssue(
-  { title, description },
+  args: { title: string; description: string },
   fetchFn: typeof fetch = fetch,
 ) {
+  const { title, description } = args;
   if (!LINEAR_API_KEY || !LINEAR_TEAM_ID) {
     throw new Error("Missing Linear API credentials");
   }

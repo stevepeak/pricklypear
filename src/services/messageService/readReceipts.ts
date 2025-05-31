@@ -28,11 +28,14 @@ export const createReadReceipts = async (
       return;
     }
 
-    const readReceipts: ReadReceipt[] = participants.map(({ user_id }) => ({
-      message_id: messageId,
-      user_id,
-      read_at: null,
-    }));
+    const readReceipts = participants.map(
+      ({ user_id }) =>
+        ({
+          message_id: messageId,
+          user_id,
+          read_at: null,
+        }) as ReadReceipt,
+    );
 
     if (senderProfileId) {
       readReceipts.push({

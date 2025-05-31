@@ -5,7 +5,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 const GEO_DETECTOR = {
   name: "geoDetector",
-  lookup: () => {
+  lookup(): string | string[] {
     return undefined;
   },
   cacheUserLanguage: () => {},

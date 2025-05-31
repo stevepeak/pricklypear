@@ -2,7 +2,7 @@
 import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter } from "react-router-dom";
-import React from "react";
+import { Connection } from "@/types/connection";
 
 vi.mock("sonner", () => ({ toast: vi.fn() }));
 vi.mock("@/contexts/AuthContext", () => ({
@@ -25,7 +25,7 @@ vi.mock("@/hooks/useConnections", () => ({
         updated_at: new Date().toISOString(),
       },
     ],
-    acceptedConnections: [],
+    acceptedConnections: [] as Connection[],
     isLoading: false,
     refreshConnections,
   }),

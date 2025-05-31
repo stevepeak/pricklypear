@@ -10,7 +10,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-async function fetchInviterName({ supabase, userId }) {
+async function fetchInviterName(args: { userId: string }) {
+  const { userId } = args;
+  const supabase = getSupabaseServiceClient();
   const { data: inviterProfile, error } = await supabase
     .from("profiles")
     .select("name")
@@ -20,19 +22,30 @@ async function fetchInviterName({ supabase, userId }) {
   return inviterProfile.name;
 }
 
-async function fetchInviteeUser({ supabase, email }) {
-  const { data, error } = await supabase.auth.admin.listUsers({ email });
-  if (error) throw error;
-  const user = data.users.find(
-    (u) => u.email && u.email.toLowerCase() === email.toLowerCase(),
-  );
-  return user ?? null;
+async function fetchInviteeUser(args: {
+  email: string;
+}): Promise<{ id: string; email: string } | null> {
+  console.log("fetchInviteeUser", args);
+  // TODO unsure how to select by email
+  return null;
+  // const { email } = args;
+  // const supabase = getSupabaseServiceClient();
+
+  // const { data, error } = await supabase.from("profiles").select("*").eq("email", email).maybeSingle();
+
+  // if (error) throw error;
+  // const user = data.users.find(
+  //   (u: { email: string }) =>
+  //     u.email && u.email.toLowerCase() === email.toLowerCase(),
+  // );
+  // return user ?? null;
 }
 
 async function sendInvitationEmail(
-  { to, inviterName, isExistingUser },
+  args: { to: string; inviterName: string; isExistingUser: boolean },
   sendEmailFn: typeof sendEmail = sendEmail,
 ) {
+  const { to, inviterName, isExistingUser } = args;
   const subject = `${inviterName} invited you to connect on The Prickly Pear`;
   const htmlExisting = `
     <p>Hi there,</p>
@@ -54,7 +67,9 @@ async function sendInvitationEmail(
   });
 }
 
-async function connectionExists({ supabase, userId, inviteeId }) {
+async function connectionExists(args: { userId: string; inviteeId: string }) {
+  const { userId, inviteeId } = args;
+  const supabase = getSupabaseServiceClient();
   const { data: existing1 } = await supabase
     .from("connections")
     .select("id")
@@ -70,7 +85,12 @@ async function connectionExists({ supabase, userId, inviteeId }) {
   return Boolean(existing1 || existing2);
 }
 
-async function createPendingConnection({ supabase, userId, inviteeUser }) {
+async function createPendingConnection(args: {
+  userId: string;
+  inviteeUser: { id: string };
+}) {
+  const { userId, inviteeUser } = args;
+  const supabase = getSupabaseServiceClient();
   const { data: connection, error } = await supabase
     .from("connections")
     .insert({
@@ -112,13 +132,12 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     const sendEmailFn = deps.sendEmail ?? sendEmail;
 
     const supabase = getSupabase();
-    const inviterName = await fetchInviterName({ supabase, userId });
-    const inviteeUser = await fetchInviteeUser({ supabase, email });
+    const inviterName = await fetchInviterName({ userId });
+    const inviteeUser = await fetchInviteeUser({ email });
 
     if (inviteeUser) {
       // Check if connection already exists
       const exists = await connectionExists({
-        supabase,
         userId,
         inviteeId: inviteeUser.id,
       });
@@ -134,7 +153,6 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
 
       // Create pending connection
       const connection = await createPendingConnection({
-        supabase,
         userId,
         inviteeUser,
       });

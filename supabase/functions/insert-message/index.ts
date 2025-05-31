@@ -42,7 +42,8 @@ const participantSchema = z.array(
   }),
 );
 
-function errorResponse(message, status = 500) {
+function errorResponse(args: { message: string; status: number }) {
+  const { message, status } = args;
   return new Response(JSON.stringify({ error: message }), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -59,7 +60,6 @@ async function createReadReceipts(args: {
   const readReceipts = participantIds.map((id) => ({
     message_id: messageId,
     user_id: id,
-    read_at: null,
   }));
 
   const { error } = await supabase
@@ -88,7 +88,10 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     // Validate the input
     const result = messageSchema.safeParse({ text, threadId, userId, type });
     if (!result.success) {
-      return errorResponse(result.error.errors[0].message, 400);
+      return errorResponse({
+        message: result.error.errors[0].message,
+        status: 400,
+      });
     }
 
     const getSupabase =
@@ -115,7 +118,10 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     if (error || !messageData?.id) {
       handleError(error);
       console.error("insert-message error:", error);
-      return errorResponse(error?.message || "Failed to insert message");
+      return errorResponse({
+        message: error?.message || "Failed to insert message",
+        status: 500,
+      });
     }
 
     (async () => {
@@ -135,9 +141,10 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
 
       if (participantsError) {
         handleError(participantsError);
-        return errorResponse(
-          participantsError?.message || "No participants found",
-        );
+        return errorResponse({
+          message: participantsError?.message || "No participants found",
+          status: 500,
+        });
       }
 
       const participants = participantSchema.parse(data.map((p) => p.profiles));
@@ -209,7 +216,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
   } catch (error) {
     console.error("insert-message error:", error);
     handleError(error);
-    return errorResponse(getErrorMessage(error));
+    return errorResponse({ message: getErrorMessage(error), status: 500 });
   }
 }
 

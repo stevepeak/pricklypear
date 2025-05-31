@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Set up the auth state listener first
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+    } = supabase.auth.onAuthStateChange(async (_, currentSession) => {
       setSession(currentSession);
       // Use the cached user value which is already updated by the listener in authCache.ts
       const currentUser = await getCurrentUser();

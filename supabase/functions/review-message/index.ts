@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getOpenAIClient } from "../utils/openai.ts";
 import { getErrorMessage, handleError } from "../utils/handle-error.ts";
 import { getSupabaseServiceClient } from "../utils/supabase.ts";
+import { z } from "https://esm.sh/zod@3.24.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,30 +10,65 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-async function fetchThreadMessages(supabase, threadId) {
+async function fetchThreadMessages(args: {
+  threadId: string;
+}): Promise<Message[]> {
+  const { threadId } = args;
+  const supabase = getSupabaseServiceClient();
   const { data, error } = await supabase
     .from("messages")
-    .select("text, timestamp, profiles:user_id(name)")
+    .select(
+      `
+      text,
+      timestamp,
+      profile:profiles!user_id ( name )
+    `,
+    )
     .eq("thread_id", threadId)
     .order("timestamp", { ascending: false })
     .limit(20);
   if (error) {
     throw new Error(`Error fetching messages: ${error.message}`);
   }
-  return (data || []).slice().reverse();
+  const messageSchema = z.array(
+    z.object({
+      text: z.string(),
+      timestamp: z.string(),
+      profile: z.object({
+        name: z.string(),
+      }),
+    }),
+  );
+
+  const result = messageSchema.safeParse(data);
+  if (!result.success) {
+    throw new Error(`Error parsing messages: ${result.error.message}`);
+  }
+  return result.data.slice().reverse() as Message[];
 }
 
-function formatContextText(messages) {
+type Message = {
+  text: string;
+  timestamp: string;
+  profile: { name: string };
+};
+
+function formatContextText(args: { messages: Message[] }): string {
+  const { messages } = args;
   return messages
     .map((msg) => {
-      const sender = msg.profiles.name;
+      const sender = msg.profile.name;
       const timestamp = new Date(msg.timestamp).toLocaleString();
       return `[${timestamp}] ${sender}: ${msg.text}`;
     })
     .join("\n\n");
 }
 
-async function fetchThreadTopic(supabase, threadId) {
+async function fetchThreadTopic(args: {
+  threadId: string;
+}): Promise<{ topic: string; title: string }> {
+  const { threadId } = args;
+  const supabase = getSupabaseServiceClient();
   const { data, error } = await supabase
     .from("threads")
     .select("topic, title")
@@ -44,10 +80,13 @@ async function fetchThreadTopic(supabase, threadId) {
   return { topic: data.topic, title: data.title };
 }
 
-async function checkIfOnTopic(
-  openai,
-  { threadTopic, threadTitle, message },
-): Promise<boolean> {
+async function checkIfOnTopic(args: {
+  threadTopic: string;
+  threadTitle: string;
+  message: string;
+}): Promise<boolean> {
+  const { threadTopic, threadTitle, message } = args;
+  const openai = getOpenAIClient();
   // TODO not working yet
   return true;
   const topicCheckPrompt = `Thread topic: ${threadTopic}\nThread title: ${threadTitle}\nMessage: ${message}\n\nIs this message on-topic for the thread? Reply with only 'yes' or 'no'.`;
@@ -80,7 +119,13 @@ async function checkIfOnTopic(
     .includes("yes");
 }
 
-async function rephraseMessage(openai, { contextText, message, systemPrompt }) {
+async function rephraseMessage(args: {
+  contextText: string;
+  message: string;
+  systemPrompt: string;
+}) {
+  const { contextText, message, systemPrompt } = args;
+  const openai = getOpenAIClient();
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
@@ -102,7 +147,7 @@ export type HandlerDeps = {
   getOpenAIClient?: typeof getOpenAIClient;
   getSupabaseServiceClient?: typeof getSupabaseServiceClient;
 };
-export async function handler(req: Request, deps: HandlerDeps = {}) {
+export async function handler(req: Request) {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -125,19 +170,14 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       );
     }
 
-    const getSupabase =
-      deps.getSupabaseServiceClient ?? getSupabaseServiceClient;
-    const getOpenAI = deps.getOpenAIClient ?? getOpenAIClient;
-
-    const supabase = getSupabase();
-    const openai = getOpenAI();
-
     // Fetch context
-    let contextMessages, threadTopic, threadTitle;
+    let contextMessages: Message[] = [];
+    let threadTopic: string;
+    let threadTitle: string;
     try {
       const [messages, topicData] = await Promise.all([
-        fetchThreadMessages(supabase, threadId),
-        fetchThreadTopic(supabase, threadId),
+        fetchThreadMessages({ threadId }),
+        fetchThreadTopic({ threadId }),
       ]);
       contextMessages = messages;
       threadTopic = topicData.topic;
@@ -157,17 +197,17 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       );
     }
 
-    const contextText = formatContextText(contextMessages);
+    const contextText = formatContextText({ messages: contextMessages });
 
     const [isOnTopic, rephrasedMessage] = await Promise.all([
       // Check if the message is on topic
-      checkIfOnTopic(openai, {
+      checkIfOnTopic({
         threadTopic,
         threadTitle,
         message,
       }),
       // Rephrase the message
-      rephraseMessage(openai, { contextText, message, systemPrompt }),
+      rephraseMessage({ contextText, message, systemPrompt }),
     ]);
 
     if (!isOnTopic) {
@@ -206,5 +246,4 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
   }
 }
 
-// @ts-expect-error TS2345
 serve(handler);
