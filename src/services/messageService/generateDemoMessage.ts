@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { requireCurrentUser } from "@/utils/authCache";
 import { handleError } from "./utils.js";
+import { toast } from "sonner";
 
 export const generateDemoMessage = async (): Promise<boolean> => {
   try {
@@ -14,13 +15,25 @@ export const generateDemoMessage = async (): Promise<boolean> => {
     if (error) {
       handleError(error, "generateDemoMessage");
       console.error("Error calling generate-demo-message function:", error);
+      toast.error("Failed to generate demo message", {
+        description:
+          error.message ||
+          "An error occurred while generating the demo message",
+      });
       return false;
     }
 
+    toast.success("Demo message generated", {
+      description: "A new demo message has been added to your thread",
+    });
     return true;
   } catch (error) {
     handleError(error, "generateDemoMessage");
     console.error("Exception generating demo message:", error);
+    toast.error("Failed to generate demo message", {
+      description:
+        error instanceof Error ? error.message : "An unexpected error occurred",
+    });
     return false;
   }
 };
