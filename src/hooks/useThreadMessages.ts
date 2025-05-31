@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { getMessages, getUnreadMessageCount } from "@/services/messageService";
+import { getMessages } from "@/services/messageService";
 import {
   saveMessage,
   saveAiMessage,
@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useConnections } from "@/hooks/useConnections";
 import { isAIThread } from "@/types/thread";
 import { useRealtimeMessages } from "./useRealtimeMessages";
+import { useGlobalMessages } from "@/contexts/GlobalMessagesContext";
 
 export const useThreadMessages = (
   threadId: string | undefined,
@@ -33,21 +34,20 @@ export const useThreadMessages = (
 
   const { user } = useAuth();
   const { connections } = useConnections();
+  const { registerUnreadCountsCallback } = useGlobalMessages();
 
   // Load unread count for the thread
   useEffect(() => {
-    if (threadId) {
-      (async () => {
-        try {
-          const count = await getUnreadMessageCount(threadId);
-          setUnreadCount(count);
-        } catch (error) {
-          console.error("Failed to load unread count:", error);
-          setUnreadCount(0);
-        }
-      })();
-    }
-  }, [threadId, messages]);
+    if (!threadId) return;
+
+    const unsubscribe = registerUnreadCountsCallback((_, threadCounts) => {
+      setUnreadCount(threadCounts[threadId] || 0);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [threadId, registerUnreadCountsCallback]);
 
   const loadMessages = useCallback(async () => {
     if (!threadId) return [];

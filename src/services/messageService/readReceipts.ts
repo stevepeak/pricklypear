@@ -3,62 +3,6 @@ import { requireCurrentUser } from "@/utils/authCache";
 import { handleError } from "./utils.js";
 import type { ReadReceipt } from "./types.js";
 
-// Cache for unread message count promises
-const unreadCountCache = new Map<string, Promise<number>>();
-
-export const createReadReceipts = async (
-  messageId: string,
-  threadId: string,
-  senderProfileId?: string,
-): Promise<void> => {
-  try {
-    const query = supabase
-      .from("thread_participants")
-      .select("user_id")
-      .eq("thread_id", threadId);
-
-    if (senderProfileId) {
-      query.neq("user_id", senderProfileId);
-    }
-
-    const { data: participants, error: participantsError } = await query;
-
-    if (participantsError || !participants) {
-      console.error("Error fetching thread participants:", participantsError);
-      return;
-    }
-
-    const readReceipts = participants.map(
-      ({ user_id }) =>
-        ({
-          message_id: messageId,
-          user_id,
-          read_at: null,
-        }) as ReadReceipt,
-    );
-
-    if (senderProfileId) {
-      readReceipts.push({
-        message_id: messageId,
-        user_id: senderProfileId,
-        read_at: new Date().toISOString(),
-      });
-    }
-
-    if (readReceipts.length > 0) {
-      const { error } = await supabase
-        .from("message_read_receipts")
-        .insert(readReceipts);
-
-      if (error) {
-        console.error("Error creating read receipts:", error);
-      }
-    }
-  } catch (error) {
-    console.error("Exception creating read receipts:", error);
-  }
-};
-
 export const markMessagesAsRead = async (
   messageIds: string[],
 ): Promise<boolean> => {
@@ -87,51 +31,6 @@ export const markMessagesAsRead = async (
   } catch (error) {
     return handleError(error, "marking messages as read");
   }
-};
-
-export const getUnreadMessageCount = async (
-  threadId: string,
-): Promise<number> => {
-  const cachedPromise = unreadCountCache.get(threadId);
-  if (cachedPromise) {
-    return cachedPromise;
-  }
-
-  const promise = (async () => {
-    try {
-      const user = await requireCurrentUser();
-      if (!user) return 0;
-
-      const { data, error } = await supabase
-        .from("messages")
-        .select("id, user_id")
-        .eq("thread_id", threadId)
-        .neq("user_id", user.id);
-
-      if (error || !data?.length) return 0;
-
-      const { data: readReceipts, error: readReceiptsError } = await supabase
-        .from("message_read_receipts")
-        .select("message_id, read_at")
-        .eq("user_id", user.id)
-        .not("read_at", "is", null);
-
-      if (readReceiptsError) return 0;
-
-      const readMessageIds = new Set(
-        (readReceipts || []).map((receipt) => receipt.message_id),
-      );
-
-      return data.filter((message) => !readMessageIds.has(message.id)).length;
-    } catch (error) {
-      return handleError(error, "getting unread count") ? 0 : 0;
-    } finally {
-      unreadCountCache.delete(threadId);
-    }
-  })();
-
-  unreadCountCache.set(threadId, promise);
-  return promise;
 };
 
 export const getAllUnreadCounts = async (): Promise<Record<string, number>> => {
