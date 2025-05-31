@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import type { Message } from "@/types/message";
-import { markMessagesAsRead } from "@/services/messageService";
+import { markMessagesInThreadAsRead } from "@/services/messageService";
 import type { User } from "@supabase/supabase-js";
 import { MessageCircle } from "lucide-react";
 import type { Thread } from "@/types/thread";
@@ -34,16 +34,9 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   // Mark messages as read when they are displayed
   useEffect(() => {
     if (user && messages.length > 0) {
-      // Get message IDs that aren't from the current user
-      const otherUserMessageIds = messages
-        .filter((message) => !message.isCurrentUser)
-        .map((message) => message.id);
-
-      if (otherUserMessageIds.length > 0) {
-        markMessagesAsRead(otherUserMessageIds);
-      }
+      markMessagesInThreadAsRead({ threadId: thread.id });
     }
-  }, [messages, user]);
+  }, [messages, user, thread.id]);
 
   return (
     <>

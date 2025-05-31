@@ -126,7 +126,24 @@ export const GlobalMessagesProvider: React.FC<{
               messageCallbacksRef.current.forEach((callback) =>
                 callback(newMessage),
               );
-
+            },
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "message_read_receipts",
+              filter: `user_id=eq.${user.id}`,
+            },
+            async (payload) => {
+              console.log("New Read Receipt Change", payload);
+              const newData = payload.new as ReadReceiptRow;
+              if (newData?.read_at) {
+                readReceiptCallbacksRef.current.forEach((callback) =>
+                  callback(newData.message_id, new Date(newData.read_at)),
+                );
+              }
               // Update unread counts for all registered callbacks
               if (unreadCountsCallbacksRef.current.length > 0) {
                 const counts = await getAllUnreadCounts();
@@ -136,23 +153,6 @@ export const GlobalMessagesProvider: React.FC<{
                 );
                 unreadCountsCallbacksRef.current.forEach((callback) =>
                   callback(total, counts),
-                );
-              }
-            },
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "UPDATE",
-              schema: "public",
-              table: "message_read_receipts",
-            },
-            (payload) => {
-              console.log("New Read Receipt Update", payload);
-              const newData = payload.new as ReadReceiptRow;
-              if (newData?.read_at) {
-                readReceiptCallbacksRef.current.forEach((callback) =>
-                  callback(newData.message_id, new Date(newData.read_at)),
                 );
               }
             },

@@ -3,15 +3,31 @@ import { requireCurrentUser } from "@/utils/authCache";
 import { handleError } from "./utils.js";
 import type { ReadReceipt } from "./types.js";
 
-export const markMessagesAsRead = async (
-  messageIds: string[],
-): Promise<boolean> => {
+export const markMessagesInThreadAsRead = async (args: {
+  threadId: string;
+}): Promise<boolean> => {
   try {
-    if (!messageIds.length) return true;
-
+    const { threadId } = args;
     const user = await requireCurrentUser();
-    const readReceipts: ReadReceipt[] = messageIds.map((messageId) => ({
-      message_id: messageId,
+
+    // Get messages that are unread
+    const { data: messages, error: messagesError } = await supabase
+      .from("messages")
+      .select("id, message_read_receipts!inner(user_id, read_at)")
+      .eq("thread_id", threadId)
+      .eq("message_read_receipts.user_id", user.id)
+      .is("message_read_receipts.read_at", null);
+
+    if (messagesError) {
+      return handleError(messagesError, "fetching messages");
+    }
+
+    if (!messages.length) {
+      return true;
+    }
+
+    const readReceipts: ReadReceipt[] = messages.map((message) => ({
+      message_id: message.id,
       user_id: user.id,
       read_at: new Date().toISOString(),
     }));
