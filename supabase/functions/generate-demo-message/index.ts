@@ -50,8 +50,9 @@ export async function handler(req: Request) {
     const { data: threads, error: threadsError } = await supabase
       .from("threads")
       .select("id")
-      .eq("status", "Open")
-      .eq("created_by", userId);
+      .eq("created_by", userId)
+      .not("status", "eq", "Closed")
+      .not("status", "eq", "Archived");
 
     if (threadsError || !threads?.length) {
       return new Response(
