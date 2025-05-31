@@ -31,6 +31,7 @@ import {
   MessageSquareText,
   BookUser,
   Baby,
+  MessageSquare,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -72,6 +73,11 @@ export function AppSidebar() {
           label: "Threads",
           icon: <MessageSquareText className="h-4 w-4 mr-2" />,
           badge: totalUnread > 0 ? totalUnread : undefined,
+        },
+        {
+          path: "/messages",
+          label: "Messages",
+          icon: <MessageSquare className="h-4 w-4 mr-2" />,
         },
         {
           path: "/connections",

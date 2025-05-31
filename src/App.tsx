@@ -11,6 +11,7 @@ import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import Account from "./pages/Account";
 import Documents from "./pages/Documents";
+import Messages from "./pages/Messages";
 import Integrations from "./pages/Integrations";
 import Billing from "./pages/Billing";
 import { ConnectionsProvider } from "@/contexts/ConnectionsContext";
@@ -63,6 +64,7 @@ function AppRoutes() {
                       />
                       <Route path="/connections" element={<Connections />} />
                       <Route path="/documents" element={<Documents />} />
+                      <Route path="/messages" element={<Messages />} />
                       <Route path="/calendar" element={<Calendar />} />
                       <Route path="/expenses" element={<Expenses />} />
                       <Route path="/integrations" element={<Integrations />} />
