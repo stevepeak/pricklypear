@@ -1,5 +1,4 @@
 import React from "react";
-import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -14,12 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { generateDemoMessage } from "@/services/messageService/generateDemoMessage";
 
-const demoModeSchema = z.object({
-  enabled: z.boolean(),
-  messageFrequency: z.number().min(1).max(60),
-});
-
-type DemoModeSettings = z.infer<typeof demoModeSchema>;
+type DemoModeSettings = {
+  enabled: boolean;
+  messageFrequency: number;
+};
 
 const DEFAULT_SETTINGS: DemoModeSettings = {
   enabled: false,
@@ -32,17 +29,8 @@ interface DemoModeDialogProps {
 }
 
 export function DemoModeDialog({ open, onOpenChange }: DemoModeDialogProps) {
-  const [settings, setSettings] = React.useState<DemoModeSettings>(() => {
-    const stored = localStorage.getItem("demoModeSettings");
-    if (stored) {
-      try {
-        return demoModeSchema.parse(JSON.parse(stored));
-      } catch {
-        return DEFAULT_SETTINGS;
-      }
-    }
-    return DEFAULT_SETTINGS;
-  });
+  const [settings, setSettings] =
+    React.useState<DemoModeSettings>(DEFAULT_SETTINGS);
 
   // Effect to handle demo message generation
   React.useEffect(() => {
@@ -65,16 +53,6 @@ export function DemoModeDialog({ open, onOpenChange }: DemoModeDialogProps) {
       }
     };
   }, [settings.enabled, settings.messageFrequency]);
-
-  const handleSave = () => {
-    try {
-      const validated = demoModeSchema.parse(settings);
-      localStorage.setItem("demoModeSettings", JSON.stringify(validated));
-      onOpenChange(false);
-    } catch (error) {
-      console.error("Invalid demo mode settings:", error);
-    }
-  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -117,9 +95,8 @@ export function DemoModeDialog({ open, onOpenChange }: DemoModeDialogProps) {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            Close
           </Button>
-          <Button onClick={handleSave}>Save Changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
