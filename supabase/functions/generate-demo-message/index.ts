@@ -49,9 +49,9 @@ export async function handler(req: Request) {
     // Get all connections for the user
     const { data: connections, error: connectionsError } = await supabase
       .from("connections")
-      .select("connected_user_id")
-      .eq("user_id", userId)
-      .eq("status", "Connected");
+      .select("connected_user_id, user_id")
+      .or(`user_id.eq.${userId},connected_user_id.eq.${userId}`)
+      .eq("status", "accepted");
 
     if (connectionsError || !connections?.length) {
       return new Response(
@@ -66,7 +66,10 @@ export async function handler(req: Request) {
     // Randomly select a connected user
     const randomConnection =
       connections[Math.floor(Math.random() * connections.length)];
-    const connectedUserId = randomConnection.connected_user_id;
+    const connectedUserId =
+      randomConnection.user_id === userId
+        ? randomConnection.connected_user_id
+        : randomConnection.user_id;
 
     // Get all open threads that the user is part of
     const { data: threads, error: threadsError } = await supabase
