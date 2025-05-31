@@ -24,19 +24,30 @@ import {
 } from "@/components/ui/tooltip";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import type { Message } from "@/types/message";
-import type { Thread } from "@/types/thread";
 import { formatThreadTimestamp } from "@/utils/formatTimestamp";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useConnections } from "@/hooks/useConnections";
 import { supabase } from "@/integrations/supabase/client";
+
+type ListMessage = {
+  threadId: string;
+  threadTitle: string;
+  threadTopic: string;
+  id: string;
+  text: string;
+  sender: string;
+  timestamp: Date;
+  type: Message["type"];
+  readAt: Date | null;
+};
 
 export default function Messages() {
   const { user } = useAuth();
-  const { connections } = useConnections();
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [threads, setThreads] = useState<Record<string, Thread>>({});
+  const navigate = useNavigate();
+  const [messages, setMessages] = useState<ListMessage[]>([]);
+  const [threads, setThreads] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterThreads, setFilterThreads] = useState<string[]>([]);
@@ -46,81 +57,64 @@ export default function Messages() {
 
     try {
       setIsLoading(true);
-      // Get all threads first
+
       const { data: threadsData, error: threadsError } = await supabase
         .from("threads")
-        .select("*")
+        .select(
+          `
+          id,
+          title,
+          created_at,
+          topic,
+          status,
+          messages(
+            id,
+            text,
+            timestamp,
+            type,
+            details,
+            reads:message_read_receipts(
+              read_at
+            ),
+            from:profiles!inner(
+              name
+            )
+          )
+        `,
+        )
         .not("status", "eq", "Closed")
-        .not("status", "eq", "Archived");
+        .not("status", "eq", "Archived")
+        .order("created_at", { ascending: false })
+        .limit(100);
 
       if (threadsError) throw threadsError;
 
-      const threadsMap: Record<string, Thread> = {};
-      for (const thread of threadsData) {
-        threadsMap[thread.id] = {
-          id: thread.id,
-          title: thread.title,
-          createdAt: new Date(thread.created_at),
-          status: thread.status,
-          participants: [], // We'll need to fetch this separately if needed
-          topic: thread.topic,
-          type: thread.type,
-          controls: thread.controls as Thread["controls"],
-          summary: thread.summary,
-        };
-      }
-      setThreads(threadsMap);
-
-      // Get all messages
-      const { data: messagesData, error: messagesError } = await supabase
-        .from("messages")
-        .select("*")
-        .order("timestamp", { ascending: false });
-
-      if (messagesError) throw messagesError;
-
-      // Get read receipts for all messages
-      const { data: readReceipts, error: readReceiptsError } = await supabase
-        .from("message_read_receipts")
-        .select("*")
-        .eq("user_id", user.id);
-
-      if (readReceiptsError) throw readReceiptsError;
-
-      const readReceiptsMap = new Map(
-        readReceipts?.map((receipt) => [receipt.message_id, receipt.read_at]) ||
-          [],
+      const processedMessages = threadsData.flatMap((thread) =>
+        thread.messages.map((message) => ({
+          threadId: thread.id,
+          threadTitle: thread.title,
+          threadTopic: thread.topic,
+          id: message.id,
+          text: message.text,
+          sender: message.from.name,
+          timestamp: new Date(message.timestamp),
+          type: message.type,
+          readAt: message.reads[0]?.read_at
+            ? new Date(message.reads[0].read_at)
+            : null,
+        })),
       );
 
-      const processedMessages = await Promise.all(
-        messagesData.map(async (msg) => {
-          const connection = connections.find(
-            (conn) =>
-              conn.otherUserId === msg.user_id || conn.user_id === msg.user_id,
-          );
-          return {
-            id: msg.id,
-            text: (msg.text || "").trim(),
-            sender: connection?.name || "Unknown User",
-            timestamp: new Date(msg.timestamp || ""),
-            threadId: msg.thread_id || "",
-            isCurrentUser: msg.user_id === user.id,
-            type: msg.type,
-            details: msg.details as Record<string, unknown>,
-            readAt: readReceiptsMap.get(msg.id)
-              ? new Date(readReceiptsMap.get(msg.id)!)
-              : null,
-          };
-        }),
-      );
-
+      setThreads([
+        ...new Set(processedMessages.map(({ threadTitle }) => threadTitle)),
+      ]);
       setMessages(processedMessages);
     } catch (error) {
       console.error("Failed to load messages:", error);
     } finally {
       setIsLoading(false);
     }
-  }, [user, connections]);
+  }, [user]);
 
   useEffect(() => {
     loadMessages();
@@ -131,13 +125,11 @@ export default function Messages() {
     const matchesSearch = search
       ? message.text.toLowerCase().includes(search.toLowerCase()) ||
         message.sender.toLowerCase().includes(search.toLowerCase()) ||
-        threads[message.threadId]?.title
-          .toLowerCase()
-          .includes(search.toLowerCase())
+        message.threadTitle.toLowerCase().includes(search.toLowerCase())
       : true;
 
     const matchesThread = filterThreads.length
-      ? filterThreads.includes(message.threadId)
+      ? filterThreads.includes(message.threadTitle)
       : true;
 
     return matchesSearch && matchesThread;
@@ -156,6 +148,10 @@ export default function Messages() {
   const clearFilters = () => {
     setSearch("");
     setFilterThreads([]);
+  };
+
+  const handleMessageClick = (threadId: string) => {
+    navigate(`/threads/${threadId}`);
   };
 
   return (
@@ -196,14 +192,14 @@ export default function Messages() {
                 Filter by Thread
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              {Object.values(threads).map((thread) => (
+              {threads.map((title) => (
                 <DropdownMenuCheckboxItem
-                  key={thread.id}
-                  checked={filterThreads.includes(thread.id)}
-                  onCheckedChange={() => toggleFilterThread(thread.id)}
+                  key={title}
+                  checked={filterThreads.includes(title)}
+                  onCheckedChange={() => toggleFilterThread(title)}
                   onSelect={(e) => e.preventDefault()}
                 >
-                  {thread.title}
+                  {title}
                 </DropdownMenuCheckboxItem>
               ))}
               {isFiltering && (
@@ -260,7 +256,11 @@ export default function Messages() {
             filtered.map((message) => (
               <TableRow
                 key={message.id}
-                className={cn(message.readAt && "bg-muted/50")}
+                className={cn(
+                  message.readAt && "bg-muted/50",
+                  "cursor-pointer hover:bg-muted/50",
+                )}
+                onClick={() => handleMessageClick(message.threadId)}
               >
                 <TableCell>
                   <Tooltip>
@@ -284,9 +284,7 @@ export default function Messages() {
                     <span>{message.sender}</span>
                   </div>
                 </TableCell>
-                <TableCell>
-                  {threads[message.threadId]?.title || "Unknown Thread"}
-                </TableCell>
+                <TableCell>{message.threadTitle}</TableCell>
                 <TableCell>
                   <div className="max-w-md truncate">{message.text}</div>
                 </TableCell>
