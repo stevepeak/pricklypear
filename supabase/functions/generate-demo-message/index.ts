@@ -46,11 +46,33 @@ export async function handler(req: Request) {
 
     const supabase = getSupabaseServiceClient();
 
+    // Get all connections for the user
+    const { data: connections, error: connectionsError } = await supabase
+      .from("connections")
+      .select("connected_user_id")
+      .eq("user_id", userId)
+      .eq("status", "Connected");
+
+    if (connectionsError || !connections?.length) {
+      return new Response(
+        JSON.stringify({ error: "No connected users found" }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    // Randomly select a connected user
+    const randomConnection =
+      connections[Math.floor(Math.random() * connections.length)];
+    const connectedUserId = randomConnection.connected_user_id;
+
     // Get all open threads that the user is part of
     const { data: threads, error: threadsError } = await supabase
       .from("threads")
       .select("id")
-      .eq("created_by", userId)
+      .eq("created_by", connectedUserId)
       .not("status", "eq", "Closed")
       .not("status", "eq", "Archived");
 
