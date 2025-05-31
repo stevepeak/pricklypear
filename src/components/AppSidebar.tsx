@@ -45,7 +45,7 @@ import { toast } from "sonner";
 export function AppSidebar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const { totalUnread } = useUnreadMessages();
+  const { totalUnread, threadCounts } = useUnreadMessages();
   const { connections } = useConnections();
   const { state, isMobile, setOpenMobile } = useSidebar();
 
@@ -72,18 +72,19 @@ export function AppSidebar() {
           path: "/threads",
           label: "Threads",
           icon: <MessageSquareText className="h-4 w-4 mr-2" />,
-          badge: totalUnread > 0 ? totalUnread : undefined,
+          badge: Object.keys(threadCounts).length || undefined,
         },
         {
           path: "/messages",
           label: "Messages",
           icon: <MessageSquare className="h-4 w-4 mr-2" />,
+          badge: totalUnread || undefined,
         },
         {
           path: "/connections",
           label: "Connections",
           icon: <BookUser className="h-4 w-4 mr-2" />,
-          badge: pendingIncomingCount > 0 ? pendingIncomingCount : undefined,
+          badge: pendingIncomingCount || undefined,
         },
         {
           path: "/children",
