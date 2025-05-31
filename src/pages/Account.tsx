@@ -27,7 +27,6 @@ import { PersonalInfoForm } from "@/components/account/personal-info";
 const Account = () => {
   const navigate = useNavigate();
   const [profileLoading, setProfileLoading] = useState(true);
-  const [_, setMounted] = useState(false);
   const [notificationPrefs, setNotificationPrefs] =
     useState<UserNotification>(userDefaults);
 
@@ -38,11 +37,6 @@ const Account = () => {
       email: "",
     },
   });
-
-  // Handle theme change
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Fetch user profile data and preferences when component mounts
   useEffect(() => {

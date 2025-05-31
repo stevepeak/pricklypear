@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getOpenAIClient } from "../utils/openai.ts";
-import { getErrorMessage } from "../utils/handle-error.ts";
+import { getErrorMessage, handleError } from "../utils/handle-error.ts";
 import { getSupabaseServiceClient } from "../utils/supabase.ts";
 
 const corsHeaders = {
@@ -143,6 +143,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       threadTopic = topicData.topic;
       threadTitle = topicData.title;
     } catch (err) {
+      handleError(err);
       return new Response(
         JSON.stringify({
           rejected: true,

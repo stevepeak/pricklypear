@@ -1,6 +1,4 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Plus, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import ThreadCard from "./ThreadCard";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import type { Thread } from "@/types/thread";
@@ -13,12 +11,7 @@ interface ThreadsListProps {
   onNewThreadClick: () => void;
 }
 
-const ThreadsList = ({
-  threads,
-  isLoading,
-  user,
-  onNewThreadClick,
-}: ThreadsListProps) => {
+const ThreadsList = ({ threads, isLoading }: ThreadsListProps) => {
   const { threadCounts } = useUnreadMessages();
 
   // Separate threads into open and closed

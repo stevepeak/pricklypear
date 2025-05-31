@@ -1,16 +1,8 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { MessageSquare, Lock, CircleCheck } from "lucide-react";
+import { MessageSquare, Lock } from "lucide-react";
 import Footer from "@/components/ui/footer";
-
-const southwestColors = {
-  bg: "bg-gradient-to-br from-[#F9E4C8] via-[#F7C873] to-[#D97D54]", // sand to orange
-  card: "bg-[#FFF8F0] border-[#E2B07A]",
-  text: "text-[#7C4A03]",
-  accent: "bg-[#D97D54] hover:bg-[#C96B3F] text-white",
-  cactus: "text-[#3B7A57]",
-};
 
 const Home = () => {
   return (

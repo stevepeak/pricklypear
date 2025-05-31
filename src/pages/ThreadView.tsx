@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import { useThreadDetails } from "@/hooks/useThreadDetails";
 import ThreadHeader from "@/components/thread/ThreadHeader";
 import ThreadMessages from "@/components/thread/ThreadMessages";
@@ -7,8 +6,6 @@ import ThreadMessageComposer from "@/components/thread/ThreadMessageComposer";
 import MessageReviewDialog from "@/components/thread/MessageReviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useRef, useState } from "react";
-import React from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import ThreadViewSkeleton from "@/components/thread/ThreadViewSkeleton";
 
 const ThreadView = () => {

@@ -1,11 +1,4 @@
-import {
-  Bot,
-  Loader2,
-  Lock,
-  Users,
-  BotMessageSquare,
-  Headset,
-} from "lucide-react";
+import { Bot, Loader2, Users, BotMessageSquare, Headset } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getThreadTopicInfo, type Thread, isAIThread } from "@/types/thread";
 import { AvatarName } from "@/components/ui/avatar-name";
@@ -27,6 +20,7 @@ import { toast } from "sonner";
 import { updateThreadTitle } from "@/services/threadService";
 import React, { useState, useRef } from "react";
 import { z } from "zod";
+import { handleError } from "@/services/messageService/utils";
 
 interface ThreadHeaderProps {
   thread: Thread;
@@ -82,6 +76,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
       });
       setEditing(false);
     } catch (e) {
+      handleError(e, "updateThreadTitle");
       toast("Error", { description: "Failed to update thread title." });
       setTitle(thread.title);
       setEditing(false);

@@ -5,7 +5,6 @@ import {
   createThread,
   generateThreadConversation,
 } from "@/services/threadService";
-import type { User } from "@supabase/supabase-js";
 import type { Thread, ThreadTopic } from "@/types/thread";
 
 export const useThreadCreation = (
@@ -21,15 +20,7 @@ export const useThreadCreation = (
   const [isCreating, setIsCreating] = useState(false);
   const navigate = useNavigate();
 
-  const handleCreateThread = async (user: User) => {
-    if (!user) {
-      toast("Authentication required", {
-        description: "Please sign in to create threads",
-      });
-      navigate("/auth");
-      return;
-    }
-
+  const handleCreateThread = async () => {
     const trimmedTitle = newThreadTitle.trim();
 
     if (!trimmedTitle) {
@@ -74,7 +65,7 @@ export const useThreadCreation = (
     }
   };
 
-  const handleCreateAIChat = async (user: User) => {
+  const handleCreateAIChat = async () => {
     setIsCreating(true);
 
     const newThread = await createThread({
@@ -94,15 +85,7 @@ export const useThreadCreation = (
     }
   };
 
-  const handleGenerateThread = async (user: User) => {
-    if (!user) {
-      toast("Authentication required", {
-        description: "Please sign in to create threads",
-      });
-      navigate("/auth");
-      return;
-    }
-
+  const handleGenerateThread = async () => {
     const trimmedTitle = newThreadTitle.trim();
 
     if (!trimmedTitle) {

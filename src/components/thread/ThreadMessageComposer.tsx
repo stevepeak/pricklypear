@@ -1,13 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Toggle } from "@/components/ui/toggle";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import {
   Loader2,
   Send,
@@ -19,7 +12,6 @@ import {
   MessageSquarePlus,
   ArrowUp,
   ShieldCheck,
-  ShieldOff,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -48,6 +40,7 @@ import { Thread, isAIThread } from "@/types/thread";
 import { SystemPromptDialog } from "./composer/SystemPrompt";
 import { archiveThread, unarchiveThread } from "@/services/threadService";
 import { Switch } from "@/components/ui/switch";
+import { handleError } from "@/services/messageService/utils";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -195,6 +188,7 @@ const ThreadMessageComposer = React.forwardRef<
           description: "Thread messages copied to clipboard.",
         });
       } catch (err) {
+        handleError(err, "copyThreadClipboard");
         toast("Copy failed", {
           description: "Failed to copy messages to clipboard.",
         });

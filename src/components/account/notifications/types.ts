@@ -1,4 +1,4 @@
-import { MessageSquareText, Sparkles, UserCog, Zap } from "lucide-react";
+import { MessageSquareText, Sparkles, UserCog } from "lucide-react";
 
 export const notifications = [
   {

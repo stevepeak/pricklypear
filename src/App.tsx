@@ -1,14 +1,7 @@
-import React from "react";
 import { Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useLocation,
-  useParams,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Home from "./pages/Home";
 import Threads from "./pages/Threads";
@@ -21,27 +14,11 @@ import Documents from "./pages/Documents";
 import Integrations from "./pages/Integrations";
 import Billing from "./pages/Billing";
 import { ConnectionsProvider } from "@/contexts/ConnectionsContext";
-import {
-  SidebarProvider,
-  SidebarInset,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import UpdatePassword from "./pages/update-password";
 import TermsOfService from "./pages/terms-of-service";
 import PrivacyPolicy from "./pages/privacy-policy";
 import FeatureRequestPage from "./pages/feature-request";
-import { getThread } from "@/services/threadService";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
-import { useEffect, useState } from "react";
 
 // Import CSS but don't include App.css anymore
 import "./index.css";
@@ -52,11 +29,6 @@ import Expenses from "./pages/Expenses";
 import Breadcrumbs from "@/components/app/Breadcrumbs";
 
 const queryClient = new QueryClient();
-
-function capitalize(str: string) {
-  if (!str) return "";
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
 
 function AppRoutes() {
   const { user, loading } = useAuth();

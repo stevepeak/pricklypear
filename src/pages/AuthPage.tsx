@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { handleError } from "@/services/messageService/utils";
 
 const AuthPage = () => {
   const [email, setEmail] = useState("");
@@ -76,6 +77,7 @@ const AuthPage = () => {
         );
       }
     } catch (err) {
+      handleError(err, "handleForgotPassword");
       setForgotError("Something went wrong. Please try again later.");
     } finally {
       setForgotIsLoading(false);

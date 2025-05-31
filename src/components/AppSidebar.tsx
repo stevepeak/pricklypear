@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Sidebar,
@@ -40,7 +39,6 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { useConnections } from "@/hooks/useConnections";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
 export function AppSidebar() {

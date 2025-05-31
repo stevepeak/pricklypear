@@ -28,7 +28,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
   const messagesEndRef = externalMessagesEndRef || localMessagesEndRef;
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   // Mark messages as read when they are displayed
@@ -44,10 +44,6 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
       }
     }
   }, [messages, user]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <>

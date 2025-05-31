@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PasswordSchema } from "@/types/schemas";
+import { handleError } from "@/services/messageService/utils";
 
 const passwordSchema = z
   .object({
@@ -52,6 +53,7 @@ const UpdatePassword = () => {
         form.reset();
       }
     } catch (err) {
+      handleError(err, "updatePassword");
       setError("Something went wrong. Please try again later.");
     } finally {
       setIsLoading(false);

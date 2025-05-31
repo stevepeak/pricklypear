@@ -111,9 +111,9 @@ const CreateThreadDialog = ({
               isCreating={isCreating}
               requireAiApproval={requireAiApproval}
               setRequireAiApproval={setRequireAiApproval}
-              onGenerate={() => handleGenerateThread(user)}
+              onGenerate={() => handleGenerateThread()}
               isAdmin={user.email === "steve@peak.family"}
-              onSubmit={() => handleCreateThread(user)}
+              onSubmit={() => handleCreateThread()}
               onCancel={() => handleDialogOpen(false)}
             />
           </TabsContent>
@@ -124,7 +124,7 @@ const CreateThreadDialog = ({
                 context from your threads and documents.
               </p>
               <Button
-                onClick={() => handleCreateAIChat(user)}
+                onClick={() => handleCreateAIChat()}
                 disabled={isCreating}
                 className="w-2/3"
               >

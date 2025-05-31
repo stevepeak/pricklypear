@@ -1,7 +1,6 @@
 import { renderHook, act } from "@testing-library/react";
 import { useThreadCreation } from "./useThreadCreation";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { User } from "@supabase/supabase-js";
 
 vi.mock("react-router-dom", () => ({
   useNavigate: () => vi.fn(),
@@ -37,7 +36,7 @@ describe("useThreadCreation", () => {
     });
 
     await act(async () => {
-      await result.current.handleCreateThread({ id: "user1" } as User);
+      await result.current.handleCreateThread();
     });
 
     expect(createThread).toHaveBeenCalledWith({
@@ -54,7 +53,7 @@ describe("useThreadCreation", () => {
     const { result } = renderHook(() => useThreadCreation(vi.fn(), vi.fn()));
 
     await act(async () => {
-      await result.current.handleCreateAIChat({ id: "user1" } as User);
+      await result.current.handleCreateAIChat();
     });
 
     expect(createThread).toHaveBeenCalledWith({

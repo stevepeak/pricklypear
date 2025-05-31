@@ -1,6 +1,3 @@
-import { supabase } from "@/integrations/supabase/client";
-import { requireCurrentUser } from "@/utils/authCache";
-
 export {
   getConnections,
   updateConnectionStatus,
