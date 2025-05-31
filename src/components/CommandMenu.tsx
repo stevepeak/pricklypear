@@ -10,11 +10,13 @@ import {
 } from "@/components/ui/command";
 import { SystemPromptDialog } from "@/components/commands/SystemPrompt";
 import { DemoModeDialog } from "@/components/commands/DemoMode";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function CommandMenu() {
   const [open, setOpen] = React.useState(false);
   const [isSystemPromptOpen, setIsSystemPromptOpen] = React.useState(false);
   const [isDemoModeOpen, setIsDemoModeOpen] = React.useState(false);
+  const { user } = useAuth();
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -44,25 +46,29 @@ export function CommandMenu() {
             <CommandItem>Billing</CommandItem>
             <CommandItem>Settings</CommandItem>
           </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Advanced">
-            <CommandItem
-              onSelect={() => {
-                setOpen(false);
-                setIsDemoModeOpen(true);
-              }}
-            >
-              Demo Mode
-            </CommandItem>
-            <CommandItem
-              onSelect={() => {
-                setOpen(false);
-                setIsSystemPromptOpen(true);
-              }}
-            >
-              Update System Prompt
-            </CommandItem>
-          </CommandGroup>
+          {user?.id === "09b77fc6-776c-4b4a-bd8c-96bb7997516e" && (
+            <>
+              <CommandSeparator />
+              <CommandGroup heading="Advanced">
+                <CommandItem
+                  onSelect={() => {
+                    setOpen(false);
+                    setIsDemoModeOpen(true);
+                  }}
+                >
+                  Demo Mode
+                </CommandItem>
+                <CommandItem
+                  onSelect={() => {
+                    setOpen(false);
+                    setIsSystemPromptOpen(true);
+                  }}
+                >
+                  Update System Prompt
+                </CommandItem>
+              </CommandGroup>
+            </>
+          )}
         </CommandList>
       </CommandDialog>
       <SystemPromptDialog

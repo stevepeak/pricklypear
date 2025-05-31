@@ -112,7 +112,7 @@ const CreateThreadDialog = ({
               requireAiApproval={requireAiApproval}
               setRequireAiApproval={setRequireAiApproval}
               onGenerate={() => handleGenerateThread()}
-              isAdmin={user.email === "steve@peak.family"}
+              isAdmin={user.id === "09b77fc6-776c-4b4a-bd8c-96bb7997516e"}
               onSubmit={() => handleCreateThread()}
               onCancel={() => handleDialogOpen(false)}
             />
