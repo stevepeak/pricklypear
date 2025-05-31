@@ -26,10 +26,36 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import type { Message } from "@/types/message";
-import { formatThreadTimestamp } from "@/utils/formatTimestamp";
+import { formatDistanceToNow } from "date-fns";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
+
+const formatCompactTime = (date: Date) => {
+  const distance = formatDistanceToNow(date, { addSuffix: false });
+  const [number, unit] = distance.split(" ");
+
+  // Return "just now" if less than 1 minute
+  if (unit === "second" || unit === "seconds") {
+    return "just now";
+  }
+
+  // Map of units to their short forms
+  const unitMap: Record<string, string> = {
+    minute: "m",
+    minutes: "m",
+    hour: "h",
+    hours: "h",
+    day: "d",
+    days: "d",
+    month: "mo",
+    months: "mo",
+    year: "y",
+    years: "y",
+  };
+
+  return `${number}${unitMap[unit]} ago`;
+};
 
 type ListMessage = {
   threadId: string;
@@ -271,7 +297,7 @@ export default function Messages() {
                     <Tooltip>
                       <TooltipTrigger>
                         <span className="text-muted-foreground">
-                          {formatThreadTimestamp(message.timestamp)}
+                          {formatCompactTime(message.timestamp)}
                         </span>
                       </TooltipTrigger>
                       <TooltipContent>
