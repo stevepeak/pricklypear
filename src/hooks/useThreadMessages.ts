@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { getMessages, getUnreadMessageCount } from "@/services/messageService";
 import {
@@ -48,7 +48,7 @@ export const useThreadMessages = (
     }
   }, [threadId, messages]);
 
-  const loadMessages = async () => {
+  const loadMessages = useCallback(async () => {
     if (!threadId) return [];
 
     const messagesData = await getMessages({
@@ -57,7 +57,7 @@ export const useThreadMessages = (
     });
     setMessages(messagesData);
     return messagesData;
-  };
+  }, [threadId, connections]);
 
   const handleInitiateMessageReview = async () => {
     if (!newMessage.trim() || !user) return;

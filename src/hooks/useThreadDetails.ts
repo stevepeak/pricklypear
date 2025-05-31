@@ -38,7 +38,7 @@ export const useThreadDetails = (
     };
 
     initialize();
-  }, [threadId, loadMessages, setThread, setIsLoading, loadThread]);
+  }, [loadThread, loadMessages]);
 
   // Return all the hooks' values and methods
   return {

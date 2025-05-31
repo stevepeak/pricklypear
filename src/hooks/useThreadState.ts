@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { getThread } from "@/services/threadService";
@@ -10,7 +10,7 @@ export const useThreadState = (threadId: string | undefined) => {
 
   const navigate = useNavigate();
 
-  const loadThread = async () => {
+  const loadThread = useCallback(async () => {
     if (!threadId) {
       navigate("/threads");
       return null;
@@ -27,7 +27,7 @@ export const useThreadState = (threadId: string | undefined) => {
 
     setThread(threadData);
     return threadData;
-  };
+  }, [threadId, navigate]);
 
   return {
     thread,
