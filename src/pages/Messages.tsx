@@ -27,7 +27,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import type { Message } from "@/types/message";
 import { formatThreadTimestamp } from "@/utils/formatTimestamp";
-import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
@@ -261,10 +260,7 @@ export default function Messages() {
             filtered.map((message) => (
               <TableRow
                 key={message.id}
-                className={cn(
-                  message.readAt && "bg-muted/50",
-                  "cursor-pointer hover:bg-muted/50",
-                )}
+                className="cursor-pointer hover:bg-muted/50"
                 onClick={() => handleMessageClick(message.threadId)}
               >
                 <TableCell>
