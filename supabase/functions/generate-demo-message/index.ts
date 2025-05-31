@@ -51,13 +51,7 @@ export async function handler(req: Request) {
       .from("threads")
       .select("id")
       .eq("status", "Open")
-      .in(
-        "id",
-        supabase
-          .from("thread_participants")
-          .select("thread_id")
-          .eq("user_id", userId),
-      );
+      .eq("created_by", userId);
 
     if (threadsError || !threads?.length) {
       return new Response(
