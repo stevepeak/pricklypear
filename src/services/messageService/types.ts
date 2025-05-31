@@ -3,15 +3,3 @@ export interface ReadReceipt {
   user_id: string;
   read_at: string | null;
 }
-
-export interface MessageData {
-  id: string;
-  text: string;
-  user_id: string;
-  thread_id: string;
-  timestamp: string;
-}
-
-export interface UnreadCounts {
-  [threadId: string]: number;
-}

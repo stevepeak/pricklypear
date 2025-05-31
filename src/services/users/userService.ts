@@ -16,25 +16,3 @@ export {
  * @param {string} query  Partial name / email to search for
  * @returns List of matching profile id + username tuples
  */
-export const searchUsers = async (
-  query: string,
-): Promise<{ id: string; username: string }[]> => {
-  const user = await requireCurrentUser();
-
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("id, name")
-    .ilike("name", `%${query}%`)
-    .neq("id", user.id)
-    .limit(10);
-
-  if (error) {
-    console.error("Error searching users:", error);
-    return [];
-  }
-
-  return (data ?? []).map(({ id, name }) => ({
-    id,
-    username: name ?? "",
-  }));
-};
