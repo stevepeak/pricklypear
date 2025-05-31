@@ -18,7 +18,7 @@
     "typecheck:deno": "deno check supabase/functions/**/*.ts --quiet",
     "gen": "supabase gen types --project-id vgddrhyjttyrathqhefb > src/integrations/supabase/types.ts",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org gwiz --project pricklypear ./dist && sentry-cli sourcemaps upload --org gwiz --project pricklypear ./dist",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "dependencies": {
     "@hookform/resolvers": "5.0.1",
