@@ -17,6 +17,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { ThreadBadge } from "@/components/ui/thread-badge";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 interface ThreadsTableProps {
   threads: Thread[];
@@ -25,6 +26,7 @@ interface ThreadsTableProps {
 
 const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
   const navigate = useNavigate();
+  const { threadCounts } = useUnreadMessages();
 
   const sortedThreads = useMemo(() => {
     // Closed and Archived threads always at the bottom, then sort by createdAt desc
@@ -86,6 +88,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
         {sortedThreads.map((thread) => {
           const topicInfo = getThreadTopicInfo(thread.topic);
           const participants = thread.participants ?? [];
+          const hasUnreadMessages = threadCounts[thread.id] > 0;
 
           return (
             <TableRow
@@ -94,7 +97,12 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               className={cn(thread.status !== "Open" && "bg-muted")}
             >
               <TableCell className="px-4 py-2">
-                <ThreadBadge thread={thread} className="ml-2" />
+                <div className="flex items-center">
+                  {hasUnreadMessages && (
+                    <div className="w-2 h-2 rounded-full bg-red-500 mr-2" />
+                  )}
+                  <ThreadBadge thread={thread} className="ml-2" />
+                </div>
               </TableCell>
 
               {/* Participants */}
