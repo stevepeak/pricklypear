@@ -9,10 +9,12 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { SystemPromptDialog } from "@/components/commands/SystemPrompt";
+import { DemoModeDialog } from "@/components/commands/DemoMode";
 
 export function CommandMenu() {
   const [open, setOpen] = React.useState(false);
   const [isSystemPromptOpen, setIsSystemPromptOpen] = React.useState(false);
+  const [isDemoModeOpen, setIsDemoModeOpen] = React.useState(false);
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -44,7 +46,14 @@ export function CommandMenu() {
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Advanced">
-            <CommandItem>Demo Mode</CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setOpen(false);
+                setIsDemoModeOpen(true);
+              }}
+            >
+              Demo Mode
+            </CommandItem>
             <CommandItem
               onSelect={() => {
                 setOpen(false);
@@ -60,6 +69,7 @@ export function CommandMenu() {
         open={isSystemPromptOpen}
         onOpenChange={setIsSystemPromptOpen}
       />
+      <DemoModeDialog open={isDemoModeOpen} onOpenChange={setIsDemoModeOpen} />
     </>
   );
 }
