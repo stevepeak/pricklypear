@@ -45,7 +45,8 @@ export const markMessagesInThreadAsRead = async (args: {
 
     return true;
   } catch (error) {
-    return handleError(error, "marking messages as read");
+    handleError(error, "marking messages as read");
+    return false;
   }
 };
 

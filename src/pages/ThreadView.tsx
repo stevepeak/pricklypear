@@ -60,9 +60,6 @@ const ThreadView = () => {
 
   // Ref for scrolling to bottom
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   if (isLoading) {
     return <ThreadViewSkeleton />;
@@ -95,7 +92,6 @@ const ThreadView = () => {
           setNewMessage={setNewMessage}
           isSending={isSending || isReviewingMessage}
           onSendMessage={handleSendMessage}
-          scrollToBottom={scrollToBottom}
           hasOpenCloseRequest={hasOpenCloseRequest}
           thread={thread}
           loadMessages={loadMessages}
