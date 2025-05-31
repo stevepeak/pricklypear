@@ -7,6 +7,7 @@ alwaysApply: true
 - Do not ask me permission to proceed with changes. Do it.
 - Run `bun run fix && bun run ci` after you make changes
 - Find components in `src/components/ui` first
+- Never edit `src/components/ui` contents
 - use `import { toast } from "sonner";` then `toast(name, {description})`
 - Do not use `await fetch()` to call Supabase functions, use the `await supabase.functions.invoke()`
 - Use zod whenever possible
@@ -75,7 +76,7 @@ remains clean, maintainable, and efficient.
 
 ### Unit Testing
 
-- **All unit tests should [Vitest](https://vitest.dev/)**
+- **All unit tests should [Vitest](mdc:https:/vitest.dev)**
   - DO NOT attempt to install or use other testing libraries like Jest
 - Write unit tests for individual components and utility functions
 - Test files should be named `[target].test.ts` and placed in the same directory as the code they are testing (NOT a separate directory)
