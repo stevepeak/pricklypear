@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 
-export const changePasswordFormSchema = z
+const changePasswordFormSchema = z
   .object({
     currentPassword: PasswordSchema,
     newPassword: PasswordSchema,

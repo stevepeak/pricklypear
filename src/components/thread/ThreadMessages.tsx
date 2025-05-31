@@ -29,7 +29,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, messagesEndRef]);
 
   // Mark messages as read when they are displayed
   useEffect(() => {

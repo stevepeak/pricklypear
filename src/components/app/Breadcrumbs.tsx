@@ -58,7 +58,7 @@ function Breadcrumbs() {
     return () => {
       ignore = true;
     };
-  }, [location.pathname]);
+  }, [location.pathname, pathnames]);
 
   return (
     <Breadcrumb className="p-3 sticky top-0 z-20 bg-white">

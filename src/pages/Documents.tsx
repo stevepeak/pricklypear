@@ -112,7 +112,7 @@ export default function Documents() {
         // ignore JSON parse errors
       }
     }
-  }, []);
+  }, [setSearch, setFilterLabels]);
 
   // Persist filters to localStorage whenever they change
   useEffect(() => {
