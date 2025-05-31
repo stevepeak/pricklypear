@@ -30,6 +30,9 @@ import { formatDistanceToNow } from "date-fns";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
+import ThreadTopicBadge from "@/components/thread/ThreadTopicBadge";
+import type { ThreadTopic } from "@/types/thread";
+import type { Database } from "@/integrations/supabase/types";
 
 const formatCompactTime = (date: Date) => {
   const distance = formatDistanceToNow(date, { addSuffix: false });
@@ -59,7 +62,8 @@ const formatCompactTime = (date: Date) => {
 type ListMessage = {
   threadId: string;
   threadTitle: string;
-  threadTopic: string;
+  threadTopic: ThreadTopic;
+  threadType: Database["public"]["Enums"]["thread_type"];
   id: string;
   text: string;
   sender: string;
@@ -94,7 +98,8 @@ export default function Messages() {
           thread:threads!inner(
             id,
             title,
-            topic
+            topic,
+            type
           ),
           reads:message_read_receipts(
             read_at
@@ -115,6 +120,7 @@ export default function Messages() {
         threadId: message.thread.id,
         threadTitle: message.thread.title,
         threadTopic: message.thread.topic,
+        threadType: message.thread.type,
         id: message.id,
         text: message.text,
         sender: message.from.name,
@@ -315,7 +321,22 @@ export default function Messages() {
                     <span>{message.sender}</span>
                   </div>
                 </TableCell>
-                <TableCell>{message.threadTitle}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <ThreadTopicBadge
+                      thread={{
+                        id: message.threadId,
+                        title: message.threadTitle,
+                        topic: message.threadTopic,
+                        type: message.threadType,
+                        createdAt: message.timestamp,
+                        status: "Open",
+                        participants: [],
+                      }}
+                    />
+                    {message.threadTitle}
+                  </div>
+                </TableCell>
                 <TableCell>
                   <div className="max-w-md truncate">
                     {!message.readAt ? (

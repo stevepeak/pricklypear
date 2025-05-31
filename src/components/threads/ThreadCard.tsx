@@ -1,11 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getThreadTopicInfo } from "@/types/thread";
 import type { Thread } from "@/types/thread";
 import { NotificationBadge } from "@/components/ui/notification-badge";
-import { ThreadBadge } from "@/components/ui/thread-badge";
+import { ThreadStatusBadge } from "@/components/thread/ThreadStatusBadge";
+import { ThreadTopicBadge } from "@/components/thread/ThreadTopicBadge";
 
 interface ThreadCardProps {
   thread: Thread;
@@ -13,8 +12,6 @@ interface ThreadCardProps {
 }
 
 const ThreadCard = ({ thread, unreadCount = 0 }: ThreadCardProps) => {
-  const topicInfo = getThreadTopicInfo(thread.topic);
-
   return (
     <Link
       to={`/threads/${thread.id}`}
@@ -31,15 +28,8 @@ const ThreadCard = ({ thread, unreadCount = 0 }: ThreadCardProps) => {
       >
         <div className="flex justify-between items-start mb-2">
           <div className="flex gap-2 items-center">
-            <ThreadBadge thread={thread} />
-            {thread.type === "default" && (
-              <Badge
-                variant="outline"
-                className="bg-white flex items-center gap-1 font-medium text-xs px-2 py-0.5"
-              >
-                <span>{topicInfo.icon}</span> {topicInfo.label}
-              </Badge>
-            )}
+            <ThreadStatusBadge thread={thread} />
+            <ThreadTopicBadge thread={thread} />
           </div>
           <span className="text-xs text-muted-foreground font-medium">
             {thread.createdAt.toLocaleDateString()}

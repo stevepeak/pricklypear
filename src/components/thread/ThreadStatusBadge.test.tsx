@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { ThreadBadge } from "./thread-badge";
+import { ThreadStatusBadge } from "./ThreadStatusBadge";
 import type { Thread } from "@/types/thread";
 
 const baseThread: Thread = {
@@ -14,31 +14,35 @@ const baseThread: Thread = {
   type: "default",
 };
 
-describe("ThreadBadge", () => {
-  it("renders AI Chat badge", () => {
-    render(<ThreadBadge thread={{ ...baseThread, type: "ai_chat" }} />);
+describe("ThreadStatusBadge", () => {
+  it("renders AI chat badge", () => {
+    render(<ThreadStatusBadge thread={{ ...baseThread, type: "ai_chat" }} />);
     expect(screen.getByText("AI Chat")).toBeTruthy();
   });
 
   it("renders Support badge", () => {
     render(
-      <ThreadBadge thread={{ ...baseThread, type: "customer_support" }} />,
+      <ThreadStatusBadge
+        thread={{ ...baseThread, type: "customer_support" }}
+      />,
     );
     expect(screen.getByText("Support")).toBeTruthy();
   });
 
   it("renders Open badge", () => {
-    render(<ThreadBadge thread={{ ...baseThread, status: "Open" }} />);
+    render(<ThreadStatusBadge thread={{ ...baseThread, status: "Open" }} />);
     expect(screen.getByText("Open")).toBeTruthy();
   });
 
   it("renders Closed badge", () => {
-    render(<ThreadBadge thread={{ ...baseThread, status: "Closed" }} />);
+    render(<ThreadStatusBadge thread={{ ...baseThread, status: "Closed" }} />);
     expect(screen.getByText("Closed")).toBeTruthy();
   });
 
   it("renders Archived badge", () => {
-    render(<ThreadBadge thread={{ ...baseThread, status: "Archived" }} />);
+    render(
+      <ThreadStatusBadge thread={{ ...baseThread, status: "Archived" }} />,
+    );
     expect(screen.getByText("Archived")).toBeTruthy();
   });
 });

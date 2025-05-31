@@ -3,11 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 import { Loader2 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { AvatarName } from "@/components/ui/avatar-name";
 import { cn } from "@/lib/utils";
-import { getThreadTopicInfo, isAIThread } from "@/types/thread";
-import type { Thread } from "@/types/thread";
+import { type Thread } from "@/types/thread";
 import {
   Table,
   TableHeader,
@@ -16,7 +14,8 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { ThreadBadge } from "@/components/ui/thread-badge";
+import { ThreadStatusBadge } from "@/components/thread/ThreadStatusBadge";
+import { ThreadTopicBadge } from "@/components/thread/ThreadTopicBadge";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 interface ThreadsTableProps {
@@ -86,7 +85,6 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
       </TableHeader>
       <TableBody className="divide-y divide-muted">
         {sortedThreads.map((thread) => {
-          const topicInfo = getThreadTopicInfo(thread.topic);
           const participants = thread.participants ?? [];
           const hasUnreadMessages = threadCounts[thread.id] > 0;
 
@@ -101,7 +99,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
                   {hasUnreadMessages && (
                     <div className="w-2 h-2 rounded-full bg-red-500 mr-2" />
                   )}
-                  <ThreadBadge thread={thread} className="ml-2" />
+                  <ThreadStatusBadge thread={thread} className="ml-2" />
                 </div>
               </TableCell>
 
@@ -128,12 +126,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               </TableCell>
               {/* Topic */}
               <TableCell className="px-4 py-2">
-                {!isAIThread(thread) && thread.type !== "customer_support" && (
-                  <Badge variant="secondary">
-                    <span className="mr-1">{topicInfo.icon}</span>
-                    {topicInfo.label}
-                  </Badge>
-                )}
+                <ThreadTopicBadge thread={thread} />
               </TableCell>
 
               {/* Title */}
