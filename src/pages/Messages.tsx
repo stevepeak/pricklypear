@@ -35,11 +35,6 @@ const formatCompactTime = (date: Date) => {
   const distance = formatDistanceToNow(date, { addSuffix: false });
   const [number, unit] = distance.split(" ");
 
-  // Return "just now" if less than 1 minute
-  if (unit === "second" || unit === "seconds") {
-    return "just now";
-  }
-
   // Map of units to their short forms
   const unitMap: Record<string, string> = {
     minute: "m",
@@ -53,6 +48,10 @@ const formatCompactTime = (date: Date) => {
     year: "y",
     years: "y",
   };
+
+  if (!unitMap[unit]) {
+    return "just now";
+  }
 
   return `${number}${unitMap[unit]} ago`;
 };
