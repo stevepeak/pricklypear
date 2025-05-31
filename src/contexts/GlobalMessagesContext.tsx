@@ -109,7 +109,7 @@ export const GlobalMessagesProvider: React.FC<{
               table: "messages",
             },
             async (payload) => {
-              console.log("postgres_changes", payload);
+              console.debug("💬 New message", payload);
               const newData = payload.new as MessageRow;
               const newMessage: Message = {
                 id: newData.id,
@@ -148,7 +148,7 @@ export const GlobalMessagesProvider: React.FC<{
               table: "message_read_receipts",
             },
             (payload) => {
-              console.log("postgres_changes read_receipts", payload);
+              console.debug("New Read Receipt Update", payload);
               const newData = payload.new as ReadReceiptRow;
               if (newData?.read_at) {
                 readReceiptCallbacksRef.current.forEach((callback) =>
