@@ -46,7 +46,6 @@ interface ThreadMessageComposerProps {
   setNewMessage: (message: string) => void;
   isSending: boolean;
   onSendMessage: () => void;
-  scrollToBottom?: () => void;
   thread: Thread;
   loadMessages: () => Promise<Message[]>;
   autoFocus?: boolean;
@@ -64,7 +63,6 @@ const ThreadMessageComposer = React.forwardRef<
       setNewMessage,
       isSending,
       onSendMessage,
-      scrollToBottom,
       thread,
       loadMessages,
       autoFocus = false,
@@ -96,10 +94,8 @@ const ThreadMessageComposer = React.forwardRef<
         textarea.style.height = "auto";
         textarea.style.height = `${textarea.scrollHeight}px`;
       }
-      if (scrollToBottom) {
-        scrollToBottom();
-      }
-    }, [newMessage, scrollToBottom]);
+      messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
+    }, [newMessage, messagesEndRef]);
 
     // Focus textarea on mount if autoFocus is true and not disabled
     useEffect(() => {
@@ -227,9 +223,15 @@ const ThreadMessageComposer = React.forwardRef<
     return (
       <>
         <div className="sticky bottom-2 bg-white border rounded-md shadow-md w-full m-auto max-w-[800px]">
-          {showJumpToLatest && scrollToBottom && (
+          {showJumpToLatest && messagesEndRef && (
             <div className="absolute left-1/2 -translate-x-1/2 mb-2 -top-10">
-              <Button size="sm" variant="secondary" onClick={scrollToBottom}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() =>
+                  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+                }
+              >
                 Jump to latest message
               </Button>
             </div>
