@@ -46,39 +46,11 @@ export async function handler(req: Request) {
 
     const supabase = getSupabaseServiceClient();
 
-    // Get all connections for the user
-    const { data: connections } = await supabase
-      .from("connections")
-      .select("connected_user_id, user_id")
-      .or(`user_id.eq.${userId},connected_user_id.eq.${userId}`)
-      .eq("status", "accepted");
-
-    console.log(JSON.stringify(connections, null, 2));
-
-    // if (connectionsError || !connections?.length) {
-    //   return new Response(
-    //     JSON.stringify({ error: "No connected users found" }),
-    //     {
-    //       status: 404,
-    //       headers: { ...corsHeaders, "Content-Type": "application/json" },
-    //     },
-    //   );
-    // }
-
-    // // Randomly select a connected user
-    // const randomConnection =
-    //   connections[Math.floor(Math.random() * connections.length)];
-    // const connectedUserId =
-    //   randomConnection.user_id === userId
-    //     ? randomConnection.connected_user_id
-    //     : randomConnection.user_id;
-    const connectedUserId = "41bda03c-ce20-48ae-b861-bd926de58065";
-
     // Get all open threads that the user is part of
     const { data: threads, error: threadsError } = await supabase
       .from("threads")
       .select("id")
-      .eq("created_by", connectedUserId)
+      .eq("created_by", userId)
       .not("status", "eq", "Closed")
       .not("status", "eq", "Archived");
 
@@ -97,11 +69,38 @@ export async function handler(req: Request) {
     const randomMessage =
       demoMessages[Math.floor(Math.random() * demoMessages.length)];
 
+    // Get all connections for the user
+    const { data: connections, error: connectionsError } = await supabase
+      .from("connections")
+      .select("connected_user_id, user_id")
+      .or(`user_id.eq.${userId},connected_user_id.eq.${userId}`)
+      .eq("status", "accepted");
+
+    console.log(JSON.stringify(connections, null, 2));
+
+    if (connectionsError || !connections?.length) {
+      return new Response(
+        JSON.stringify({ error: "No connected users found" }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    // Randomly select a connected user
+    const randomConnection =
+      connections[Math.floor(Math.random() * connections.length)];
+    const randomConnectedUserId =
+      randomConnection.user_id === userId
+        ? randomConnection.connected_user_id
+        : randomConnection.user_id;
+
     // Insert the demo message
     const { data: messageData, error: insertError } = await supabase
       .from("messages")
       .insert({
-        user_id: userId,
+        user_id: randomConnectedUserId,
         text: randomMessage,
         thread_id: randomThread.id,
         timestamp: new Date().toISOString(),
