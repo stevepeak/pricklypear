@@ -59,52 +59,47 @@ export default function Messages() {
     try {
       setIsLoading(true);
 
-      const { data: threadsData, error: threadsError } = await supabase
-        .from("threads")
+      const { data: messagesData, error: messagesError } = await supabase
+        .from("messages")
         .select(
           `
           id,
-          title,
-          created_at,
-          topic,
-          status,
-          messages(
+          text,
+          timestamp,
+          type,
+          thread:threads!inner(
             id,
-            text,
-            timestamp,
-            type,
-            details,
-            reads:message_read_receipts(
-              read_at
-            ),
-            from:profiles!inner(
-              name
-            )
+            title,
+            topic
+          ),
+          reads:message_read_receipts(
+            read_at
+          ),
+          from:profiles!inner(
+            name
           )
         `,
         )
-        .not("status", "eq", "Closed")
-        .not("status", "eq", "Archived")
-        .order("created_at", { ascending: false })
+        .eq("thread.status", "Open")
+        .eq("reads.user_id", user.id)
+        .order("timestamp", { ascending: false })
         .limit(100);
 
-      if (threadsError) throw threadsError;
+      if (messagesError) throw messagesError;
 
-      const processedMessages = threadsData.flatMap((thread) =>
-        thread.messages.map((message) => ({
-          threadId: thread.id,
-          threadTitle: thread.title,
-          threadTopic: thread.topic,
-          id: message.id,
-          text: message.text,
-          sender: message.from.name,
-          timestamp: new Date(message.timestamp),
-          type: message.type,
-          readAt: message.reads[0]?.read_at
-            ? new Date(message.reads[0].read_at)
-            : null,
-        })),
-      );
+      const processedMessages = messagesData.map((message) => ({
+        threadId: message.thread.id,
+        threadTitle: message.thread.title,
+        threadTopic: message.thread.topic,
+        id: message.id,
+        text: message.text,
+        sender: message.from.name,
+        timestamp: new Date(message.timestamp),
+        type: message.type,
+        readAt: message.reads[0]?.read_at
+          ? new Date(message.reads[0].read_at)
+          : null,
+      }));
 
       setThreads([
         ...new Set(processedMessages.map(({ threadTitle }) => threadTitle)),
@@ -273,16 +268,21 @@ export default function Messages() {
                 onClick={() => handleMessageClick(message.threadId)}
               >
                 <TableCell>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <span className="text-muted-foreground">
-                        {formatThreadTimestamp(message.timestamp)}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {message.timestamp.toLocaleString()}
-                    </TooltipContent>
-                  </Tooltip>
+                  <div className="flex items-center">
+                    {!message.readAt && (
+                      <div className="w-2 h-2 rounded-full bg-red-500 mr-2" />
+                    )}
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <span className="text-muted-foreground">
+                          {formatThreadTimestamp(message.timestamp)}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {message.timestamp.toLocaleString()}
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
@@ -296,7 +296,15 @@ export default function Messages() {
                 </TableCell>
                 <TableCell>{message.threadTitle}</TableCell>
                 <TableCell>
-                  <div className="max-w-md truncate">{message.text}</div>
+                  <div className="max-w-md truncate">
+                    {!message.readAt ? (
+                      <span className="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                        Click to view message
+                      </span>
+                    ) : (
+                      message.text
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))
