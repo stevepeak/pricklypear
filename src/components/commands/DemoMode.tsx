@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { generateDemoMessage } from "@/services/messageService/generateDemoMessage";
 
 const demoModeSchema = z.object({
   enabled: z.boolean(),
@@ -42,6 +43,28 @@ export function DemoModeDialog({ open, onOpenChange }: DemoModeDialogProps) {
     }
     return DEFAULT_SETTINGS;
   });
+
+  // Effect to handle demo message generation
+  React.useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+
+    if (settings.enabled) {
+      // Generate a message immediately when enabled
+      generateDemoMessage();
+
+      // Set up interval for periodic message generation
+      intervalId = setInterval(() => {
+        generateDemoMessage();
+      }, settings.messageFrequency * 1000);
+    }
+
+    // Cleanup interval when component unmounts or settings change
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [settings.enabled, settings.messageFrequency]);
 
   const handleSave = () => {
     try {
