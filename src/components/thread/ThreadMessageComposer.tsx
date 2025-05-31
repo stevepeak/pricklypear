@@ -37,7 +37,6 @@ import { Badge } from "../ui/badge";
 import { useConnections } from "@/hooks/useConnections";
 import { getMessages } from "@/services/messageService/get-messages";
 import { Thread, isAIThread } from "@/types/thread";
-import { SystemPromptDialog } from "./composer/SystemPrompt";
 import { archiveThread, unarchiveThread } from "@/services/threadService";
 import { Switch } from "@/components/ui/switch";
 import { handleError } from "@/services/messageService/utils";
@@ -82,8 +81,6 @@ const ThreadMessageComposer = React.forwardRef<
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [showJumpToLatest, setShowJumpToLatest] = useState(false);
     const { connections } = useConnections();
-    const [isSystemPromptDialogOpen, setIsSystemPromptDialogOpen] =
-      useState(false);
     const [isArchiving, setIsArchiving] = useState(false);
     const [isUnarchiving, setIsUnarchiving] = useState(false);
 
@@ -284,12 +281,6 @@ const ThreadMessageComposer = React.forwardRef<
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel>Preferences</DropdownMenuLabel>
-                  <DropdownMenuItem
-                    onSelect={() => setIsSystemPromptDialogOpen(true)}
-                  >
-                    <MessageSquarePlus className="h-4 w-4 mr-2" /> Update System
-                    Prompt
-                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <div className="flex items-center justify-between w-full">
                       <span className="flex items-center gap-2">
@@ -424,10 +415,6 @@ const ThreadMessageComposer = React.forwardRef<
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <SystemPromptDialog
-            open={isSystemPromptDialogOpen}
-            onOpenChange={setIsSystemPromptDialogOpen}
-          />
         </div>
       </>
     );
