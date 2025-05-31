@@ -12,6 +12,7 @@ import type { Thread } from "@/types/thread";
 import { toast } from "sonner";
 import { useConnections } from "@/hooks/useConnections";
 import { isAIThread } from "@/types/thread";
+import { useRealtimeMessages } from "./useRealtimeMessages";
 
 export const useThreadMessages = (
   threadId: string | undefined,
@@ -58,6 +59,23 @@ export const useThreadMessages = (
     setMessages(messagesData);
     return messagesData;
   }, [threadId, connections]);
+
+  // Subscribe to real-time updates
+  useRealtimeMessages({
+    onMessageReceived: (message) => {
+      // Only process messages for this thread
+      if (message.threadId === threadId) {
+        setMessages((prev) => [...prev, message]);
+      }
+    },
+    onReadReceiptUpdated: (messageId, readAt) => {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === messageId ? { ...m, isRead: true, readAt } : m,
+        ),
+      );
+    },
+  });
 
   const handleInitiateMessageReview = async () => {
     if (!newMessage.trim() || !user) return;

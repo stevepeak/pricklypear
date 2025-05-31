@@ -150,9 +150,10 @@ export const getAllUnreadCounts = async (): Promise<Record<string, number>> => {
         )
       `,
       )
+      // My read receipts
       .eq("user_id", user.id)
-      .is("read_at", null)
-      .neq("messages.user_id", user.id);
+      // If I read it
+      .is("read_at", null);
 
     if (error) {
       return handleError(error, "fetching all unread counts") ? {} : {};

@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { GlobalMessagesProvider } from "@/contexts/GlobalMessagesContext";
 import Home from "./pages/Home";
 import Threads from "./pages/Threads";
 import ThreadView from "./pages/ThreadView";
@@ -93,14 +94,16 @@ function AppRoutes() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <ConnectionsProvider>
-        <TooltipProvider>
-          <Sonner />
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </TooltipProvider>
-      </ConnectionsProvider>
+      <GlobalMessagesProvider>
+        <ConnectionsProvider>
+          <TooltipProvider>
+            <Sonner />
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </ConnectionsProvider>
+      </GlobalMessagesProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

@@ -30,6 +30,7 @@ import { formatThreadTimestamp } from "@/utils/formatTimestamp";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
+import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
 
 type ListMessage = {
   threadId: string;
@@ -115,6 +116,15 @@ export default function Messages() {
       setIsLoading(false);
     }
   }, [user]);
+
+  // Set up real-time updates
+  useRealtimeMessages({
+    onUnreadCountsUpdated: async () => {
+      // TODO future do not reload all, just append the new message
+      // Refresh messages when there are updates
+      await loadMessages();
+    },
+  });
 
   useEffect(() => {
     loadMessages();
