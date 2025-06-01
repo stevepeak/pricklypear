@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   CommandDialog,
   CommandInput,
@@ -12,14 +13,39 @@ import { SystemPromptDialog } from "@/components/commands/SystemPrompt";
 import { DemoModeDialog } from "@/components/commands/DemoMode";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
-import { Moon, Sun } from "lucide-react";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { useConnections } from "@/hooks/useConnections";
+import {
+  Moon,
+  Sun,
+  MessageSquareText,
+  MessageSquare,
+  BookUser,
+  Baby,
+  FileText,
+  Calendar,
+  Receipt,
+  Sparkles,
+  BadgeCheck,
+  Link2,
+  LogOut,
+  Settings,
+} from "lucide-react";
 
 export function CommandMenu() {
   const [open, setOpen] = React.useState(false);
   const [isSystemPromptOpen, setIsSystemPromptOpen] = React.useState(false);
   const [isDemoModeOpen, setIsDemoModeOpen] = React.useState(false);
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
+  const { totalUnread, threadCounts } = useUnreadMessages();
+  const { connections } = useConnections();
+
+  // Calculate pending incoming connections
+  const pendingIncomingCount = connections.filter(
+    (c) => c.status === "pending" && c.user_id !== user?.id,
+  ).length;
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -32,22 +58,136 @@ export function CommandMenu() {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/");
+  };
+
+  const navItems = user
+    ? [
+        {
+          path: "/threads",
+          label: "Threads",
+          icon: <MessageSquareText className="h-4 w-4 " />,
+          badge: Object.keys(threadCounts).length || undefined,
+        },
+        {
+          path: "/messages",
+          label: "Messages",
+          icon: <MessageSquare className="h-4 w-4 " />,
+          badge: totalUnread || undefined,
+        },
+        {
+          path: "/connections",
+          label: "Connections",
+          icon: <BookUser className="h-4 w-4 " />,
+          badge: pendingIncomingCount || undefined,
+        },
+        {
+          path: "/children",
+          label: "Children Profiles",
+          icon: <Baby className="h-4 w-4 " />,
+        },
+        {
+          path: "/documents",
+          label: "Documents",
+          icon: <FileText className="h-4 w-4 " />,
+        },
+        {
+          path: "/calendar",
+          label: "Calendar",
+          icon: <Calendar className="h-4 w-4 " />,
+        },
+        {
+          path: "/expenses",
+          label: "Expenses",
+          icon: <Receipt className="h-4 w-4 " />,
+        },
+      ]
+    : [];
+
   return (
     <>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>Calendar</CommandItem>
-            <CommandItem>Search Emoji</CommandItem>
-            <CommandItem>Calculator</CommandItem>
+          <CommandGroup heading="Navigation">
+            {navItems.map((item) => (
+              <CommandItem
+                key={item.path}
+                onSelect={() => {
+                  setOpen(false);
+                  navigate(item.path);
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  {item.icon}
+                  <span>{item.label}</span>
+                  {item.badge !== undefined && (
+                    <span className="ml-auto text-xs text-muted-foreground">
+                      {item.badge}
+                    </span>
+                  )}
+                </div>
+              </CommandItem>
+            ))}
+            <CommandItem
+              onSelect={() => {
+                setOpen(false);
+                navigate("/feature-request");
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                <span>Feature Request</span>
+              </div>
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Account">
+            <CommandItem
+              onSelect={() => {
+                setOpen(false);
+                navigate("/account");
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <BadgeCheck className="h-4 w-4" />
+                <span>Account</span>
+              </div>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setOpen(false);
+                navigate("/billing");
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                <span>Billing</span>
+              </div>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setOpen(false);
+                navigate("/integrations");
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <Link2 className="h-4 w-4" />
+                <span>Integrations</span>
+              </div>
+            </CommandItem>
+            <CommandItem onSelect={handleLogout}>
+              <div className="flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                <span>Log Out</span>
+              </div>
+            </CommandItem>
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Settings">
-            <CommandItem>Profile</CommandItem>
-            <CommandItem>Billing</CommandItem>
-            <CommandItem>Settings</CommandItem>
             <CommandItem onSelect={toggleTheme}>
               <div className="flex items-center gap-2">
                 {theme === "dark" ? (
@@ -74,7 +214,10 @@ export function CommandMenu() {
                     setIsDemoModeOpen(true);
                   }}
                 >
-                  Demo Mode
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" />
+                    <span>Demo Mode</span>
+                  </div>
                 </CommandItem>
                 <CommandItem
                   onSelect={() => {
@@ -82,7 +225,10 @@ export function CommandMenu() {
                     setIsSystemPromptOpen(true);
                   }}
                 >
-                  Update System Prompt
+                  <div className="flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    <span>Update System Prompt</span>
+                  </div>
                 </CommandItem>
               </CommandGroup>
             </>
