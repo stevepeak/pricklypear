@@ -151,3 +151,10 @@ input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
   display: none;
 }
+
+/* Hide kbd elements on mobile screens */
+@media (max-width: 768px) {
+  kbd {
+    display: none;
+  }
+}
