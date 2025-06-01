@@ -382,10 +382,16 @@ export default function Documents() {
         </TableBody>
       </Table>
       {isFiltering && (
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center items-center gap-2 mt-4 text-xs text-muted-foreground">
+          {documents.length - filtered.length > 0 && (
+            <span>
+              <strong>{documents.length - filtered.length} documents</strong>{" "}
+              hidden by filters.
+            </span>
+          )}
           <Button
-            variant="ghost"
-            className="text-muted-foreground"
+            variant="link"
+            className="text-muted-foreground text-xs"
             onClick={clearFilters}
           >
             Clear filters
