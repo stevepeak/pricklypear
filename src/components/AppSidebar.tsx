@@ -56,7 +56,7 @@ export function AppSidebar() {
 
   // Calculate pending incoming connections
   const pendingIncomingCount = connections.filter(
-    (c) => c.status === "pending" && c.user_id !== user.id,
+    (c) => c.status === "pending" && c.id !== user.id,
   ).length;
 
   const handleLogout = async () => {

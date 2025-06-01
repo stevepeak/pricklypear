@@ -170,7 +170,7 @@ export const useThreadMessages = (
             {
               ...aiResult.aiMessage,
               isCurrentUser: false,
-              sender: "Prickly AI",
+              senderName: "Prickly AI",
               timestamp: new Date(aiResult.aiMessage.timestamp),
             },
           ]);

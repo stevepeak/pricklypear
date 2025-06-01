@@ -2,6 +2,6 @@ export { getConnections } from "./getConnections";
 export { updateConnectionStatus, disableConnection } from "./manageConnections";
 export type {
   ConnectionStatus,
-  Connection,
+  ConnectedUser,
   InviteResponse,
 } from "@/types/connection";

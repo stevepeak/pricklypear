@@ -1,10 +1,13 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Connection, ConnectionStatus } from "@/services/users/userService.js";
+import {
+  ConnectedUser,
+  ConnectionStatus,
+} from "@/services/users/userService.js";
 import ConnectionCard from "./ConnectionCard";
 
 interface PendingConnectionsListProps {
-  connections: Connection[];
+  connections: ConnectedUser[];
   onUpdateStatus: (connectionId: string, status: ConnectionStatus) => void;
 }
 

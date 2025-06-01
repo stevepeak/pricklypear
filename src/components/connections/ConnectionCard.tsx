@@ -9,11 +9,11 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import { CheckCircle2, XCircle, UserCheck, EyeOff } from "lucide-react";
-import { Connection } from "@/services/users/userService.js";
+import { ConnectedUser } from "@/services/users/userService.js";
 import DisableConnectionDialog from "./DisableConnectionDialog";
 
 interface ConnectionCardProps {
-  connection: Connection;
+  connection: ConnectedUser;
   onUpdateStatus?: (
     connectionId: string,
     status: "accepted" | "declined" | "disabled" | "pending",

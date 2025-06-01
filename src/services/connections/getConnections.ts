@@ -1,10 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Connection } from "@/types/connection";
+import { ConnectedUser } from "@/types/connection";
 import { requireCurrentUser } from "@/utils/authCache";
 import { handleError } from "@/services/messageService/utils";
 
 // Get all connections for the current user (both as sender and receiver)
-export const getConnections = async (): Promise<Connection[]> => {
+export const getConnections = async (): Promise<ConnectedUser[]> => {
   try {
     const user = await requireCurrentUser();
 
@@ -33,9 +33,13 @@ export const getConnections = async (): Promise<Connection[]> => {
       const name =
         c.user_id === userId ? c.connected_profile.name : c.user_profile.name;
       return {
-        name: name ?? null,
-        otherUserId,
-        ...c,
+        id: otherUserId,
+        name: name ?? "Unknown Name",
+        status: c.status,
+        connection_id: c.id,
+        created_at: c.created_at,
+        updated_at: c.updated_at,
+        invitee_email: c.invitee_email,
       };
     });
 

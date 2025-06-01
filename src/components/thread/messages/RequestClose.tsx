@@ -72,7 +72,7 @@ function RequestClose(props: {
       )}
     >
       <div className="flex items-center gap-1 mb-1 text-xs text-muted-foreground">
-        <span>{message.sender}</span>
+        <span>{message.senderName}</span>
         <span>•</span>
         <span>{formatThreadTimestamp(message.timestamp)}</span>
       </div>

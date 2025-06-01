@@ -4,13 +4,14 @@ import React, {
   useEffect,
   useState,
   ReactNode,
+  useCallback,
 } from "react";
 import { getConnections } from "@/services/users/userService.js";
 import { useAuth } from "@/contexts/AuthContext";
-import type { Connection } from "@/types/connection";
+import type { ConnectedUser } from "@/types/connection";
 
 interface ConnectionsContextType {
-  connections: Connection[];
+  connections: ConnectedUser[];
   isLoading: boolean;
   refreshConnections: () => Promise<void>;
 }
@@ -21,10 +22,10 @@ const ConnectionsContext = createContext<ConnectionsContextType | undefined>(
 
 export const ConnectionsProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
-  const [connections, setConnections] = useState<Connection[]>([]);
+  const [connections, setConnections] = useState<ConnectedUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const refreshConnections = async () => {
+  const refreshConnections = useCallback(async () => {
     if (!user) {
       setConnections([]);
       return;
@@ -38,12 +39,12 @@ export const ConnectionsProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
+    if (!user) return;
     refreshConnections();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, refreshConnections]);
 
   return (
     <ConnectionsContext.Provider

@@ -1,22 +1,27 @@
 import { Database } from "@/integrations/supabase/types";
-
+/**
+ * Represents a message in a thread
+ * @typedef {Object} Message
+ * @property {string} id - Unique identifier for the message
+ * @property {string} text - The content of the message
+ * @property {string} senderName - Name of the person who sent the message
+ * @property {Date} timestamp - When the message was sent
+ * @property {string} threadId - ID of the thread this message belongs to
+ * @property {boolean} [isCurrentUser] - Flag to identify if the message was sent by the current user
+ * @property {boolean} [isRead] - Whether the message has been read
+ * @property {Date|null} [readAt] - When the message was read, if applicable
+ * @property {Database["public"]["Enums"]["message_type"]} type - Type of message (e.g., 'user_message', 'request_close')
+ * @property {Record<string, unknown>|null} details - Additional message metadata
+ */
 export type Message = {
   id: string;
   text: string;
-  sender: string;
+  senderName: string;
   timestamp: Date;
-
   threadId: string;
-
-  // Flag to identify current user's messages
   isCurrentUser?: boolean;
-
-  // Read status information
   isRead?: boolean;
   readAt?: Date | null;
-
-  // Message type (e.g., 'user_message', 'request_close', etc)
   type: Database["public"]["Enums"]["message_type"];
-
   details: Record<string, unknown> | null;
 };

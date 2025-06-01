@@ -173,7 +173,7 @@ const ThreadMessageComposer = React.forwardRef<
                 ? msg.timestamp
                 : new Date(msg.timestamp);
             const time = date.toLocaleString();
-            return `[${time}] ${msg.sender}: ${msg.text}`;
+            return `[${time}] ${msg.senderName}: ${msg.text}`;
           })
           .join("\n\n");
         await navigator.clipboard.writeText(formatted);

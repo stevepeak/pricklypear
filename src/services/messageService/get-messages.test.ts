@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { Connection } from "@/types/connection";
+import type { ConnectedUser } from "@/types/connection";
 
 const orderMock = vi.fn();
 
@@ -47,15 +47,14 @@ describe("getMessages", () => {
       error: null,
     });
 
-    const connections: Connection[] = [
+    const connections: ConnectedUser[] = [
       {
-        id: "c1",
-        user_id: "user1",
-        otherUserId: "u2",
+        connection_id: "c1",
+        id: "u2",
         name: "Bob",
         created_at: "",
         status: "accepted",
-      } as unknown as Connection,
+      },
     ];
 
     const result = await getMessages({ threadId: "t1", connections });
@@ -64,7 +63,7 @@ describe("getMessages", () => {
       {
         id: "m1",
         text: "Hello",
-        sender: "Bob",
+        senderName: "Bob",
         timestamp: new Date(timestamp),
         threadId: "t1",
         isCurrentUser: false,

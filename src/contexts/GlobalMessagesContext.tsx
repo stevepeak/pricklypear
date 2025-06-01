@@ -109,12 +109,11 @@ export const GlobalMessagesProvider: React.FC<{
               table: "messages",
             },
             async (payload) => {
-              console.log("💬 New message", payload);
               const newData = payload.new as MessageRow;
               const newMessage: Message = {
                 id: newData.id,
                 text: newData.text,
-                sender: newData.user_id,
+                senderName: newData.user_id,
                 timestamp: new Date(newData.timestamp),
                 threadId: newData.thread_id,
                 type: newData.type,
@@ -137,24 +136,26 @@ export const GlobalMessagesProvider: React.FC<{
               filter: `user_id=eq.${user.id}`,
             },
             async (payload) => {
-              console.log("New Read Receipt Change", payload);
               const newData = payload.new as ReadReceiptRow;
+
+              // Get unread counts first
+              const counts = await getAllUnreadCounts();
+              const total = Object.values(counts).reduce(
+                (sum, count) => sum + count,
+                0,
+              );
+
+              // Update read receipt if available
               if (newData?.read_at) {
                 readReceiptCallbacksRef.current.forEach((callback) =>
                   callback(newData.message_id, new Date(newData.read_at)),
                 );
               }
+
               // Update unread counts for all registered callbacks
-              if (unreadCountsCallbacksRef.current.length > 0) {
-                const counts = await getAllUnreadCounts();
-                const total = Object.values(counts).reduce(
-                  (sum, count) => sum + count,
-                  0,
-                );
-                unreadCountsCallbacksRef.current.forEach((callback) =>
-                  callback(total, counts),
-                );
-              }
+              unreadCountsCallbacksRef.current.forEach((callback) =>
+                callback(total, counts),
+              );
             },
           )
           .subscribe((status, err) => {

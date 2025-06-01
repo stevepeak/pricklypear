@@ -3,7 +3,7 @@ export {
   updateConnectionStatus,
   disableConnection,
   type ConnectionStatus,
-  type Connection,
+  type ConnectedUser,
   type InviteResponse,
 } from "../connections/index.js";
 

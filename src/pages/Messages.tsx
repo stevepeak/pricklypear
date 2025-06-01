@@ -66,7 +66,7 @@ type ListMessage = {
   threadType: Database["public"]["Enums"]["thread_type"];
   id: string;
   text: string;
-  sender: string;
+  senderName: string;
   timestamp: Date;
   type: Message["type"];
   readAt: Date | null;
@@ -123,7 +123,7 @@ export default function Messages() {
         threadType: message.thread.type,
         id: message.id,
         text: message.text,
-        sender: message.from.name,
+        senderName: message.from.name,
         timestamp: new Date(message.timestamp),
         type: message.type,
         readAt: message.reads[0]?.read_at
@@ -144,22 +144,74 @@ export default function Messages() {
 
   // Set up real-time updates
   useRealtimeMessages({
-    onUnreadCountsUpdated: async () => {
-      // TODO future do not reload all, just append the new message
-      // Refresh messages when there are updates
-      await loadMessages();
+    onMessageReceived: async (message) => {
+      // Fetch additional message details to convert to ListMessage
+      const { data: messageData, error: messageError } = await supabase
+        .from("messages")
+        .select(
+          `
+          thread:threads!inner(
+            id,
+            title,
+            topic,
+            type
+          ),
+          from:profiles!inner(
+            name
+          )
+        `,
+        )
+        .eq("id", message.id)
+        .single();
+
+      if (messageError || !messageData) {
+        console.error("Failed to fetch message details:", messageError);
+        return;
+      }
+
+      const listMessage: ListMessage = {
+        threadId: messageData.thread.id,
+        threadTitle: messageData.thread.title,
+        threadTopic: messageData.thread.topic,
+        threadType: messageData.thread.type,
+        id: message.id,
+        text: message.text,
+        senderName: messageData.from.name,
+        timestamp: message.timestamp,
+        type: message.type,
+        readAt: null,
+      };
+
+      // Add new message to the list if it's not already there
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === listMessage.id)) {
+          return prev;
+        }
+        return [listMessage, ...prev];
+      });
+    },
+    onUnreadCountsUpdated: (_, threadCounts) => {
+      // Update read status of messages
+      setMessages((prev) =>
+        prev.map((message) => ({
+          ...message,
+          readAt:
+            threadCounts[message.threadId] === 0 ? new Date() : message.readAt,
+        })),
+      );
     },
   });
 
   useEffect(() => {
+    if (!user) return;
     loadMessages();
-  }, [loadMessages]);
+  }, [user, loadMessages]);
 
   // Filter messages based on search and thread filters
   const filtered = messages.filter((message) => {
     const matchesSearch = search
       ? message.text.toLowerCase().includes(search.toLowerCase()) ||
-        message.sender.toLowerCase().includes(search.toLowerCase()) ||
+        message.senderName.toLowerCase().includes(search.toLowerCase()) ||
         message.threadTitle.toLowerCase().includes(search.toLowerCase())
       : true;
 
@@ -315,10 +367,10 @@ export default function Messages() {
                   <div className="flex items-center gap-2">
                     <Avatar className="h-6 w-6">
                       <AvatarFallback>
-                        {message.sender.charAt(0).toUpperCase()}
+                        {message.senderName.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <span>{message.sender}</span>
+                    <span>{message.senderName}</span>
                   </div>
                 </TableCell>
                 <TableCell>

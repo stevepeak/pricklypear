@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import type { Connection } from "@/types/connection";
+import type { ConnectedUser } from "@/types/connection";
 import React from "react";
 import { Switch } from "../ui/switch";
 
@@ -22,7 +22,7 @@ interface CreateThreadFormProps {
   setSelectedContactIds: (contactIds: string[]) => void;
   selectedTopic?: ThreadTopic;
   setSelectedTopic?: (topic: ThreadTopic | undefined) => void;
-  connections: Connection[];
+  connections: ConnectedUser[];
   isLoadingContacts: boolean;
   isCreating: boolean;
   onSubmit: () => void;
@@ -116,12 +116,10 @@ const CreateThreadForm = ({
               {selectedContactIds.length === 0
                 ? "Select participants"
                 : selectedContactIds.length === 1
-                  ? connections.find(
-                      (c) => c.otherUserId === selectedContactIds[0],
-                    )?.name ||
-                    connections.find(
-                      (c) => c.otherUserId === selectedContactIds[0],
-                    )?.invitee_email ||
+                  ? connections.find((c) => c.id === selectedContactIds[0])
+                      ?.name ||
+                    connections.find((c) => c.id === selectedContactIds[0])
+                      ?.invitee_email ||
                     "1 participant"
                   : `${selectedContactIds.length} people`}
               <ChevronDown className="h-4 w-4 ml-2" />
@@ -130,19 +128,17 @@ const CreateThreadForm = ({
           <DropdownMenuContent className="w-56" align="start">
             {connections.map((connection) => (
               <DropdownMenuCheckboxItem
-                key={connection.otherUserId}
-                checked={selectedContactIds.includes(connection.otherUserId)}
+                key={connection.id}
+                checked={selectedContactIds.includes(connection.id)}
                 onCheckedChange={(checked) => {
                   if (checked) {
                     setSelectedContactIds([
                       ...selectedContactIds,
-                      connection.otherUserId,
+                      connection.id,
                     ]);
                   } else {
                     setSelectedContactIds(
-                      selectedContactIds.filter(
-                        (id) => id !== connection.otherUserId,
-                      ),
+                      selectedContactIds.filter((id) => id !== connection.id),
                     );
                   }
                 }}
