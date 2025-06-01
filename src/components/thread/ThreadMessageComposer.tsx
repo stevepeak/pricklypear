@@ -222,7 +222,7 @@ const ThreadMessageComposer = React.forwardRef<
 
     return (
       <>
-        <div className="sticky bottom-2 bg-white border rounded-md shadow-md w-full m-auto max-w-[800px]">
+        <div className="sticky bottom-2 bg-background border rounded-md shadow-md w-full m-auto max-w-[800px]">
           {showJumpToLatest && messagesEndRef && (
             <div className="absolute left-1/2 -translate-x-1/2 mb-2 -top-10">
               <Button
@@ -243,7 +243,7 @@ const ThreadMessageComposer = React.forwardRef<
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={isSending}
-            className="w-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none px-4 pt-4 shadow-none"
+            className="w-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none px-4 pt-4 shadow-none bg-background"
             rows={3}
             autoFocus={autoFocus && !isSending}
           />
@@ -362,7 +362,7 @@ const ThreadMessageComposer = React.forwardRef<
                 onClick={onSendMessage}
                 disabled={!newMessage.trim() || isSending}
                 size="default"
-                className={`shrink-0 flex items-center gap-1 ${isAIThread(thread) ? "bg-purple-600 hover:bg-purple-700" : ""}`}
+                className={`shrink-0 flex items-center gap-1 ${isAIThread(thread) ? "bg-primary hover:bg-primary/90" : ""}`}
               >
                 {isSending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
