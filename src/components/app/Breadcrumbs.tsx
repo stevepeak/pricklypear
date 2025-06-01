@@ -13,6 +13,12 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { getThread } from "@/services/threadService";
 import { handleError } from "@/services/messageService/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function Breadcrumbs() {
   const location = useLocation();
@@ -64,7 +70,18 @@ function Breadcrumbs() {
     <Breadcrumb className="p-3 sticky top-0 z-20 bg-background border-b">
       <BreadcrumbList>
         <BreadcrumbItem>
-          <SidebarTrigger className="" />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <SidebarTrigger className="" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <kbd className="bg-muted text-muted-foreground pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none">
+                  <span className="text-xs">Collapse sidebar ⌘</span>B
+                </kbd>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </BreadcrumbItem>
         {pathnames.map((value, idx) => {
           const to = `/${pathnames.slice(0, idx + 1).join("/")}`;
