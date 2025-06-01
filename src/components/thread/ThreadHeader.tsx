@@ -1,4 +1,4 @@
-import { Bot, Users, BotMessageSquare, Headset } from "lucide-react";
+import { Bot, Users, Headset } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getThreadTopicInfo, type Thread, isAIThread } from "@/types/thread";
 import { AvatarName } from "@/components/ui/avatar-name";
@@ -99,8 +99,13 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
       <div className="md:hidden absolute right-6 top-6 z-10">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Show summary">
-              <BotMessageSquare className="size-6 text-muted-foreground" />
+            <Button
+              variant="ghost"
+              className="text-muted-foreground"
+              size="sm"
+              aria-label="Show summary"
+            >
+              Read summary
             </Button>
           </SheetTrigger>
           <SheetContent side="bottom">
@@ -190,32 +195,21 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
               </Tooltip>
             )}
           </div>
-          {!isAIThread(thread) && (
+          {thread.type === "default" && (
             <div className="flex flex-col space-y-2">
-              {thread.type === "customer_support" ? (
-                <div className="flex items-center gap-2 flex-wrap text-muted-foreground">
-                  <Headset className="h-4 w-4" />
-                  <span className="text-sm">Prickly Pear Staff</span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Participants:</span>
+                <div className="flex flex-wrap gap-4">
+                  {thread.participants.map((participant) => (
+                    <AvatarName
+                      key={participant}
+                      name={participant}
+                      size="xs"
+                    />
+                  ))}
                 </div>
-              ) : thread.participants && thread.participants.length > 0 ? (
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Participants:</span>
-                  <div className="flex flex-wrap gap-4">
-                    {thread.participants.map((participant) => (
-                      <AvatarName
-                        key={participant}
-                        name={participant}
-                        size="xs"
-                      />
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="text-sm text-muted-foreground">
-                  No other participants
-                </div>
-              )}
+              </div>
             </div>
           )}
         </div>

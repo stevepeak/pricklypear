@@ -65,7 +65,7 @@ const ThreadView = () => {
   }
 
   return (
-    <>
+    <div className="p-2">
       <div
         className="flex flex-col flex-1"
         style={{ minHeight: "calc(100vh - 50px)" }}
@@ -105,7 +105,7 @@ const ThreadView = () => {
         isLoading={isReviewingMessage}
         requireAiApproval={thread.controls?.requireAiApproval}
       />
-    </>
+    </div>
   );
 };
 
