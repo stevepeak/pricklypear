@@ -41,6 +41,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useConnections } from "@/hooks/useConnections";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function AppSidebar() {
   const { user, signOut } = useAuth();
@@ -140,24 +145,52 @@ export function AppSidebar() {
             <SidebarMenu>
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
-                  <SidebarMenuButton
-                    asChild={false}
-                    onClick={() => {
-                      navigate(item.path);
-                      if (isMobile) setOpenMobile(false);
-                    }}
-                    className="flex items-center w-full justify-start mb-1"
-                  >
-                    {item.icon}
-                    {Array.isArray(item.label) ? (
-                      <span className="flex items-center gap-2">
-                        {item.label[0]}
-                        {item.label[1]}
-                      </span>
-                    ) : (
-                      <span>{item.label}</span>
-                    )}
-                  </SidebarMenuButton>
+                  {state === "collapsed" ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <SidebarMenuButton
+                          asChild={false}
+                          onClick={() => {
+                            navigate(item.path);
+                            if (isMobile) setOpenMobile(false);
+                          }}
+                          className="flex items-center w-full justify-start mb-1"
+                        >
+                          {item.icon}
+                          {Array.isArray(item.label) ? (
+                            <span className="flex items-center gap-2">
+                              {item.label[0]}
+                              {item.label[1]}
+                            </span>
+                          ) : (
+                            <span>{item.label}</span>
+                          )}
+                        </SidebarMenuButton>
+                      </TooltipTrigger>
+                      <TooltipContent side="right" sideOffset={5}>
+                        {item.label}
+                      </TooltipContent>
+                    </Tooltip>
+                  ) : (
+                    <SidebarMenuButton
+                      asChild={false}
+                      onClick={() => {
+                        navigate(item.path);
+                        if (isMobile) setOpenMobile(false);
+                      }}
+                      className="flex items-center w-full justify-start mb-1"
+                    >
+                      {item.icon}
+                      {Array.isArray(item.label) ? (
+                        <span className="flex items-center gap-2">
+                          {item.label[0]}
+                          {item.label[1]}
+                        </span>
+                      ) : (
+                        <span>{item.label}</span>
+                      )}
+                    </SidebarMenuButton>
+                  )}
                   {item.badge !== undefined && (
                     <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
                   )}
@@ -165,17 +198,38 @@ export function AppSidebar() {
               ))}
               {/* Feature Request Button */}
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild={false}
-                  onClick={() => {
-                    navigate("/feature-request");
-                    if (isMobile) setOpenMobile(false);
-                  }}
-                  className="flex items-center w-full justify-start mb-1"
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  <span>Feature Request</span>
-                </SidebarMenuButton>
+                {state === "collapsed" ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton
+                        asChild={false}
+                        onClick={() => {
+                          navigate("/feature-request");
+                          if (isMobile) setOpenMobile(false);
+                        }}
+                        className="flex items-center w-full justify-start mb-1"
+                      >
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        <span>Feature Request</span>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" sideOffset={5}>
+                      Feature Request
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <SidebarMenuButton
+                    asChild={false}
+                    onClick={() => {
+                      navigate("/feature-request");
+                      if (isMobile) setOpenMobile(false);
+                    }}
+                    className="flex items-center w-full justify-start mb-1"
+                  >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    <span>Feature Request</span>
+                  </SidebarMenuButton>
+                )}
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
