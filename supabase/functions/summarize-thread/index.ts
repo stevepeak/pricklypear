@@ -21,7 +21,9 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
   }
 
   try {
-    const { threadId } = await req.json();
+    const reqJson = await req.json();
+    console.log("reqJson", reqJson);
+    const { threadId } = reqJson;
 
     if (!threadId) {
       return new Response(JSON.stringify({ error: "ThreadId is required" }), {
