@@ -37,7 +37,7 @@ export function CommandMenu() {
   const [isSystemPromptOpen, setIsSystemPromptOpen] = React.useState(false);
   const [isDemoModeOpen, setIsDemoModeOpen] = React.useState(false);
   const { user, signOut } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { totalUnread, threadCounts } = useUnreadMessages();
   const { connections } = useConnections();
@@ -176,7 +176,7 @@ export function CommandMenu() {
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Settings">
-            <CommandItem onSelect={toggleTheme}>
+            <CommandItem onSelect={setTheme}>
               {theme === "dark" ? (
                 <>
                   <Sun className="h-4 w-4" />
