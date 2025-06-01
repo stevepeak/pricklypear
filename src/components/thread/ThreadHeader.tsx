@@ -192,7 +192,12 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
           </div>
           {!isAIThread(thread) && (
             <div className="flex flex-col space-y-2">
-              {thread.participants && thread.participants.length > 0 ? (
+              {thread.type === "customer_support" ? (
+                <div className="flex items-center gap-2 flex-wrap text-muted-foreground">
+                  <Headset className="h-4 w-4" />
+                  <span className="text-sm">Prickly Pear Staff</span>
+                </div>
+              ) : thread.participants && thread.participants.length > 0 ? (
                 <div className="flex items-center gap-2 flex-wrap">
                   <Users className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm font-medium">Participants:</span>
@@ -202,7 +207,6 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
                         key={participant}
                         name={participant}
                         size="xs"
-                        /* border already applied inside the component */
                       />
                     ))}
                   </div>
