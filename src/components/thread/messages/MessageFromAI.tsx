@@ -11,7 +11,11 @@ function MessageFromAI(props: { message: Message }) {
       )}
     >
       <div className="flex items-start gap-2">
-        <div className={cn("px-4 py-2 mr-20")}>
+        <div
+          className={cn(
+            "px-4 py-2 rounded-xl shadow-sm bg-muted text-muted-foreground border border-border mr-20",
+          )}
+        >
           <ReactMarkdown>{message.text}</ReactMarkdown>
         </div>
       </div>

@@ -11,7 +11,7 @@ function MessageFromParticipant(props: { message: Message }) {
         "flex flex-col animate-message-appear self-start items-start",
       )}
     >
-      <div className="flex items-center gap-1 mb-1 text-xs text-gray-500">
+      <div className="flex items-center gap-1 mb-1 text-xs text-muted-foreground">
         <span>{message.sender}</span>
         <span>•</span>
         <span>{formatThreadTimestamp(message.timestamp)}</span>
@@ -19,7 +19,7 @@ function MessageFromParticipant(props: { message: Message }) {
       <div className="flex items-start gap-1">
         <div
           className={cn(
-            "px-4 py-2 rounded-xl shadow-sm bg-gray-200 rounded-tl-none mr-20",
+            "px-4 py-2 rounded-xl shadow-sm bg-muted text-muted-foreground rounded-tl-none mr-20",
           )}
         >
           <ReactMarkdown>{message.text}</ReactMarkdown>

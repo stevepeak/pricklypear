@@ -12,18 +12,18 @@ function CustomerSupportMessage(props: { message: Message }) {
         "flex flex-col animate-message-appear self-start items-start",
       )}
     >
-      <div className="flex items-center gap-2 mb-1 text-xs text-blue-700 font-semibold">
-        <Headset className="h-4 w-4 text-blue-500" />
+      <div className="flex items-center gap-2 mb-1 text-xs text-primary font-semibold">
+        <Headset className="h-4 w-4 text-primary/70" />
         <span>Customer Support</span>
-        <span className="text-gray-400 font-normal">•</span>
-        <span className="text-gray-400 font-normal">
+        <span className="text-muted-foreground font-normal">•</span>
+        <span className="text-muted-foreground font-normal">
           {formatThreadTimestamp(message.timestamp)}
         </span>
       </div>
       <div className="flex items-start gap-1">
         <div
           className={cn(
-            "px-4 py-2 rounded-xl shadow-sm bg-blue-50 border border-blue-200 text-blue-900 mr-20",
+            "px-4 py-2 rounded-xl shadow-sm bg-primary/10 border border-primary/20 text-primary-foreground mr-20",
           )}
         >
           <ReactMarkdown>{message.text}</ReactMarkdown>
