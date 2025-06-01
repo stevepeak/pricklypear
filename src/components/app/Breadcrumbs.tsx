@@ -61,7 +61,7 @@ function Breadcrumbs() {
   }, [location.pathname, pathnames]);
 
   return (
-    <Breadcrumb className="p-3 sticky top-0 z-20 bg-white">
+    <Breadcrumb className="p-3 sticky top-0 z-20 bg-background border-b">
       <BreadcrumbList>
         <BreadcrumbItem>
           <SidebarTrigger className="" />

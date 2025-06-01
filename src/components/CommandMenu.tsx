@@ -11,12 +11,15 @@ import {
 import { SystemPromptDialog } from "@/components/commands/SystemPrompt";
 import { DemoModeDialog } from "@/components/commands/DemoMode";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Moon, Sun } from "lucide-react";
 
 export function CommandMenu() {
   const [open, setOpen] = React.useState(false);
   const [isSystemPromptOpen, setIsSystemPromptOpen] = React.useState(false);
   const [isDemoModeOpen, setIsDemoModeOpen] = React.useState(false);
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -45,6 +48,21 @@ export function CommandMenu() {
             <CommandItem>Profile</CommandItem>
             <CommandItem>Billing</CommandItem>
             <CommandItem>Settings</CommandItem>
+            <CommandItem onSelect={toggleTheme}>
+              <div className="flex items-center gap-2">
+                {theme === "dark" ? (
+                  <>
+                    <Sun className="h-4 w-4" />
+                    <span>Light Mode</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="h-4 w-4" />
+                    <span>Dark Mode</span>
+                  </>
+                )}
+              </div>
+            </CommandItem>
           </CommandGroup>
           {user?.id === "09b77fc6-776c-4b4a-bd8c-96bb7997516e" && (
             <>
