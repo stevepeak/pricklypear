@@ -112,7 +112,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <Link to="/" className="flex items-center space-x-2 px-2 py-4">
+        <Link to="/" className="flex items-center space-x-2">
           <div
             className="inline-block w-8 h-8 min-w-8 min-h-8 bg-[url('../public/logo.png')] bg-center bg-cover bg-no-repeat mr-1"
             role="img"
@@ -120,7 +120,7 @@ export function AppSidebar() {
           />
           {state === "expanded" && (
             <div className="flex items-center gap-2">
-              <span>Prickly Pear</span>
+              <span className="whitespace-nowrap">Prickly Pear</span>
               <kbd className="bg-muted text-muted-foreground pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none">
                 <span className="text-xs">⌘</span>K
               </kbd>
