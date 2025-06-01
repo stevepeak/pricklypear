@@ -30,6 +30,7 @@ import {
   Link2,
   LogOut,
   Settings,
+  SunMoon,
 } from "lucide-react";
 
 export function CommandMenu() {
@@ -37,7 +38,7 @@ export function CommandMenu() {
   const [isSystemPromptOpen, setIsSystemPromptOpen] = React.useState(false);
   const [isDemoModeOpen, setIsDemoModeOpen] = React.useState(false);
   const { user, signOut } = useAuth();
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   const navigate = useNavigate();
   const { totalUnread, threadCounts } = useUnreadMessages();
   const { connections } = useConnections();
@@ -176,18 +177,32 @@ export function CommandMenu() {
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Settings">
-            <CommandItem onSelect={setTheme}>
-              {theme === "dark" ? (
-                <>
-                  <Sun className="h-4 w-4" />
-                  <span>Light Mode</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="h-4 w-4" />
-                  <span>Dark Mode</span>
-                </>
-              )}
+            <CommandItem
+              onSelect={() => {
+                setOpen(false);
+                setTheme("light");
+              }}
+            >
+              <Sun className="h-4 w-4" />
+              <span>Light Mode</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setOpen(false);
+                setTheme("dark");
+              }}
+            >
+              <Moon className="h-4 w-4" />
+              <span>Dark Mode</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setOpen(false);
+                setTheme("system");
+              }}
+            >
+              <SunMoon className="h-4 w-4" />
+              <span>Theme based off system preferences</span>
             </CommandItem>
           </CommandGroup>
           {user?.id === "09b77fc6-776c-4b4a-bd8c-96bb7997516e" && (
