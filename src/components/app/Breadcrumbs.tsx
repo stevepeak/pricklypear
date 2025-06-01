@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -109,7 +108,9 @@ function Breadcrumbs() {
                 {isLast ? (
                   <BreadcrumbPage>{label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink href={to}>{label}</BreadcrumbLink>
+                  <Link to={to} className="hover:underline">
+                    {label}
+                  </Link>
                 )}
               </BreadcrumbItem>
             </React.Fragment>
