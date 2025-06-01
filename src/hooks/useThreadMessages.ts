@@ -194,6 +194,20 @@ export const useThreadMessages = (
       } finally {
         setIsSending(false);
       }
+    } else if (thread?.type === "customer_support") {
+      // Bypass message review for customer support threads
+      setIsSending(true);
+      const success = await saveMessage({
+        threadId: threadId!,
+        text: newMessage.trim(),
+        type: "user_message",
+      });
+      if (success) {
+        setNewMessage("");
+      } else {
+        toast("Error", { description: "Failed to send message." });
+      }
+      setIsSending(false);
     } else {
       handleInitiateMessageReview();
     }
