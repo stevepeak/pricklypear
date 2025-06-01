@@ -18,7 +18,7 @@ const messageSchema = z.object({
     .transform((val) => val.trim()),
   threadId: z.string().uuid("Invalid thread ID format"),
   userId: z.string().uuid("Invalid user ID format"),
-  systemPrompt: z.string().optional(),
+  systemPrompt: z.string().nullable().default(""),
 });
 
 function errorResponse(message: string, status = 500) {
