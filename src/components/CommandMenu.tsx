@@ -121,15 +121,13 @@ export function CommandMenu() {
                   navigate(item.path);
                 }}
               >
-                <div className="flex items-center gap-2">
-                  {item.icon}
-                  <span>{item.label}</span>
-                  {item.badge !== undefined && (
-                    <span className="ml-auto text-xs text-muted-foreground">
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
+                {item.icon}
+                <span>{item.label}</span>
+                {item.badge !== undefined && (
+                  <span className="ml-auto text-xs text-muted-foreground">
+                    {item.badge}
+                  </span>
+                )}
               </CommandItem>
             ))}
             <CommandItem
@@ -138,10 +136,8 @@ export function CommandMenu() {
                 navigate("/feature-request");
               }}
             >
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4" />
-                <span>Feature Request</span>
-              </div>
+              <Sparkles className="h-4 w-4" />
+              <span>Feature Request</span>
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />
@@ -152,10 +148,8 @@ export function CommandMenu() {
                 navigate("/account");
               }}
             >
-              <div className="flex items-center gap-2">
-                <BadgeCheck className="h-4 w-4" />
-                <span>Account</span>
-              </div>
+              <BadgeCheck className="h-4 w-4" />
+              <span>Account</span>
             </CommandItem>
             <CommandItem
               onSelect={() => {
@@ -163,10 +157,8 @@ export function CommandMenu() {
                 navigate("/billing");
               }}
             >
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                <span>Billing</span>
-              </div>
+              <FileText className="h-4 w-4" />
+              <span>Billing</span>
             </CommandItem>
             <CommandItem
               onSelect={() => {
@@ -174,34 +166,28 @@ export function CommandMenu() {
                 navigate("/integrations");
               }}
             >
-              <div className="flex items-center gap-2">
-                <Link2 className="h-4 w-4" />
-                <span>Integrations</span>
-              </div>
+              <Link2 className="h-4 w-4" />
+              <span>Integrations</span>
             </CommandItem>
             <CommandItem onSelect={handleLogout}>
-              <div className="flex items-center gap-2">
-                <LogOut className="h-4 w-4" />
-                <span>Log Out</span>
-              </div>
+              <LogOut className="h-4 w-4" />
+              <span>Log Out</span>
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Settings">
             <CommandItem onSelect={toggleTheme}>
-              <div className="flex items-center gap-2">
-                {theme === "dark" ? (
-                  <>
-                    <Sun className="h-4 w-4" />
-                    <span>Light Mode</span>
-                  </>
-                ) : (
-                  <>
-                    <Moon className="h-4 w-4" />
-                    <span>Dark Mode</span>
-                  </>
-                )}
-              </div>
+              {theme === "dark" ? (
+                <>
+                  <Sun className="h-4 w-4" />
+                  <span>Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="h-4 w-4" />
+                  <span>Dark Mode</span>
+                </>
+              )}
             </CommandItem>
           </CommandGroup>
           {user?.id === "09b77fc6-776c-4b4a-bd8c-96bb7997516e" && (
@@ -214,10 +200,8 @@ export function CommandMenu() {
                     setIsDemoModeOpen(true);
                   }}
                 >
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4" />
-                    <span>Demo Mode</span>
-                  </div>
+                  <Sparkles className="h-4 w-4" />
+                  <span>Demo Mode</span>
                 </CommandItem>
                 <CommandItem
                   onSelect={() => {
@@ -225,10 +209,8 @@ export function CommandMenu() {
                     setIsSystemPromptOpen(true);
                   }}
                 >
-                  <div className="flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
-                    <span>Update System Prompt</span>
-                  </div>
+                  <Settings className="h-4 w-4" />
+                  <span>Update System Prompt</span>
                 </CommandItem>
               </CommandGroup>
             </>
