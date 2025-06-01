@@ -36,7 +36,7 @@ import type { Database } from "@/integrations/supabase/types";
 
 const formatCompactTime = (date: Date) => {
   const distance = formatDistanceToNow(date, { addSuffix: false });
-  const [number, unit] = distance.split(" ");
+  const [number, unit] = distance.replace("about ", "").split(" ");
 
   // Map of units to their short forms
   const unitMap: Record<string, string> = {
@@ -111,6 +111,7 @@ export default function Messages() {
         )
         .eq("thread.status", "Open")
         .eq("reads.user_id", user.id)
+        .neq("user_id", user.id)
         .order("timestamp", { ascending: false })
         .limit(100);
 
