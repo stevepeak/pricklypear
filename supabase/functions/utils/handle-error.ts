@@ -40,14 +40,23 @@ export function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
 function initSentry() {
   if (sentryInitialized) return;
   const dsn = Deno.env.get("SENTRY_DSN");
+  const environment = Deno.env.get("SENTRY_ENVIRONMENT") ?? "production";
+
   if (!dsn) {
     console.warn("SENTRY_DSN missing, Sentry will not report errors.");
     return;
   }
+
+  // Don't initialize Sentry in development
+  if (environment === "development") {
+    console.log("Sentry disabled in development environment");
+    return;
+  }
+
   Sentry.init({
     dsn,
     tracesSampleRate: 0.0, // No performance traces by default
-    environment: Deno.env.get("SENTRY_ENVIRONMENT") ?? "production",
+    environment,
   });
   sentryInitialized = true;
 }
