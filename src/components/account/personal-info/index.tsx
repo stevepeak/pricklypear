@@ -19,6 +19,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Moon, Sun, Monitor } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const changePasswordFormSchema = z
   .object({
@@ -39,6 +42,7 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const [emailUpdating, setEmailUpdating] = React.useState(false);
   const [emailConfirmationSent, setEmailConfirmationSent] =
     React.useState(false);
+  const { theme, setTheme } = useTheme();
 
   // Password form state
   const passwordForm = useForm<PasswordFormValues>({
@@ -172,6 +176,50 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
               <FormDescription>
                 Change the language in Prickly Pear. This does not affect thread
                 messages.
+              </FormDescription>
+            </div>
+            {/* Theme Selection */}
+            <div>
+              <label className="block text-sm font-medium mb-1">Theme</label>
+              <RadioGroup
+                value={theme}
+                onValueChange={setTheme}
+                className="flex flex-col space-y-1"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="light" id="light" />
+                  <label
+                    htmlFor="light"
+                    className="flex items-center cursor-pointer"
+                  >
+                    <Sun className="h-4 w-4 mr-2" />
+                    Light
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="dark" id="dark" />
+                  <label
+                    htmlFor="dark"
+                    className="flex items-center cursor-pointer"
+                  >
+                    <Moon className="h-4 w-4 mr-2" />
+                    Dark
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="system" id="system" />
+                  <label
+                    htmlFor="system"
+                    className="flex items-center cursor-pointer"
+                  >
+                    <Monitor className="h-4 w-4 mr-2" />
+                    System
+                  </label>
+                </div>
+              </RadioGroup>
+              <FormDescription>
+                Choose your preferred theme. System will match your operating
+                system's theme.
               </FormDescription>
             </div>
             <Button type="submit" disabled={isLoading || emailUpdating}>
