@@ -298,7 +298,11 @@ export function AppSidebar() {
                     className="flex items-center w-full"
                     asChild
                   >
-                    <Link to="/account" className="flex items-center w-full">
+                    <Link
+                      to="/account"
+                      className="flex items-center w-full"
+                      onClick={() => isMobile && setOpenMobile(false)}
+                    >
                       <BadgeCheck className="h-4 w-4 mr-2" /> Account
                     </Link>
                   </DropdownMenuItem>
@@ -306,7 +310,11 @@ export function AppSidebar() {
                     className="flex items-center w-full"
                     asChild
                   >
-                    <Link to="/billing" className="flex items-center w-full">
+                    <Link
+                      to="/billing"
+                      className="flex items-center w-full"
+                      onClick={() => isMobile && setOpenMobile(false)}
+                    >
                       <FileText className="h-4 w-4 mr-2" /> Billing
                     </Link>
                   </DropdownMenuItem>
@@ -314,6 +322,7 @@ export function AppSidebar() {
                     <Link
                       className="flex items-center w-full"
                       to="/integrations"
+                      onClick={() => isMobile && setOpenMobile(false)}
                     >
                       <Link2 className="h-4 w-4 mr-4" /> Integrations
                     </Link>
