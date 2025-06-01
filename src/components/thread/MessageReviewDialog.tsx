@@ -84,7 +84,7 @@ const MessageReviewDialog = ({
             variant="outline"
             onClick={() => onOpenChange(false)}
           >
-            Try Again
+            Close
           </Button>
           {!requireAiApproval && (
             <Button
