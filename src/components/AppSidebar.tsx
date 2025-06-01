@@ -114,7 +114,7 @@ export function AppSidebar() {
       <SidebarHeader>
         <Link to="/" className="flex items-center space-x-2 px-2 py-4">
           <div
-            className="inline-block w-8 h-8 bg-[url('../public/logo.png')] bg-center bg-cover bg-no-repeat mr-1"
+            className="inline-block w-8 h-8 min-w-8 min-h-8 bg-[url('../public/logo.png')] bg-center bg-cover bg-no-repeat mr-1"
             role="img"
             aria-label="Cactus"
           />
