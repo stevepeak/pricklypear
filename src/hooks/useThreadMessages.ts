@@ -144,19 +144,6 @@ export const useThreadMessages = (
     });
 
     if (success) {
-      // Add to local messages list immediately with isCurrentUser flag
-      const newMsg: Message = {
-        id: crypto.randomUUID(), // Generate a temporary ID
-        text: selectedMessage,
-        sender: user.id,
-        type: "user_message",
-        timestamp: new Date(),
-        threadId: threadId,
-        isCurrentUser: true, // Explicitly set isCurrentUser to true
-        details: null,
-      };
-
-      setMessages((prev) => [...prev, newMsg]);
       setNewMessage("");
     } else {
       toast("Error", {
