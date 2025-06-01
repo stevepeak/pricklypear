@@ -298,44 +298,47 @@ const ThreadMessageComposer = React.forwardRef<
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  {!isAIThread(thread) && (
-                    <>
+                  {!isAIThread(thread) &&
+                    thread.type !== "customer_support" && (
+                      <>
+                        <DropdownMenuItem
+                          onSelect={() => setIsRequestDialogOpen(true)}
+                          disabled={hasOpenCloseRequest}
+                        >
+                          {hasOpenCloseRequest ? (
+                            <>
+                              <Lock className="h-4 w-4 mr-2" /> Request to close
+                              thread pending...
+                            </>
+                          ) : (
+                            <>
+                              <Lock className="h-4 w-4 mr-2" /> Request to close
+                              thread
+                            </>
+                          )}
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  {(isAIThread(thread) || thread.type === "customer_support") &&
+                    thread.status === "Open" && (
                       <DropdownMenuItem
-                        onSelect={() => setIsRequestDialogOpen(true)}
-                        disabled={hasOpenCloseRequest}
+                        onSelect={handleArchive}
+                        disabled={isArchiving}
                       >
-                        {hasOpenCloseRequest ? (
-                          <>
-                            <Lock className="h-4 w-4 mr-2" /> Request to close
-                            thread pending...
-                          </>
-                        ) : (
-                          <>
-                            <Lock className="h-4 w-4 mr-2" /> Request to close
-                            thread
-                          </>
-                        )}
+                        <FileDown className="h-4 w-4 mr-2" />
+                        {isArchiving ? "Archiving..." : "Archive"}
                       </DropdownMenuItem>
-                    </>
-                  )}
-                  {isAIThread(thread) && thread.status === "Open" && (
-                    <DropdownMenuItem
-                      onSelect={handleArchive}
-                      disabled={isArchiving}
-                    >
-                      <FileDown className="h-4 w-4 mr-2" />
-                      {isArchiving ? "Archiving..." : "Archive"}
-                    </DropdownMenuItem>
-                  )}
-                  {isAIThread(thread) && thread.status === "Archived" && (
-                    <DropdownMenuItem
-                      onSelect={handleUnarchive}
-                      disabled={isUnarchiving}
-                    >
-                      <FileDown className="h-4 w-4 mr-2" />
-                      {isUnarchiving ? "Unarchiving..." : "Unarchive"}
-                    </DropdownMenuItem>
-                  )}
+                    )}
+                  {(isAIThread(thread) || thread.type === "customer_support") &&
+                    thread.status === "Archived" && (
+                      <DropdownMenuItem
+                        onSelect={handleUnarchive}
+                        disabled={isUnarchiving}
+                      >
+                        <FileDown className="h-4 w-4 mr-2" />
+                        {isUnarchiving ? "Unarchiving..." : "Unarchive"}
+                      </DropdownMenuItem>
+                    )}
                   <DropdownMenuItem>
                     <FilePlus className="h-4 w-4 mr-2" /> Add photos and files{" "}
                     <Badge
