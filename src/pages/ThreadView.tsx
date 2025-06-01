@@ -22,7 +22,6 @@ const ThreadView = () => {
     isReviewDialogOpen,
     kindMessage,
     isReviewingMessage,
-    isGeneratingSummary,
     setNewMessage,
     handleSendMessage,
     handleSendReviewedMessage,
@@ -71,10 +70,7 @@ const ThreadView = () => {
         className="flex flex-col flex-1"
         style={{ minHeight: "calc(100vh - 50px)" }}
       >
-        <ThreadHeader
-          thread={thread}
-          isGeneratingSummary={isGeneratingSummary}
-        />
+        <ThreadHeader thread={thread} />
 
         <div className="flex flex-col items-center m-auto h-full p-4 w-full max-w-[700px] mb-8">
           <ThreadMessages

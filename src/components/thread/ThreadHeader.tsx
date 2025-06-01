@@ -1,4 +1,4 @@
-import { Bot, Loader2, Users, BotMessageSquare, Headset } from "lucide-react";
+import { Bot, Users, BotMessageSquare, Headset } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getThreadTopicInfo, type Thread, isAIThread } from "@/types/thread";
 import { AvatarName } from "@/components/ui/avatar-name";
@@ -24,10 +24,9 @@ import { handleError } from "@/services/messageService/utils";
 
 interface ThreadHeaderProps {
   thread: Thread;
-  isGeneratingSummary: boolean;
 }
 
-const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
+const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
   const { label, icon } = getThreadTopicInfo(thread.topic);
   const topicLabel = `${icon} ${label}`;
   const [editing, setEditing] = useState(false);
@@ -108,14 +107,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
             <SheetHeader>
               <SheetTitle>AI Summary</SheetTitle>
               <SheetDescription>
-                {isGeneratingSummary ? (
-                  <span className="flex items-center gap-2 text-xs">
-                    <Loader2 className="h-3 w-3 animate-spin" /> Generating
-                    summary...
-                  </span>
-                ) : (
-                  <span className="text-sm">{thread.summary ?? ""}</span>
-                )}
+                <span className="text-sm">{thread.summary ?? ""}</span>
               </SheetDescription>
             </SheetHeader>
           </SheetContent>
@@ -226,14 +218,7 @@ const ThreadHeader = ({ thread, isGeneratingSummary }: ThreadHeaderProps) => {
         {/* Right Side: summary only on md+ */}
         <div className="md:w-1/2 flex flex-col gap-2 min-w-0 hidden md:flex">
           <div className="text-muted-foreground text-sm break-words">
-            {isGeneratingSummary ? (
-              <p className="text-xs flex items-center gap-2">
-                <Loader2 className="h-3 w-3 animate-spin" />
-                Generating summary...
-              </p>
-            ) : (
-              <p>{thread.summary ?? ""}</p>
-            )}
+            <p>{thread.summary ?? ""}</p>
           </div>
         </div>
       </div>

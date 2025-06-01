@@ -6,7 +6,6 @@ import {
   saveAiMessage,
 } from "@/services/messageService/save-message";
 import { reviewMessage } from "@/utils/messageReview";
-import { generateThreadSummary } from "@/services/threadService";
 import type { Message } from "@/types/message";
 import type { Thread } from "@/types/thread";
 import { toast } from "sonner";
@@ -18,13 +17,11 @@ import { useGlobalMessages } from "@/contexts/GlobalMessagesContext";
 export const useThreadMessages = (
   threadId: string | undefined,
   thread: Thread | null,
-  setThread: (thread: Thread | null) => void,
   composerRef?: React.RefObject<{ focusInput: () => void }>,
 ) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
   // Message review states
@@ -134,25 +131,6 @@ export const useThreadMessages = (
     setIsReviewDialogOpen(true);
   };
 
-  const handleGenerateSummary = async () => {
-    if (!threadId || !thread) return;
-
-    setIsGeneratingSummary(true);
-
-    try {
-      const summary = await generateThreadSummary({ threadId });
-
-      if (summary) {
-        // Update local thread state with the new summary
-        setThread({ ...thread, summary });
-      }
-    } catch (error) {
-      console.error("Error generating summary:", error);
-    } finally {
-      setIsGeneratingSummary(false);
-    }
-  };
-
   const handleSendReviewedMessage = async (selectedMessage: string) => {
     if (!selectedMessage.trim() || !user || !threadId) return;
 
@@ -180,12 +158,6 @@ export const useThreadMessages = (
 
       setMessages((prev) => [...prev, newMsg]);
       setNewMessage("");
-
-      // Generate a new summary after sending a message
-      if (thread) {
-        // Always generate summary after sending a message
-        handleGenerateSummary();
-      }
     } else {
       toast("Error", {
         description: "Failed to send message. Please try again.",
@@ -234,7 +206,6 @@ export const useThreadMessages = (
     isReviewDialogOpen,
     kindMessage,
     isReviewingMessage,
-    isGeneratingSummary,
     unreadCount,
     setNewMessage,
     handleSendMessage,
