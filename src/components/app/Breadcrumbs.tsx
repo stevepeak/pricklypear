@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
 import {
   Breadcrumb,
@@ -24,6 +24,22 @@ function Breadcrumbs() {
   const pathnames = location.pathname.split("/").filter(Boolean);
   const [threadTitle, setThreadTitle] = useState<string | null>(null);
   const [loadingThread, setLoadingThread] = useState(false);
+  const lastClickTime = useRef<number>(0);
+  const DOUBLE_CLICK_DELAY = 300; // milliseconds
+
+  const handleBreadcrumbClick = () => {
+    const now = Date.now();
+    if (now - lastClickTime.current < DOUBLE_CLICK_DELAY) {
+      // Double click detected - open command menu
+      const event = new KeyboardEvent("keydown", {
+        key: "k",
+        metaKey: true,
+        bubbles: true,
+      });
+      document.dispatchEvent(event);
+    }
+    lastClickTime.current = now;
+  };
 
   useEffect(() => {
     let ignore = false;
@@ -66,7 +82,10 @@ function Breadcrumbs() {
   }, [location.pathname, pathnames]);
 
   return (
-    <Breadcrumb className="p-3 sticky top-0 z-20 bg-background border-b">
+    <Breadcrumb
+      className="p-3 sticky top-0 z-20 bg-background border-b"
+      onClick={handleBreadcrumbClick}
+    >
       <BreadcrumbList>
         <BreadcrumbItem>
           <TooltipProvider>
