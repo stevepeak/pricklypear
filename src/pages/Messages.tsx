@@ -233,7 +233,7 @@ export default function Messages() {
 
   return (
     <div>
-      <div className="sticky top-12 z-10 flex items-center justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-4 py-2 pr-4">
+      <div className="sticky top-[3.75rem] z-[8] flex items-center justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-4 py-2 pr-4">
         <div className="flex w-full max-w-xs relative">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"

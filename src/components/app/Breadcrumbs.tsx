@@ -83,7 +83,7 @@ function Breadcrumbs() {
 
   return (
     <Breadcrumb
-      className="p-3 sticky top-0 z-20 bg-background border-b"
+      className="p-3 sticky top-0 z-[9] bg-background border-b"
       onClick={handleBreadcrumbClick}
     >
       <BreadcrumbList>
