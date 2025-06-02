@@ -22,6 +22,7 @@ import UpdatePassword from "./pages/update-password";
 import TermsOfService from "./pages/terms-of-service";
 import PrivacyPolicy from "./pages/privacy-policy";
 import FeatureRequestPage from "./pages/feature-request";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 // Import CSS but don't include App.css anymore
 import "./index.css";
@@ -38,57 +39,63 @@ function AppRoutes() {
   if (loading) return null;
 
   return (
-    <Routes>
-      {/* Auth page: always without sidebar */}
-      <Route path="/auth" element={<AuthPage />} />
-      <Route path="/update-password" element={<UpdatePassword />} />
-      <Route path="/terms-of-service" element={<TermsOfService />} />
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      {/* Home page: no sidebar if logged out */}
-      <Route path="/" element={<Home />} />
-      {/* All other routes: require auth, show sidebar */}
-      <Route
-        path="*"
-        element={
-          user ? (
-            <SidebarProvider>
-              <div className="flex min-h-screen w-full flex-col md:flex-row">
-                <AppSidebar />
-                <SidebarInset>
-                  <Breadcrumbs />
-                  <CommandMenu />
-                  <div className="flex-1 min-h-0">
-                    <Routes>
-                      <Route path="/threads" element={<Threads />} />
-                      <Route
-                        path="/threads/:threadId"
-                        element={<ThreadView />}
-                      />
-                      <Route path="/connections" element={<Connections />} />
-                      <Route path="/documents" element={<Documents />} />
-                      <Route path="/messages" element={<Messages />} />
-                      <Route path="/calendar" element={<Calendar />} />
-                      <Route path="/expenses" element={<Expenses />} />
-                      <Route path="/integrations" element={<Integrations />} />
-                      <Route path="/billing" element={<Billing />} />
-                      <Route path="/account" element={<Account />} />
-                      <Route
-                        path="/feature-request"
-                        element={<FeatureRequestPage />}
-                      />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </div>
-                </SidebarInset>
-              </div>
-            </SidebarProvider>
-          ) : (
-            // If not logged in, redirect to /auth for all other routes
-            <AuthPage />
-          )
-        }
-      />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        {/* Auth page: always without sidebar */}
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/update-password" element={<UpdatePassword />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        {/* Home page: no sidebar if logged out */}
+        <Route path="/" element={<Home />} />
+        {/* All other routes: require auth, show sidebar */}
+        <Route
+          path="*"
+          element={
+            user ? (
+              <SidebarProvider>
+                <div className="flex min-h-screen w-full flex-col md:flex-row">
+                  <AppSidebar />
+                  <SidebarInset>
+                    <Breadcrumbs />
+                    <CommandMenu />
+                    <div className="flex-1 min-h-0">
+                      <Routes>
+                        <Route path="/threads" element={<Threads />} />
+                        <Route
+                          path="/threads/:threadId"
+                          element={<ThreadView />}
+                        />
+                        <Route path="/connections" element={<Connections />} />
+                        <Route path="/documents" element={<Documents />} />
+                        <Route path="/messages" element={<Messages />} />
+                        <Route path="/calendar" element={<Calendar />} />
+                        <Route path="/expenses" element={<Expenses />} />
+                        <Route
+                          path="/integrations"
+                          element={<Integrations />}
+                        />
+                        <Route path="/billing" element={<Billing />} />
+                        <Route path="/account" element={<Account />} />
+                        <Route
+                          path="/feature-request"
+                          element={<FeatureRequestPage />}
+                        />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </div>
+                  </SidebarInset>
+                </div>
+              </SidebarProvider>
+            ) : (
+              // If not logged in, redirect to /auth for all other routes
+              <AuthPage />
+            )
+          }
+        />
+      </Routes>
+    </>
   );
 }
 
