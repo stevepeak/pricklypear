@@ -57,7 +57,7 @@ function AppRoutes() {
               <SidebarProvider>
                 <div className="flex min-h-screen w-full flex-col md:flex-row">
                   <AppSidebar />
-                  <SidebarInset>
+                  <SidebarInset className="overflow-x-hidden">
                     <Breadcrumbs />
                     <CommandMenu />
                     <div className="flex-1 min-h-0">

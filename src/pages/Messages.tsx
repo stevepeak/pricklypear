@@ -452,7 +452,7 @@ export default function Messages() {
         </TableBody>
       </Table>
       {isFiltering && (
-        <div className="flex justify-center items-center gap-2 mt-4 text-xs text-muted-foreground">
+        <div className="flex justify-center items-center gap-2 m-4 text-xs text-muted-foreground">
           {messages.length - filteredMessages.length > 0 && (
             <span>
               <strong>

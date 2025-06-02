@@ -187,7 +187,7 @@ export default function Documents() {
   };
 
   return (
-    <div>
+    <>
       <div className="sticky top-[3.75rem] z-[8] flex items-center justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-4 py-2 pr-4">
         <div className="flex w-full max-w-xs relative">
           <Search
@@ -382,7 +382,7 @@ export default function Documents() {
         </TableBody>
       </Table>
       {isFiltering && (
-        <div className="flex justify-center items-center gap-2 mt-4 text-xs text-muted-foreground">
+        <div className="flex justify-center items-center gap-2 m-4 text-xs text-muted-foreground">
           {documents.length - filtered.length > 0 && (
             <span>
               <strong>{documents.length - filtered.length} documents</strong>{" "}
@@ -435,6 +435,6 @@ export default function Documents() {
         labels={selectedLabels}
         onSave={handleSaveLabels}
       />
-    </div>
+    </>
   );
 }

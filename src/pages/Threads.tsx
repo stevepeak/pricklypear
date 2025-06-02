@@ -107,7 +107,7 @@ const Threads = () => {
             aria-label="Search threads"
           />
         </div>
-        <div className="flex items-right gap-3 pr-2 sm:pr-8">
+        <div className="flex items-right gap-2 ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
