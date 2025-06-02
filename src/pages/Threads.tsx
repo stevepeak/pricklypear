@@ -92,7 +92,7 @@ const Threads = () => {
 
   return (
     <>
-      <div className="sticky top-0 z-[8] flex justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-2 py-2">
+      <div className="sticky top-[53px] z-[7] flex justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-2 py-2">
         <div className="flex w-full max-w-xs relative">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"

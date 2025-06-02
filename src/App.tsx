@@ -57,10 +57,10 @@ function AppRoutes() {
               <SidebarProvider>
                 <div className="flex min-h-screen w-full flex-col md:flex-row">
                   <AppSidebar />
-                  <SidebarInset className="overflow-x-hidden">
+                  <SidebarInset className="flex flex-col h-screen overflow-y-auto">
                     <Breadcrumbs />
                     <CommandMenu />
-                    <div className="flex-1 min-h-0">
+                    <div className="flex-1">
                       <Routes>
                         <Route path="/threads" element={<Threads />} />
                         <Route

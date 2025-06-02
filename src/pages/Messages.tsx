@@ -233,7 +233,7 @@ export default function Messages() {
 
   return (
     <>
-      <div className="sticky top-0 z-[8] flex items-center justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-4 py-2 pr-4">
+      <div className="sticky top-[53px] z-[7] flex items-center justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-2 py-2">
         <div className="flex w-full max-w-xs relative">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -241,7 +241,7 @@ export default function Messages() {
           />
           <Input
             className="pl-9 pr-3 h-9 border-none shadow-none focus-visible:ring-0"
-            placeholder="Search messages"
+            placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             type="search"
