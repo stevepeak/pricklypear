@@ -188,7 +188,7 @@ export default function Documents() {
 
   return (
     <>
-      <div className="sticky top-[3.75rem] z-[8] flex items-center justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-4 py-2 pr-4">
+      <div className="sticky top-0 z-[8] flex items-center justify-between border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/90 px-4 py-2 pr-4">
         <div className="flex w-full max-w-xs relative">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -203,7 +203,7 @@ export default function Documents() {
             aria-label="Search"
           />
         </div>
-        <div className="flex gap-2 ml-auto">
+        <div className="flex items-right gap-2 ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -271,6 +271,7 @@ export default function Documents() {
           </Dialog>
         </div>
       </div>
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -329,30 +330,36 @@ export default function Documents() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center flex-wrap gap-1">
-                    {doc.labels?.map((label) => {
-                      const info = getDocumentLabelInfo(label);
-                      return (
-                        <Tooltip key={label}>
-                          <TooltipTrigger asChild>
-                            <Badge
-                              variant="secondary"
-                              className={`bg-${info.color}-100 text-${info.color}-800 border-${info.color}-200`}
-                            >
-                              {info.icon}
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent>{label}</TooltipContent>
-                        </Tooltip>
-                      );
-                    })}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      aria-label="Edit labels"
-                      onClick={() => openLabelDialog(doc)}
-                    >
-                      <Tags className="size-4" />
-                    </Button>
+                    {doc.labels?.length === 1 ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge
+                            variant="secondary"
+                            className={`bg-${getDocumentLabelInfo(doc.labels[0]).color}-100 text-${getDocumentLabelInfo(doc.labels[0]).color}-800 border-${getDocumentLabelInfo(doc.labels[0]).color}-200 cursor-pointer`}
+                            onClick={() => openLabelDialog(doc)}
+                          >
+                            {getDocumentLabelInfo(doc.labels[0]).icon}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>{doc.labels[0]}</TooltipContent>
+                      </Tooltip>
+                    ) : doc.labels && doc.labels.length > 1 ? (
+                      <Badge
+                        variant="secondary"
+                        className="cursor-pointer"
+                        onClick={() => openLabelDialog(doc)}
+                      >
+                        <Tags className="size-4 mr-1" />x {doc.labels.length}
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                        className="cursor-pointer"
+                        onClick={() => openLabelDialog(doc)}
+                      >
+                        + <Tags className="size-4 ml-1" />
+                      </Badge>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell className="flex gap-2 justify-end">
