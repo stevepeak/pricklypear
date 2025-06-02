@@ -16,6 +16,9 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuSeparator,
   DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
@@ -32,7 +35,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
 import ThreadTopicBadge from "@/components/thread/ThreadTopicBadge";
 import type { ThreadTopic } from "@/types/thread";
+import { getThreadTopicInfo } from "@/types/thread";
 import type { Database } from "@/integrations/supabase/types";
+import { useMessagesFilters } from "@/hooks/use-messages-filters";
 
 const formatCompactTime = (date: Date) => {
   const distance = formatDistanceToNow(date, { addSuffix: false });
@@ -76,10 +81,27 @@ export default function Messages() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<ListMessage[]>([]);
-  const [threads, setThreads] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [filterThreads, setFilterThreads] = useState<string[]>([]);
+
+  const {
+    search,
+    setSearch,
+    filterParticipants,
+    filterTypes,
+    filterThreads,
+    filterTopics,
+    isFiltering,
+    toggleParticipant,
+    toggleType,
+    toggleThread,
+    toggleTopic,
+    clearFilters,
+    participantOptions,
+    typeOptions,
+    threadOptions,
+    topicOptions,
+    filteredMessages,
+  } = useMessagesFilters(messages);
 
   const loadMessages = useCallback(async () => {
     if (!user) return;
@@ -132,9 +154,6 @@ export default function Messages() {
           : null,
       }));
 
-      setThreads([
-        ...new Set(processedMessages.map(({ threadTitle }) => threadTitle)),
-      ]);
       setMessages(processedMessages);
     } catch (error) {
       console.error("Failed to load messages:", error);
@@ -208,36 +227,6 @@ export default function Messages() {
     loadMessages();
   }, [user, loadMessages]);
 
-  // Filter messages based on search and thread filters
-  const filtered = messages.filter((message) => {
-    const matchesSearch = search
-      ? message.text.toLowerCase().includes(search.toLowerCase()) ||
-        message.senderName.toLowerCase().includes(search.toLowerCase()) ||
-        message.threadTitle.toLowerCase().includes(search.toLowerCase())
-      : true;
-
-    const matchesThread = filterThreads.length
-      ? filterThreads.includes(message.threadTitle)
-      : true;
-
-    return matchesSearch && matchesThread;
-  });
-
-  const isFiltering = search.trim() !== "" || filterThreads.length > 0;
-
-  const toggleFilterThread = (threadId: string) => {
-    setFilterThreads((prev) =>
-      prev.includes(threadId)
-        ? prev.filter((id) => id !== threadId)
-        : [...prev, threadId],
-    );
-  };
-
-  const clearFilters = () => {
-    setSearch("");
-    setFilterThreads([]);
-  };
-
   const handleMessageClick = (threadId: string) => {
     navigate(`/threads/${threadId}`);
   };
@@ -275,21 +264,77 @@ export default function Messages() {
                 </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem className="font-semibold">
-                Filter by Thread
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {threads.map((title) => (
-                <DropdownMenuCheckboxItem
-                  key={title}
-                  checked={filterThreads.includes(title)}
-                  onCheckedChange={() => toggleFilterThread(title)}
-                  onSelect={(e) => e.preventDefault()}
-                >
-                  {title}
-                </DropdownMenuCheckboxItem>
-              ))}
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Participants</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
+                  {participantOptions.map((participant) => (
+                    <DropdownMenuCheckboxItem
+                      key={participant}
+                      checked={filterParticipants.includes(participant)}
+                      onCheckedChange={() => toggleParticipant(participant)}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      {participant}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Type</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
+                  {typeOptions.map((type) => (
+                    <DropdownMenuCheckboxItem
+                      key={type}
+                      checked={filterTypes.includes(type)}
+                      onCheckedChange={() => toggleType(type)}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      {type
+                        .split("_")
+                        .map(
+                          (word) =>
+                            word.charAt(0).toUpperCase() + word.slice(1),
+                        )
+                        .join(" ")}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Topic</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
+                  {topicOptions.map((topic) => {
+                    const info = getThreadTopicInfo(topic);
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={topic}
+                        checked={filterTopics.includes(topic)}
+                        onCheckedChange={() => toggleTopic(topic)}
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        <span className="mr-2">{info.icon}</span>
+                        {info.label}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Thread</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
+                  {threadOptions.map((thread) => (
+                    <DropdownMenuCheckboxItem
+                      key={thread}
+                      checked={filterThreads.includes(thread)}
+                      onCheckedChange={() => toggleThread(thread)}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      {thread}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
               {isFiltering && (
                 <>
                   <DropdownMenuSeparator />
@@ -329,7 +374,7 @@ export default function Messages() {
                 Loading messages...
               </TableCell>
             </TableRow>
-          ) : filtered.length === 0 ? (
+          ) : filteredMessages.length === 0 ? (
             <TableRow>
               <TableCell
                 colSpan={4}
@@ -341,7 +386,7 @@ export default function Messages() {
               </TableCell>
             </TableRow>
           ) : (
-            filtered.map((message) => (
+            filteredMessages.map((message) => (
               <TableRow
                 key={message.id}
                 className="cursor-pointer hover:bg-muted/50"
@@ -408,9 +453,11 @@ export default function Messages() {
       </Table>
       {isFiltering && (
         <div className="flex justify-center items-center gap-2 mt-4 text-xs text-muted-foreground">
-          {messages.length - filtered.length > 0 && (
+          {messages.length - filteredMessages.length > 0 && (
             <span>
-              <strong>{messages.length - filtered.length} messages</strong>{" "}
+              <strong>
+                {messages.length - filteredMessages.length} messages
+              </strong>{" "}
               hidden by filters.
             </span>
           )}
