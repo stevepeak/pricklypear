@@ -10,15 +10,7 @@
 import { Database } from "@/integrations/supabase/types";
 
 /** All valid thread topic identifiers used throughout the app. */
-export type ThreadTopic =
-  | "travel"
-  | "parenting_time"
-  | "health"
-  | "education"
-  | "activity"
-  | "legal"
-  | "expense"
-  | "other";
+export type ThreadTopic = Database["public"]["Enums"]["thread_topic"];
 
 export type ThreadControls = {
   requireAiApproval?: boolean;
