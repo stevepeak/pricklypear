@@ -26,6 +26,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
 }) => {
   const localMessagesEndRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = externalMessagesEndRef || localMessagesEndRef;
+  const threadIsOpen = thread.status === "Open";
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -48,7 +49,11 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
                 return message.isCurrentUser ? (
                   <MessageFromMe key={message.id} message={message} />
                 ) : (
-                  <MessageFromParticipant key={message.id} message={message} />
+                  <MessageFromParticipant
+                    key={message.id}
+                    message={message}
+                    threadIsOpen={threadIsOpen}
+                  />
                 );
               case "ai_message":
                 return <MessageFromAI key={message.id} message={message} />;
