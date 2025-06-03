@@ -28,15 +28,13 @@ import {
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import type { Message } from "@/types/message";
+import type { ListMessage } from "@/types/message";
 import { formatDistanceToNow } from "date-fns";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
 import ThreadTopicBadge from "@/components/thread/ThreadTopicBadge";
-import type { ThreadTopic } from "@/types/thread";
 import { getThreadTopicInfo } from "@/types/thread";
-import type { Database } from "@/integrations/supabase/types";
 import { useMessagesFilters } from "@/hooks/use-messages-filters";
 
 const formatCompactTime = (date: Date) => {
@@ -62,19 +60,6 @@ const formatCompactTime = (date: Date) => {
   }
 
   return `${number}${unitMap[unit]} ago`;
-};
-
-type ListMessage = {
-  threadId: string;
-  threadTitle: string;
-  threadTopic: ThreadTopic;
-  threadType: Database["public"]["Enums"]["thread_type"];
-  id: string;
-  text: string;
-  senderName: string;
-  timestamp: Date;
-  type: Message["type"];
-  readAt: Date | null;
 };
 
 export default function Messages() {
