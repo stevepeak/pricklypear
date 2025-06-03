@@ -41,6 +41,7 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -222,23 +223,25 @@ export default function Documents() {
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="w-48">
-                  {Object.keys(DOCUMENT_LABEL_INFO).map((key) => {
-                    const label = key as DocumentLabel;
-                    const info = getDocumentLabelInfo(label);
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={label}
-                        checked={filterLabels.includes(label)}
-                        onCheckedChange={() => toggleFilterLabel(label)}
-                        onSelect={(e) => e.preventDefault()}
-                      >
-                        <span className="mr-2">{info.icon}</span>
-                        {label}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-                </DropdownMenuSubContent>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="w-48">
+                    {Object.keys(DOCUMENT_LABEL_INFO).map((key) => {
+                      const label = key as DocumentLabel;
+                      const info = getDocumentLabelInfo(label);
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={label}
+                          checked={filterLabels.includes(label)}
+                          onCheckedChange={() => toggleFilterLabel(label)}
+                          onSelect={(e) => e.preventDefault()}
+                        >
+                          <span className="mr-2">{info.icon}</span>
+                          {label}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
               </DropdownMenuSub>
               {isFiltering && (
                 <>

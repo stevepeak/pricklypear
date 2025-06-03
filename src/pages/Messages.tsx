@@ -19,6 +19,7 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
@@ -252,73 +253,81 @@ export default function Messages() {
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Participants</DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
-                  {participantOptions.map((participant) => (
-                    <DropdownMenuCheckboxItem
-                      key={participant}
-                      checked={filterParticipants.includes(participant)}
-                      onCheckedChange={() => toggleParticipant(participant)}
-                      onSelect={(e) => e.preventDefault()}
-                    >
-                      {participant}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuSubContent>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
+                    {participantOptions.map((participant) => (
+                      <DropdownMenuCheckboxItem
+                        key={participant}
+                        checked={filterParticipants.includes(participant)}
+                        onCheckedChange={() => toggleParticipant(participant)}
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        {participant}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
               </DropdownMenuSub>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Type</DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
-                  {typeOptions.map((type) => (
-                    <DropdownMenuCheckboxItem
-                      key={type}
-                      checked={filterTypes.includes(type)}
-                      onCheckedChange={() => toggleType(type)}
-                      onSelect={(e) => e.preventDefault()}
-                    >
-                      {type
-                        .split("_")
-                        .map(
-                          (word) =>
-                            word.charAt(0).toUpperCase() + word.slice(1),
-                        )
-                        .join(" ")}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuSubContent>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
+                    {typeOptions.map((type) => (
+                      <DropdownMenuCheckboxItem
+                        key={type}
+                        checked={filterTypes.includes(type)}
+                        onCheckedChange={() => toggleType(type)}
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        {type
+                          .split("_")
+                          .map(
+                            (word) =>
+                              word.charAt(0).toUpperCase() + word.slice(1),
+                          )
+                          .join(" ")}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
               </DropdownMenuSub>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Topic</DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
-                  {topicOptions.map((topic) => {
-                    const info = getThreadTopicInfo(topic);
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={topic}
-                        checked={filterTopics.includes(topic)}
-                        onCheckedChange={() => toggleTopic(topic)}
-                        onSelect={(e) => e.preventDefault()}
-                      >
-                        <span className="mr-2">{info.icon}</span>
-                        {info.label}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-                </DropdownMenuSubContent>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
+                    {topicOptions.map((topic) => {
+                      const info = getThreadTopicInfo(topic);
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={topic}
+                          checked={filterTopics.includes(topic)}
+                          onCheckedChange={() => toggleTopic(topic)}
+                          onSelect={(e) => e.preventDefault()}
+                        >
+                          <span className="mr-2">{info.icon}</span>
+                          {info.label}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
               </DropdownMenuSub>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Thread</DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
-                  {threadOptions.map((thread) => (
-                    <DropdownMenuCheckboxItem
-                      key={thread}
-                      checked={filterThreads.includes(thread)}
-                      onCheckedChange={() => toggleThread(thread)}
-                      onSelect={(e) => e.preventDefault()}
-                    >
-                      {thread}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuSubContent>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
+                    {threadOptions.map((thread) => (
+                      <DropdownMenuCheckboxItem
+                        key={thread}
+                        checked={filterThreads.includes(thread)}
+                        onCheckedChange={() => toggleThread(thread)}
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        {thread}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
               </DropdownMenuSub>
               {isFiltering && (
                 <>

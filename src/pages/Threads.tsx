@@ -19,6 +19,7 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
+  DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
 import { Search, ListFilter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -125,64 +126,70 @@ const Threads = () => {
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  <DropdownMenuCheckboxItem
-                    checked={filterStatus.includes("Open")}
-                    onCheckedChange={() => toggleStatus("Open")}
-                    onSelect={(e) => e.preventDefault()}
-                  >
-                    Open
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={filterStatus.includes("Closed")}
-                    onCheckedChange={() => toggleStatus("Closed")}
-                    onSelect={(e) => e.preventDefault()}
-                  >
-                    Closed
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={filterStatus.includes("Archived")}
-                    onCheckedChange={() => toggleStatus("Archived")}
-                    onSelect={(e) => e.preventDefault()}
-                  >
-                    Archived
-                  </DropdownMenuCheckboxItem>
-                </DropdownMenuSubContent>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuCheckboxItem
+                      checked={filterStatus.includes("Open")}
+                      onCheckedChange={() => toggleStatus("Open")}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      Open
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={filterStatus.includes("Closed")}
+                      onCheckedChange={() => toggleStatus("Closed")}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      Closed
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={filterStatus.includes("Archived")}
+                      onCheckedChange={() => toggleStatus("Archived")}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      Archived
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
               </DropdownMenuSub>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Participants</DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
-                  {participantOptions.map((name) => (
-                    <DropdownMenuCheckboxItem
-                      key={name}
-                      checked={filterParticipants.includes(name)}
-                      onCheckedChange={() => toggleParticipant(name)}
-                      onSelect={(e) => e.preventDefault()}
-                    >
-                      {name}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuSubContent>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
+                    {participantOptions.map((name) => (
+                      <DropdownMenuCheckboxItem
+                        key={name}
+                        checked={filterParticipants.includes(name)}
+                        onCheckedChange={() => toggleParticipant(name)}
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        {name}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
               </DropdownMenuSub>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Topic</DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
-                  {Object.keys(THREAD_TOPIC_INFO).map((key) => {
-                    const topic = key as ThreadTopic;
-                    const info = getThreadTopicInfo(topic);
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={topic}
-                        checked={filterTopics.includes(topic)}
-                        onCheckedChange={() => toggleTopic(topic)}
-                        onSelect={(e) => e.preventDefault()}
-                      >
-                        <span className="mr-2">{info.icon}</span>
-                        {info.label}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-                </DropdownMenuSubContent>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="max-h-48 overflow-y-auto">
+                    {Object.keys(THREAD_TOPIC_INFO).map((key) => {
+                      const topic = key as ThreadTopic;
+                      const info = getThreadTopicInfo(topic);
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={topic}
+                          checked={filterTopics.includes(topic)}
+                          onCheckedChange={() => toggleTopic(topic)}
+                          onSelect={(e) => e.preventDefault()}
+                        >
+                          <span className="mr-2">{info.icon}</span>
+                          {info.label}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
               </DropdownMenuSub>
               {isFiltering && (
                 <>
