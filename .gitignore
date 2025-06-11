@@ -1,0 +1,34 @@
+# Logs
+logs
+*.log
+
+node_modules
+dist
+dist-ssr
+*.local
+*.tsbuildinfo
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Supabase
+.env
+.env.local
+.supabase/
+supabase/.temp/
+
+# Sentry Config File
+.sentryclirc
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

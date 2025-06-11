@@ -1,0 +1,175 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        id: bun-cache
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        if: steps.bun-cache.outputs.cache-hit != 'true'
+        run: bun install --frozen-lockfile
+
+      - name: Run linting
+        run: bun run lint
+
+      - name: Run Knip
+        run: bun run knip
+
+      - name: Run Typecheck
+        run: bun run typecheck
+
+      - name: Run Typecheck Deno
+        run: bun run typecheck:deno
+
+      - name: Build application
+        run: bun run build
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        id: bun-cache
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        if: steps.bun-cache.outputs.cache-hit != 'true'
+        run: bun install --frozen-lockfile
+
+      - name: Run tests
+        run: bun run test
+
+  e2e:
+    name: E2E Tests
+    needs: [quality, test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        id: bun-cache
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        if: steps.bun-cache.outputs.cache-hit != 'true'
+        run: bun install --frozen-lockfile
+
+      # !Important — Caching browser binaries is not recommended
+      # ? -> https://playwright.dev/docs/ci#caching-browsers
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Build application
+        run: bun run build
+
+      - name: Run Playwright tests
+        run: bun run test:e2e -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.shardIndex }}
+          path: playwright-report/
+          retention-days: 7
+
+  deploy:
+    name: Deploy
+    needs: e2e
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: vgddrhyjttyrathqhefb
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # - name: Apply database migrations
+      #   shell: bash
+      #   run: |
+      #     set -euo pipefail
+      #     # Derive the DB host, e.g. https://xyzcompany.supabase.co → db.xyzcompany.supabase.co
+      #     HOST="$(echo "$SUPABASE_URL" | sed -e 's@https\?://@@' -e 's@/$@@')"
+      #     DB_HOST="db.${HOST}"
+      #     # Use the service-role key for the password
+      #     DB_URL="postgres://postgres:${SUPABASE_SERVICE_ROLE_KEY}@${DB_HOST}:5432/postgres"
+      #     echo "Running supabase db push against ${DB_HOST}..."
+      #     supabase db push --db-url "$DB_URL"
+
+      - run: supabase functions deploy --project-ref $PROJECT_ID

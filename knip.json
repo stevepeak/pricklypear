@@ -1,0 +1,17 @@
+{
+  "ignore": [
+    "test-supabase-query.js",
+    "supabase/functions/**/*.ts",
+    "src/components/**/*.tsx",
+    "tests/e2e/fixtures.ts",
+    "src/integrations/supabase/types.ts"
+  ],
+  "ignoreBinaries": ["supabase"],
+  "ignoreDependencies": [
+    "@radix-ui/*",
+    "tw-animate-css",
+    "deno",
+    "vaul",
+    "react-day-picker"
+  ]
+}

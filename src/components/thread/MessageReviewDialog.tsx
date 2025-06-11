@@ -1,0 +1,120 @@
+import React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
+
+interface MessageReviewDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  newMessage: string;
+  kindMessage: string;
+  onAccept: (message: string) => void;
+  isLoading: boolean;
+  requireAiApproval?: boolean;
+}
+
+const MessageReviewDialog = ({
+  open,
+  onOpenChange,
+  newMessage,
+  kindMessage,
+  onAccept,
+  isLoading,
+  requireAiApproval = true,
+}: MessageReviewDialogProps) => {
+  const handleAccept = () => {
+    if (kindMessage.trim()) {
+      onAccept(kindMessage);
+      onOpenChange(false);
+      toast('Message sent', {
+        description: 'Your message has been reviewed and sent',
+      });
+    }
+  };
+  const handleSendOriginal = () => {
+    if (newMessage.trim()) {
+      onAccept(newMessage);
+      onOpenChange(false);
+      toast('Message sent', {
+        description: 'Your original message was sent without revision',
+      });
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Review your message</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          <div>
+            <p className="text-sm text-muted-foreground mb-2">
+              Original message:
+            </p>
+            <div className="bg-muted p-3 rounded-md text-sm">{newMessage}</div>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground mb-2">
+              AI suggested rephrasing:
+            </p>
+            {isLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ) : (
+              <div className="bg-muted p-3 rounded-md text-sm">
+                {kindMessage}
+              </div>
+            )}
+          </div>
+        </div>
+        <DialogFooter className="flex sm:justify-between">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
+            Close
+          </Button>
+          {!requireAiApproval && (
+            <Button
+              type="button"
+              variant="accent"
+              onClick={handleSendOriginal}
+              disabled={!newMessage.trim() || isLoading}
+            >
+              Send without revision
+            </Button>
+          )}
+          <Button
+            type="button"
+            variant="success"
+            onClick={handleAccept}
+            disabled={!kindMessage.trim() || isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              'Accept & Send'
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default MessageReviewDialog;
