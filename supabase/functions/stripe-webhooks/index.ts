@@ -39,8 +39,7 @@ async function handleCustomerSubscriptionCreated(
     .single();
 
   if (profileError || !profile) {
-    console.error('Profile not found for customer:', customerId);
-    return;
+    throw profileError;
   }
 
   const { error: updateError } = await supabase
@@ -56,7 +55,7 @@ async function handleCustomerSubscriptionCreated(
     .eq('id', profile.id);
 
   if (updateError) {
-    console.error('Error updating profile:', updateError);
+    throw updateError;
   }
 }
 
@@ -76,8 +75,7 @@ async function handleCustomerSubscriptionUpdated(
     .single();
 
   if (profileError || !profile) {
-    console.error('Profile not found for customer:', customerId);
-    return;
+    throw profileError;
   }
 
   const { error: updateError } = await supabase
@@ -92,7 +90,7 @@ async function handleCustomerSubscriptionUpdated(
     .eq('id', profile.id);
 
   if (updateError) {
-    console.error('Error updating profile:', updateError);
+    throw updateError;
   }
 }
 
@@ -110,8 +108,7 @@ async function handleCustomerSubscriptionDeleted(
     .single();
 
   if (profileError || !profile) {
-    console.error('Profile not found for customer:', customerId);
-    return;
+    throw profileError;
   }
 
   // Remove plan when subscription is cancelled
@@ -127,7 +124,7 @@ async function handleCustomerSubscriptionDeleted(
     .eq('id', profile.id);
 
   if (updateError) {
-    console.error('Error updating profile:', updateError);
+    throw updateError;
   }
 }
 
@@ -160,7 +157,10 @@ export async function handler(req: Request) {
         env.STRIPE_WEBHOOK_SECRET
       );
     } catch (err) {
-      console.error('Webhook signature verification failed:', err);
+      const error = new Error(
+        `Webhook signature verification failed: ${getErrorMessage(err)}`
+      );
+      handleError(error);
       return new Response(JSON.stringify({ error: 'Invalid signature' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
