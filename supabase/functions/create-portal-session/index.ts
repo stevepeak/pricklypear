@@ -71,7 +71,7 @@ export async function handler(req: Request) {
 
     // Create portal session
     const session = await stripe.billingPortal.sessions.create({
-      customer: profile.stripe_customer_id,
+      customer: profile.stripe.customer_id,
       return_url: returnUrl,
     });
 
