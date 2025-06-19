@@ -3,7 +3,15 @@ import { useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Crown, Users } from 'lucide-react';
+import {
+  BadgePlus,
+  BatteryFull,
+  Crown,
+  HeartHandshake,
+  MessageCircle,
+  TriangleAlert,
+  UsersRound,
+} from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useUserPlan } from '@/hooks/useUserPlan';
 import { toast } from 'sonner';
@@ -71,31 +79,31 @@ export default function Billing() {
             )}
             <CardHeader className="text-center">
               <div className="flex justify-center mb-2">
-                <Users className="h-8 w-8 text-muted-foreground" />
+                <HeartHandshake className="h-8 w-8 text-red-700" />
               </div>
               <CardTitle className="text-xl">Cacti Family</CardTitle>
               <div className="text-3xl font-bold">Free</div>
               <p className="text-sm text-muted-foreground">
-                Join conversations with others
+                Join conversation of another Prickly Pro members.
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="space-y-2">
                 <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Join conversations with others</span>
+                  <MessageCircle className="h-4 w-4 text-green-500" />
+                  <span>Join conversations of others</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Great for friends and family</span>
+                  <UsersRound className="h-4 w-4 text-green-500" />
+                  <span>Great for friends, family, kids, and new partners</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Basic messaging features</span>
+                  <TriangleAlert className="h-4 w-4 text-red-500" />
+                  <span>Cannot create threads, events, or files</span>
                 </li>
               </ul>
-              {plan ? (
-                <Button disabled className="w-full">
+              {!plan ? (
+                <Button disabled className="w-full" variant="ghost">
                   Current Plan
                 </Button>
               ) : (
@@ -105,7 +113,7 @@ export default function Billing() {
                   onClick={handleManageSubscription}
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Loading...' : 'Switch to Free'}
+                  {isLoading ? 'Loading...' : 'Downgrade to Cacti Family'}
                 </Button>
               )}
             </CardContent>
@@ -120,7 +128,7 @@ export default function Billing() {
             )}
             <CardHeader className="text-center">
               <div className="flex justify-center mb-2">
-                <Crown className="h-8 w-8 text-yellow-500" />
+                <Crown className="h-8 w-8 text-green-500" />
               </div>
               <CardTitle className="text-xl">Prickly Pro</CardTitle>
               <div className="text-3xl font-bold">
@@ -133,21 +141,23 @@ export default function Billing() {
             <CardContent className="space-y-4">
               <ul className="space-y-2">
                 <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Full access to all features</span>
+                  <BadgePlus className="h-4 w-4 text-green-500" />
+                  <span>Create AI-powered threads, events, and files</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
+                  <BatteryFull className="h-4 w-4 text-green-500" />
                   <span>Unlimited usage</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span>Advanced AI features</span>
+                  <HeartHandshake className="h-4 w-4 text-green-500" />
+                  <span>
+                    Invite Cacti Family members to join your threads, free
+                  </span>
                 </li>
               </ul>
               {plan ? (
                 <Button
-                  variant="outline"
+                  variant="success"
                   className="w-full"
                   onClick={handleManageSubscription}
                   disabled={isLoading}
@@ -161,7 +171,7 @@ export default function Billing() {
                   disabled={isLoading}
                   variant="success"
                 >
-                  {isLoading ? 'Loading...' : 'Upgrade to Pro'}
+                  {isLoading ? 'Loading...' : 'Upgrade to Prickly Pro'}
                 </Button>
               )}
             </CardContent>

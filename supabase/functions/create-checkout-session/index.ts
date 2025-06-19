@@ -92,7 +92,7 @@ export async function handler(req: Request) {
         {
           price_data: {
             currency: 'usd',
-            product: 'prod_SWrqFnHhZyT9zK',
+            product: 'prod_SWtkU1oqn7HvZc',
             recurring: {
               interval: 'month',
             },
