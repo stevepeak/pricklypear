@@ -9,9 +9,21 @@ const envSchema = z.object({
     .min(1, 'Supabase service role key is required'),
 
   // Stripe
-  STRIPE_SECRET_KEY: z.string().min(1, 'Stripe secret key is required'),
-  STRIPE_WEBHOOK_SECRET: z.string().min(1, 'Stripe webhook secret is required'),
-  STRIPE_PLAN_SKEW: z.string().min(1, 'Stripe plan skew is required'),
+  STRIPE_SECRET_KEY: z
+    .string()
+    .min(1, 'Stripe secret key is required')
+    .regex(
+      /^sk_(live|test)_/,
+      'Stripe secret key must start with "sk_live_" or "sk_test_"'
+    ),
+  STRIPE_WEBHOOK_SECRET: z
+    .string()
+    .min(1, 'Stripe webhook secret is required')
+    .regex(/^whsec_/, 'Stripe webhook secret must start with "whsec_"'),
+  STRIPE_PLAN_SKEW: z
+    .string()
+    .min(1, 'Stripe plan skew is required')
+    .regex(/^prod_/, 'Stripe plan skew must start with "prod_"'),
 
   // OpenAI
   OPENAI_API_KEY: z.string().min(1, 'OpenAI API key is required'),
