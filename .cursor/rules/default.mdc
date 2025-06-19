@@ -5,14 +5,14 @@ alwaysApply: true
 ---
 # IMPORTANT
 - Do not ask me permission to proceed with changes. Do it.
-- Run `bun run fix && bun run ci` after you make changes
+- Run `bun run fix` after making code edits
+- Run `bun run ci` once complete which will check types and run tests. Fix issues errors if any.
 - Find components in `src/components/ui` first
 - Never edit `src/components/ui` contents
 - use `import { toast } from "sonner";` then `toast(name, {description})`
 - Do not use `await fetch()` to call Supabase functions, use the `await supabase.functions.invoke()`
 - Use zod whenever possible
-- Write tests when applicable
-- Use `className` not `style={""}`
+- Use `className` and Tailwind not `style={""}`
 - This project is using React (not Next or any other framework)
 
 # Coding Instructions
