@@ -35,7 +35,7 @@ async function handleCustomerSubscriptionCreated(
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
-    .eq('stripe.customer_id', customerId)
+    .eq('stripe->>customer_id', customerId)
     .single();
 
   if (profileError || !profile) {
@@ -72,7 +72,7 @@ async function handleCustomerSubscriptionUpdated(
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
-    .eq('stripe.customer_id', customerId)
+    .eq('stripe->>customer_id', customerId)
     .single();
 
   if (profileError || !profile) {
@@ -106,7 +106,7 @@ async function handleCustomerSubscriptionDeleted(
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
-    .eq('stripe.customer_id', customerId)
+    .eq('stripe->>customer_id', customerId)
     .single();
 
   if (profileError || !profile) {
