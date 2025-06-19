@@ -66,7 +66,7 @@ export async function handler(req: Request) {
 
     // Initialize Stripe
     const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-12-18.acacia',
+      apiVersion: '2025-05-28.basil',
     });
 
     // Create portal session
