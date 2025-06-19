@@ -3543,6 +3543,7 @@
         "npm:@sentry/react@9.27.0",
         "npm:@supabase/supabase-js@2.50.0",
         "npm:@tanstack/react-query@5.80.6",
+        "npm:@testing-library/jest-dom@6.6.3",
         "npm:@testing-library/react@16.3.0",
         "npm:@types/bun@1.2.15",
         "npm:@types/node@22.15.30",
