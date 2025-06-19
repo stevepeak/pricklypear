@@ -2,6 +2,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 import { getOpenAIClient } from '../utils/openai.ts';
 import { getErrorMessage } from '../utils/handle-error.ts';
+import { env } from '../utils/env.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -33,17 +34,10 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     }
 
     // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL');
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      throw new Error('Missing Supabase credentials');
-    }
-
     const create = deps.createClient ?? createClient;
     const getOpenAI = deps.getOpenAIClient ?? getOpenAIClient;
 
-    const supabase = create(supabaseUrl, supabaseServiceKey);
+    const supabase = create(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
     // Fetch messages from the database
     const { data: messagesData, error: messagesError } = await supabase

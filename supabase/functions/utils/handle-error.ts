@@ -1,4 +1,5 @@
 import * as Sentry from 'https://deno.land/x/sentry_deno/main.ts';
+import { env } from './env.ts';
 
 let sentryInitialized = false;
 
@@ -39,24 +40,22 @@ export function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
 
 function initSentry() {
   if (sentryInitialized) return;
-  const dsn = Deno.env.get('SENTRY_DSN');
-  const environment = Deno.env.get('SENTRY_ENVIRONMENT') ?? 'production';
 
-  if (!dsn) {
+  if (!env.SENTRY_DSN) {
     console.warn('SENTRY_DSN missing, Sentry will not report errors.');
     return;
   }
 
   // Don't initialize Sentry in development
-  if (environment === 'development') {
+  if (env.SENTRY_ENVIRONMENT === 'development') {
     console.log('Sentry disabled in development environment');
     return;
   }
 
   Sentry.init({
-    dsn,
+    dsn: env.SENTRY_DSN,
     tracesSampleRate: 0.0, // No performance traces by default
-    environment,
+    environment: env.SENTRY_ENVIRONMENT,
   });
   sentryInitialized = true;
 }

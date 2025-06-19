@@ -2,6 +2,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
 import { getErrorMessage, handleError } from '../utils/handle-error.ts';
 import Stripe from 'https://esm.sh/stripe@18.2.1';
+import { env } from '../utils/env.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -162,7 +163,7 @@ export async function handler(req: Request) {
     }
 
     // Verify webhook signature (you'll need to add STRIPE_WEBHOOK_SECRET to your environment)
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
       apiVersion: '2024-12-18.acacia',
     });
 
@@ -171,7 +172,7 @@ export async function handler(req: Request) {
       event = stripe.webhooks.constructEvent(
         body,
         signature,
-        Deno.env.get('STRIPE_WEBHOOK_SECRET') || ''
+        env.STRIPE_WEBHOOK_SECRET
       );
     } catch (err) {
       console.error('Webhook signature verification failed:', err);

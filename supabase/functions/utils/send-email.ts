@@ -1,5 +1,6 @@
 import { Resend } from 'https://esm.sh/resend@4.5.0';
 import { getSupabaseServiceClient } from './supabase.ts';
+import { env } from './env.ts';
 
 /**
  * Send an email via the Resend SDK. Logs on failure but never throws.
@@ -17,18 +18,7 @@ export default async function sendEmail(
         html: string;
       }
 ) {
-  const apiKey = Deno.env.get('RESEND_API_KEY') ?? '';
-  if (!apiKey) {
-    console.warn('RESEND_API_KEY missing – skipping email send');
-    return;
-  }
-
-  const resend = new Resend(apiKey);
-  const fromEmail = Deno.env.get('RESEND_FROM_EMAIL');
-  if (!fromEmail) {
-    console.warn('RESEND_FROM_EMAIL missing – skipping email send');
-    return;
-  }
+  const resend = new Resend(env.RESEND_API_KEY);
 
   let to: string;
 
@@ -45,7 +35,7 @@ export default async function sendEmail(
   }
 
   const { error } = await resend.emails.send({
-    from: `The Prickly Pear <${fromEmail}>`,
+    from: `The Prickly Pear <${env.RESEND_FROM_EMAIL}>`,
     to,
     subject: args.subject,
     html: args.html,

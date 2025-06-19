@@ -3,6 +3,7 @@ import { getSupabaseServiceClient } from '../utils/supabase.ts';
 import { z } from 'https://deno.land/x/zod@v3.24.2/mod.ts';
 import { getErrorMessage, handleError } from '../utils/handle-error.ts';
 import Stripe from 'https://esm.sh/stripe@18.2.1';
+import { env } from '../utils/env.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -64,7 +65,7 @@ export async function handler(req: Request) {
     }
 
     // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
       apiVersion: '2024-12-18.acacia',
     });
 

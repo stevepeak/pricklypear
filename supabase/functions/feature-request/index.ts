@@ -1,4 +1,5 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { env } from '../utils/env.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -7,21 +8,19 @@ const corsHeaders = {
 };
 
 const LINEAR_API_URL = 'https://api.linear.app/graphql';
-const LINEAR_API_KEY = Deno.env.get('LINEAR_API_KEY');
-const LINEAR_TEAM_ID = Deno.env.get('LINEAR_TEAM_ID');
 
 async function createLinearIssue(
   args: { title: string; description: string },
   fetchFn: typeof fetch = fetch
 ) {
   const { title, description } = args;
-  if (!LINEAR_API_KEY || !LINEAR_TEAM_ID) {
+  if (!env.LINEAR_API_KEY || !env.LINEAR_TEAM_ID) {
     throw new Error('Missing Linear API credentials');
   }
   const query = `mutation CreateIssue($input: IssueCreateInput!) {\n  issueCreate(input: $input) {\n    success\n    issue {\n      id\n      identifier\n      url\n    }\n  }\n}`;
   const variables = {
     input: {
-      teamId: LINEAR_TEAM_ID,
+      teamId: env.LINEAR_TEAM_ID,
       title,
       description,
       priority: 1, // for Urgent
@@ -32,7 +31,7 @@ async function createLinearIssue(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: LINEAR_API_KEY,
+      Authorization: env.LINEAR_API_KEY,
     },
     body: JSON.stringify({ query, variables }),
   });
@@ -50,7 +49,7 @@ async function createLinearComment(
   body: string,
   fetchFn: typeof fetch = fetch
 ) {
-  if (!LINEAR_API_KEY) {
+  if (!env.LINEAR_API_KEY) {
     throw new Error('Missing Linear API credentials');
   }
   const query = `mutation CreateComment($input: CommentCreateInput!) {
@@ -71,7 +70,7 @@ async function createLinearComment(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: LINEAR_API_KEY,
+      Authorization: env.LINEAR_API_KEY,
     },
     body: JSON.stringify({ query, variables }),
   });
