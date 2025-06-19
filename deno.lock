@@ -3505,6 +3505,7 @@
     "https://esm.sh/@supabase/supabase-js@2.49.8": "fd72c6e822ed41d5fe7ad3bbe3a48420abbb21a579c73d532b36a6467f5b5f7d",
     "https://esm.sh/openai@4.28.0": "9e07cdb2f27ce5425c29eee45be531a8742be3eceb35933d2bb8c97c1b92cf8c",
     "https://esm.sh/resend@4.5.0": "279a749d7b1fdda3cf45c9ea2438a055177932964586a0df95964746719ec37a",
+    "https://esm.sh/stripe@18.2.1": "593d6ddd474480f0fc7b7d197e7d293573895dccbb700cec47ca574ea6bd960e",
     "https://esm.sh/zod@3.24.2": "634dc151ffdec010f55988d783c024d926124f7e943e00c27004f73bc5543902"
   },
   "workspace": {

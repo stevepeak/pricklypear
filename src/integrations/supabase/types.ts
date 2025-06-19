@@ -303,18 +303,24 @@ export type Database = {
           id: string
           name: string
           notifications: Json | null
+          plan: Database["public"]["Enums"]["plans"] | null
+          stripe: Json | null
         }
         Insert: {
           created_at?: string
           id: string
           name: string
           notifications?: Json | null
+          plan?: Database["public"]["Enums"]["plans"] | null
+          stripe?: Json | null
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
           notifications?: Json | null
+          plan?: Database["public"]["Enums"]["plans"] | null
+          stripe?: Json | null
         }
         Relationships: []
       }
@@ -568,6 +574,7 @@ export type Database = {
         | "ai_message"
         | "customer_support"
       participant_status: "pending" | "accepted" | "declined"
+      plans: "Prickly Pro (prod_SWrqFnHhZyT9zK)"
       thread_status: "Open" | "Closed" | "Archived" | "(empty)"
       thread_topic:
         | "travel"
@@ -725,6 +732,7 @@ export const Constants = {
         "customer_support",
       ],
       participant_status: ["pending", "accepted", "declined"],
+      plans: ["Prickly Pro (prod_SWrqFnHhZyT9zK)"],
       thread_status: ["Open", "Closed", "Archived", "(empty)"],
       thread_topic: [
         "travel",

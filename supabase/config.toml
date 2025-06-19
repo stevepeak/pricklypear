@@ -2,3 +2,6 @@ project_id = "vgddrhyjttyrathqhefb"
 
 [functions.calendar-ics]
 verify_jwt = false
+
+[functions.stripe-webhooks]
+verify_jwt = false
