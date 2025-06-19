@@ -88,7 +88,14 @@ export async function handler(req: Request) {
       payment_method_types: ['card'],
       line_items: [
         {
-          price: 'price_1OqXqFnHhZyT9zK', // You'll need to create this price in Stripe
+          price_data: {
+            currency: 'usd',
+            product: 'prod_SWrqFnHhZyT9zK',
+            recurring: {
+              interval: 'month',
+            },
+            unit_amount: 1500, // $15.00 in cents
+          },
           quantity: 1,
         },
       ],
