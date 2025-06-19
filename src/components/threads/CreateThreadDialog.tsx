@@ -21,6 +21,7 @@ import CreateThreadForm from './CreateThreadForm';
 import type { Thread } from '@/types/thread';
 import type { User } from '@supabase/supabase-js';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { createThread } from '@/services/threadService';
 
 interface CreateThreadDialogProps {
   onThreadCreated: (newThread: Thread) => void;
@@ -165,7 +166,6 @@ function CustomerSupportForm({
   const [isCreating, setIsCreating] = React.useState(false);
   const handleCreate = async () => {
     setIsCreating(true);
-    const { createThread } = await import('@/services/threadService');
     const thread = await createThread({
       title: 'New Support Chat',
       type: 'customer_support',
