@@ -162,7 +162,7 @@ export async function handler(req: Request) {
       });
     }
 
-    // Verify webhook signature (you'll need to add STRIPE_WEBHOOK_SECRET to your environment)
+    // Verify webhook signature
     const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
       apiVersion: '2024-12-18.acacia',
     });
