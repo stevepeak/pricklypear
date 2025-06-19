@@ -574,7 +574,7 @@ export type Database = {
         | "ai_message"
         | "customer_support"
       participant_status: "pending" | "accepted" | "declined"
-      plans: "Prickly Pro (prod_SWrqFnHhZyT9zK)"
+      plans: "prod_SWtkU1oqn7HvZc" | "prod_SWrqFnHhZyT9zK"
       thread_status: "Open" | "Closed" | "Archived" | "(empty)"
       thread_topic:
         | "travel"
@@ -732,7 +732,7 @@ export const Constants = {
         "customer_support",
       ],
       participant_status: ["pending", "accepted", "declined"],
-      plans: ["Prickly Pro (prod_SWrqFnHhZyT9zK)"],
+      plans: ["prod_SWtkU1oqn7HvZc", "prod_SWrqFnHhZyT9zK"],
       thread_status: ["Open", "Closed", "Archived", "(empty)"],
       thread_topic: [
         "travel",

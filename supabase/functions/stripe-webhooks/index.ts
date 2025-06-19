@@ -35,7 +35,7 @@ async function handleCustomerSubscriptionCreated(
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
-    .eq('stripe_customer_id', customerId)
+    .eq('stripe.customer_id', customerId)
     .single();
 
   if (profileError || !profile) {
@@ -43,21 +43,14 @@ async function handleCustomerSubscriptionCreated(
     return;
   }
 
-  // Update user plan based on product ID
-  let plan: string | null = null;
-  if (productId === 'prod_SWrqFnHhZyT9zK') {
-    plan = 'Prickly Pro (prod_SWrqFnHhZyT9zK)';
-  }
-
   const { error: updateError } = await supabase
     .from('profiles')
     .update({
-      plan,
+      plan: productId,
       stripe: {
         customer_id: customerId,
         subscription_id: subscription.id,
         subscription_status: status,
-        product_id: productId,
       },
     })
     .eq('id', profile.id);
@@ -87,20 +80,13 @@ async function handleCustomerSubscriptionUpdated(
     return;
   }
 
-  // Update user plan based on product ID and status
-  let plan: string | null = null;
-  if (productId === 'prod_SWrqFnHhZyT9zK' && status === 'active') {
-    plan = 'Prickly Pro (prod_SWrqFnHhZyT9zK)';
-  }
-
   const { error: updateError } = await supabase
     .from('profiles')
     .update({
-      plan,
+      plan: productId,
       stripe: {
         ...profile.stripe,
         subscription_status: status,
-        product_id: productId,
       },
     })
     .eq('id', profile.id);
@@ -136,7 +122,6 @@ async function handleCustomerSubscriptionDeleted(
       stripe: {
         ...profile.stripe,
         subscription_status: 'canceled',
-        product_id: null,
       },
     })
     .eq('id', profile.id);

@@ -11,6 +11,7 @@ const envSchema = z.object({
   // Stripe
   STRIPE_SECRET_KEY: z.string().min(1, 'Stripe secret key is required'),
   STRIPE_WEBHOOK_SECRET: z.string().min(1, 'Stripe webhook secret is required'),
+  STRIPE_PLAN_SKEW: z.string().min(1, 'Stripe plan skew is required'),
 
   // OpenAI
   OPENAI_API_KEY: z.string().min(1, 'OpenAI API key is required'),
@@ -38,6 +39,7 @@ function parseEnv() {
     SUPABASE_SERVICE_ROLE_KEY: Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'),
     STRIPE_SECRET_KEY: Deno.env.get('STRIPE_SECRET_KEY'),
     STRIPE_WEBHOOK_SECRET: Deno.env.get('STRIPE_WEBHOOK_SECRET'),
+    STRIPE_PLAN_SKEW: Deno.env.get('STRIPE_PLAN_SKEW'),
     OPENAI_API_KEY: Deno.env.get('OPENAI_API_KEY'),
     RESEND_API_KEY: Deno.env.get('RESEND_API_KEY'),
     RESEND_FROM_EMAIL: Deno.env.get('RESEND_FROM_EMAIL'),

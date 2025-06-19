@@ -40,8 +40,6 @@ export default function Billing() {
     openCustomerPortal();
   };
 
-  const isProPlan = plan === 'Prickly Pro (prod_SWrqFnHhZyT9zK)';
-
   if (planLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
@@ -66,7 +64,7 @@ export default function Billing() {
         <div className="grid md:grid-cols-2 gap-6">
           {/* Cacti Family Plan */}
           <Card className={`relative `}>
-            {!isProPlan && (
+            {!plan && (
               <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-accent">
                 Current Plan
               </Badge>
@@ -96,7 +94,7 @@ export default function Billing() {
                   <span>Basic messaging features</span>
                 </li>
               </ul>
-              {!isProPlan ? (
+              {plan ? (
                 <Button disabled className="w-full">
                   Current Plan
                 </Button>
@@ -114,10 +112,8 @@ export default function Billing() {
           </Card>
 
           {/* Prickly Pro Plan */}
-          <Card
-            className={`relative ${isProPlan ? 'ring-2 ring-primary' : ''}`}
-          >
-            {isProPlan && (
+          <Card className="relative">
+            {plan && (
               <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-primary">
                 Current Plan
               </Badge>
@@ -149,7 +145,7 @@ export default function Billing() {
                   <span>Advanced AI features</span>
                 </li>
               </ul>
-              {isProPlan ? (
+              {plan ? (
                 <Button
                   variant="outline"
                   className="w-full"
