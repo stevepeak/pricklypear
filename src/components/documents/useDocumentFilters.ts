@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   DOCUMENT_LABEL_INFO,
   type Document,
@@ -51,15 +51,19 @@ export function useDocumentFilters(args: { documents: Document[] }) {
 
   const isFiltering = search.trim() !== '' || filterLabels.length > 0;
 
-  const filtered = documents.filter((doc) => {
-    const matchesSearch = doc.filename
-      .toLowerCase()
-      .includes(search.toLowerCase());
-    const matchesLabels =
-      filterLabels.length === 0 ||
-      (doc.labels ?? []).some((l) => filterLabels.includes(l));
-    return matchesSearch && matchesLabels;
-  });
+  const filtered = useMemo(
+    () =>
+      documents.filter((doc) => {
+        const matchesSearch = doc.filename
+          .toLowerCase()
+          .includes(search.toLowerCase());
+        const matchesLabels =
+          filterLabels.length === 0 ||
+          (doc.labels ?? []).some((l) => filterLabels.includes(l));
+        return matchesSearch && matchesLabels;
+      }),
+    [documents, search, filterLabels]
+  );
 
   const toggleFilterLabel = (label: DocumentLabel) => {
     setFilterLabels((prev) =>

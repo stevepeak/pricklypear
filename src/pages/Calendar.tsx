@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, Plus, Calendar as CalendarIcon, Link } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,17 +64,26 @@ export default function Calendar() {
   const { events } = useCalendarEvents();
 
   const handleEventSelect = (event: CalendarEventWithDates) => {
-    console.log('Selected event:', event);
+    if (process.env.NODE_ENV !== 'production') {
+      // Useful during development; stripped out in prod builds.
+      console.log('Selected event:', event);
+    }
     // TODO: Open event details dialog
   };
 
-  const filteredEvents = events
-    .filter((event) => event.title.toLowerCase().includes(search.toLowerCase()))
-    .map((event) => ({
-      ...event,
-      start: new Date(event.start_time),
-      end: new Date(event.end_time),
-    }));
+  const filteredEvents = useMemo(
+    () =>
+      events
+        .filter((event) =>
+          event.title.toLowerCase().includes(search.toLowerCase())
+        )
+        .map((event) => ({
+          ...event,
+          start: new Date(event.start_time),
+          end: new Date(event.end_time),
+        })),
+    [events, search]
+  );
 
   return (
     <>
@@ -145,7 +154,7 @@ export default function Calendar() {
             events={filteredEvents}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: '100%' }}
+            className="h-full"
             onSelectEvent={handleEventSelect}
             components={{
               event: CustomEvent,
@@ -165,17 +174,7 @@ export default function Calendar() {
               showMore: (total) => `+${total} more`,
             }}
             eventPropGetter={() => ({
-              className: 'event',
-              style: {
-                backgroundColor: '#34A853',
-                borderColor: '#34A853',
-                borderRadius: '4px',
-                opacity: 0.8,
-                color: 'white',
-                border: '0 none',
-                display: 'block',
-                padding: '2px 4px',
-              },
+              className: 'bg-green-600/80 text-white rounded px-1 border-0',
             })}
           />
         </div>

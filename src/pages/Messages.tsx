@@ -43,7 +43,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useRealtimeMessages } from '@/hooks/useRealtimeMessages';
 import ThreadTopicBadge from '@/components/thread/ThreadTopicBadge';
 import { getThreadTopicInfo } from '@/types/thread';
-import { useMessagesFilters } from '@/hooks/use-messages-filters';
+import { useMessageFilters } from '@/hooks/useMessageFilters';
 import { Database } from '@/integrations/supabase/types';
 import {
   SearchBar,
@@ -119,7 +119,7 @@ export default function Messages() {
     threadOptions,
     topicOptions,
     filteredMessages,
-  } = useMessagesFilters(messages);
+  } = useMessageFilters(messages);
 
   const loadMessages = useCallback(async () => {
     if (!user) return;

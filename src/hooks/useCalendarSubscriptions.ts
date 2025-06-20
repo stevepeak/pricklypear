@@ -13,6 +13,8 @@ export function useCalendarSubscriptions() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchSubscriptions = async () => {
       try {
         const user = await requireCurrentUser();
@@ -23,15 +25,21 @@ export function useCalendarSubscriptions() {
           .order('created_at', { ascending: false });
 
         if (error) throw error;
-        setSubscriptions(data || []);
+        if (isMounted) {
+          setSubscriptions(data || []);
+        }
       } catch (error) {
         console.error('Error fetching calendar subscriptions:', error);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
 
     fetchSubscriptions();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const createSubscription = async (

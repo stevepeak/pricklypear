@@ -169,14 +169,13 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
             {editing ? (
               <input
                 ref={inputRef}
-                className="text-2xl font-bold break-words bg-transparent outline-none border-none p-0 m-0"
+                className="text-2xl font-bold break-words bg-transparent outline-none border-none p-0 m-0 min-w-[100px]"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onBlur={handleSave}
                 onKeyDown={handleKeyDown}
                 disabled={loading}
                 maxLength={50}
-                style={{ minWidth: 100 }}
                 data-testid="thread-title-input"
               />
             ) : thread.type === 'default' ? (
