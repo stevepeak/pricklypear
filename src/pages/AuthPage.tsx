@@ -13,7 +13,12 @@ const AuthPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [isSignUp, setIsSignUp] = useState(() => {
+    const mode = searchParams.get('mode');
+    const signup = searchParams.get('signup');
+    return mode === 'signup' || signup === 'true';
+  });
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotIsLoading, setForgotIsLoading] = useState(false);
   const [forgotMessage, setForgotMessage] = useState<string | null>(null);
@@ -22,7 +27,6 @@ const AuthPage = () => {
 
   const { signIn, signUpWithMagicLink, user } = useAuth();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const [invitedEmail, setInvitedEmail] = useState(searchParams.get('email'));
   const inviterName = searchParams.get('inviterName');
 
