@@ -8,5 +8,6 @@
     },
     "noEmit": false
   },
-  "include": ["src", "src/**/*", "../src", "../src/**/*"]
+  "include": ["src", "src/**/*", "../src", "../src/**/*"],
+  "exclude": []
 }
