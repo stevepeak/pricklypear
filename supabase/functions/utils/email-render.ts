@@ -1,4 +1,5 @@
 import React from 'npm:react';
+import type { ReactElement } from 'npm:react';
 import { renderAsync } from 'npm:@react-email/render';
 
 /**
@@ -9,7 +10,7 @@ import { renderAsync } from 'npm:@react-email/render';
  * @returns         - fully rendered HTML string
  */
 export async function renderEmail<TProps>(
-  Component: (props: TProps) => JSX.Element,
+  Component: (props: TProps) => ReactElement,
   props: TProps
 ): Promise<string> {
   // React.createElement is required because renderAsync expects a JSX element
