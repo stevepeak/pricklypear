@@ -1,47 +1,52 @@
-<p align="center">
-  <h1>🌵 Prickly Pear</h1>
-</p>
-<p align="center">
-  <i> AI-assisted parenting chat for prickly-past-partnerships.</i>
-  <br/>
-  <img width="1879" alt="Image" src="https://github.com/user-attachments/assets/e019f955-2f92-45aa-bb47-ec110fc83ef3" />
-</p>
-<p align="center">
-  <a href="https://charlielabs.ai"><img src="https://img.shields.io/badge/Charlie%20works%20here-ABF716?style=flat-square" alt="Charlie Labs"></a>
-</p>
+# 🌵 Prickly Pear
 
----
+> **AI-assisted co-parenting communication app**
 
-## Table of contents
+**Repository**: `https://github.com/gwizinc/pricklypear.git`  
+**Type**: React Single Page Application (SPA) with Supabase backend  
+**Primary Language**: TypeScript  
+**Runtime**: Bun (JavaScript runtime)  
+**Database**: PostgreSQL via Supabase  
+**AI Integration**: OpenAI API via Deno Edge Functions
 
-- [Project overview](#project-overview)
+## 📋 Table of Contents
+
+- [Project Overview](#project-overview)
 - [Architecture](#architecture)
-- [Installation & local setup](#installation--local-setup)
-- [Common workflows](#common-workflows)
-- [Project scripts](#project-scripts)
-- [Folder guide](#folder-guide)
+- [Technology Stack](#technology-stack)
+- [Installation & Setup](#installation--setup)
+- [Development Workflow](#development-workflow)
+- [Project Scripts](#project-scripts)
+- [Project Structure](#project-structure)
+- [API & Edge Functions](#api--edge-functions)
+- [Database Schema](#database-schema)
 - [Contributing](#contributing)
 
----
+## 🎯 Project Overview
 
-## Project overview
+**Prickly Pear** is a **single-page React application** designed for respectful co-parenting communication with AI assistance. The application provides a comprehensive chat platform that enables separated parents to communicate effectively about their children.
 
-Prickly Pear is a single-page chat application focused on respectful co-parenting communication:
+### Core Features
 
-- **Threads** – conversations grouped by topic (travel, education, health, etc.).
-- **Connections** – invite, accept, decline or disable contact with other parents.
-- **AI assistance** –
-  - _review-message_ Edge Function rewrites text in a friendlier tone.
-  - _summarize-thread_ Edge Function produces concise, 2-3-sentence recaps.
-- **Read receipts** – per-message read tracking and unread counters.
-- **Auth & storage** – handled by Supabase (Postgres + Row Level Security).
-- **Hot-reloading dev server** – Bun serves `index.html` and rebuilds on save.
+- **Threads Management**: Conversations organized by topic (travel, education, health, etc.)
+- **Connection System**: Invite, accept, decline, or disable contact with other parents
+- **AI-Powered Assistance**:
+  - Message tone rewriting via `review-message` Edge Function
+  - Thread summarization via `summarize-thread` Edge Function
+- **Read Receipts**: Per-message read tracking with unread counters
+- **Authentication & Storage**: Supabase-powered (PostgreSQL + Row Level Security)
+- **Real-time Updates**: WebSocket connections for live message synchronization
 
-The repo contains _both_ the React front-end **and** the Supabase Edge Functions that run in Deno on the server side.
+### Repository Structure
 
----
+This repository contains both:
 
-## Architecture
+- **Frontend**: React single-page application (`src/` directory)
+- **Backend**: Supabase Edge Functions (Deno runtime) (`supabase/functions/` directory)
+
+## 🏗️ Architecture
+
+### System Architecture Diagram
 
 ```
 ┌────────────┐   HTTP/WebSocket   ┌─────────────────────────┐     RPC      ┌──────────────────┐
@@ -57,105 +62,261 @@ The repo contains _both_ the React front-end **and** the Supabase Edge Functions
    OpenAI API
 ```
 
-High-level code layout:
+### Data Flow
 
-- **src/** – React front-end
-  - **components/** – UI and headless primitives
-  - **pages/** – top-level routes rendered by `react-router`
-  - **contexts/** – global providers (`AuthContext` wraps Supabase auth)
-  - **hooks/** – custom hooks for threads, connections, toast, etc.
-  - **services/** – thin data-access layer that talks to Supabase tables and edge functions
-  - **integrations/supabase/** – generated typed client
-  - **types/** – shared TypeScript models (`Thread`, `Message`, `Connection` …)
-- **supabase/functions/** – Edge Functions written in Deno TypeScript
-  - **review-message/** – rewrites text in different tones with OpenAI
-  - **summarize-thread/** – fetches messages, calls OpenAI, saves summary
-- **build.ts** – Bun script that bundles the SPA with Tailwind CSS
-- **src/index.tsx** – tiny Bun server that serves `index.html` for any route
+1. **Frontend**: React SPA served by Bun dev server or Vercel Edge
+2. **Backend**: Supabase PostgreSQL database with Row Level Security
+3. **AI Processing**: OpenAI API integration via Deno Edge Functions
+4. **Real-time**: WebSocket connections for live updates
 
----
+### Component Architecture
 
-## Installation & local setup
+- **React Context API**: Global state management
+- **Custom Hooks**: Data fetching and business logic
+- **Service Layer**: API abstraction for Supabase interactions
+- **Edge Functions**: Serverless AI processing functions
 
-Prerequisites:
+## 🛠️ Technology Stack
 
-1. **Bun ≥ 1.2** (https://bun.sh)
-2. A Supabase project – grab the Project URL and anon/public key.
-3. An OpenAI API key if you want AI features locally.
-4. `git` and a modern browser.
+### Frontend Technologies
 
-Steps:
+- **Framework**: React 18+ (Single Page Application)
+- **Build Tool**: Bun (JavaScript runtime & bundler)
+- **Styling**: Tailwind CSS
+- **State Management**: React Context API
+- **Routing**: React Router
+- **Testing**: Vitest
+- **Linting**: ESLint + Prettier
+- **Type Checking**: TypeScript (strict mode)
+
+### Backend Technologies
+
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Edge Functions**: Deno runtime
+- **AI Integration**: OpenAI API
+- **Real-time**: Supabase Realtime
+- **Row Level Security**: Database-level access control
+
+### Development Tools
+
+- **Package Manager**: Bun
+- **Type Checking**: TypeScript
+- **Code Quality**: ESLint, Prettier
+- **Testing**: Vitest
+- **Deployment**: Vercel (frontend), Supabase (backend)
+- **Version Control**: Git
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+
+Before setting up the project, ensure you have the following installed:
+
+1. **Bun ≥ 1.2** - [Install Bun](https://bun.sh)
+2. **Git** - Version control system
+3. **Modern Browser** - Chrome, Firefox, Safari, or Edge
+4. **Supabase CLI** (optional) - For local Edge Function development
+
+### Environment Configuration
+
+Create a `.env` file in the project root with the following variables:
 
 ```bash
-# 1. Clone and install deps
-$ git clone https://github.com/gwizinc/pricklypear.git
-$ cd pricklypear
-$ bun install
+# Supabase Configuration
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key-here
 
-# 2. Environment (create .env or export vars)
-# Only needed when overriding the hard-coded demo keys
-SUPABASE_URL=...           # e.g. https://xyzcompany.supabase.co
-SUPABASE_ANON_KEY=...
-OPENAI_API_KEY=...
-
-# 3. Start the dev server (hot reload)
-$ bun run dev
-# → http://localhost:3000 (printed in the console)
+# OpenAI Configuration (for AI features)
+OPENAI_API_KEY=your-openai-api-key-here
 ```
 
-Deploying Edge Functions locally:
+> **Note**: The project includes demo credentials in `src/integrations/supabase/client.ts`. Replace these with your own Supabase project credentials for production use.
+
+### Installation Steps
 
 ```bash
-# Requires the Supabase CLI
-$ supabase functions serve review-message
-$ supabase functions serve summarize-thread
+# 1. Clone the repository
+git clone https://github.com/gwizinc/pricklypear.git
+cd pricklypear
+
+# 2. Install dependencies
+bun install
+
+# 3. Set up environment variables (optional)
+cp .env.example .env
+# Edit .env with your credentials
+
+# 4. Start the development server
+bun run dev
 ```
 
-> **Pro tip:** The published `SUPABASE_URL` and public key in `src/integrations/supabase/client.ts` point to a demo backend. Swap them for your own project when you are ready.
+The application will be available at `http://localhost:3000`
 
----
+### Local Edge Function Development
 
-## Project scripts
+To run Edge Functions locally for development:
 
-| Command             | Purpose                              |
-| ------------------- | ------------------------------------ |
-| `bun run dev`       | Start hot-reload dev server          |
-| `bun run build`     | Build optimized bundle to `dist/`    |
-| `bun test`          | Run Vitest test suite                |
-| `bun run lint`      | ESLint (React hooks, TypeScript)     |
-| `bun run typecheck` | Strict type checking (no emit)       |
-| `bun run ci`        | Lint + typecheck + build (CI helper) |
+```bash
+# Install Supabase CLI (if not already installed)
+npm install -g supabase
 
----
-
-## Folder guide
-
-```
-├─ src/
-│  ├─ components/        # UI building blocks
-│  ├─ pages/             # Route-level views
-│  ├─ hooks/             # Custom React hooks
-│  ├─ contexts/          # Global providers (auth, toast…)
-│  ├─ services/          # Supabase data helpers
-│  ├─ integrations/      # Third-party SDK wrappers
-│  └─ types/             # Shared TS types
-├─ supabase/functions/   # Deno Edge Functions
-├─ build.ts              # Bun bundler script
-└─ index.html            # Single-page app entry
+# Start Edge Functions locally
+supabase functions serve review-message
+supabase functions serve summarize-thread
 ```
 
----
+## 🔄 Development Workflow
 
-## Contributing
+### Development Commands
 
-1. Fork & clone.
-2. Create a branch (`git checkout -b feat/my-feature`).
-3. **Write code + tests**. Run `bun run lint && bun run typecheck` before committing.
-4. Push and open a PR. Describe _why_, link any related issues, and keep commits focused.
-5. One of the maintainers will review, request changes if needed, and merge.
+```bash
+# Start development server with hot reload
+bun run dev
 
-Style & tooling:
+# Run tests
+bun test
 
-- Follow existing ESLint rules. Prettier runs via the `bun run lint` and `bun run fix` scripts.
-- Keep PRs small; large refactors should be split across multiple PRs.
-- Tests live next to the code they cover and use Vitest.
+# Run linting and formatting
+bun run lint
+bun run fix
+
+# Type checking
+bun run typecheck
+
+# Build for production
+bun run build
+
+# Run full CI pipeline
+bun run ci
+```
+
+### Code Quality Standards
+
+- **TypeScript**: Strict type checking enabled
+- **ESLint**: React hooks and TypeScript rules
+- **Prettier**: Automatic code formatting
+- **Testing**: Vitest for unit and integration tests
+- **File Naming**: kebab-case for files and directories
+- **Component Structure**: Function components with TypeScript interfaces
+
+## 📜 Project Scripts
+
+| Command             | Purpose                  | Output                  |
+| ------------------- | ------------------------ | ----------------------- |
+| `bun run dev`       | Start development server | `http://localhost:3000` |
+| `bun run build`     | Build production bundle  | `dist/` directory       |
+| `bun test`          | Run test suite           | Test results            |
+| `bun run lint`      | ESLint + Prettier check  | Linting report          |
+| `bun run fix`       | Auto-fix linting issues  | Fixed code              |
+| `bun run typecheck` | TypeScript type checking | Type errors             |
+| `bun run ci`        | Full CI pipeline         | Build + test + lint     |
+
+## 📁 Project Structure
+
+```
+pricklypear/
+├── src/                          # Frontend source code
+│   ├── components/               # React components
+│   │   ├── ui/                   # Reusable UI components
+│   │   ├── thread/               # Thread-related components
+│   │   ├── connections/          # Connection management
+│   │   └── commands/             # Command menu components
+│   ├── hooks/                    # Custom React hooks
+│   ├── contexts/                 # React context providers
+│   ├── services/                 # Data access layer
+│   ├── integrations/             # Third-party integrations
+│   │   └── supabase/             # Supabase client & types
+│   ├── types/                    # TypeScript type definitions
+│   ├── utils/                    # Utility functions
+│   └── index.tsx                 # Application entry point
+├── supabase/                     # Backend configuration
+│   ├── functions/                # Edge Functions
+│   │   ├── review-message/       # Message tone rewriting
+│   │   ├── summarize-thread/     # Thread summarization
+│   │   └── utils/                # Shared utilities
+│   ├── migrations/               # Database migrations
+│   └── seeds/                    # Database seed data
+├── tests/                        # Test files
+├── build.ts                      # Bun build script
+├── index.html                    # HTML entry point
+└── package.json                  # Dependencies & scripts
+```
+
+### Key Directories Explained
+
+- **`src/components/`**: React components organized by feature
+- **`src/hooks/`**: Custom React hooks for data fetching and state management
+- **`src/services/`**: API layer for Supabase interactions
+- **`src/integrations/supabase/`**: Generated TypeScript client and types
+- **`supabase/functions/`**: Deno Edge Functions for AI processing
+
+## 🔌 API & Edge Functions
+
+### Available Edge Functions
+
+#### `review-message`
+
+- **Purpose**: Rewrite message text in different tones
+- **Input**: Message text, target tone
+- **Output**: Rewritten message
+- **Technology**: OpenAI API integration
+- **Location**: `supabase/functions/review-message/`
+
+#### `summarize-thread`
+
+- **Purpose**: Generate concise thread summaries
+- **Input**: Thread ID
+- **Output**: 2-3 sentence summary
+- **Technology**: OpenAI API integration
+- **Location**: `supabase/functions/summarize-thread/`
+
+### API Endpoints
+
+- **Supabase Client**: Generated TypeScript client in `src/integrations/supabase/`
+- **Edge Functions**: Invoked via `supabase.functions.invoke()`
+- **Real-time**: WebSocket subscriptions via Supabase Realtime
+
+## 🗄️ Database Schema
+
+### Key Tables
+
+- **`threads`**: Conversation topics and metadata
+
+  - `id`: Primary key
+  - `title`: Thread title
+  - `created_at`: Creation timestamp
+  - `updated_at`: Last update timestamp
+
+- **`messages`**: Individual chat messages
+
+  - `id`: Primary key
+  - `thread_id`: Foreign key to threads
+  - `content`: Message text
+  - `sender_id`: User ID of sender
+  - `created_at`: Creation timestamp
+
+- **`connections`**: User relationships and permissions
+
+  - `id`: Primary key
+  - `user_id`: Primary user
+  - `connected_user_id`: Connected user
+  - `status`: Connection status (pending, accepted, declined)
+
+- **`users`**: User profiles and authentication
+  - `id`: Primary key (from Supabase Auth)
+  - `email`: User email
+  - `created_at`: Account creation timestamp
+
+### Authentication Flow
+
+1. User signs up/logs in via Supabase Auth
+2. JWT token stored in browser
+3. API requests authenticated via token
+4. Row Level Security enforces data access permissions
+
+### Row Level Security (RLS)
+
+- **Threads**: Users can only access threads they're participants in
+- **Messages**: Users can only see messages in threads they have access to
+- **Connections**: Users can only see their own connections

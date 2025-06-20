@@ -6,8 +6,9 @@ on:
       - main
   pull_request:
 
+# Cancel only within the same PR
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
