@@ -4,8 +4,6 @@ import { renderEmail } from '../utils/email-render.ts';
 import { InvitationEmail } from '../templates/InvitationEmail.tsx';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
 
-const APP_CONNECTIONS_URL = 'https://prickly.app';
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers':
