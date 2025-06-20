@@ -1,6 +1,8 @@
+import '@testing-library/jest-dom'; // ← enables jest-dom matchers
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { describe, expect, it, vi } from 'vitest'; // ← vitest utilities
 import AuthPage from './AuthPage';
 
 vi.mock('@/contexts/AuthContext', () => ({
