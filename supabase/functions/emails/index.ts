@@ -42,7 +42,7 @@ export async function handler(req: Request) {
 
     const subject = `${inviterName} invited you to connect on The Prickly Pear`;
 
-    // Preview only — return HTML without sending
+    // Preview only - return HTML without sending
     if (preview) {
       return new Response(html, {
         headers: { ...corsHeaders, 'Content-Type': 'text/html' },
