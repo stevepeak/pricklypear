@@ -23,55 +23,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-/**
- * Sidebar UI primitives
- *
- * This file exposes a small, headless set of React components that make it
- * easy to build responsive, collapsible side-bars while keeping styling and
- * behaviour consistent across the application.
- *
- * Key ideas
- * ----------
- * 1. `SidebarProvider` – Supplies state (expanded / collapsed) through context,
- *    persists it to a cookie so the preference survives reloads, and wires up a
- *    keyboard shortcut (⌘/Ctrl + b) for power-users.
- *
- * 2. `Sidebar`         – The visual container.  On desktop it can be
- *    a) permanently visible,
- *    b) icon-collapsed, or
- *    c) off-canvas (slides in/out).
- *    On mobile it automatically renders inside a Radix `<Sheet>` component.
- *
- * 3. Sub-components    – Small “lego bricks” (`SidebarHeader`, `SidebarMenu`,
- *    `SidebarMenuButton`, …) which are nothing more than semantic wrappers
- *    around heavily-themed Tailwind class names.  They are intentionally kept
- *    free of logic so that layout concerns stay declarative.
- *
- * Minimal example
- * ---------------
- * ```tsx
- * <SidebarProvider>
- *   <SidebarTrigger />
- *
- *   <Sidebar side="left">
- *     <SidebarHeader>
- *       <SidebarInput placeholder="Search…" />
- *     </SidebarHeader>
- *
- *     <SidebarContent>
- *       <SidebarMenu>
- *         …
- *       </SidebarMenu>
- *     </SidebarContent>
- *   </Sidebar>
- *
- *   <SidebarInset> // main application content
- *     …
- *   </SidebarInset>
- * </SidebarProvider>
- * ```
- */
-
 /* -------------------------------------------------------------------- */
 /* Constants                                                            */
 /* -------------------------------------------------------------------- */
@@ -94,10 +45,6 @@ type SidebarContextProps = {
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
 
-/**
- * React hook to access the current sidebar context.
- * Throws a descriptive error when used outside of `<SidebarProvider>`.
- */
 function useSidebar() {
   const context = React.useContext(SidebarContext);
   if (!context) {
@@ -107,13 +54,6 @@ function useSidebar() {
   return context;
 }
 
-/**
- * Provides sidebar state & helpers to all descendants.
- *
- * When `open` / `onOpenChange` props are omitted, the component is
- * “uncontrolled” and manages its own state.  Otherwise it acts as a
- * controlled component, delegating state handling to the parent.
- */
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -216,13 +156,6 @@ function SidebarProvider({
 /* Visual / Layout Components                                           */
 /* -------------------------------------------------------------------- */
 
-/**
- * Main sidebar container.
- *
- * Desktop: renders beside the content area and can be collapsed depending on
- * the `collapsible` prop.
- * Mobile : falls back to a Radix `<Sheet>` for a native off-canvas feel.
- */
 function Sidebar({
   side = 'left',
   variant = 'sidebar',
@@ -325,10 +258,6 @@ function Sidebar({
   );
 }
 
-/**
- * Small ghost button that toggles the sidebar.  Typically placed in the
- * application header or command bar.
- */
 function SidebarTrigger({
   className,
   onClick,
@@ -355,10 +284,6 @@ function SidebarTrigger({
   );
 }
 
-/**
- * Invisible vertical rail that users can drag / click to expand or collapse
- * the sidebar.  Only visible on desktop because mobile uses the Sheet.
- */
 function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   const { toggleSidebar } = useSidebar();
 
@@ -384,10 +309,6 @@ function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   );
 }
 
-/**
- * Wrapper for the main page content when an **inset** sidebar variant is used.
- * Applies margin / rounded corners so the content “floats” next to the bar.
- */
 function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
   return (
     <main
@@ -406,10 +327,6 @@ function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
 /* Simple presentational helpers                                         */
 /* -------------------------------------------------------------------- */
 
-/**
- * Search / filter input styled specifically for use inside the sidebar
- * header or footer.
- */
 function SidebarInput({
   className,
   ...props
@@ -424,14 +341,6 @@ function SidebarInput({
   );
 }
 
-/**
- * Groups, separators, menu items, badges, … below follow the same pattern:
- * – Provide a semantic wrapper element
- * – Attach a descriptive `data-slot` attribute for easy theming
- * – Embed a pre-baked Tailwind class string so views stay uncluttered.
- *
- * They purposely do **not** carry additional logic.
- */
 function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -527,6 +436,7 @@ function SidebarGroupAction({
       data-sidebar="group-action"
       className={cn(
         'text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
+        // mobile-hit-area: extend clickable area on touch devices
         'after:absolute after:-inset-2 md:after:hidden',
         'group-data-[collapsible=icon]:hidden',
         className
@@ -661,6 +571,7 @@ function SidebarMenuAction({
       data-sidebar="menu-action"
       className={cn(
         'text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground peer-hover/menu-button:text-sidebar-accent-foreground absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
+        // mobile-hit-area: extend clickable area on touch devices
         'after:absolute after:-inset-2 md:after:hidden',
         'peer-data-[size=sm]/menu-button:top-1',
         'peer-data-[size=default]/menu-button:top-1.5',
