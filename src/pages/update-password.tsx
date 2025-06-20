@@ -104,7 +104,12 @@ const UpdatePassword = () => {
                     {...form.register('confirmNewPassword')}
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button
+                  variant="accent"
+                  type="submit"
+                  className="w-full"
+                  disabled={isLoading}
+                >
                   {isLoading ? 'Updating...' : 'Update password'}
                 </Button>
                 {message && (
