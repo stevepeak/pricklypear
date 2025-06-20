@@ -1,8 +1,113 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import { MessageSquare, Lock } from 'lucide-react';
+import {
+  MessageSquare,
+  Lock,
+  HeartHandshake,
+  MessageCircle,
+  UsersRound,
+  TriangleAlert,
+  BadgePlus,
+  BatteryFull,
+  Crown,
+} from 'lucide-react';
 import Footer from '@/components/ui/footer';
+
+const PricingSection = () => (
+  <div className="flex flex-col items-center justify-center p-4">
+    <div className="w-full max-w-4xl space-y-6">
+      <div className="text-center space-y-2">
+        <h2 className="text-3xl font-bold">Transparent Pricing</h2>
+        <p className="text-muted-foreground">
+          Choose the plan that best fits your needs
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Cacti Family Plan */}
+        <Card>
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-2">
+              <HeartHandshake className="h-8 w-8 text-red-700" />
+            </div>
+            <CardTitle className="text-xl">Cacti Family</CardTitle>
+            <div className="text-3xl font-bold">Free</div>
+            <p className="text-sm text-muted-foreground">
+              Join conversation of other Prickly Pro members.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <ul className="space-y-2">
+              <li className="flex items-center gap-2">
+                <MessageCircle className="h-4 w-4 text-green-500" />
+                <span>Join conversations of others</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <UsersRound className="h-4 w-4 text-green-500" />
+                <span>Great for friends, family, kids, and new partners</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <TriangleAlert className="h-4 w-4 text-red-500" />
+                <span>Cannot create threads, events, or files</span>
+              </li>
+            </ul>
+            <Button asChild className="w-full" variant="success">
+              <Link to="/auth">Get started for free</Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Prickly Pro Plan */}
+        <Card>
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-2">
+              <Crown className="h-8 w-8 text-green-500" />
+            </div>
+            <CardTitle className="text-xl">Prickly Pro</CardTitle>
+            <div className="text-3xl font-bold">
+              $15<span className="text-lg font-normal">/month</span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Full access to all features
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <ul className="space-y-2">
+              <li className="flex items-center gap-2">
+                <BadgePlus className="h-4 w-4 text-green-500" />
+                <span>Create AI-powered threads, events, and files</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <BatteryFull className="h-4 w-4 text-green-500" />
+                <span>Unlimited usage</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <HeartHandshake className="h-4 w-4 text-green-500" />
+                <span>
+                  Invite Cacti Family members to join your threads, free
+                </span>
+              </li>
+            </ul>
+            <Button asChild className="w-full" variant="success">
+              <Link to="/auth">Get started for free</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="text-center text-sm text-muted-foreground">
+        <p>
+          All plans include secure, encrypted messaging and data protection.
+        </p>
+        <p>
+          You can upgrade, downgrade, or cancel your subscription at any time.
+        </p>
+      </div>
+    </div>
+  </div>
+);
 
 const Home = () => {
   return (
@@ -33,6 +138,9 @@ const Home = () => {
           </Button>
         </div>
       </div>
+
+      {/* Pricing Section */}
+      <PricingSection />
 
       {/* Features Section */}
       <div className="bg-[#FFF8F0] py-16">
