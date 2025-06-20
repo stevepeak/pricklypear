@@ -5,10 +5,10 @@ import React, {
   useState,
   ReactNode,
   useCallback,
-} from 'react';
-import { getConnections } from '@/services/users/userService.js';
-import { useAuth } from '@/contexts/AuthContext';
-import type { ConnectedUser } from '@/types/connection';
+} from "react";
+import { getConnections } from "@/services/users/userService.js";
+import { useAuth } from "@/contexts/AuthContext";
+import type { ConnectedUser } from "@/types/connection";
 
 interface ConnectionsContextType {
   connections: ConnectedUser[];
@@ -17,7 +17,7 @@ interface ConnectionsContextType {
 }
 
 const ConnectionsContext = createContext<ConnectionsContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const ConnectionsProvider = ({ children }: { children: ReactNode }) => {
@@ -35,7 +35,7 @@ export const ConnectionsProvider = ({ children }: { children: ReactNode }) => {
       const allConnections = await getConnections();
       setConnections(allConnections);
     } catch (error) {
-      console.error('Error loading connections:', error);
+      console.error("Error loading connections:", error);
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +59,7 @@ export const useConnectionsContext = () => {
   const ctx = useContext(ConnectionsContext);
   if (!ctx)
     throw new Error(
-      'useConnectionsContext must be used within a ConnectionsProvider'
+      "useConnectionsContext must be used within a ConnectionsProvider",
     );
   return ctx;
 };

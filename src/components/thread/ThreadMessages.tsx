@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
-import type { Message } from '@/types/message';
-import { markMessagesInThreadAsRead } from '@/services/messageService';
-import type { User } from '@supabase/supabase-js';
-import { MessageCircle } from 'lucide-react';
-import type { Thread } from '@/types/thread';
-import MessageFromMe from '@/components/thread/messages/MessageFromMe';
-import MessageFromParticipant from '@/components/thread/messages/MessageFromParticipant';
-import MessageFromAI from '@/components/thread/messages/MessageFromAI';
-import RequestClose from '@/components/thread/messages/RequestClose';
-import CloseDecision from './messages/CloseDecision';
-import CustomerSupportMessage from './messages/CustomerSupport';
-import OpenedAt from './messages/OpenedAt';
+import React, { useEffect } from "react";
+import type { Message } from "@/types/message";
+import { markMessagesInThreadAsRead } from "@/services/messageService";
+import type { User } from "@supabase/supabase-js";
+import { MessageCircle } from "lucide-react";
+import type { Thread } from "@/types/thread";
+import MessageFromMe from "@/components/thread/messages/MessageFromMe";
+import MessageFromParticipant from "@/components/thread/messages/MessageFromParticipant";
+import MessageFromAI from "@/components/thread/messages/MessageFromAI";
+import RequestClose from "@/components/thread/messages/RequestClose";
+import CloseDecision from "./messages/CloseDecision";
+import CustomerSupportMessage from "./messages/CustomerSupport";
+import OpenedAt from "./messages/OpenedAt";
 
 interface ThreadMessagesProps {
   messages: Message[];
@@ -49,7 +49,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
       <OpenedAt thread={thread} />
       {messages.map((message, idx) => {
         switch (message.type) {
-          case 'user_message':
+          case "user_message":
             return message.isCurrentUser ? (
               <MessageFromMe
                 key={message.id}
@@ -63,7 +63,7 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
                 onImagesLoaded={onImagesLoaded}
               />
             );
-          case 'ai_message':
+          case "ai_message":
             return (
               <MessageFromAI
                 key={message.id}
@@ -71,15 +71,15 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
                 onImagesLoaded={onImagesLoaded}
               />
             );
-          case 'request_close': {
+          case "request_close": {
             // isPending is true only if this is the newest request_close and there are no close_declined after it
             const isNewestRequestClose =
               messages
                 .slice(idx + 1)
-                .find((m) => m.type === 'request_close') === undefined;
+                .find((m) => m.type === "request_close") === undefined;
             const hasDeclinedAfter = messages
               .slice(idx + 1)
-              .some((m) => m.type === 'close_declined');
+              .some((m) => m.type === "close_declined");
             const isPending = isNewestRequestClose && !hasDeclinedAfter;
             return (
               <RequestClose
@@ -90,12 +90,12 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
               />
             );
           }
-          case 'customer_support':
+          case "customer_support":
             return (
               <CustomerSupportMessage key={message.id} message={message} />
             );
-          case 'close_declined':
-          case 'close_accepted':
+          case "close_declined":
+          case "close_accepted":
             return <CloseDecision key={message.id} message={message} />;
           default:
             return (

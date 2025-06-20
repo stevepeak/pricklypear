@@ -5,7 +5,7 @@ export {
   type ConnectionStatus,
   type ConnectedUser,
   type InviteResponse,
-} from '../connections/index.js';
+} from "../connections/index.js";
 
 /**
  * Search profiles by (case-insensitive) name while excluding the current user.

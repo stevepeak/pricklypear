@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
-import { useThreadState } from './useThreadState';
-import { useThreadMessages } from './useThreadMessages';
+import { useEffect } from "react";
+import { useThreadState } from "./useThreadState";
+import { useThreadMessages } from "./useThreadMessages";
 
 export const useThreadDetails = (
   threadId: string | undefined,
-  composerRef?: React.RefObject<{ focusInput: () => void }>
+  composerRef?: React.RefObject<{ focusInput: () => void }>,
 ) => {
   // Get thread state management
   const { thread, isLoading } = useThreadState(threadId);

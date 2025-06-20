@@ -1,5 +1,5 @@
-import { supabase } from '@/integrations/supabase/client';
-import { requireCurrentUser } from '@/utils/authCache';
+import { supabase } from "@/integrations/supabase/client";
+import { requireCurrentUser } from "@/utils/authCache";
 
 interface UpdatePasswordParams {
   currentPassword: string;
@@ -19,7 +19,7 @@ export async function updatePassword({
   });
 
   if (signInError) {
-    throw new Error('Current password is incorrect');
+    throw new Error("Current password is incorrect");
   }
 
   // If verification successful, update to new password

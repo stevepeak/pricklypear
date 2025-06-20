@@ -1,4 +1,4 @@
-import { env } from './env.ts';
+import { env } from "./env.ts";
 
 /**
  * Send a notification to Slack via webhook. Logs on failure but never throws.
@@ -12,15 +12,15 @@ export async function sendSlackNotification(args: {
 
   try {
     const response = await fetch(env.SLACK_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Slack webhook error:', response.status, errorText);
+      console.error("Slack webhook error:", response.status, errorText);
     }
   } catch (error) {
-    console.error('Slack webhook exception:', error);
+    console.error("Slack webhook exception:", error);
   }
 }

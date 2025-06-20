@@ -1,17 +1,17 @@
-import { test, expect } from './fixtures';
+import { test, expect } from "./fixtures";
 
-test.describe('Connections Page', () => {
-  test('should handle outgoing connection flow', async ({ withUser: page }) => {
+test.describe("Connections Page", () => {
+  test("should handle outgoing connection flow", async ({ withUser: page }) => {
     // Navigate to connections page
-    await page.goto('/connections');
+    await page.goto("/connections");
 
     // Click Add Connection button
-    await page.getByRole('button', { name: /add connection/i }).click();
+    await page.getByRole("button", { name: /add connection/i }).click();
 
     // Fill in email for new connection
     const testEmail = `test+${Math.random().toString(36).slice(2)}@prickly.app`;
-    await page.getByTestId('invite-email').fill(testEmail);
-    await page.getByRole('button', { name: /send invitation/i }).click();
+    await page.getByTestId("invite-email").fill(testEmail);
+    await page.getByRole("button", { name: /send invitation/i }).click();
 
     // Verify success toast
     await expect(page.getByText(/invitation sent/i)).toBeVisible();
@@ -22,7 +22,7 @@ test.describe('Connections Page', () => {
     await expect(connectionCard).toBeVisible();
 
     // Cancel the outgoing connection
-    await connectionCard.getByRole('button', { name: /cancel/i }).click();
+    await connectionCard.getByRole("button", { name: /cancel/i }).click();
 
     // Verify cancellation toast
     await expect(page.getByText(/request cancelled/i)).toBeVisible();

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -11,11 +11,11 @@ import {
   SidebarMenuButton,
   SidebarMenuBadge,
   useSidebar,
-} from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/contexts/AuthContext';
-import { useUnreadMessages } from '@/hooks/useUnreadMessages';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   LogIn,
   LogOut,
@@ -30,20 +30,20 @@ import {
   BookUser,
   Baby,
   MessageSquare,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from '@/components/ui/dropdown-menu';
-import { useConnections } from '@/hooks/useConnections';
-import { toast } from 'sonner';
+} from "@/components/ui/dropdown-menu";
+import { useConnections } from "@/hooks/useConnections";
+import { toast } from "sonner";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 
 export function AppSidebar() {
   const { user, signOut } = useAuth();
@@ -54,15 +54,15 @@ export function AppSidebar() {
 
   // Calculate pending incoming connections
   const pendingIncomingCount = connections.filter(
-    (c) => c.status === 'pending' && c.id !== user.id
+    (c) => c.status === "pending" && c.id !== user.id,
   ).length;
 
   const handleLogout = async () => {
     await signOut();
-    toast('Logged out', {
-      description: 'You have been successfully logged out.',
+    toast("Logged out", {
+      description: "You have been successfully logged out.",
     });
-    navigate('/');
+    navigate("/");
   };
 
   const getUserInitials = () => {
@@ -72,36 +72,36 @@ export function AppSidebar() {
   const navItems = user
     ? [
         {
-          path: '/threads',
-          label: 'Threads',
+          path: "/threads",
+          label: "Threads",
           icon: <MessageSquareText className="h-4 w-4 mr-2" />,
           badge: Object.keys(threadCounts).length || undefined,
         },
         {
-          path: '/messages',
-          label: 'Messages',
+          path: "/messages",
+          label: "Messages",
           icon: <MessageSquare className="h-4 w-4 mr-2" />,
           badge: totalUnread || undefined,
         },
         {
-          path: '/calendar',
-          label: 'Calendar',
+          path: "/calendar",
+          label: "Calendar",
           icon: <Calendar className="h-4 w-4 mr-2" />,
         },
         {
-          path: '/connections',
-          label: 'Connections',
+          path: "/connections",
+          label: "Connections",
           icon: <BookUser className="h-4 w-4 mr-2" />,
           badge: pendingIncomingCount || undefined,
         },
         {
-          path: '/children',
-          label: 'Children Profiles',
+          path: "/children",
+          label: "Children Profiles",
           icon: <Baby className="h-4 w-4 mr-2" />,
         },
         {
-          path: '/documents',
-          label: 'Documents',
+          path: "/documents",
+          label: "Documents",
           icon: <FileText className="h-4 w-4 mr-2" />,
         },
       ]
@@ -116,7 +116,7 @@ export function AppSidebar() {
             role="img"
             aria-label="Cactus"
           />
-          {state === 'expanded' && (
+          {state === "expanded" && (
             <div className="flex items-center gap-2">
               <span className="whitespace-nowrap">Prickly Pear</span>
             </div>
@@ -135,7 +135,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
-                  {state === 'collapsed' ? (
+                  {state === "collapsed" ? (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <SidebarMenuButton
@@ -188,13 +188,13 @@ export function AppSidebar() {
               ))}
               {/* Feature Request Button */}
               <SidebarMenuItem>
-                {state === 'collapsed' ? (
+                {state === "collapsed" ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <SidebarMenuButton
                         asChild={false}
                         onClick={() => {
-                          navigate('/feature-request');
+                          navigate("/feature-request");
                           if (isMobile) setOpenMobile(false);
                         }}
                         className="flex items-center w-full justify-start mb-1"
@@ -211,7 +211,7 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild={false}
                     onClick={() => {
-                      navigate('/feature-request');
+                      navigate("/feature-request");
                       if (isMobile) setOpenMobile(false);
                     }}
                     className="flex items-center w-full justify-start mb-1"

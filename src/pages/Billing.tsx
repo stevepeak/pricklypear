@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React, { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   BadgePlus,
   BatteryFull,
@@ -11,10 +11,10 @@ import {
   MessageCircle,
   TriangleAlert,
   UsersRound,
-} from 'lucide-react';
-import { useSubscription } from '@/hooks/useSubscription';
-import { useUserPlan } from '@/hooks/useUserPlan';
-import { toast } from 'sonner';
+} from "lucide-react";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useUserPlan } from "@/hooks/useUserPlan";
+import { toast } from "sonner";
 
 export default function Billing() {
   const [searchParams] = useSearchParams();
@@ -24,18 +24,18 @@ export default function Billing() {
 
   // Handle success/cancel messages from URL params
   useEffect(() => {
-    const success = searchParams.get('success');
-    const canceled = searchParams.get('canceled');
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
 
-    if (success === 'true') {
-      toast('Subscription successful!', {
+    if (success === "true") {
+      toast("Subscription successful!", {
         description:
-          'Welcome to Prickly Pro! You now have access to all features.',
+          "Welcome to Prickly Pro! You now have access to all features.",
       });
-    } else if (canceled === 'true') {
-      toast('Subscription canceled', {
+    } else if (canceled === "true") {
+      toast("Subscription canceled", {
         description:
-          'Your subscription was not completed. You can try again anytime.',
+          "Your subscription was not completed. You can try again anytime.",
       });
     }
   }, [searchParams]);
@@ -113,7 +113,7 @@ export default function Billing() {
                   onClick={handleManageSubscription}
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Loading...' : 'Downgrade to Cacti Family'}
+                  {isLoading ? "Loading..." : "Downgrade to Cacti Family"}
                 </Button>
               )}
             </CardContent>
@@ -162,7 +162,7 @@ export default function Billing() {
                   onClick={handleManageSubscription}
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Loading...' : 'Manage Subscription'}
+                  {isLoading ? "Loading..." : "Manage Subscription"}
                 </Button>
               ) : (
                 <Button
@@ -171,7 +171,7 @@ export default function Billing() {
                   disabled={isLoading}
                   variant="success"
                 >
-                  {isLoading ? 'Loading...' : 'Upgrade to Prickly Pro'}
+                  {isLoading ? "Loading..." : "Upgrade to Prickly Pro"}
                 </Button>
               )}
             </CardContent>

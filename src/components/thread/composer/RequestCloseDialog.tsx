@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogClose,
-} from '@/components/ui/dialog.js';
+} from "@/components/ui/dialog.js";
 
 interface RequestCloseDialogProps {
   open: boolean;
@@ -44,7 +44,7 @@ export function RequestCloseDialog({
             {isRequesting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              'Make request to close'
+              "Make request to close"
             )}
           </Button>
         </DialogFooter>

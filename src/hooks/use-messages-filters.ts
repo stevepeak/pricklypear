@@ -1,21 +1,21 @@
-import { useState, useEffect } from 'react';
-import type { ListMessage } from '@/types/message';
-import { z } from 'zod';
-import type { Database } from '@/integrations/supabase/types';
-import type { ThreadTopic } from '@/types/thread';
-import { Constants } from '@/integrations/supabase/types';
+import { useState, useEffect } from "react";
+import type { ListMessage } from "@/types/message";
+import { z } from "zod";
+import type { Database } from "@/integrations/supabase/types";
+import type { ThreadTopic } from "@/types/thread";
+import { Constants } from "@/integrations/supabase/types";
 
 export function useMessagesFilters(messages: ListMessage[]) {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [filterParticipants, setFilterParticipants] = useState<string[]>([]);
   const [filterTypes, setFilterTypes] = useState<
-    Database['public']['Enums']['thread_type'][]
+    Database["public"]["Enums"]["thread_type"][]
   >([]);
   const [filterThreads, setFilterThreads] = useState<string[]>([]);
   const [filterTopics, setFilterTopics] = useState<ThreadTopic[]>([]);
 
   const isFiltering =
-    search.trim() !== '' ||
+    search.trim() !== "" ||
     filterParticipants.length > 0 ||
     filterTypes.length > 0 ||
     filterThreads.length > 0 ||
@@ -23,9 +23,9 @@ export function useMessagesFilters(messages: ListMessage[]) {
 
   // Load persisted filters on mount
   useEffect(() => {
-    const storedFilters = localStorage.getItem('messages.filters');
+    const storedFilters = localStorage.getItem("messages.filters");
     const filtersSchema = z.object({
-      search: z.string().optional().default(''),
+      search: z.string().optional().default(""),
       filterParticipants: z.array(z.string()).optional().default([]),
       filterTypes: z.array(z.string()).optional().default([]),
       filterThreads: z.array(z.string()).optional().default([]),
@@ -44,13 +44,13 @@ export function useMessagesFilters(messages: ListMessage[]) {
         setSearch(search);
         setFilterParticipants(filterParticipants);
         setFilterTypes(
-          filterTypes as Database['public']['Enums']['thread_type'][]
+          filterTypes as Database["public"]["Enums"]["thread_type"][],
         );
         setFilterThreads(filterThreads);
         setFilterTopics(filterTopics as ThreadTopic[]);
       } else {
-        localStorage.removeItem('messages.filters');
-        setSearch('');
+        localStorage.removeItem("messages.filters");
+        setSearch("");
         setFilterParticipants([]);
         setFilterTypes([]);
         setFilterThreads([]);
@@ -69,9 +69,9 @@ export function useMessagesFilters(messages: ListMessage[]) {
       ...(filterTopics.length > 0 && { filterTopics }),
     };
     if (Object.keys(filters).length > 0) {
-      localStorage.setItem('messages.filters', JSON.stringify(filters));
+      localStorage.setItem("messages.filters", JSON.stringify(filters));
     } else {
-      localStorage.removeItem('messages.filters');
+      localStorage.removeItem("messages.filters");
     }
   }, [search, filterParticipants, filterTypes, filterThreads, filterTopics]);
 
@@ -79,13 +79,13 @@ export function useMessagesFilters(messages: ListMessage[]) {
     setFilterParticipants((prev) =>
       prev.includes(participant)
         ? prev.filter((p) => p !== participant)
-        : [...prev, participant]
+        : [...prev, participant],
     );
   };
 
-  const toggleType = (type: Database['public']['Enums']['thread_type']) => {
+  const toggleType = (type: Database["public"]["Enums"]["thread_type"]) => {
     setFilterTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
     );
   };
 
@@ -93,18 +93,18 @@ export function useMessagesFilters(messages: ListMessage[]) {
     setFilterThreads((prev) =>
       prev.includes(threadTitle)
         ? prev.filter((t) => t !== threadTitle)
-        : [...prev, threadTitle]
+        : [...prev, threadTitle],
     );
   };
 
   const toggleTopic = (topic: ThreadTopic) => {
     setFilterTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
     );
   };
 
   const clearFilters = () => {
-    setSearch('');
+    setSearch("");
     setFilterParticipants([]);
     setFilterTypes([]);
     setFilterThreads([]);
@@ -112,13 +112,13 @@ export function useMessagesFilters(messages: ListMessage[]) {
   };
 
   const participantOptions = Array.from(
-    new Set(messages.map((m) => m.sender?.name))
+    new Set(messages.map((m) => m.sender?.name)),
   ).sort();
 
   const typeOptions = Constants.public.Enums.thread_type;
 
   const threadOptions = Array.from(
-    new Set(messages.map((m) => m.threadTitle))
+    new Set(messages.map((m) => m.threadTitle)),
   ).sort();
 
   const topicOptions = Constants.public.Enums.thread_topic;
@@ -132,7 +132,7 @@ export function useMessagesFilters(messages: ListMessage[]) {
 
     const matchesParticipants =
       filterParticipants.length === 0 ||
-      filterParticipants.includes(message.sender?.name || 'someone');
+      filterParticipants.includes(message.sender?.name || "someone");
 
     const matchesTypes =
       filterTypes.length === 0 || filterTypes.includes(message.threadType);

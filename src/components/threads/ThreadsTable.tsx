@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from "lucide-react";
 
-import { AvatarName } from '@/components/ui/avatar-name';
-import { cn } from '@/lib/utils';
-import { type Thread } from '@/types/thread';
+import { AvatarName } from "@/components/ui/avatar-name";
+import { cn } from "@/lib/utils";
+import { type Thread } from "@/types/thread";
 import {
   Table,
   TableHeader,
@@ -13,10 +13,10 @@ import {
   TableHead,
   TableRow,
   TableCell,
-} from '@/components/ui/table';
-import { ThreadStatusBadge } from '@/components/thread/ThreadStatusBadge';
-import { ThreadTopicBadge } from '@/components/thread/ThreadTopicBadge';
-import { useUnreadMessages } from '@/hooks/useUnreadMessages';
+} from "@/components/ui/table";
+import { ThreadStatusBadge } from "@/components/thread/ThreadStatusBadge";
+import { ThreadTopicBadge } from "@/components/thread/ThreadTopicBadge";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 interface ThreadsTableProps {
   threads: Thread[];
@@ -30,7 +30,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
   const sortedThreads = useMemo(() => {
     // Closed and Archived threads always at the bottom, then sort by createdAt desc
     const isClosedOrArchived = (status: string) =>
-      status === 'Closed' || status === 'Archived';
+      status === "Closed" || status === "Archived";
     return [...threads].sort((a, b) => {
       if (isClosedOrArchived(a.status) && !isClosedOrArchived(b.status))
         return 1;
@@ -59,9 +59,9 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
   return (
     <Table>
       <colgroup>
-        <col style={{ width: '1%', whiteSpace: 'nowrap' }} />
-        <col style={{ width: '1%', whiteSpace: 'nowrap' }} />
-        <col style={{ width: '1%', whiteSpace: 'nowrap' }} />
+        <col style={{ width: "1%", whiteSpace: "nowrap" }} />
+        <col style={{ width: "1%", whiteSpace: "nowrap" }} />
+        <col style={{ width: "1%", whiteSpace: "nowrap" }} />
         <col />
       </colgroup>
       <TableHeader>
@@ -83,7 +83,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
               data-testid={`thread-tr-${thread.id}`}
               key={thread.id}
               onClick={() => navigate(`/threads/${thread.id}`)}
-              className={cn(thread.status !== 'Open' && 'bg-muted')}
+              className={cn(thread.status !== "Open" && "bg-muted")}
             >
               <TableCell>
                 <div className="flex items-center">
@@ -102,7 +102,7 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
                       name={name}
                       size="sm"
                       showName={false}
-                      className={cn(idx > 0 && '-ml-2')}
+                      className={cn(idx > 0 && "-ml-2")}
                     />
                   ))}
                   {participants.length > 3 && (

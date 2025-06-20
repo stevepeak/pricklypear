@@ -1,6 +1,6 @@
-import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useDraftManagement } from './useDraftManagement';
+import { renderHook, act } from "@testing-library/react";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { useDraftManagement } from "./useDraftManagement";
 
 // Mock localStorage
 const localStorageMock = {
@@ -9,54 +9,54 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 });
 
-describe('useDraftManagement', () => {
+describe("useDraftManagement", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should load draft from localStorage when threadId changes', () => {
-    const mockDraft = 'Test draft message';
+  it("should load draft from localStorage when threadId changes", () => {
+    const mockDraft = "Test draft message";
     localStorageMock.getItem.mockReturnValue(mockDraft);
 
     const setNewMessage = vi.fn();
 
-    renderHook(() => useDraftManagement('thread-123', '', setNewMessage));
+    renderHook(() => useDraftManagement("thread-123", "", setNewMessage));
 
     expect(localStorageMock.getItem).toHaveBeenCalledWith(
-      'thread-draft-thread-123'
+      "thread-draft-thread-123",
     );
     expect(setNewMessage).toHaveBeenCalledWith(mockDraft);
   });
 
-  it('should save draft to localStorage when newMessage changes', () => {
+  it("should save draft to localStorage when newMessage changes", () => {
     const setNewMessage = vi.fn();
 
     const { rerender } = renderHook(
       ({ threadId, newMessage }) =>
         useDraftManagement(threadId, newMessage, setNewMessage),
       {
-        initialProps: { threadId: 'thread-123', newMessage: '', setNewMessage },
-      }
+        initialProps: { threadId: "thread-123", newMessage: "", setNewMessage },
+      },
     );
 
     // Update with new message
     rerender({
-      threadId: 'thread-123',
-      newMessage: 'New message',
+      threadId: "thread-123",
+      newMessage: "New message",
       setNewMessage,
     });
 
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      'thread-draft-thread-123',
-      'New message'
+      "thread-draft-thread-123",
+      "New message",
     );
   });
 
-  it('should remove draft from localStorage when message is empty', () => {
+  it("should remove draft from localStorage when message is empty", () => {
     const setNewMessage = vi.fn();
 
     const { rerender } = renderHook(
@@ -64,74 +64,74 @@ describe('useDraftManagement', () => {
         useDraftManagement(threadId, newMessage, setNewMessage),
       {
         initialProps: {
-          threadId: 'thread-123',
-          newMessage: 'Some message',
+          threadId: "thread-123",
+          newMessage: "Some message",
           setNewMessage,
         },
-      }
+      },
     );
 
     // Update with empty message
-    rerender({ threadId: 'thread-123', newMessage: '', setNewMessage });
+    rerender({ threadId: "thread-123", newMessage: "", setNewMessage });
 
     expect(localStorageMock.removeItem).toHaveBeenCalledWith(
-      'thread-draft-thread-123'
+      "thread-draft-thread-123",
     );
   });
 
-  it('should not load draft if threadId is undefined', () => {
+  it("should not load draft if threadId is undefined", () => {
     const setNewMessage = vi.fn();
 
-    renderHook(() => useDraftManagement(undefined, '', setNewMessage));
+    renderHook(() => useDraftManagement(undefined, "", setNewMessage));
 
     expect(localStorageMock.getItem).not.toHaveBeenCalled();
     expect(setNewMessage).not.toHaveBeenCalled();
   });
 
-  it('should not save draft if threadId is undefined', () => {
+  it("should not save draft if threadId is undefined", () => {
     const setNewMessage = vi.fn();
 
     renderHook(() =>
-      useDraftManagement(undefined, 'Test message', setNewMessage)
+      useDraftManagement(undefined, "Test message", setNewMessage),
     );
 
     expect(localStorageMock.setItem).not.toHaveBeenCalled();
   });
 
-  it('should return clearDraftFromStorage function', () => {
+  it("should return clearDraftFromStorage function", () => {
     const setNewMessage = vi.fn();
 
     const { result } = renderHook(() =>
-      useDraftManagement('thread-123', 'Test message', setNewMessage)
+      useDraftManagement("thread-123", "Test message", setNewMessage),
     );
 
-    expect(typeof result.current.clearDraftFromStorage).toBe('function');
+    expect(typeof result.current.clearDraftFromStorage).toBe("function");
   });
 
-  it('should clear draft from localStorage when clearDraftFromStorage is called', () => {
+  it("should clear draft from localStorage when clearDraftFromStorage is called", () => {
     const setNewMessage = vi.fn();
 
     const { result } = renderHook(() =>
-      useDraftManagement('thread-123', 'Test message', setNewMessage)
+      useDraftManagement("thread-123", "Test message", setNewMessage),
     );
 
     act(() => {
-      result.current.clearDraftFromStorage('thread-123');
+      result.current.clearDraftFromStorage("thread-123");
     });
 
     expect(localStorageMock.removeItem).toHaveBeenCalledWith(
-      'thread-draft-thread-123'
+      "thread-draft-thread-123",
     );
   });
 
-  it('should not update message if saved draft is the same as current message', () => {
-    const mockDraft = 'Same message';
+  it("should not update message if saved draft is the same as current message", () => {
+    const mockDraft = "Same message";
     localStorageMock.getItem.mockReturnValue(mockDraft);
 
     const setNewMessage = vi.fn();
 
     renderHook(() =>
-      useDraftManagement('thread-123', mockDraft, setNewMessage)
+      useDraftManagement("thread-123", mockDraft, setNewMessage),
     );
 
     expect(setNewMessage).not.toHaveBeenCalled();

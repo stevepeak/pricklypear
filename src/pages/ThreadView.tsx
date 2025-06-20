@@ -1,12 +1,12 @@
-import { useParams } from 'react-router-dom';
-import { useThreadDetails } from '@/hooks/useThreadDetails';
-import ThreadHeader from '@/components/thread/ThreadHeader';
-import ThreadMessages from '@/components/thread/ThreadMessages';
-import ThreadMessageComposer from '@/components/thread/ThreadMessageComposer';
-import MessageReviewDialog from '@/components/thread/MessageReviewDialog';
-import { useAuth } from '@/contexts/AuthContext';
-import { useEffect, useRef, useState } from 'react';
-import ThreadViewSkeleton from '@/components/thread/ThreadViewSkeleton';
+import { useParams } from "react-router-dom";
+import { useThreadDetails } from "@/hooks/useThreadDetails";
+import ThreadHeader from "@/components/thread/ThreadHeader";
+import ThreadMessages from "@/components/thread/ThreadMessages";
+import ThreadMessageComposer from "@/components/thread/ThreadMessageComposer";
+import MessageReviewDialog from "@/components/thread/MessageReviewDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { useEffect, useRef, useState } from "react";
+import ThreadViewSkeleton from "@/components/thread/ThreadViewSkeleton";
 
 const ThreadView = () => {
   const { threadId } = useParams<{ threadId: string }>();
@@ -35,7 +35,7 @@ const ThreadView = () => {
     // Find the latest request_close message
     const latestRequestClose = [...messages]
       .reverse()
-      .find((m) => m.type === 'request_close');
+      .find((m) => m.type === "request_close");
 
     if (!latestRequestClose) {
       setHasOpenCloseRequest(false);
@@ -44,24 +44,24 @@ const ThreadView = () => {
 
     // Get all messages after the latest request_close
     const messagesAfterRequest = messages.slice(
-      messages.indexOf(latestRequestClose) + 1
+      messages.indexOf(latestRequestClose) + 1,
     );
 
     // If there are no messages after the request, or if there's no close_declined message,
     // then there is an open close request
     setHasOpenCloseRequest(
       messagesAfterRequest.length === 0 ||
-        !messagesAfterRequest.some((m) => m.type === 'close_declined')
+        !messagesAfterRequest.some((m) => m.type === "close_declined"),
     );
   }, [messages]);
 
-  const threadIsOpen = thread?.status === 'Open';
+  const threadIsOpen = thread?.status === "Open";
 
   // Ref for scrolling to bottom
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'instant' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
   };
 
   useEffect(() => {

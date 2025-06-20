@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardFooter, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardFooter, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   TooltipProvider,
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from '@/components/ui/tooltip';
-import { CheckCircle2, XCircle, UserCheck, EyeOff } from 'lucide-react';
-import { ConnectedUser } from '@/services/users/userService.js';
-import DisableConnectionDialog from './DisableConnectionDialog';
+} from "@/components/ui/tooltip";
+import { CheckCircle2, XCircle, UserCheck, EyeOff } from "lucide-react";
+import { ConnectedUser } from "@/services/users/userService.js";
+import DisableConnectionDialog from "./DisableConnectionDialog";
 
 interface ConnectionCardProps {
   connection: ConnectedUser;
   onUpdateStatus?: (
     connectionId: string,
-    status: 'accepted' | 'declined' | 'disabled' | 'pending'
+    status: "accepted" | "declined" | "disabled" | "pending",
   ) => void;
   onDisable?: (connectionId: string) => void;
-  variant: 'pending-incoming' | 'pending-outgoing' | 'accepted' | 'disabled';
+  variant: "pending-incoming" | "pending-outgoing" | "accepted" | "disabled";
   onDelete?: (connectionId: string) => void;
 }
 
@@ -39,11 +39,11 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
 
   const renderBadge = () => {
     switch (variant) {
-      case 'pending-incoming':
+      case "pending-incoming":
         return <Badge>Pending</Badge>;
-      case 'pending-outgoing':
+      case "pending-outgoing":
         return <Badge variant="secondary">Waiting</Badge>;
-      case 'accepted':
+      case "accepted":
         return (
           <TooltipProvider>
             <Tooltip>
@@ -55,14 +55,14 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
               </TooltipTrigger>
               <TooltipContent>
                 <p>
-                  Connected since{' '}
+                  Connected since{" "}
                   {new Date(connection.updated_at).toLocaleDateString()}
                 </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         );
-      case 'disabled':
+      case "disabled":
         return <Badge variant="outline">Disabled</Badge>;
       default:
         return null;
@@ -71,14 +71,14 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
 
   const renderActions = () => {
     switch (variant) {
-      case 'pending-incoming':
+      case "pending-incoming":
         return (
           <>
             <Button
               variant="outline"
               size="sm"
               onClick={() =>
-                onUpdateStatus?.(connection.connection_id, 'declined')
+                onUpdateStatus?.(connection.connection_id, "declined")
               }
             >
               <XCircle className="h-4 w-4 mr-1" />
@@ -87,7 +87,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
             <Button
               size="sm"
               onClick={() =>
-                onUpdateStatus?.(connection.connection_id, 'accepted')
+                onUpdateStatus?.(connection.connection_id, "accepted")
               }
             >
               <CheckCircle2 className="h-4 w-4 mr-1" />
@@ -95,7 +95,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
             </Button>
           </>
         );
-      case 'pending-outgoing':
+      case "pending-outgoing":
         return (
           <Button
             variant="outline"
@@ -105,7 +105,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
             Cancel
           </Button>
         );
-      case 'accepted':
+      case "accepted":
         return (
           <Button
             variant="outline"
@@ -116,13 +116,13 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
             Disable
           </Button>
         );
-      case 'disabled':
+      case "disabled":
         return (
           <Button
             variant="outline"
             size="sm"
             onClick={() =>
-              onUpdateStatus?.(connection.connection_id, 'accepted')
+              onUpdateStatus?.(connection.connection_id, "accepted")
             }
           >
             <UserCheck className="h-4 w-4 mr-1" />
@@ -138,7 +138,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
     <>
       <Card
         data-testid={`connection-card-${connection.invitee_email}`}
-        className={variant === 'disabled' ? 'opacity-60' : ''}
+        className={variant === "disabled" ? "opacity-60" : ""}
       >
         <CardHeader>
           <CardTitle className="flex justify-between items-center">

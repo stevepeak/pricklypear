@@ -1,8 +1,8 @@
-import { Loader2 } from 'lucide-react';
-import ThreadCard from './ThreadCard';
-import { useUnreadMessages } from '@/hooks/useUnreadMessages';
-import type { Thread } from '@/types/thread';
-import type { User } from '@supabase/supabase-js';
+import { Loader2 } from "lucide-react";
+import ThreadCard from "./ThreadCard";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import type { Thread } from "@/types/thread";
+import type { User } from "@supabase/supabase-js";
 
 interface ThreadsListProps {
   threads: Thread[];
@@ -15,10 +15,10 @@ const ThreadsList = ({ threads, isLoading }: ThreadsListProps) => {
   const { threadCounts } = useUnreadMessages();
 
   // Separate threads into open and closed
-  const openThreads = threads.filter((thread) => thread.status === 'Open');
-  const closedThreads = threads.filter((thread) => thread.status === 'Closed');
+  const openThreads = threads.filter((thread) => thread.status === "Open");
+  const closedThreads = threads.filter((thread) => thread.status === "Closed");
   const archivedThreads = threads.filter(
-    (thread) => thread.status === 'Archived'
+    (thread) => thread.status === "Archived",
   );
 
   if (isLoading) {

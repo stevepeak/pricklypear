@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from "react";
 
 export function useDraftManagement(
   threadId: string | undefined,
   newMessage: string,
-  setNewMessage: (message: string) => void
+  setNewMessage: (message: string) => void,
 ) {
-  const previousMessageRef = useRef<string>('');
+  const previousMessageRef = useRef<string>("");
   const isInitializedRef = useRef(false);
 
   // Helper functions for localStorage
   const getStorageKey = useCallback(
     (threadId: string) => `thread-draft-${threadId}`,
-    []
+    [],
   );
 
   const saveDraftToStorage = useCallback(
@@ -22,21 +22,21 @@ export function useDraftManagement(
         localStorage.removeItem(getStorageKey(threadId));
       }
     },
-    [getStorageKey]
+    [getStorageKey],
   );
 
   const loadDraftFromStorage = useCallback(
     (threadId: string): string => {
-      return localStorage.getItem(getStorageKey(threadId)) || '';
+      return localStorage.getItem(getStorageKey(threadId)) || "";
     },
-    [getStorageKey]
+    [getStorageKey],
   );
 
   const clearDraftFromStorage = useCallback(
     (threadId: string) => {
       localStorage.removeItem(getStorageKey(threadId));
     },
-    [getStorageKey]
+    [getStorageKey],
   );
 
   // Load draft when thread changes

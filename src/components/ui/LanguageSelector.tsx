@@ -1,17 +1,17 @@
-import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from './dropdown-menu';
-import { Button } from './button';
+} from "./dropdown-menu";
+import { Button } from "./button";
 
 const LANGUAGES = [
-  { code: 'en-US', label: 'English', flag: '🇺🇸' },
-  { code: 'es-ES', label: 'Español', flag: '🇪🇸' },
-  { code: 'fr-FR', label: 'Français', flag: '🇫🇷' },
+  { code: "en-US", label: "English", flag: "🇺🇸" },
+  { code: "es-ES", label: "Español", flag: "🇪🇸" },
+  { code: "fr-FR", label: "Français", flag: "🇫🇷" },
 ];
 
 export function LanguageSelector() {
@@ -22,7 +22,7 @@ export function LanguageSelector() {
 
   const handleChange = (code: string) => {
     i18n.changeLanguage(code);
-    localStorage.setItem('i18nextLng', code);
+    localStorage.setItem("i18nextLng", code);
     setOpen(false);
   };
 

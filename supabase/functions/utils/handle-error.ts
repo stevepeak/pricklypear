@@ -1,5 +1,5 @@
-import * as Sentry from 'https://deno.land/x/sentry_deno/main.ts';
-import { env } from './env.ts';
+import * as Sentry from "https://deno.land/x/sentry_deno/main.ts";
+import { env } from "./env.ts";
 
 let sentryInitialized = false;
 
@@ -16,10 +16,10 @@ type ErrorWithMessage = { message: string };
 /** Guard for an Error object with a string message property. */
 export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
   return (
-    typeof error === 'object' &&
+    typeof error === "object" &&
     error !== null &&
-    'message' in error &&
-    typeof (error as Record<string, unknown>).message === 'string'
+    "message" in error &&
+    typeof (error as Record<string, unknown>).message === "string"
   );
 }
 
@@ -42,13 +42,13 @@ function initSentry() {
   if (sentryInitialized) return;
 
   if (!env.SENTRY_DSN) {
-    console.warn('SENTRY_DSN missing, Sentry will not report errors.');
+    console.warn("SENTRY_DSN missing, Sentry will not report errors.");
     return;
   }
 
   // Don't initialize Sentry in development
-  if (env.SENTRY_ENVIRONMENT === 'development') {
-    console.log('Sentry disabled in development environment');
+  if (env.SENTRY_ENVIRONMENT === "development") {
+    console.log("Sentry disabled in development environment");
     return;
   }
 
@@ -65,7 +65,7 @@ function initSentry() {
  * Safe to call in any catch block.
  */
 export function handleError(error: unknown) {
-  console.error('Error:', error);
+  console.error("Error:", error);
   initSentry();
   if (sentryInitialized) {
     Sentry.captureException(error);

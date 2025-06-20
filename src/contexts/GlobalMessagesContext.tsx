@@ -4,45 +4,45 @@ import React, {
   useCallback,
   useRef,
   useEffect,
-} from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import type { RealtimeChannel } from '@supabase/supabase-js';
-import type { Message } from '@/types/message';
-import { getAllUnreadCounts } from '@/services/messageService';
-import type { Database } from '@/integrations/supabase/types';
-import { handleError } from '@/services/messageService/utils';
-import { toast } from 'sonner';
-import { useConnections } from '@/hooks/useConnections';
+} from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import type { RealtimeChannel } from "@supabase/supabase-js";
+import type { Message } from "@/types/message";
+import { getAllUnreadCounts } from "@/services/messageService";
+import type { Database } from "@/integrations/supabase/types";
+import { handleError } from "@/services/messageService/utils";
+import { toast } from "sonner";
+import { useConnections } from "@/hooks/useConnections";
 
-type MessageRow = Database['public']['Tables']['messages']['Row'];
+type MessageRow = Database["public"]["Tables"]["messages"]["Row"];
 type ReadReceiptRow =
-  Database['public']['Tables']['message_read_receipts']['Row'];
-type CalendarEvent = Database['public']['Tables']['calendar_events']['Row'];
+  Database["public"]["Tables"]["message_read_receipts"]["Row"];
+type CalendarEvent = Database["public"]["Tables"]["calendar_events"]["Row"];
 
 interface GlobalMessagesContextType {
   registerMessageCallback: (callback: (message: Message) => void) => () => void;
   registerUnreadCountsCallback: (
-    callback: (total: number, threadCounts: Record<string, number>) => void
+    callback: (total: number, threadCounts: Record<string, number>) => void,
   ) => () => void;
   registerReadReceiptCallback: (
-    callback: (messageId: string, readAt: Date) => void
+    callback: (messageId: string, readAt: Date) => void,
   ) => () => void;
   registerNavigationCallback: (callback: (path: string) => void) => () => void;
   registerCalendarEventCallback: (
-    callback: (event: CalendarEvent) => void
+    callback: (event: CalendarEvent) => void,
   ) => () => void;
 }
 
 const GlobalMessagesContext = createContext<GlobalMessagesContextType | null>(
-  null
+  null,
 );
 
 export const useGlobalMessages = () => {
   const context = useContext(GlobalMessagesContext);
   if (!context) {
     throw new Error(
-      'useGlobalMessages must be used within a GlobalMessagesProvider'
+      "useGlobalMessages must be used within a GlobalMessagesProvider",
     );
   }
   return context;
@@ -63,7 +63,7 @@ export const GlobalMessagesProvider: React.FC<{
   >([]);
   const navigationCallbacksRef = useRef<((path: string) => void)[]>([]);
   const calendarEventCallbacksRef = useRef<((event: CalendarEvent) => void)[]>(
-    []
+    [],
   );
 
   const registerMessageCallback = useCallback(
@@ -71,16 +71,16 @@ export const GlobalMessagesProvider: React.FC<{
       messageCallbacksRef.current.push(callback);
       return () => {
         messageCallbacksRef.current = messageCallbacksRef.current.filter(
-          (cb) => cb !== callback
+          (cb) => cb !== callback,
         );
       };
     },
-    []
+    [],
   );
 
   const registerUnreadCountsCallback = useCallback(
     (
-      callback: (total: number, threadCounts: Record<string, number>) => void
+      callback: (total: number, threadCounts: Record<string, number>) => void,
     ) => {
       unreadCountsCallbacksRef.current.push(callback);
       return () => {
@@ -88,7 +88,7 @@ export const GlobalMessagesProvider: React.FC<{
           unreadCountsCallbacksRef.current.filter((cb) => cb !== callback);
       };
     },
-    []
+    [],
   );
 
   const registerReadReceiptCallback = useCallback(
@@ -99,7 +99,7 @@ export const GlobalMessagesProvider: React.FC<{
           readReceiptCallbacksRef.current.filter((cb) => cb !== callback);
       };
     },
-    []
+    [],
   );
 
   const registerNavigationCallback = useCallback(
@@ -107,11 +107,11 @@ export const GlobalMessagesProvider: React.FC<{
       navigationCallbacksRef.current.push(callback);
       return () => {
         navigationCallbacksRef.current = navigationCallbacksRef.current.filter(
-          (cb) => cb !== callback
+          (cb) => cb !== callback,
         );
       };
     },
-    []
+    [],
   );
 
   const registerCalendarEventCallback = useCallback(
@@ -122,7 +122,7 @@ export const GlobalMessagesProvider: React.FC<{
           calendarEventCallbacksRef.current.filter((cb) => cb !== callback);
       };
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -135,13 +135,13 @@ export const GlobalMessagesProvider: React.FC<{
         }
 
         const channel = supabase
-          .channel('global-messages')
+          .channel("global-messages")
           .on(
-            'postgres_changes',
+            "postgres_changes",
             {
-              event: 'INSERT',
-              schema: 'public',
-              table: 'messages',
+              event: "INSERT",
+              schema: "public",
+              table: "messages",
             },
             async (payload) => {
               const newData = payload.new as MessageRow;
@@ -158,13 +158,13 @@ export const GlobalMessagesProvider: React.FC<{
               };
 
               if (!newMessage.isCurrentUser) {
-                toast.success(`New message in ${'<thread title>'}`, {
+                toast.success(`New message in ${"<thread title>"}`, {
                   description: `New message from ${newMessage.sender?.name}`,
                   action: {
-                    label: 'View',
+                    label: "View",
                     onClick: () => {
                       navigationCallbacksRef.current.forEach((callback) =>
-                        callback(`/threads/${newMessage.threadId}`)
+                        callback(`/threads/${newMessage.threadId}`),
                       );
                     },
                   },
@@ -173,16 +173,16 @@ export const GlobalMessagesProvider: React.FC<{
 
               // Notify all registered message callbacks
               messageCallbacksRef.current.forEach((callback) =>
-                callback(newMessage)
+                callback(newMessage),
               );
-            }
+            },
           )
           .on(
-            'postgres_changes',
+            "postgres_changes",
             {
-              event: '*',
-              schema: 'public',
-              table: 'message_read_receipts',
+              event: "*",
+              schema: "public",
+              table: "message_read_receipts",
               filter: `user_id=eq.${user.id}`,
             },
             async (payload) => {
@@ -192,55 +192,55 @@ export const GlobalMessagesProvider: React.FC<{
               const counts = await getAllUnreadCounts();
               const total = Object.values(counts).reduce(
                 (sum, count) => sum + count,
-                0
+                0,
               );
 
               // Update read receipt if available
               if (newData?.read_at) {
                 readReceiptCallbacksRef.current.forEach((callback) =>
-                  callback(newData.message_id, new Date(newData.read_at))
+                  callback(newData.message_id, new Date(newData.read_at)),
                 );
               }
 
               // Update unread counts for all registered callbacks
               unreadCountsCallbacksRef.current.forEach((callback) =>
-                callback(total, counts)
+                callback(total, counts),
               );
-            }
+            },
           )
           .on(
-            'postgres_changes',
+            "postgres_changes",
             {
-              event: '*',
-              schema: 'public',
-              table: 'calendar_events',
+              event: "*",
+              schema: "public",
+              table: "calendar_events",
             },
             (payload) => {
               const event = payload.new as CalendarEvent;
               calendarEventCallbacksRef.current.forEach((callback) =>
-                callback(event)
+                callback(event),
               );
-            }
+            },
           )
           .subscribe((status, err) => {
-            if (status === 'SUBSCRIBED') {
-              console.log('Subscribed to global messages and calendar events');
-            } else if (status === 'CHANNEL_ERROR') {
-              console.error('Channel error, attempting to reconnect...', err);
+            if (status === "SUBSCRIBED") {
+              console.log("Subscribed to global messages and calendar events");
+            } else if (status === "CHANNEL_ERROR") {
+              console.error("Channel error, attempting to reconnect...", err);
               setTimeout(
                 () => {
                   if (retryCount < 3) {
                     setupGlobalSubscription(retryCount + 1);
                   }
                 },
-                1000 * Math.pow(2, retryCount)
+                1000 * Math.pow(2, retryCount),
               );
             }
           });
 
         channelRef.current = channel;
       } catch (error) {
-        handleError(error, 'setting up global subscription');
+        handleError(error, "setting up global subscription");
       }
     };
 

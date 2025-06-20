@@ -1,13 +1,13 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { getOpenAIClient } from '../utils/openai.ts';
-import { getErrorMessage, handleError } from '../utils/handle-error.ts';
-import { getSupabaseServiceClient } from '../utils/supabase.ts';
-import { z } from 'https://esm.sh/zod@3.24.2';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getOpenAIClient } from "../utils/openai.ts";
+import { getErrorMessage, handleError } from "../utils/handle-error.ts";
+import { getSupabaseServiceClient } from "../utils/supabase.ts";
+import { z } from "https://esm.sh/zod@3.24.2";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 async function fetchThreadMessages(args: {
@@ -16,16 +16,16 @@ async function fetchThreadMessages(args: {
   const { threadId } = args;
   const supabase = getSupabaseServiceClient();
   const { data, error } = await supabase
-    .from('messages')
+    .from("messages")
     .select(
       `
       text,
       timestamp,
       profile:profiles!user_id ( name )
-    `
+    `,
     )
-    .eq('thread_id', threadId)
-    .order('timestamp', { ascending: false })
+    .eq("thread_id", threadId)
+    .order("timestamp", { ascending: false })
     .limit(20);
   if (error) {
     throw new Error(`Error fetching messages: ${error.message}`);
@@ -37,7 +37,7 @@ async function fetchThreadMessages(args: {
       profile: z.object({
         name: z.string(),
       }),
-    })
+    }),
   );
 
   const result = messageSchema.safeParse(data);
@@ -61,7 +61,7 @@ function formatContextText(args: { messages: Message[] }): string {
       const timestamp = new Date(msg.timestamp).toLocaleString();
       return `[${timestamp}] ${sender}: ${msg.text}`;
     })
-    .join('\n\n');
+    .join("\n\n");
 }
 
 async function fetchThreadTopic(args: {
@@ -70,12 +70,12 @@ async function fetchThreadTopic(args: {
   const { threadId } = args;
   const supabase = getSupabaseServiceClient();
   const { data, error } = await supabase
-    .from('threads')
-    .select('topic, title')
-    .eq('id', threadId)
+    .from("threads")
+    .select("topic, title")
+    .eq("id", threadId)
     .single();
   if (error || !data) {
-    throw new Error('Could not fetch thread topic');
+    throw new Error("Could not fetch thread topic");
   }
   return { topic: data.topic, title: data.title };
 }
@@ -91,10 +91,10 @@ async function checkIfOnTopic(args: {
   return true;
   const topicCheckPrompt = `Thread topic: ${threadTopic}\nThread title: ${threadTitle}\nMessage: ${message}\n\nIs this message on-topic for the thread? Reply with only 'yes' or 'no'.`;
   const topicCheckResponse = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: "gpt-4o-mini",
     messages: [
       {
-        role: 'system',
+        role: "system",
         content: `
           You are an assistant that checks if a user message is on-topic.
           When evaluating the message is on-topic, consider:
@@ -107,7 +107,7 @@ async function checkIfOnTopic(args: {
           `,
       },
       {
-        role: 'user',
+        role: "user",
         content: topicCheckPrompt,
       },
     ],
@@ -116,7 +116,7 @@ async function checkIfOnTopic(args: {
   return topicCheckResponse.choices[0]?.message?.content
     ?.toLowerCase()
     .trim()
-    .includes('yes');
+    .includes("yes");
 }
 
 async function rephraseMessage(args: {
@@ -127,14 +127,14 @@ async function rephraseMessage(args: {
   const { contextText, message, systemPrompt } = args;
   const openai = getOpenAIClient();
   const response = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: "gpt-4o-mini",
     messages: [
       {
-        role: 'system',
+        role: "system",
         content: systemPrompt,
       },
       {
-        role: 'user',
+        role: "user",
         content: `Conversation context (last 20 messages):\n${contextText}\n\nRephrase this message: ${message}`,
       },
     ],
@@ -149,7 +149,7 @@ export type HandlerDeps = {
 };
 export async function handler(req: Request) {
   // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
@@ -160,13 +160,13 @@ export async function handler(req: Request) {
       return new Response(
         JSON.stringify({
           rejected: true,
-          reason: 'Message and threadId are required',
+          reason: "Message and threadId are required",
           rephrasedMessage: null,
         }),
         {
           status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -187,13 +187,13 @@ export async function handler(req: Request) {
       return new Response(
         JSON.stringify({
           rejected: true,
-          reason: 'Could not fetch thread topic or messages',
+          reason: "Could not fetch thread topic or messages",
           rephrasedMessage: null,
         }),
         {
           status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -214,23 +214,23 @@ export async function handler(req: Request) {
       return new Response(
         JSON.stringify({
           rejected: true,
-          reason: 'Message is off-topic for this thread.',
+          reason: "Message is off-topic for this thread.",
           rephrasedMessage: null,
         }),
         {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
     return new Response(
       JSON.stringify({ rejected: false, reason: null, rephrasedMessage }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
     );
   } catch (error) {
-    console.error('Error reviewing message:', error);
+    console.error("Error reviewing message:", error);
 
     return new Response(
       JSON.stringify({
@@ -240,8 +240,8 @@ export async function handler(req: Request) {
       }),
       {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
     );
   }
 }

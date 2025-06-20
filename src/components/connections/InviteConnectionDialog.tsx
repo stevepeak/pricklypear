@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -8,8 +8,8 @@ import {
   DialogFooter,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
-import { Loader2, Mail } from 'lucide-react';
+} from "@/components/ui/dialog";
+import { Loader2, Mail } from "lucide-react";
 
 interface InviteConnectionDialogProps {
   open: boolean;
@@ -24,7 +24,7 @@ const InviteConnectionDialog: React.FC<InviteConnectionDialogProps> = ({
   onInvite,
   isInviting,
 }) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [touched, setTouched] = useState(false);
 
   const isValidEmail = (value: string) =>
@@ -57,7 +57,7 @@ const InviteConnectionDialog: React.FC<InviteConnectionDialogProps> = ({
             onBlur={() => setTouched(true)}
             onKeyDown={(e) => {
               if (
-                e.key === 'Enter' &&
+                e.key === "Enter" &&
                 !isInviting &&
                 email.trim() &&
                 emailIsValid

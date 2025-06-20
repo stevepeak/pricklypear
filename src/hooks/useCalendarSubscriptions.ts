@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { requireCurrentUser } from '@/utils/authCache';
-import type { Database } from '@/integrations/supabase/types';
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { requireCurrentUser } from "@/utils/authCache";
+import type { Database } from "@/integrations/supabase/types";
 
 type CalendarSubscription =
-  Database['public']['Tables']['calendar_subscriptions']['Row'];
+  Database["public"]["Tables"]["calendar_subscriptions"]["Row"];
 
 export function useCalendarSubscriptions() {
   const [subscriptions, setSubscriptions] = useState<CalendarSubscription[]>(
-    []
+    [],
   );
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,15 +17,15 @@ export function useCalendarSubscriptions() {
       try {
         const user = await requireCurrentUser();
         const { data, error } = await supabase
-          .from('calendar_subscriptions')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
+          .from("calendar_subscriptions")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
 
         if (error) throw error;
         setSubscriptions(data || []);
       } catch (error) {
-        console.error('Error fetching calendar subscriptions:', error);
+        console.error("Error fetching calendar subscriptions:", error);
       } finally {
         setIsLoading(false);
       }
@@ -38,11 +38,11 @@ export function useCalendarSubscriptions() {
     name: string,
     startTime?: Date,
     endTime?: Date,
-    expiresAt?: Date
+    expiresAt?: Date,
   ) => {
     const user = await requireCurrentUser();
     const { data, error } = await supabase
-      .from('calendar_subscriptions')
+      .from("calendar_subscriptions")
       .insert({
         name,
         user_id: user.id,
@@ -60,9 +60,9 @@ export function useCalendarSubscriptions() {
 
   const deleteSubscription = async (id: string) => {
     const { error } = await supabase
-      .from('calendar_subscriptions')
+      .from("calendar_subscriptions")
       .delete()
-      .eq('id', id);
+      .eq("id", id);
 
     if (error) throw error;
     setSubscriptions((prev) => prev.filter((sub) => sub.id !== id));

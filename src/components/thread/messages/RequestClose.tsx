@@ -1,11 +1,11 @@
-import { formatThreadTimestamp } from '@/utils/formatTimestamp';
-import type { Message } from '@/types/message';
-import ReactMarkdown from 'react-markdown';
-import { Button } from '@/components/ui/button';
-import { saveMessage } from '@/services/messageService/save-message';
-import { requireCurrentUser } from '@/utils/authCache';
-import { toast } from 'sonner';
-import { ThreadStatus } from '@/types/thread';
+import { formatThreadTimestamp } from "@/utils/formatTimestamp";
+import type { Message } from "@/types/message";
+import ReactMarkdown from "react-markdown";
+import { Button } from "@/components/ui/button";
+import { saveMessage } from "@/services/messageService/save-message";
+import { requireCurrentUser } from "@/utils/authCache";
+import { toast } from "sonner";
+import { ThreadStatus } from "@/types/thread";
 
 function RequestClose(props: {
   message: Message;
@@ -21,21 +21,21 @@ function RequestClose(props: {
       const success = await saveMessage({
         text: `${user.user_metadata.name} agreed to close the thread.`,
         threadId: message.threadId,
-        type: 'close_accepted',
+        type: "close_accepted",
       });
       if (success) {
         window.location.reload();
-        toast('Accepted close request', {
-          description: 'You accepted the close request.',
+        toast("Accepted close request", {
+          description: "You accepted the close request.",
         });
       } else {
-        toast('Failed to accept close request', {
-          description: 'Could not save message.',
+        toast("Failed to accept close request", {
+          description: "Could not save message.",
         });
       }
     } catch (err) {
-      toast('Failed to accept close request', {
-        description: err instanceof Error ? err.message : 'Unknown error',
+      toast("Failed to accept close request", {
+        description: err instanceof Error ? err.message : "Unknown error",
       });
     }
   };
@@ -46,20 +46,20 @@ function RequestClose(props: {
       const success = await saveMessage({
         text: `${user.user_metadata.name} declined to close the thread.`,
         threadId: message.threadId,
-        type: 'close_declined',
+        type: "close_declined",
       });
       if (success) {
-        toast('Declined close request', {
-          description: 'You declined the close request.',
+        toast("Declined close request", {
+          description: "You declined the close request.",
         });
       } else {
-        toast('Failed to decline close request', {
-          description: 'Could not save message.',
+        toast("Failed to decline close request", {
+          description: "Could not save message.",
         });
       }
     } catch (err) {
-      toast('Failed to decline close request', {
-        description: err instanceof Error ? err.message : 'Unknown error',
+      toast("Failed to decline close request", {
+        description: err instanceof Error ? err.message : "Unknown error",
       });
     }
   };
@@ -67,14 +67,14 @@ function RequestClose(props: {
   return (
     <div className="flex flex-col animate-message-appear items-center justify-center">
       <div className="flex items-center gap-1 mb-1 text-xs text-muted-foreground">
-        <span>{message.sender?.name || 'someone'}</span>
+        <span>{message.sender?.name || "someone"}</span>
         <span>•</span>
         <span>{formatThreadTimestamp(message.timestamp)}</span>
       </div>
       <div className="flex items-start gap-1">
         <div className="px-4 py-2 rounded-xl bg-accent text-accent-foreground">
           <ReactMarkdown>{message.text}</ReactMarkdown>
-          {isPending && !isCurrentUserSender && threadStatus === 'Open' && (
+          {isPending && !isCurrentUserSender && threadStatus === "Open" && (
             <div className="flex w-full mt-2 justify-center">
               <div className="flex gap-2">
                 <Button size="sm" variant="default" onClick={handleAccept}>

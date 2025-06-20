@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
-import { cn } from '@/lib/utils';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { PasswordSchema } from '@/types/schemas';
-import { handleError } from '@/services/messageService/utils';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PasswordSchema } from "@/types/schemas";
+import { handleError } from "@/services/messageService/utils";
 
 const passwordSchema = z
   .object({
@@ -17,8 +17,8 @@ const passwordSchema = z
     confirmNewPassword: PasswordSchema,
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmNewPassword'],
+    message: "Passwords do not match",
+    path: ["confirmNewPassword"],
   });
 
 type PasswordFormValues = z.infer<typeof passwordSchema>;
@@ -31,8 +31,8 @@ const UpdatePassword = () => {
   const form = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
     defaultValues: {
-      newPassword: '',
-      confirmNewPassword: '',
+      newPassword: "",
+      confirmNewPassword: "",
     },
   });
 
@@ -48,21 +48,21 @@ const UpdatePassword = () => {
         setError(updateError.message);
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: (await supabase.auth.getUser()).data.user?.email || '',
+          email: (await supabase.auth.getUser()).data.user?.email || "",
           password: data.newPassword,
         });
         if (signInError) {
           setError(signInError.message);
         } else {
           setMessage(
-            'Your password has been updated and you have been logged in.'
+            "Your password has been updated and you have been logged in.",
           );
-          window.location.href = '/threads';
+          window.location.href = "/threads";
         }
       }
     } catch (err) {
-      handleError(err, 'updatePassword');
-      setError('Something went wrong. Please try again later.');
+      handleError(err, "updatePassword");
+      setError("Something went wrong. Please try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -74,7 +74,7 @@ const UpdatePassword = () => {
         <a href="#" className="flex items-center gap-2 self-center font-medium">
           🌵 Prickly Pear
         </a>
-        <div className={cn('flex flex-col gap-6')}>
+        <div className={cn("flex flex-col gap-6")}>
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-xl">Set a new password</CardTitle>
@@ -90,7 +90,7 @@ const UpdatePassword = () => {
                     id="newPassword"
                     type="password"
                     autoComplete="new-password"
-                    {...form.register('newPassword')}
+                    {...form.register("newPassword")}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -101,7 +101,7 @@ const UpdatePassword = () => {
                     id="confirmNewPassword"
                     type="password"
                     autoComplete="new-password"
-                    {...form.register('confirmNewPassword')}
+                    {...form.register("confirmNewPassword")}
                   />
                 </div>
                 <Button
@@ -110,7 +110,7 @@ const UpdatePassword = () => {
                   className="w-full"
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Updating...' : 'Update password'}
+                  {isLoading ? "Updating..." : "Update password"}
                 </Button>
                 {message && (
                   <div className="text-green-600 text-center text-sm">

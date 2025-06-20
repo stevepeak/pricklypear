@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const updateMock = vi.fn();
 const eqMock = vi.fn();
 
-vi.mock('@/integrations/supabase/client', () => ({
+vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     from: vi.fn(() => ({
       update: updateMock,
@@ -11,7 +11,7 @@ vi.mock('@/integrations/supabase/client', () => ({
   },
 }));
 
-const { updateDocumentTitle } = await import('./updateDocumentTitle');
+const { updateDocumentTitle } = await import("./updateDocumentTitle");
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -19,18 +19,18 @@ beforeEach(() => {
   updateMock.mockReturnValue({ eq: eqMock });
 });
 
-describe('updateDocumentTitle', () => {
-  it('completes on success', async () => {
-    await updateDocumentTitle('d1', 'Title');
+describe("updateDocumentTitle", () => {
+  it("completes on success", async () => {
+    await updateDocumentTitle("d1", "Title");
     expect(updateMock).toHaveBeenCalled();
   });
 
-  it('throws on error', async () => {
+  it("throws on error", async () => {
     updateMock.mockReturnValue({
-      eq: vi.fn().mockResolvedValue({ error: { message: 'fail' } }),
+      eq: vi.fn().mockResolvedValue({ error: { message: "fail" } }),
     });
-    await expect(updateDocumentTitle('d1', 'Title')).rejects.toThrow(
-      'Failed to update document title: fail'
+    await expect(updateDocumentTitle("d1", "Title")).rejects.toThrow(
+      "Failed to update document title: fail",
     );
   });
 });

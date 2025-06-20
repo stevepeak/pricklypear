@@ -1,17 +1,17 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
-import { Loader2, Send, ArrowUp } from 'lucide-react';
-import { saveMessage } from '@/services/messageService/save-message';
-import { Thread, isAIThread } from '@/types/thread';
-import { Message } from '@/types/message';
-import { CreateEventDialog } from '@/components/calendar/CreateEventDialog';
-import { useDraftManagement } from '@/hooks/useDraftManagement';
-import { useComposerActions } from '@/hooks/useComposerActions';
-import { useComposerUI } from '@/hooks/useComposerUI';
-import { JumpToLatestButton } from './composer/JumpToLatestButton';
-import { RequestCloseDialog } from './composer/RequestCloseDialog';
-import { ComposerTextarea } from './composer/ComposerTextarea';
-import { ComposerActionsMenu } from './composer/ComposerActionsMenu';
+import React, { useRef, useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Loader2, Send, ArrowUp } from "lucide-react";
+import { saveMessage } from "@/services/messageService/save-message";
+import { Thread, isAIThread } from "@/types/thread";
+import { Message } from "@/types/message";
+import { CreateEventDialog } from "@/components/calendar/CreateEventDialog";
+import { useDraftManagement } from "@/hooks/useDraftManagement";
+import { useComposerActions } from "@/hooks/useComposerActions";
+import { useComposerUI } from "@/hooks/useComposerUI";
+import { JumpToLatestButton } from "./composer/JumpToLatestButton";
+import { RequestCloseDialog } from "./composer/RequestCloseDialog";
+import { ComposerTextarea } from "./composer/ComposerTextarea";
+import { ComposerActionsMenu } from "./composer/ComposerActionsMenu";
 
 interface ThreadMessageComposerProps {
   newMessage: string;
@@ -41,7 +41,7 @@ const ThreadMessageComposer = React.forwardRef<
       messagesEndRef,
       hasOpenCloseRequest,
     },
-    ref
+    ref,
   ) => {
     const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false);
     const [isRequestingClose, setIsRequestingClose] = useState(false);
@@ -53,7 +53,7 @@ const ThreadMessageComposer = React.forwardRef<
     const { clearDraftFromStorage } = useDraftManagement(
       thread?.id,
       newMessage,
-      setNewMessage
+      setNewMessage,
     );
 
     const {
@@ -90,7 +90,7 @@ const ThreadMessageComposer = React.forwardRef<
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       // Cmd+Enter (Mac) or Ctrl+Enter (Windows/Linux) sends the message
-      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
         e.preventDefault();
         if (newMessage.trim() && !isSending) {
           handleSendMessage();
@@ -101,11 +101,11 @@ const ThreadMessageComposer = React.forwardRef<
     const handleRequestClose = async () => {
       if (!thread?.id) return;
       setIsRequestingClose(true);
-      const text = 'Requested to close this thread.';
+      const text = "Requested to close this thread.";
       const success = await saveMessage({
         text,
         threadId: thread.id,
-        type: 'request_close',
+        type: "request_close",
       });
       if (success) {
         setIsRequestDialogOpen(false);
@@ -214,7 +214,7 @@ const ThreadMessageComposer = React.forwardRef<
         </div>
       </div>
     );
-  }
+  },
 );
 
 export default ThreadMessageComposer;

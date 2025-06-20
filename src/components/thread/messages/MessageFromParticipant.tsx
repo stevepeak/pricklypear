@@ -1,7 +1,7 @@
-import { formatThreadTimestamp } from '@/utils/formatTimestamp';
-import type { Message } from '@/types/message';
-import ReactMarkdown from 'react-markdown';
-import { MessageImages } from './MessageImages';
+import { formatThreadTimestamp } from "@/utils/formatTimestamp";
+import type { Message } from "@/types/message";
+import ReactMarkdown from "react-markdown";
+import { MessageImages } from "./MessageImages";
 
 interface MessageFromParticipantProps {
   message: Message;
@@ -15,7 +15,7 @@ function MessageFromParticipant({
   return (
     <div className="flex flex-col animate-message-appear self-start items-start gap-1">
       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-        <span>{message.sender?.name || 'someone'}</span>
+        <span>{message.sender?.name || "someone"}</span>
         <span>•</span>
         <span>{formatThreadTimestamp(message.timestamp)}</span>
       </div>

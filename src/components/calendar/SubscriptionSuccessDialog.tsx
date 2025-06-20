@@ -4,12 +4,12 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useState } from 'react';
-import { Check, Copy } from 'lucide-react';
-import { format } from 'date-fns';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { Check, Copy } from "lucide-react";
+import { format } from "date-fns";
 
 interface SubscriptionSuccessDialogProps {
   open: boolean;
@@ -32,14 +32,14 @@ export function SubscriptionSuccessDialog({
 
   const formatDate = (date?: Date) => {
     if (!date) return undefined;
-    return format(date, 'MM-dd-yyyy');
+    return format(date, "MM-dd-yyyy");
   };
 
   const queryParams = new URLSearchParams({
     id: subscriptionId,
     ...(expiresDate
       ? { expires: formatDate(expiresDate) }
-      : { expires: 'never' }),
+      : { expires: "never" }),
     ...(startDate && { start: formatDate(startDate) }),
     ...(endDate && { end: formatDate(endDate) }),
   });
@@ -52,7 +52,7 @@ export function SubscriptionSuccessDialog({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 

@@ -26,6 +26,7 @@
       "@/*": ["./src/*"]
     }
   },
+  "references": [{ "path": "./web/tsconfig.json" }],
   "exclude": [
     "supabase/functions/**/*.ts",
     "**/*.test.ts",

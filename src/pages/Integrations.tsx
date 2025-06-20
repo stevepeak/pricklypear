@@ -1,6 +1,6 @@
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default function Integrations() {
   return (
@@ -8,7 +8,7 @@ export default function Integrations() {
       <Card>
         <CardHeader>
           <CardTitle>
-            MCP Server{' '}
+            MCP Server{" "}
             <Badge variant="secondary" className="ml-2">
               Coming soon
             </Badge>

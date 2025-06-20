@@ -1,8 +1,8 @@
 // @ts-nocheck
 // This file will not be type-checked by Deno or tsc
 
-import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
-import { handler } from './index.ts';
+import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import { handler } from "./index.ts";
 
 function createSupabase() {
   return {
@@ -16,9 +16,9 @@ function createSupabase() {
         },
         single: async () => ({
           data: {
-            title: 'T',
-            topic: 'top',
-            thread_participants: [{ user_id: 'u' }],
+            title: "T",
+            topic: "top",
+            thread_participants: [{ user_id: "u" }],
           },
           error: null,
         }),
@@ -45,9 +45,9 @@ const openai = {
   },
 };
 
-Deno.test('generate-conversation parse error', async () => {
-  const req = new Request('http://', {
-    method: 'POST',
+Deno.test("generate-conversation parse error", async () => {
+  const req = new Request("http://", {
+    method: "POST",
     body: JSON.stringify({}),
   });
   const res = await handler(req, {
@@ -57,10 +57,10 @@ Deno.test('generate-conversation parse error', async () => {
   assertEquals(res.status, 500);
 });
 
-Deno.test('generate-conversation success', async () => {
-  const req = new Request('http://', {
-    method: 'POST',
-    body: JSON.stringify({ threadId: '1' }),
+Deno.test("generate-conversation success", async () => {
+  const req = new Request("http://", {
+    method: "POST",
+    body: JSON.stringify({ threadId: "1" }),
   });
   const res = await handler(req, {
     getSupabaseServiceClient: createSupabase,

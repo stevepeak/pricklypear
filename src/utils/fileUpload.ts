@@ -1,15 +1,15 @@
-import { supabase } from '@/integrations/supabase/client';
-import { v4 as uuidv4 } from 'uuid';
+import { supabase } from "@/integrations/supabase/client";
+import { v4 as uuidv4 } from "uuid";
 
 export async function uploadThreadImage(
   file: File,
-  threadId: string
+  threadId: string,
 ): Promise<string> {
-  const fileExt = file.name.split('.').pop();
+  const fileExt = file.name.split(".").pop();
   const filePath = `${threadId}/${uuidv4()}.${fileExt}`;
 
   const { error: uploadError } = await supabase.storage
-    .from('threads')
+    .from("threads")
     .upload(filePath, file);
 
   if (uploadError) {

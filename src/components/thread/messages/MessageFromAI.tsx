@@ -1,7 +1,7 @@
-import type { Message } from '@/types/message';
-import { Sparkles } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import { MessageImages } from './MessageImages';
+import type { Message } from "@/types/message";
+import { Sparkles } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import { MessageImages } from "./MessageImages";
 
 interface MessageFromAIProps {
   message: Message;

@@ -1,32 +1,32 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { getMessages } from '@/services/messageService';
+import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { getMessages } from "@/services/messageService";
 import {
   saveMessage,
   saveAiMessage,
-} from '@/services/messageService/save-message';
-import { reviewMessage } from '@/utils/messageReview';
-import type { Message } from '@/types/message';
-import type { Thread } from '@/types/thread';
-import { toast } from 'sonner';
-import { useConnections } from '@/hooks/useConnections';
-import { isAIThread } from '@/types/thread';
-import { useRealtimeMessages } from './useRealtimeMessages';
-import { useGlobalMessages } from '@/contexts/GlobalMessagesContext';
+} from "@/services/messageService/save-message";
+import { reviewMessage } from "@/utils/messageReview";
+import type { Message } from "@/types/message";
+import type { Thread } from "@/types/thread";
+import { toast } from "sonner";
+import { useConnections } from "@/hooks/useConnections";
+import { isAIThread } from "@/types/thread";
+import { useRealtimeMessages } from "./useRealtimeMessages";
+import { useGlobalMessages } from "@/contexts/GlobalMessagesContext";
 
 export const useThreadMessages = (
   threadId: string | undefined,
   thread: Thread | null,
-  composerRef?: React.RefObject<{ focusInput: () => void }>
+  composerRef?: React.RefObject<{ focusInput: () => void }>,
 ) => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
   // Message review states
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
-  const [kindMessage, setKindMessage] = useState('');
+  const [kindMessage, setKindMessage] = useState("");
   const [isReviewingMessage, setIsReviewingMessage] = useState(false);
 
   const { user } = useAuth();
@@ -68,8 +68,8 @@ export const useThreadMessages = (
     onReadReceiptUpdated: (messageId, readAt) => {
       setMessages((prev) =>
         prev.map((m) =>
-          m.id === messageId ? { ...m, isRead: true, readAt } : m
-        )
+          m.id === messageId ? { ...m, isRead: true, readAt } : m,
+        ),
       );
     },
   });
@@ -87,8 +87,8 @@ export const useThreadMessages = (
       });
       if (rejected) {
         setIsReviewDialogOpen(false);
-        toast('Message rejected', {
-          description: reason || 'Your message was rejected.',
+        toast("Message rejected", {
+          description: reason || "Your message was rejected.",
         });
         if (composerRef && composerRef.current) {
           composerRef.current.focusInput();
@@ -98,13 +98,13 @@ export const useThreadMessages = (
       }
       reviewedText = rephrasedMessage;
     } catch (error) {
-      console.error('Error reviewing message:', error);
+      console.error("Error reviewing message:", error);
       setIsReviewDialogOpen(false);
-      toast('Error reviewing message', {
+      toast("Error reviewing message", {
         description:
-          typeof error === 'string'
+          typeof error === "string"
             ? error
-            : 'An error occurred while reviewing your message.',
+            : "An error occurred while reviewing your message.",
       });
       if (composerRef && composerRef.current) {
         composerRef.current.focusInput();
@@ -117,8 +117,8 @@ export const useThreadMessages = (
 
     // Decide whether to auto-accept based on stored preference
     const autoAccept =
-      typeof window !== 'undefined' &&
-      localStorage.getItem('autoAcceptAISuggestions') === 'true';
+      typeof window !== "undefined" &&
+      localStorage.getItem("autoAcceptAISuggestions") === "true";
 
     if (autoAccept) {
       // Immediately send the reviewed (or original) message
@@ -140,14 +140,14 @@ export const useThreadMessages = (
     const success = await saveMessage({
       threadId,
       text: selectedMessage,
-      type: 'user_message',
+      type: "user_message",
     });
 
     if (success) {
-      setNewMessage('');
+      setNewMessage("");
     } else {
-      toast('Error', {
-        description: 'Failed to send message. Please try again.',
+      toast("Error", {
+        description: "Failed to send message. Please try again.",
       });
     }
 
@@ -168,14 +168,14 @@ export const useThreadMessages = (
           threadId,
           text,
         });
-        setNewMessage('');
-      } else if (thread.type === 'customer_support') {
+        setNewMessage("");
+      } else if (thread.type === "customer_support") {
         await saveMessage({
           threadId,
           text,
-          type: 'user_message',
+          type: "user_message",
         });
-        setNewMessage('');
+        setNewMessage("");
       } else {
         handleInitiateMessageReview();
       }

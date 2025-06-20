@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from "@/integrations/supabase/client";
 
 export async function reviewMessage(args: {
   message: string;
@@ -10,11 +10,11 @@ export async function reviewMessage(args: {
 }> {
   const { message, threadId } = args;
   try {
-    const { data, error } = await supabase.functions.invoke('review-message', {
+    const { data, error } = await supabase.functions.invoke("review-message", {
       body: {
         message,
         threadId,
-        systemPrompt: localStorage.getItem('systemPrompt:message-review'),
+        systemPrompt: localStorage.getItem("systemPrompt:message-review"),
       },
     });
     if (error) {
@@ -22,7 +22,7 @@ export async function reviewMessage(args: {
     }
     return data;
   } catch (error) {
-    console.error('Exception reviewing message:', error);
+    console.error("Exception reviewing message:", error);
     return {
       rephrasedMessage: message,
       rejected: true,

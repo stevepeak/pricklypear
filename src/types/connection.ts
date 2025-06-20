@@ -1,6 +1,6 @@
-import { Database } from '@/integrations/supabase/types';
+import { Database } from "@/integrations/supabase/types";
 
-export type ConnectionStatus = Database['public']['Enums']['connection_status'];
+export type ConnectionStatus = Database["public"]["Enums"]["connection_status"];
 
 export interface InviteResponse {
   error?: Error;
@@ -23,8 +23,8 @@ export interface InviteResponse {
  *
  */
 export type ConnectedUser = Omit<
-  Database['public']['Tables']['connections']['Row'],
-  'connected_user_id' | 'user_id'
+  Database["public"]["Tables"]["connections"]["Row"],
+  "connected_user_id" | "user_id"
 > & {
   createdByMe: boolean;
   /** The ID of the connection */

@@ -1,0 +1,16 @@
+{
+  "name": "prickly-pear-web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot src/index.tsx",
+    "build": "bun run build.ts",
+    "preview": "bun run src/index.tsx"
+  },
+  "devDependencies": {
+    "bun-plugin-tailwind": "0.0.15",
+    "@types/bun": "1.2.15",
+    "@types/node": "22.15.30"
+  }
+}

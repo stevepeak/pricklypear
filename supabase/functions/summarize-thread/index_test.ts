@@ -1,8 +1,8 @@
 // @ts-nocheck
 // This file will not be type-checked by Deno or tsc
 
-import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
-import { handler } from './index.ts';
+import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import { handler } from "./index.ts";
 
 function createSupabase() {
   return {
@@ -18,10 +18,10 @@ function createSupabase() {
           return Promise.resolve({
             data: [
               {
-                text: 'hi',
+                text: "hi",
                 timestamp: Date.now(),
-                profile: { name: 'A' },
-                type: 'user_message',
+                profile: { name: "A" },
+                type: "user_message",
               },
             ],
             error: null,
@@ -29,7 +29,7 @@ function createSupabase() {
         },
         single() {
           return Promise.resolve({
-            data: { topic: 't', title: 'T' },
+            data: { topic: "t", title: "T" },
             error: null,
           });
         },
@@ -45,14 +45,14 @@ function createSupabase() {
 const openai = {
   chat: {
     completions: {
-      create: async () => ({ choices: [{ message: { content: 'summary' } }] }),
+      create: async () => ({ choices: [{ message: { content: "summary" } }] }),
     },
   },
 };
 
-Deno.test('summarize-thread missing id', async () => {
-  const req = new Request('http://', {
-    method: 'POST',
+Deno.test("summarize-thread missing id", async () => {
+  const req = new Request("http://", {
+    method: "POST",
     body: JSON.stringify({}),
   });
   const res = await handler(req, {
@@ -62,10 +62,10 @@ Deno.test('summarize-thread missing id', async () => {
   assertEquals(res.status, 400);
 });
 
-Deno.test('summarize-thread success', async () => {
-  const req = new Request('http://', {
-    method: 'POST',
-    body: JSON.stringify({ threadId: '1' }),
+Deno.test("summarize-thread success", async () => {
+  const req = new Request("http://", {
+    method: "POST",
+    body: JSON.stringify({ threadId: "1" }),
   });
   const res = await handler(req, {
     createClient: () => createSupabase(),
@@ -73,5 +73,5 @@ Deno.test('summarize-thread success', async () => {
   });
   const data = await res.json();
   assertEquals(res.status, 200);
-  assertEquals(data.summary, 'summary');
+  assertEquals(data.summary, "summary");
 });

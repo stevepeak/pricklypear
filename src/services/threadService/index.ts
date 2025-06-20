@@ -1,9 +1,9 @@
-export { createThread } from './createThread';
-export { getThreads } from './getThreads';
-export { getThread } from './getThread';
-export { generateThreadConversation } from './generateConversation';
-import { supabase } from '@/integrations/supabase/client';
-import { handleError } from '../messageService/utils';
+export { createThread } from "./createThread";
+export { getThreads } from "./getThreads";
+export { getThread } from "./getThread";
+export { generateThreadConversation } from "./generateConversation";
+import { supabase } from "@/integrations/supabase/client";
+import { handleError } from "../messageService/utils";
 
 export async function archiveThread({
   threadId,
@@ -11,15 +11,15 @@ export async function archiveThread({
   threadId: string;
 }): Promise<boolean> {
   const { data, error } = await supabase
-    .from('threads')
-    .update({ status: 'Archived' })
-    .eq('id', threadId)
+    .from("threads")
+    .update({ status: "Archived" })
+    .eq("id", threadId)
     .select()
     .single();
-  if (error) handleError(error, 'archiveThread');
-  if (data?.status !== 'Archived') {
+  if (error) handleError(error, "archiveThread");
+  if (data?.status !== "Archived") {
     throw new Error(
-      'Failed to archive thread. This may be due to a Row Level Security (RLS) policy preventing the update.'
+      "Failed to archive thread. This may be due to a Row Level Security (RLS) policy preventing the update.",
     );
   }
   return true;
@@ -31,15 +31,15 @@ export async function unarchiveThread({
   threadId: string;
 }): Promise<boolean> {
   const { data, error } = await supabase
-    .from('threads')
-    .update({ status: 'Open' })
-    .eq('id', threadId)
+    .from("threads")
+    .update({ status: "Open" })
+    .eq("id", threadId)
     .select()
     .single();
-  if (error) handleError(error, 'unarchiveThread');
-  if (data?.status !== 'Open') {
+  if (error) handleError(error, "unarchiveThread");
+  if (data?.status !== "Open") {
     throw new Error(
-      'Failed to unarchive thread. This may be due to a Row Level Security (RLS) policy preventing the update.'
+      "Failed to unarchive thread. This may be due to a Row Level Security (RLS) policy preventing the update.",
     );
   }
   return true;
@@ -53,15 +53,15 @@ export async function updateThreadTitle({
   title: string;
 }): Promise<boolean> {
   const { data, error } = await supabase
-    .from('threads')
+    .from("threads")
     .update({ title })
-    .eq('id', threadId)
+    .eq("id", threadId)
     .select()
     .single();
-  if (error) handleError(error, 'updateThreadTitle');
+  if (error) handleError(error, "updateThreadTitle");
   if (data?.title !== title) {
     throw new Error(
-      'Failed to update thread title. This may be due to a Row Level Security (RLS) policy preventing the update.'
+      "Failed to update thread title. This may be due to a Row Level Security (RLS) policy preventing the update.",
     );
   }
   return true;

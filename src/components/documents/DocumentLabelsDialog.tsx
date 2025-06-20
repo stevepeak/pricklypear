@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import {
   DOCUMENT_LABEL_INFO,
   DocumentLabel,
   getDocumentLabelInfo,
-} from '@/types/document';
+} from "@/types/document";
 
 interface DocumentLabelsDialogProps {
   open: boolean;
@@ -35,7 +35,7 @@ export default function DocumentLabelsDialog({
 
   const toggle = (label: DocumentLabel) => {
     setSelected((prev) =>
-      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
+      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label],
     );
   };
 

@@ -4,12 +4,12 @@ import {
   useEffect,
   useContext,
   ReactNode,
-} from 'react';
-import { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-import { getCurrentUser } from '@/utils/authCache';
-import { trackEvent } from '@/lib/tracking';
+} from "react";
+import { Session, User } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { getCurrentUser } from "@/utils/authCache";
+import { trackEvent } from "@/lib/tracking";
 
 type AuthContextType = {
   session: Session | null;
@@ -66,14 +66,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw error;
       }
 
-      toast('Welcome back!', {
-        description: 'You have successfully signed in.',
+      toast("Welcome back!", {
+        description: "You have successfully signed in.",
       });
     } catch (error) {
-      toast('Error signing in', {
+      toast("Error signing in", {
         description: error.message,
       });
-      console.error('Error signing in:', error);
+      console.error("Error signing in:", error);
     }
   };
 
@@ -90,19 +90,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
-        toast('Error signing up', {
+        toast("Error signing up", {
           description: error.message,
         });
         throw error;
       }
 
-      trackEvent({ name: 'signup' });
+      trackEvent({ name: "signup" });
 
-      toast('Account created!', {
-        description: 'You have successfully signed up.',
+      toast("Account created!", {
+        description: "You have successfully signed up.",
       });
     } catch (error) {
-      console.error('Error signing up:', error);
+      console.error("Error signing up:", error);
       throw error;
     }
   };
@@ -113,16 +113,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email,
       });
       if (error) {
-        toast('Error sending magic link', {
+        toast("Error sending magic link", {
           description: error.message,
         });
         throw error;
       }
-      toast('Check your email!', {
-        description: 'A sign-up link has been sent to your email.',
+      toast("Check your email!", {
+        description: "A sign-up link has been sent to your email.",
       });
     } catch (error) {
-      console.error('Error sending magic link:', error);
+      console.error("Error sending magic link:", error);
       throw error;
     }
   };
@@ -136,8 +136,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!data.session) {
         setSession(null);
         setUser(null);
-        toast('Signed out', {
-          description: 'You have successfully signed out.',
+        toast("Signed out", {
+          description: "You have successfully signed out.",
         });
         return;
       }
@@ -145,8 +145,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Otherwise proceed with normal sign out
       const { error } = await supabase.auth.signOut();
       if (error) {
-        console.error('Error during sign out:', error);
-        toast('Error signing out', {
+        console.error("Error during sign out:", error);
+        toast("Error signing out", {
           description: error.message,
         });
         throw error;
@@ -156,11 +156,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(null);
       setUser(null);
 
-      toast('Signed out', {
-        description: 'You have successfully signed out.',
+      toast("Signed out", {
+        description: "You have successfully signed out.",
       });
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
       // Even if there's an error, we should try to reset the local state
       setSession(null);
       setUser(null);
@@ -188,7 +188,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

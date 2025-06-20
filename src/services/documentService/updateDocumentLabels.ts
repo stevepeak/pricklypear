@@ -1,14 +1,14 @@
-import { supabase } from '@/integrations/supabase/client';
-import type { DocumentLabel } from '@/types/document';
+import { supabase } from "@/integrations/supabase/client";
+import type { DocumentLabel } from "@/types/document";
 
 export async function updateDocumentLabels(
   documentId: string,
-  labels: DocumentLabel[]
+  labels: DocumentLabel[],
 ): Promise<void> {
   const { error } = await supabase
-    .from('documents')
+    .from("documents")
     .update({ labels })
-    .eq('id', documentId);
+    .eq("id", documentId);
 
   if (error) {
     throw new Error(`Failed to update document labels: ${error.message}`);

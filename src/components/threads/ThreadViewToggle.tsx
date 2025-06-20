@@ -1,12 +1,12 @@
-import React from 'react';
-import { List, LayoutGrid } from 'lucide-react';
-import { Toggle } from '@/components/ui/toggle';
+import React from "react";
+import { List, LayoutGrid } from "lucide-react";
+import { Toggle } from "@/components/ui/toggle";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
   TooltipProvider,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 
 /**
  * DD-90
@@ -19,18 +19,18 @@ import {
  */
 interface ThreadViewToggleProps {
   /** Current view selection. */
-  value: 'table' | 'cards';
+  value: "table" | "cards";
   /** Callback fired whenever the user toggles the switch. */
-  onValueChange: (value: 'table' | 'cards') => void;
+  onValueChange: (value: "table" | "cards") => void;
   /** Forwarded className so the parent can style/position the control. */
   className?: string;
 }
 
 function ThreadViewToggle(props: ThreadViewToggleProps) {
   const { value, onValueChange, className } = props;
-  const isCards = value === 'cards';
-  const nextView = isCards ? 'table' : 'cards';
-  const tooltipText = `Change view to ${nextView === 'cards' ? 'cards' : 'table'}`;
+  const isCards = value === "cards";
+  const nextView = isCards ? "table" : "cards";
+  const tooltipText = `Change view to ${nextView === "cards" ? "cards" : "table"}`;
 
   return (
     <TooltipProvider>
@@ -40,7 +40,7 @@ function ThreadViewToggle(props: ThreadViewToggleProps) {
             aria-label={tooltipText}
             pressed={isCards}
             onPressedChange={(pressed) =>
-              onValueChange(pressed ? 'cards' : 'table')
+              onValueChange(pressed ? "cards" : "table")
             }
             className={className}
           >

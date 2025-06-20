@@ -1,14 +1,14 @@
-import { MessageSquareText, Sparkles, UserCog } from 'lucide-react';
+import { MessageSquareText, Sparkles, UserCog } from "lucide-react";
 
 export const notifications = [
   {
-    key: 'newMessages',
-    label: 'New messages',
+    key: "newMessages",
+    label: "New messages",
     icon: MessageSquareText,
   },
   {
-    key: 'accountChanges',
-    label: 'Account changes',
+    key: "accountChanges",
+    label: "Account changes",
     icon: UserCog,
   },
   // {
@@ -27,15 +27,15 @@ export const notifications = [
   //   icon: Zap,
   // },
   {
-    key: 'newFeatures',
-    label: 'New features to Prickly Pear',
+    key: "newFeatures",
+    label: "New features to Prickly Pear",
     icon: Sparkles,
   },
 ] as const;
 
-export const notificationChannels = ['browser', 'email'] as const;
+export const notificationChannels = ["browser", "email"] as const;
 
-export type NotificationEventKey = (typeof notifications)[number]['key'];
+export type NotificationEventKey = (typeof notifications)[number]["key"];
 export type NotificationChannel = (typeof notificationChannels)[number];
 
 export type UserNotification = Record<

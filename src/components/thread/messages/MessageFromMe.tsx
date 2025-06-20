@@ -1,7 +1,7 @@
-import { formatThreadTimestamp } from '@/utils/formatTimestamp';
-import type { Message } from '@/types/message';
-import ReactMarkdown from 'react-markdown';
-import { MessageImages } from './MessageImages';
+import { formatThreadTimestamp } from "@/utils/formatTimestamp";
+import type { Message } from "@/types/message";
+import ReactMarkdown from "react-markdown";
+import { MessageImages } from "./MessageImages";
 
 interface MessageFromMeProps {
   message: Message;

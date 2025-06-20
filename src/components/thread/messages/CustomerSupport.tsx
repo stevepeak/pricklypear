@@ -1,7 +1,7 @@
-import { formatThreadTimestamp } from '@/utils/formatTimestamp';
-import type { Message } from '@/types/message';
-import ReactMarkdown from 'react-markdown';
-import { Headset } from 'lucide-react';
+import { formatThreadTimestamp } from "@/utils/formatTimestamp";
+import type { Message } from "@/types/message";
+import ReactMarkdown from "react-markdown";
+import { Headset } from "lucide-react";
 
 function CustomerSupportMessage(props: { message: Message }) {
   const { message } = props;

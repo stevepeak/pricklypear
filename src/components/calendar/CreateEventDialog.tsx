@@ -4,23 +4,23 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
-import { useState } from 'react';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
-import { useCalendarEvents } from '@/hooks/useCalendarEvents';
-import { toast } from 'sonner';
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { useCalendarEvents } from "@/hooks/useCalendarEvents";
+import { toast } from "sonner";
 
 interface CreateEventDialogProps {
   open: boolean;
@@ -35,20 +35,20 @@ export function CreateEventDialog({
 }: CreateEventDialogProps) {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
-  const [startTime, setStartTime] = useState('09:00');
-  const [endTime, setEndTime] = useState('10:00');
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("10:00");
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
-  const [eventName, setEventName] = useState('');
-  const [description, setDescription] = useState('');
-  const [location, setLocation] = useState('');
+  const [eventName, setEventName] = useState("");
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { createEvent } = useCalendarEvents();
 
   const handleStartTimeChange = (time: string) => {
     setStartTime(time);
     if (startDate) {
-      const [hours, minutes] = time.split(':').map(Number);
+      const [hours, minutes] = time.split(":").map(Number);
       const newDate = new Date(startDate);
       newDate.setHours(hours, minutes);
       setStartDate(newDate);
@@ -58,7 +58,7 @@ export function CreateEventDialog({
   const handleEndTimeChange = (time: string) => {
     setEndTime(time);
     if (endDate) {
-      const [hours, minutes] = time.split(':').map(Number);
+      const [hours, minutes] = time.split(":").map(Number);
       const newDate = new Date(endDate);
       newDate.setHours(hours, minutes);
       setEndDate(newDate);
@@ -67,7 +67,7 @@ export function CreateEventDialog({
 
   const handleStartDateSelect = (date: Date | undefined) => {
     if (date) {
-      const [hours, minutes] = startTime.split(':').map(Number);
+      const [hours, minutes] = startTime.split(":").map(Number);
       const newDate = new Date(date);
       newDate.setHours(hours, minutes);
       setStartDate(newDate);
@@ -79,7 +79,7 @@ export function CreateEventDialog({
 
   const handleEndDateSelect = (date: Date | undefined) => {
     if (date) {
-      const [hours, minutes] = endTime.split(':').map(Number);
+      const [hours, minutes] = endTime.split(":").map(Number);
       const newDate = new Date(date);
       newDate.setHours(hours, minutes);
       setEndDate(newDate);
@@ -92,12 +92,12 @@ export function CreateEventDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!startDate || !endDate) {
-      toast.error('Please select both start and end dates');
+      toast.error("Please select both start and end dates");
       return;
     }
 
     if (!eventName.trim()) {
-      toast.error('Please enter an event name');
+      toast.error("Please enter an event name");
       return;
     }
 
@@ -109,13 +109,13 @@ export function CreateEventDialog({
         startDate,
         endDate,
         threadId,
-        location.trim() || null
+        location.trim() || null,
       );
-      toast.success('Event created successfully');
+      toast.success("Event created successfully");
       onOpenChange(false);
     } catch (error) {
-      console.error('Error creating event:', error);
-      toast.error('Failed to create event');
+      console.error("Error creating event:", error);
+      toast.error("Failed to create event");
     } finally {
       setIsSubmitting(false);
     }
@@ -172,15 +172,15 @@ export function CreateEventDialog({
               <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
-                    variant={'outline'}
+                    variant={"outline"}
                     className={cn(
-                      'w-full justify-start text-left font-normal',
-                      !startDate && 'text-muted-foreground'
+                      "w-full justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground",
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {startDate ? (
-                      format(startDate, 'PPP')
+                      format(startDate, "PPP")
                     ) : (
                       <span>Pick a date</span>
                     )}
@@ -199,15 +199,15 @@ export function CreateEventDialog({
               <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
                 <PopoverTrigger asChild>
                   <Button
-                    variant={'outline'}
+                    variant={"outline"}
                     className={cn(
-                      'w-full justify-start text-left font-normal',
-                      !endDate && 'text-muted-foreground'
+                      "w-full justify-start text-left font-normal",
+                      !endDate && "text-muted-foreground",
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {endDate ? (
-                      format(endDate, 'PPP')
+                      format(endDate, "PPP")
                     ) : (
                       <span>Pick a date</span>
                     )}
@@ -255,7 +255,7 @@ export function CreateEventDialog({
               Cancel
             </Button>
             <Button variant="success" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating...' : 'Propose Event'}
+              {isSubmitting ? "Creating..." : "Propose Event"}
             </Button>
           </div>
         </form>

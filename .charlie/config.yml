@@ -1,5 +1,5 @@
 ignorePatterns:
-  - '**/*.lock'
+  - "**/*.lock"
 
 checkCommands:
   fix: bun run fix

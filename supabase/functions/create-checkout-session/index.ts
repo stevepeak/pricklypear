@@ -1,24 +1,24 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { getSupabaseServiceClient } from '../utils/supabase.ts';
-import { z } from 'https://deno.land/x/zod@v3.24.2/mod.ts';
-import { getErrorMessage, handleError } from '../utils/handle-error.ts';
-import Stripe from 'https://esm.sh/stripe@18.2.1';
-import { env } from '../utils/env.ts';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getSupabaseServiceClient } from "../utils/supabase.ts";
+import { z } from "https://deno.land/x/zod@v3.24.2/mod.ts";
+import { getErrorMessage, handleError } from "../utils/handle-error.ts";
+import Stripe from "https://esm.sh/stripe@18.2.1";
+import { env } from "../utils/env.ts";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 const createCheckoutSchema = z.object({
-  userId: z.string().uuid('Invalid user ID format'),
-  successUrl: z.string().url('Invalid success URL'),
-  cancelUrl: z.string().url('Invalid cancel URL'),
+  userId: z.string().uuid("Invalid user ID format"),
+  successUrl: z.string().url("Invalid success URL"),
+  cancelUrl: z.string().url("Invalid cancel URL"),
 });
 
 export async function handler(req: Request) {
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
@@ -35,8 +35,8 @@ export async function handler(req: Request) {
         JSON.stringify({ error: result.error.errors[0].message }),
         {
           status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -44,21 +44,21 @@ export async function handler(req: Request) {
 
     // Get user profile by stripe JSON customer_id
     const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
       .single();
 
     if (profileError || !profile) {
-      return new Response(JSON.stringify({ error: 'User profile not found' }), {
+      return new Response(JSON.stringify({ error: "User profile not found" }), {
         status: 404,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     // Initialize Stripe
     const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-      apiVersion: '2025-05-28.basil',
+      apiVersion: "2025-05-28.basil",
     });
 
     // Create or get Stripe customer
@@ -76,36 +76,36 @@ export async function handler(req: Request) {
 
       // Update profile with Stripe customer ID in the stripe JSON column
       await supabase
-        .from('profiles')
+        .from("profiles")
         .update({
           stripe: { ...(profile.stripe || {}), customer_id: customerId },
         })
-        .eq('id', userId);
+        .eq("id", userId);
     }
 
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: profile.email || undefined,
-      payment_method_types: ['card'],
+      payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
-            currency: 'usd',
-            product: 'prod_SWtkU1oqn7HvZc',
+            currency: "usd",
+            product: "prod_SWtkU1oqn7HvZc",
             recurring: {
-              interval: 'month',
+              interval: "month",
             },
             unit_amount: 1500, // $15.00 in cents
           },
           quantity: 1,
         },
       ],
-      mode: 'subscription',
+      mode: "subscription",
       success_url: successUrl,
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
-      billing_address_collection: 'auto',
+      billing_address_collection: "auto",
       metadata: {
         user_id: userId,
       },
@@ -114,14 +114,14 @@ export async function handler(req: Request) {
     return new Response(
       JSON.stringify({ sessionId: session.id, url: session.url }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
     );
   } catch (error) {
     handleError(error);
     return new Response(JSON.stringify({ error: getErrorMessage(error) }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 }

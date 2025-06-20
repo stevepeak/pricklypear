@@ -1,7 +1,7 @@
 // Test Supabase database queries
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = 'https://vgddrhyjttyrathqhefb.supabase.co';
+const SUPABASE_URL = "https://vgddrhyjttyrathqhefb.supabase.co";
 const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
@@ -9,21 +9,21 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
 async function testSupabaseQuery() {
   try {
     const { data, error } = await supabase
-      .schema('auth')
-      .from('users')
-      .select('*')
-      .eq('email', 'steve@peak.family')
+      .schema("auth")
+      .from("users")
+      .select("*")
+      .eq("email", "steve@peak.family")
       .maybeSingle();
 
     if (error) {
-      console.error('Error querying Supabase:', error);
+      console.error("Error querying Supabase:", error);
       process.exit(1);
     }
 
-    console.log('Profiles:', data);
+    console.log("Profiles:", data);
     process.exit(0);
   } catch (err) {
-    console.error('Unexpected error:', err);
+    console.error("Unexpected error:", err);
     process.exit(1);
   }
 }

@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { ChevronRight } from 'lucide-react';
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { ChevronRight } from "lucide-react";
 
 export function Breadcrumb({
   children,
@@ -9,7 +9,7 @@ export function Breadcrumb({
 }: React.HTMLAttributes<HTMLElement>) {
   return (
     <nav
-      className={cn('flex w-full', className)}
+      className={cn("flex w-full", className)}
       aria-label="Breadcrumb"
       {...props}
     >
@@ -25,7 +25,7 @@ export function BreadcrumbList({
 }: React.OlHTMLAttributes<HTMLOListElement>) {
   return (
     <ol
-      className={cn('flex items-center space-x-1 text-sm', className)}
+      className={cn("flex items-center space-x-1 text-sm", className)}
       {...props}
     >
       {children}
@@ -39,7 +39,7 @@ export function BreadcrumbItem({
   ...props
 }: React.LiHTMLAttributes<HTMLLIElement>) {
   return (
-    <li className={cn('flex items-center', className)} {...props}>
+    <li className={cn("flex items-center", className)} {...props}>
       {children}
     </li>
   );
@@ -55,15 +55,15 @@ export function BreadcrumbLink({
     <a
       href={href}
       className={cn(
-        'text-muted-foreground hover:text-primary transition-colors',
-        className
+        "text-muted-foreground hover:text-primary transition-colors",
+        className,
       )}
       {...props}
     >
       {children}
     </a>
   ) : (
-    <span className={cn('text-muted-foreground', className)} {...props}>
+    <span className={cn("text-muted-foreground", className)} {...props}>
       {children}
     </span>
   );
@@ -76,7 +76,7 @@ export function BreadcrumbPage({
 }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
     <span
-      className={cn('font-medium', className)}
+      className={cn("font-medium", className)}
       aria-current="page"
       {...props}
     >
@@ -90,7 +90,7 @@ export function BreadcrumbSeparator({
   ...props
 }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <span className={cn('mx-1', className)} aria-hidden="true" {...props}>
+    <span className={cn("mx-1", className)} aria-hidden="true" {...props}>
       <ChevronRight className="w-4 h-4" />
     </span>
   );

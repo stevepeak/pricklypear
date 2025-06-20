@@ -1,19 +1,19 @@
-import { THREAD_TOPIC_INFO, type ThreadTopic } from '@/types/thread';
-import { Link } from 'react-router-dom';
-import { Loader2, ChevronDown } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { THREAD_TOPIC_INFO, type ThreadTopic } from "@/types/thread";
+import { Link } from "react-router-dom";
+import { Loader2, ChevronDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import type { ConnectedUser } from '@/types/connection';
-import React from 'react';
-import { Switch } from '../ui/switch';
+} from "@/components/ui/dropdown-menu";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import type { ConnectedUser } from "@/types/connection";
+import React from "react";
+import { Switch } from "../ui/switch";
 
 interface CreateThreadFormProps {
   newThreadTitle: string;
@@ -114,13 +114,13 @@ const CreateThreadForm = ({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="justify-between normal-case">
               {selectedContactIds.length === 0
-                ? 'Select participants'
+                ? "Select participants"
                 : selectedContactIds.length === 1
                   ? connections.find((c) => c.id === selectedContactIds[0])
                       ?.name ||
                     connections.find((c) => c.id === selectedContactIds[0])
                       ?.invitee_email ||
-                    '1 participant'
+                    "1 participant"
                   : `${selectedContactIds.length} people`}
               <ChevronDown className="h-4 w-4 ml-2" />
             </Button>
@@ -138,7 +138,7 @@ const CreateThreadForm = ({
                     ]);
                   } else {
                     setSelectedContactIds(
-                      selectedContactIds.filter((id) => id !== connection.id)
+                      selectedContactIds.filter((id) => id !== connection.id),
                     );
                   }
                 }}
@@ -162,8 +162,8 @@ const CreateThreadForm = ({
         />
         <Label htmlFor="require-ai-approval">
           {requireAiApproval
-            ? 'AI must approve all messages'
-            : 'AI will only suggest change'}
+            ? "AI must approve all messages"
+            : "AI will only suggest change"}
         </Label>
       </div>
 
@@ -202,7 +202,7 @@ const CreateThreadForm = ({
                 Creating...
               </>
             ) : (
-              'Create'
+              "Create"
             )}
           </Button>
         </div>

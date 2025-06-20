@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
-import { Textarea } from '@/components/ui/textarea';
-import { isAIThread } from '@/types/thread';
-import type { Thread } from '@/types/thread';
+import { useEffect, useRef } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { isAIThread } from "@/types/thread";
+import type { Thread } from "@/types/thread";
 
 interface ComposerTextareaProps {
   value: string;
@@ -28,7 +28,7 @@ export function ComposerTextarea({
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
-      textarea.style.height = 'auto';
+      textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [value]);
@@ -38,7 +38,7 @@ export function ComposerTextarea({
     if (messagesEndRef?.current && value.length > 0) {
       // Use a small delay to avoid excessive scrolling
       const timeoutId = setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
 
       return () => clearTimeout(timeoutId);
@@ -57,8 +57,8 @@ export function ComposerTextarea({
       ref={textareaRef}
       placeholder={
         isAIThread(thread)
-          ? 'What can Prickly AI help you with?'
-          : 'Type your message...'
+          ? "What can Prickly AI help you with?"
+          : "Type your message..."
       }
       value={value}
       onChange={(e) => onChange(e.target.value)}

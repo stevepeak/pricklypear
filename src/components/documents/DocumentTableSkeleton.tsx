@@ -1,5 +1,5 @@
-import { Skeleton } from '@/components/ui/skeleton';
-import { TableRow, TableCell } from '../ui/table';
+import { Skeleton } from "@/components/ui/skeleton";
+import { TableRow, TableCell } from "../ui/table";
 
 export function DocumentTableSkeleton() {
   return (

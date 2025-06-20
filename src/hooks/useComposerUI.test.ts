@@ -1,6 +1,6 @@
-import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useComposerUI } from './useComposerUI';
+import { renderHook, act } from "@testing-library/react";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { useComposerUI } from "./useComposerUI";
 
 // Mock localStorage
 const localStorageMock = {
@@ -9,15 +9,15 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 });
 
-describe('useComposerUI', () => {
+describe("useComposerUI", () => {
   const mockThread = {
-    id: 'thread-123',
-    type: 'ai' as const,
-    status: 'Open' as const,
+    id: "thread-123",
+    type: "ai" as const,
+    status: "Open" as const,
   };
 
   const mockMessagesEndRef = {
@@ -31,39 +31,39 @@ describe('useComposerUI', () => {
     vi.clearAllMocks();
   });
 
-  it('should initialize with correct default state for AI thread', () => {
-    localStorageMock.getItem.mockReturnValue('false');
+  it("should initialize with correct default state for AI thread", () => {
+    localStorageMock.getItem.mockReturnValue("false");
 
     const { result } = renderHook(() => useComposerUI({ thread: mockThread }));
 
     expect(result.current.autoAccept).toBe(false);
     expect(result.current.showJumpToLatest).toBe(false);
-    expect(typeof result.current.handleToggleAutoAccept).toBe('function');
-    expect(typeof result.current.handleJumpToLatest).toBe('function');
+    expect(typeof result.current.handleToggleAutoAccept).toBe("function");
+    expect(typeof result.current.handleJumpToLatest).toBe("function");
   });
 
-  it('should initialize with correct default state for non-AI thread', () => {
-    localStorageMock.getItem.mockReturnValue('true');
+  it("should initialize with correct default state for non-AI thread", () => {
+    localStorageMock.getItem.mockReturnValue("true");
 
-    const nonAIThread = { ...mockThread, type: 'customer_support' as const };
+    const nonAIThread = { ...mockThread, type: "customer_support" as const };
 
     const { result } = renderHook(() => useComposerUI({ thread: nonAIThread }));
 
     expect(result.current.autoAccept).toBe(true);
   });
 
-  it('should load auto-accept preference from localStorage', () => {
-    localStorageMock.getItem.mockReturnValue('true');
+  it("should load auto-accept preference from localStorage", () => {
+    localStorageMock.getItem.mockReturnValue("true");
 
     renderHook(() => useComposerUI({ thread: mockThread }));
 
     expect(localStorageMock.getItem).toHaveBeenCalledWith(
-      'autoAcceptAISuggestions'
+      "autoAcceptAISuggestions",
     );
   });
 
-  it('should handle toggle auto-accept preference', () => {
-    localStorageMock.getItem.mockReturnValue('false');
+  it("should handle toggle auto-accept preference", () => {
+    localStorageMock.getItem.mockReturnValue("false");
 
     const { result } = renderHook(() => useComposerUI({ thread: mockThread }));
 
@@ -73,17 +73,17 @@ describe('useComposerUI', () => {
 
     expect(result.current.autoAccept).toBe(true);
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      'autoAcceptAISuggestions',
-      'true'
+      "autoAcceptAISuggestions",
+      "true",
     );
   });
 
-  it('should handle jump to latest', () => {
+  it("should handle jump to latest", () => {
     const { result } = renderHook(() =>
       useComposerUI({
         thread: mockThread,
         messagesEndRef: mockMessagesEndRef as any,
-      })
+      }),
     );
 
     act(() => {
@@ -91,11 +91,11 @@ describe('useComposerUI', () => {
     });
 
     expect(mockMessagesEndRef.current.scrollIntoView).toHaveBeenCalledWith({
-      behavior: 'smooth',
+      behavior: "smooth",
     });
   });
 
-  it('should show jump to latest button when not at bottom', () => {
+  it("should show jump to latest button when not at bottom", () => {
     mockMessagesEndRef.current.getBoundingClientRect.mockReturnValue({
       bottom: window.innerHeight + 100, // Not at bottom
     });
@@ -104,18 +104,18 @@ describe('useComposerUI', () => {
       useComposerUI({
         thread: mockThread,
         messagesEndRef: mockMessagesEndRef as any,
-      })
+      }),
     );
 
     // Simulate scroll event
     act(() => {
-      window.dispatchEvent(new Event('scroll'));
+      window.dispatchEvent(new Event("scroll"));
     });
 
     expect(result.current.showJumpToLatest).toBe(true);
   });
 
-  it('should hide jump to latest button when at bottom', () => {
+  it("should hide jump to latest button when at bottom", () => {
     mockMessagesEndRef.current.getBoundingClientRect.mockReturnValue({
       bottom: window.innerHeight - 50, // At bottom (more than 40px from bottom)
     });
@@ -124,18 +124,18 @@ describe('useComposerUI', () => {
       useComposerUI({
         thread: mockThread,
         messagesEndRef: mockMessagesEndRef as any,
-      })
+      }),
     );
 
     // Simulate scroll event
     act(() => {
-      window.dispatchEvent(new Event('scroll'));
+      window.dispatchEvent(new Event("scroll"));
     });
 
     expect(result.current.showJumpToLatest).toBe(false);
   });
 
-  it('should handle undefined messagesEndRef gracefully', () => {
+  it("should handle undefined messagesEndRef gracefully", () => {
     const { result } = renderHook(() => useComposerUI({ thread: mockThread }));
 
     // Should not throw error

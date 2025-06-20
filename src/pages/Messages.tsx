@@ -5,9 +5,9 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from '@/components/ui/table';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Search,
   ListFilter,
@@ -15,7 +15,7 @@ import {
   MessageSquare,
   Headset,
   MessageCircleDashed,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -27,31 +27,31 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
   DropdownMenuPortal,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { useState, useEffect, useCallback, ReactNode } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import type { ListMessage } from '@/types/message';
-import { formatDistanceToNow } from 'date-fns';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { supabase } from '@/integrations/supabase/client';
-import { useRealtimeMessages } from '@/hooks/useRealtimeMessages';
-import ThreadTopicBadge from '@/components/thread/ThreadTopicBadge';
-import { getThreadTopicInfo } from '@/types/thread';
-import { useMessagesFilters } from '@/hooks/use-messages-filters';
-import { Database } from '@/integrations/supabase/types';
+} from "@/components/ui/tooltip";
+import { useState, useEffect, useCallback, ReactNode } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import type { ListMessage } from "@/types/message";
+import { formatDistanceToNow } from "date-fns";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { supabase } from "@/integrations/supabase/client";
+import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
+import ThreadTopicBadge from "@/components/thread/ThreadTopicBadge";
+import { getThreadTopicInfo } from "@/types/thread";
+import { useMessagesFilters } from "@/hooks/use-messages-filters";
+import { Database } from "@/integrations/supabase/types";
 import {
   SearchBar,
   SearchBarLeft,
   SearchBarRight,
-} from '@/components/ui/search-bar';
+} from "@/components/ui/search-bar";
 
-type MessageType = Database['public']['Enums']['thread_type'];
+type MessageType = Database["public"]["Enums"]["thread_type"];
 
 const messageTypeOptions: {
   type: MessageType;
@@ -59,38 +59,38 @@ const messageTypeOptions: {
   label: string;
 }[] = [
   {
-    type: 'default',
+    type: "default",
     icon: <MessageSquare className="h-4 w-4" />,
-    label: 'Chat',
+    label: "Chat",
   },
   {
-    type: 'customer_support',
+    type: "customer_support",
     icon: <Headset className="h-4 w-4" />,
-    label: 'Support',
+    label: "Support",
   },
-  { type: 'ai_chat', icon: <Bot className="h-4 w-4" />, label: 'AI' },
+  { type: "ai_chat", icon: <Bot className="h-4 w-4" />, label: "AI" },
 ];
 
 const formatCompactTime = (date: Date) => {
   const distance = formatDistanceToNow(date, { addSuffix: false });
-  const [number, unit] = distance.replace('about ', '').split(' ');
+  const [number, unit] = distance.replace("about ", "").split(" ");
 
   // Map of units to their short forms
   const unitMap: Record<string, string> = {
-    minute: 'm',
-    minutes: 'm',
-    hour: 'h',
-    hours: 'h',
-    day: 'd',
-    days: 'd',
-    month: 'mo',
-    months: 'mo',
-    year: 'y',
-    years: 'y',
+    minute: "m",
+    minutes: "m",
+    hour: "h",
+    hours: "h",
+    day: "d",
+    days: "d",
+    month: "mo",
+    months: "mo",
+    year: "y",
+    years: "y",
   };
 
   if (!unitMap[unit]) {
-    return 'just now';
+    return "just now";
   }
 
   return `${number}${unitMap[unit]} ago`;
@@ -129,7 +129,7 @@ export default function Messages() {
 
       // TODO no ai messages are showing up here
       const { data: messagesData, error: messagesError } = await supabase
-        .from('messages')
+        .from("messages")
         .select(
           `
           id,
@@ -149,12 +149,12 @@ export default function Messages() {
             id,
             name
           )
-        `
+        `,
         )
-        .eq('thread.status', 'Open')
-        .eq('reads.user_id', user.id)
-        .neq('user_id', user.id)
-        .order('timestamp', { ascending: false })
+        .eq("thread.status", "Open")
+        .eq("reads.user_id", user.id)
+        .neq("user_id", user.id)
+        .order("timestamp", { ascending: false })
         .limit(100);
 
       if (messagesError) throw messagesError;
@@ -176,7 +176,7 @@ export default function Messages() {
 
       setMessages(processedMessages);
     } catch (error) {
-      console.error('Failed to load messages:', error);
+      console.error("Failed to load messages:", error);
     } finally {
       setIsLoading(false);
     }
@@ -187,7 +187,7 @@ export default function Messages() {
     onMessageReceived: async (message) => {
       // Fetch additional message details to convert to ListMessage
       const { data: messageData, error: messageError } = await supabase
-        .from('messages')
+        .from("messages")
         .select(
           `
           id,
@@ -201,13 +201,13 @@ export default function Messages() {
             type
           ),
           from:profiles!left( id, name )
-        `
+        `,
         )
-        .eq('id', message.id)
+        .eq("id", message.id)
         .single();
 
       if (messageError || !messageData) {
-        console.error('Failed to fetch message details:', messageError);
+        console.error("Failed to fetch message details:", messageError);
         return;
       }
 
@@ -239,7 +239,7 @@ export default function Messages() {
           ...message,
           readAt:
             threadCounts[message.threadId] === 0 ? new Date() : message.readAt,
-        }))
+        })),
       );
     },
   });
@@ -445,10 +445,10 @@ export default function Messages() {
                   <div className="flex items-center gap-2">
                     <Avatar className="h-6 w-6">
                       <AvatarFallback>
-                        {message.sender?.name?.charAt(0).toUpperCase() || '?'}
+                        {message.sender?.name?.charAt(0).toUpperCase() || "?"}
                       </AvatarFallback>
                     </Avatar>
-                    <span>{message.sender?.name || 'someone'}</span>
+                    <span>{message.sender?.name || "someone"}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -460,7 +460,7 @@ export default function Messages() {
                         topic: message.threadTopic,
                         type: message.threadType,
                         createdAt: message.timestamp,
-                        status: 'Open',
+                        status: "Open",
                         participants: [],
                       }}
                     />
@@ -489,7 +489,7 @@ export default function Messages() {
             <span>
               <strong>
                 {messages.length - filteredMessages.length} messages
-              </strong>{' '}
+              </strong>{" "}
               hidden by filters.
             </span>
           )}

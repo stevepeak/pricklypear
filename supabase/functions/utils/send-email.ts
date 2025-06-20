@@ -1,6 +1,6 @@
-import { Resend } from 'https://esm.sh/resend@4.5.0';
-import { getSupabaseServiceClient } from './supabase.ts';
-import { env } from './env.ts';
+import { Resend } from "https://esm.sh/resend@4.5.0";
+import { getSupabaseServiceClient } from "./supabase.ts";
+import { env } from "./env.ts";
 
 /**
  * Send an email via the Resend SDK. Logs on failure but never throws.
@@ -16,17 +16,17 @@ export default async function sendEmail(
         to: string;
         subject: string;
         html: string;
-      }
+      },
 ) {
   const resend = new Resend(env.RESEND_API_KEY);
 
   let to: string;
 
-  if ('userId' in args) {
+  if ("userId" in args) {
     const { data, error: userError } =
       await getSupabaseServiceClient().auth.admin.getUserById(args.userId);
     if (userError) {
-      console.error('Error getting user:', userError);
+      console.error("Error getting user:", userError);
       return;
     }
     to = data.user.email;
@@ -41,5 +41,5 @@ export default async function sendEmail(
     html: args.html,
   });
 
-  if (error) console.error('Resend error:', error);
+  if (error) console.error("Resend error:", error);
 }

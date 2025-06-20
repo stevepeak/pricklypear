@@ -1,7 +1,7 @@
-import React from 'react';
-import { Badge } from '@/components/ui/badge';
-import { ConnectedUser } from '@/services/users/userService.js';
-import ConnectionCard from './ConnectionCard';
+import React from "react";
+import { Badge } from "@/components/ui/badge";
+import { ConnectedUser } from "@/services/users/userService.js";
+import ConnectionCard from "./ConnectionCard";
 
 interface OutgoingConnectionsListProps {
   connections: ConnectedUser[];

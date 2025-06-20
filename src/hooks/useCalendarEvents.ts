@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { requireCurrentUser } from '@/utils/authCache';
-import type { Database } from '@/integrations/supabase/types';
-import { useGlobalMessages } from '@/contexts/GlobalMessagesContext';
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { requireCurrentUser } from "@/utils/authCache";
+import type { Database } from "@/integrations/supabase/types";
+import { useGlobalMessages } from "@/contexts/GlobalMessagesContext";
 
-type CalendarEvent = Database['public']['Tables']['calendar_events']['Row'];
+type CalendarEvent = Database["public"]["Tables"]["calendar_events"]["Row"];
 
 export function useCalendarEvents() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -15,14 +15,14 @@ export function useCalendarEvents() {
     const fetchEvents = async () => {
       try {
         const { data, error } = await supabase
-          .from('calendar_events')
-          .select('*')
-          .order('start_time', { ascending: true });
+          .from("calendar_events")
+          .select("*")
+          .order("start_time", { ascending: true });
 
         if (error) throw error;
         setEvents(data || []);
       } catch (error) {
-        console.error('Error fetching calendar events:', error);
+        console.error("Error fetching calendar events:", error);
       } finally {
         setIsLoading(false);
       }
@@ -52,13 +52,13 @@ export function useCalendarEvents() {
     startTime: Date,
     endTime: Date,
     threadId?: string,
-    location?: string | null
+    location?: string | null,
   ) => {
     const user = await requireCurrentUser();
 
     // TODO create a trigger to add participation for acting user, auto accept it
     const { data, error } = await supabase
-      .from('calendar_events')
+      .from("calendar_events")
       .insert({
         title,
         description,
@@ -77,12 +77,12 @@ export function useCalendarEvents() {
 
   const updateParticipantStatus = async (
     eventId: string,
-    status: Database['public']['Enums']['participant_status']
+    status: Database["public"]["Enums"]["participant_status"],
   ) => {
     const user = await requireCurrentUser();
 
     const { data, error } = await supabase
-      .from('calendar_event_participants')
+      .from("calendar_event_participants")
       .upsert({
         event_id: eventId,
         user_id: user.id,

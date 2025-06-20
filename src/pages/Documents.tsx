@@ -5,9 +5,9 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from '@/components/ui/table';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -15,12 +15,12 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 import {
   Download,
   Trash2,
@@ -29,8 +29,8 @@ import {
   Tags,
   ListFilter,
   FilePlus2,
-} from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -42,28 +42,28 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
   DropdownMenuPortal,
-} from '@/components/ui/dropdown-menu';
-import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { DocumentUploader } from '@/components/DocumentUploader';
+} from "@/components/ui/dropdown-menu";
+import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { DocumentUploader } from "@/components/DocumentUploader";
 import {
   getDocuments,
   deleteDocument,
   updateDocumentTitle,
   updateDocumentLabels,
-} from '@/services/documentService';
-import type { Document, DocumentLabel } from '@/types/document';
-import DocumentLabelsDialog from '@/components/documents/DocumentLabelsDialog';
-import { DOCUMENT_LABEL_INFO, getDocumentLabelInfo } from '@/types/document';
-import { formatThreadTimestamp } from '@/utils/formatTimestamp';
-import { DocumentTableSkeleton } from '@/components/documents/DocumentTableSkeleton';
-import { toast } from 'sonner';
-import { useDocumentFilters } from '@/components/documents/use-document-filters';
+} from "@/services/documentService";
+import type { Document, DocumentLabel } from "@/types/document";
+import DocumentLabelsDialog from "@/components/documents/DocumentLabelsDialog";
+import { DOCUMENT_LABEL_INFO, getDocumentLabelInfo } from "@/types/document";
+import { formatThreadTimestamp } from "@/utils/formatTimestamp";
+import { DocumentTableSkeleton } from "@/components/documents/DocumentTableSkeleton";
+import { toast } from "sonner";
+import { useDocumentFilters } from "@/components/documents/use-document-filters";
 import {
   SearchBar,
   SearchBarLeft,
   SearchBarRight,
-} from '@/components/ui/search-bar';
+} from "@/components/ui/search-bar";
 
 export default function Documents() {
   const { user } = useAuth();
@@ -71,7 +71,7 @@ export default function Documents() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [renameDoc, setRenameDoc] = useState<Document | null>(null);
-  const [newTitle, setNewTitle] = useState('');
+  const [newTitle, setNewTitle] = useState("");
   const [labelDoc, setLabelDoc] = useState<Document | null>(null);
   const [selectedLabels, setSelectedLabels] = useState<DocumentLabel[]>([]);
 
@@ -95,7 +95,7 @@ export default function Documents() {
       const docs = await getDocuments(user.id);
       setDocuments(docs);
     } catch (error) {
-      console.error('Failed to load documents:', error);
+      console.error("Failed to load documents:", error);
     } finally {
       setIsLoading(false);
     }
@@ -107,11 +107,11 @@ export default function Documents() {
 
   // Load persisted filters on mount
   useEffect(() => {
-    const storedFilters = localStorage.getItem('documents.filters');
+    const storedFilters = localStorage.getItem("documents.filters");
     if (storedFilters) {
       try {
         const parsed = JSON.parse(storedFilters);
-        if (typeof parsed.search === 'string') setSearch(parsed.search);
+        if (typeof parsed.search === "string") setSearch(parsed.search);
         if (Array.isArray(parsed.filterLabels))
           setFilterLabels(parsed.filterLabels);
       } catch {
@@ -127,9 +127,9 @@ export default function Documents() {
       ...(filterLabels.length > 0 && { filterLabels }),
     };
     if (Object.keys(filters).length > 0) {
-      localStorage.setItem('documents.filters', JSON.stringify(filters));
+      localStorage.setItem("documents.filters", JSON.stringify(filters));
     } else {
-      localStorage.removeItem('documents.filters');
+      localStorage.removeItem("documents.filters");
     }
   }, [search, filterLabels]);
 
@@ -139,15 +139,15 @@ export default function Documents() {
   };
 
   const handleDelete = async (documentId: string) => {
-    if (!user || !confirm('Are you sure you want to delete this document?'))
+    if (!user || !confirm("Are you sure you want to delete this document?"))
       return;
 
     try {
       await deleteDocument(documentId, user.id);
       loadDocuments();
     } catch (error) {
-      console.error('Failed to delete document:', error);
-      alert('Failed to delete document');
+      console.error("Failed to delete document:", error);
+      alert("Failed to delete document");
     }
   };
 
@@ -155,22 +155,22 @@ export default function Documents() {
     if (!user || !renameDoc) return;
     const trimmed = newTitle.trim();
     if (!trimmed) {
-      toast('Title required', {
-        description: 'Please enter a document title.',
+      toast("Title required", {
+        description: "Please enter a document title.",
       });
       return;
     }
 
     try {
       await updateDocumentTitle(renameDoc.id, trimmed);
-      toast('Document renamed', {
-        description: 'The document title has been updated.',
+      toast("Document renamed", {
+        description: "The document title has been updated.",
       });
       setRenameDoc(null);
       loadDocuments();
     } catch (error) {
-      console.error('Failed to rename document:', error);
-      toast('Error', { description: 'Failed to rename document.' });
+      console.error("Failed to rename document:", error);
+      toast("Error", { description: "Failed to rename document." });
     }
   };
 
@@ -183,12 +183,12 @@ export default function Documents() {
     if (!user || !labelDoc) return;
     try {
       await updateDocumentLabels(labelDoc.id, labels);
-      toast('Labels updated', { description: 'Document labels saved.' });
+      toast("Labels updated", { description: "Document labels saved." });
       setLabelDoc(null);
       loadDocuments();
     } catch (error) {
-      console.error('Failed to update labels:', error);
-      toast('Error', { description: 'Failed to update labels.' });
+      console.error("Failed to update labels:", error);
+      toast("Error", { description: "Failed to update labels." });
     }
   };
 
@@ -307,8 +307,8 @@ export default function Documents() {
                 className="text-center text-muted-foreground"
               >
                 {search
-                  ? 'No documents found matching your search.'
-                  : 'No documents uploaded yet.'}
+                  ? "No documents found matching your search."
+                  : "No documents uploaded yet."}
               </TableCell>
             </TableRow>
           ) : (
@@ -377,7 +377,7 @@ export default function Documents() {
                     aria-label={`Download ${doc.filename}`}
                     onClick={() => {
                       // TODO: Implement download functionality
-                      alert('Download functionality coming soon!');
+                      alert("Download functionality coming soon!");
                     }}
                   >
                     <Download className="mr-1" size={16} />
@@ -400,7 +400,7 @@ export default function Documents() {
         <div className="flex justify-center items-center border-t gap-2 mt-4 text-xs text-muted-foreground">
           {documents.length - filtered.length > 0 && (
             <span>
-              <strong>{documents.length - filtered.length} documents</strong>{' '}
+              <strong>{documents.length - filtered.length} documents</strong>{" "}
               hidden by filters.
             </span>
           )}

@@ -1,13 +1,13 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
-import { getErrorMessage, handleError } from '../utils/handle-error.ts';
-import { getOpenAIClient } from '../utils/openai.ts';
-import { env } from '../utils/env.ts';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { getErrorMessage, handleError } from "../utils/handle-error.ts";
+import { getOpenAIClient } from "../utils/openai.ts";
+import { env } from "../utils/env.ts";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 export type HandlerDeps = {
@@ -16,8 +16,8 @@ export type HandlerDeps = {
 };
 
 export async function handler(req: Request, deps: HandlerDeps = {}) {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
@@ -25,7 +25,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     const getOpenAI = deps.getOpenAIClient ?? getOpenAIClient;
 
     const supabase = create(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
-      global: { headers: { Authorization: req.headers.get('Authorization')! } },
+      global: { headers: { Authorization: req.headers.get("Authorization")! } },
     });
 
     const {
@@ -35,11 +35,11 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
 
     if (authError || !user) {
       return new Response(
-        JSON.stringify({ error: 'Invalid authentication token' }),
+        JSON.stringify({ error: "Invalid authentication token" }),
         {
           status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -48,12 +48,12 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     if (!file_path || !filename) {
       return new Response(
         JSON.stringify({
-          error: 'Missing required fields: user_id, file_path, filename',
+          error: "Missing required fields: user_id, file_path, filename",
         }),
         {
           status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -61,18 +61,18 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     if (!file_path.startsWith(`${user.id}/`)) {
       return new Response(
         JSON.stringify({
-          error: 'Unauthorized: File path does not belong to user',
+          error: "Unauthorized: File path does not belong to user",
         }),
         {
           status: 403,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
     // Download file from Supabase Storage
     const { data: fileData, error: downloadError } = await supabase.storage
-      .from('documents')
+      .from("documents")
       .download(file_path);
 
     if (downloadError) {
@@ -81,12 +81,12 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
 
     // Convert blob to buffer
     const buffer = await fileData.arrayBuffer();
-    const fileExtension = filename.toLowerCase().split('.').pop();
+    const fileExtension = filename.toLowerCase().split(".").pop();
 
-    let extractedText = '';
+    let extractedText = "";
     let wordCount = 0;
 
-    if (fileExtension === 'pdf') {
+    if (fileExtension === "pdf") {
       // For PDF extraction, we'll use a simple text extraction approach
       // Note: This is a basic implementation. For production, consider using a more robust PDF parser
       const textDecoder = new TextDecoder();
@@ -96,13 +96,13 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       const streamMatches = pdfText.match(/stream\s*(.*?)\s*endstream/gs);
       if (streamMatches) {
         extractedText = streamMatches
-          .map((match) => match.replace(/^stream\s*|\s*endstream$/g, ''))
-          .join(' ')
-          .replace(/[^\w\s.,;:!?()-]/g, ' ')
-          .replace(/\s+/g, ' ')
+          .map((match) => match.replace(/^stream\s*|\s*endstream$/g, ""))
+          .join(" ")
+          .replace(/[^\w\s.,;:!?()-]/g, " ")
+          .replace(/\s+/g, " ")
           .trim();
       }
-    } else if (fileExtension === 'docx') {
+    } else if (fileExtension === "docx") {
       // For DOCX, we'll implement a basic XML extraction
       // Note: This is a simplified approach. For production, consider using mammoth or similar
       const textDecoder = new TextDecoder();
@@ -112,20 +112,20 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       const textMatches = docxText.match(/<w:t[^>]*>(.*?)<\/w:t>/gs);
       if (textMatches) {
         extractedText = textMatches
-          .map((match) => match.replace(/<[^>]*>/g, ''))
-          .join(' ')
-          .replace(/\s+/g, ' ')
+          .map((match) => match.replace(/<[^>]*>/g, ""))
+          .join(" ")
+          .replace(/\s+/g, " ")
           .trim();
       }
     } else {
       return new Response(
         JSON.stringify({
-          error: 'Unsupported file type. Only PDF and DOCX are supported.',
+          error: "Unsupported file type. Only PDF and DOCX are supported.",
         }),
         {
           status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -135,12 +135,12 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
         const code = ch.charCodeAt(0);
         // Remove control characters (0-31, 127-159)
         if ((code >= 0 && code <= 31) || (code >= 127 && code <= 159)) {
-          return ' ';
+          return " ";
         }
         return ch;
       })
-      .join('')
-      .replace(/\s+/g, ' ') // Normalize whitespace
+      .join("")
+      .replace(/\s+/g, " ") // Normalize whitespace
       .trim();
 
     wordCount = extractedText
@@ -150,12 +150,12 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     if (!extractedText || extractedText.length < 10) {
       return new Response(
         JSON.stringify({
-          error: 'Could not extract meaningful text from document',
+          error: "Could not extract meaningful text from document",
         }),
         {
           status: 422,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
       );
     }
 
@@ -166,7 +166,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       try {
         const openai = getOpenAI();
         const embeddingResponse = await openai.embeddings.create({
-          model: 'text-embedding-3-small',
+          model: "text-embedding-3-small",
           // TODO fix this to properly chunk the document
           input: extractedText.substring(0, 8000), // Limit input length
         });
@@ -178,14 +178,14 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
           embedding = embeddingResponse.data[0].embedding;
         }
       } catch (embeddingError) {
-        console.error('Failed to generate embedding:', embeddingError);
+        console.error("Failed to generate embedding:", embeddingError);
         // Continue without embedding if OpenAI fails
       }
     }
 
     // Store in database
     const { data: document, error: insertError } = await supabase
-      .from('documents')
+      .from("documents")
       .insert({
         user_id: user.id,
         file_path,
@@ -202,18 +202,18 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
 
     return new Response(
       JSON.stringify({
-        status: 'success',
+        status: "success",
         document_id: document.id,
         word_count: wordCount,
-        message: 'Document successfully extracted and stored.',
+        message: "Document successfully extracted and stored.",
       }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (error) {
     handleError(error);
     return new Response(JSON.stringify({ error: getErrorMessage(error) }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 }

@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 import {
   Bot,
   Loader2,
   MessageCirclePlus,
   MessagesSquare,
   Headset,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,14 +14,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { useConnections } from '@/hooks/useConnections';
-import { useThreadCreation } from '@/hooks/useThreadCreation';
-import CreateThreadForm from './CreateThreadForm';
-import type { Thread } from '@/types/thread';
-import type { User } from '@supabase/supabase-js';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { createThread } from '@/services/threadService';
+} from "@/components/ui/dialog";
+import { useConnections } from "@/hooks/useConnections";
+import { useThreadCreation } from "@/hooks/useThreadCreation";
+import CreateThreadForm from "./CreateThreadForm";
+import type { Thread } from "@/types/thread";
+import type { User } from "@supabase/supabase-js";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { createThread } from "@/services/threadService";
 
 interface CreateThreadDialogProps {
   onThreadCreated: (newThread: Thread) => void;
@@ -64,7 +64,7 @@ const CreateThreadDialog = ({
   const handleDialogOpen = (open: boolean) => {
     setDialogOpen(open);
     if (open) {
-      setNewThreadTitle('');
+      setNewThreadTitle("");
       setSelectedContactIds([]);
       setSelectedTopic(undefined);
     }
@@ -112,7 +112,7 @@ const CreateThreadDialog = ({
               requireAiApproval={requireAiApproval}
               setRequireAiApproval={setRequireAiApproval}
               onGenerate={() => handleGenerateThread()}
-              isAdmin={user.id === '09b77fc6-776c-4b4a-bd8c-96bb7997516e'}
+              isAdmin={user.id === "09b77fc6-776c-4b4a-bd8c-96bb7997516e"}
               onSubmit={() => handleCreateThread()}
               onCancel={() => handleDialogOpen(false)}
             />
@@ -167,9 +167,9 @@ function CustomerSupportForm({
   const handleCreate = async () => {
     setIsCreating(true);
     const thread = await createThread({
-      title: 'New Support Chat',
-      type: 'customer_support',
-      topic: 'other',
+      title: "New Support Chat",
+      type: "customer_support",
+      topic: "other",
     });
     setIsCreating(false);
     if (thread) {

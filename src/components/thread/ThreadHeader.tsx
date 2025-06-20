@@ -1,8 +1,8 @@
-import { Bot, Users, Headset } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { getThreadTopicInfo, type Thread, isAIThread } from '@/types/thread';
-import { AvatarName } from '@/components/ui/avatar-name';
-import { Button } from '@/components/ui/button';
+import { Bot, Users, Headset } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { getThreadTopicInfo, type Thread, isAIThread } from "@/types/thread";
+import { AvatarName } from "@/components/ui/avatar-name";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetTrigger,
@@ -10,17 +10,17 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from '@/components/ui/sheet';
+} from "@/components/ui/sheet";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from '@/components/ui/tooltip';
-import { toast } from 'sonner';
-import { updateThreadTitle } from '@/services/threadService';
-import React, { useState, useRef } from 'react';
-import { z } from 'zod';
-import { handleError } from '@/services/messageService/utils';
+} from "@/components/ui/tooltip";
+import { toast } from "sonner";
+import { updateThreadTitle } from "@/services/threadService";
+import React, { useState, useRef } from "react";
+import { z } from "zod";
+import { handleError } from "@/services/messageService/utils";
 
 interface ThreadHeaderProps {
   thread: Thread;
@@ -37,8 +37,8 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
   const titleSchema = z
     .string()
     .trim()
-    .min(1, 'Title is required')
-    .max(50, 'Title must be 50 characters or less');
+    .min(1, "Title is required")
+    .max(50, "Title must be 50 characters or less");
 
   React.useEffect(() => {
     setTitle(thread.title);
@@ -55,7 +55,7 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
     const trimmed = title.trim();
     const parse = titleSchema.safeParse(trimmed);
     if (!parse.success) {
-      toast('Invalid title', { description: parse.error.errors[0].message });
+      toast("Invalid title", { description: parse.error.errors[0].message });
       if (inputRef.current) {
         inputRef.current.focus();
         inputRef.current.select();
@@ -70,13 +70,13 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
     setLoading(true);
     try {
       await updateThreadTitle({ threadId: thread.id, title: trimmed });
-      toast('Title updated', {
-        description: 'Thread title updated successfully.',
+      toast("Title updated", {
+        description: "Thread title updated successfully.",
       });
       setEditing(false);
     } catch (e) {
-      handleError(e, 'updateThreadTitle');
-      toast('Error', { description: 'Failed to update thread title.' });
+      handleError(e, "updateThreadTitle");
+      toast("Error", { description: "Failed to update thread title." });
       setTitle(thread.title);
       setEditing(false);
     } finally {
@@ -85,9 +85,9 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSave();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       setEditing(false);
       setTitle(thread.title);
     }
@@ -111,7 +111,7 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
             <SheetHeader>
               <SheetTitle>AI Summary</SheetTitle>
               <SheetDescription>
-                <span className="text-sm">{thread.summary ?? ''}</span>
+                <span className="text-sm">{thread.summary ?? ""}</span>
               </SheetDescription>
             </SheetHeader>
           </SheetContent>
@@ -121,7 +121,7 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
         {/* Left Side */}
         <div className="flex-1 min-w-0 space-y-4">
           <div className="flex items-center gap-2 mb-2">
-            {thread.status === 'Closed' && (
+            {thread.status === "Closed" && (
               <Badge
                 variant="secondary"
                 className="text-xs px-2 py-0.5 font-semibold"
@@ -137,7 +137,7 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
                 <Bot className="h-3 w-3 mr-1" />
                 AI Chat
               </Badge>
-            ) : thread.type === 'customer_support' ? (
+            ) : thread.type === "customer_support" ? (
               <Badge
                 variant="secondary"
                 className="bg-blue-100 text-blue-800 border-blue-200"
@@ -179,7 +179,7 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
                 style={{ minWidth: 100 }}
                 data-testid="thread-title-input"
               />
-            ) : thread.type === 'default' ? (
+            ) : thread.type === "default" ? (
               <div
                 className="text-2xl font-bold break-words"
                 data-testid="thread-title"
@@ -201,7 +201,7 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
               </Tooltip>
             )}
           </div>
-          {thread.type === 'default' && (
+          {thread.type === "default" && (
             <div className="flex flex-col space-y-2">
               <div className="flex items-center gap-2 flex-wrap">
                 <Users className="h-4 w-4 text-muted-foreground" />
@@ -222,7 +222,7 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
         {/* Right Side: summary only on md+ */}
         <div className="md:w-1/2 flex flex-col gap-2 min-w-0 hidden md:flex">
           <div className="text-muted-foreground text-sm break-words">
-            <p>{thread.summary ?? ''}</p>
+            <p>{thread.summary ?? ""}</p>
           </div>
         </div>
       </div>

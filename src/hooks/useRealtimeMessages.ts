@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
-import type { Message } from '@/types/message';
-import { useGlobalMessages } from '@/contexts/GlobalMessagesContext';
+import { useEffect } from "react";
+import type { Message } from "@/types/message";
+import { useGlobalMessages } from "@/contexts/GlobalMessagesContext";
 
 interface UseRealtimeMessagesProps {
   onUnreadCountsUpdated?: (
     totalUnread: number,
-    threadCounts: Record<string, number>
+    threadCounts: Record<string, number>,
   ) => void;
   onMessageReceived?: (message: Message) => void;
   onReadReceiptUpdated?: (messageId: string, readAt: Date) => void;

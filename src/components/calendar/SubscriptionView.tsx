@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import {
   Table,
   TableBody,
@@ -6,13 +6,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Trash2, Link } from 'lucide-react';
-import { useCalendarSubscriptions } from '@/hooks/useCalendarSubscriptions';
-import { toast } from 'sonner';
-import { useState } from 'react';
-import { SubscriptionSuccessDialog } from './SubscriptionSuccessDialog';
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Trash2, Link } from "lucide-react";
+import { useCalendarSubscriptions } from "@/hooks/useCalendarSubscriptions";
+import { toast } from "sonner";
+import { useState } from "react";
+import { SubscriptionSuccessDialog } from "./SubscriptionSuccessDialog";
 
 export function SubscriptionView() {
   const { subscriptions, isLoading, deleteSubscription } =
@@ -27,10 +27,10 @@ export function SubscriptionView() {
   const handleDelete = async (id: string) => {
     try {
       await deleteSubscription(id);
-      toast.success('Subscription deleted successfully');
+      toast.success("Subscription deleted successfully");
     } catch (error) {
-      console.error('Error deleting subscription:', error);
-      toast.error('Failed to delete subscription');
+      console.error("Error deleting subscription:", error);
+      toast.error("Failed to delete subscription");
     }
   };
 
@@ -76,28 +76,28 @@ export function SubscriptionView() {
             <TableRow key={subscription.id}>
               <TableCell>{subscription.name}</TableCell>
               <TableCell>
-                {format(new Date(subscription.created_at), 'MMM d, yyyy')}
+                {format(new Date(subscription.created_at), "MMM d, yyyy")}
               </TableCell>
               <TableCell>
                 {subscription.expires_at
-                  ? format(new Date(subscription.expires_at), 'MMM d, yyyy')
-                  : 'Never'}
+                  ? format(new Date(subscription.expires_at), "MMM d, yyyy")
+                  : "Never"}
               </TableCell>
               <TableCell>
                 {subscription.last_accessed_at
                   ? format(
                       new Date(subscription.last_accessed_at),
-                      'MMM d, yyyy'
+                      "MMM d, yyyy",
                     )
-                  : 'Never'}
+                  : "Never"}
               </TableCell>
               <TableCell>
                 {subscription.start_time && subscription.end_time
-                  ? `${format(new Date(subscription.start_time), 'MMM d, yyyy')} - ${format(
+                  ? `${format(new Date(subscription.start_time), "MMM d, yyyy")} - ${format(
                       new Date(subscription.end_time),
-                      'MMM d, yyyy'
+                      "MMM d, yyyy",
                     )}`
-                  : 'All time'}
+                  : "All time"}
               </TableCell>
               <TableCell>
                 <div className="flex space-x-2">

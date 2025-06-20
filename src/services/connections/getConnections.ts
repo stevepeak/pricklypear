@@ -1,7 +1,7 @@
-import { supabase } from '@/integrations/supabase/client';
-import { ConnectedUser } from '@/types/connection';
-import { requireCurrentUser } from '@/utils/authCache';
-import { handleError } from '@/services/messageService/utils';
+import { supabase } from "@/integrations/supabase/client";
+import { ConnectedUser } from "@/types/connection";
+import { requireCurrentUser } from "@/utils/authCache";
+import { handleError } from "@/services/messageService/utils";
 
 // Get all connections for the current user (both as sender and receiver)
 export const getConnections = async (): Promise<ConnectedUser[]> => {
@@ -12,18 +12,18 @@ export const getConnections = async (): Promise<ConnectedUser[]> => {
 
     // Get my connections
     const { data: connections, error: connectionError } = await supabase
-      .from('connections')
+      .from("connections")
       .select(
         `
         *,
         connected_profile:profiles!connected_user_id ( name ),
         user_profile:profiles!user_id ( name )
-      `
+      `,
       )
       .or(`user_id.eq.${userId},connected_user_id.eq.${userId}`);
 
     if (connectionError)
-      return handleError(connectionError, 'fetching connections') ? [] : [];
+      return handleError(connectionError, "fetching connections") ? [] : [];
 
     if (!connections.length) return [];
 
@@ -46,6 +46,6 @@ export const getConnections = async (): Promise<ConnectedUser[]> => {
 
     return result;
   } catch (error) {
-    return handleError(error, 'fetching connections') ? [] : [];
+    return handleError(error, "fetching connections") ? [] : [];
   }
 };

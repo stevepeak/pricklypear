@@ -1,4 +1,4 @@
-import { format, isToday, isYesterday, isThisWeek } from 'date-fns';
+import { format, isToday, isYesterday, isThisWeek } from "date-fns";
 
 /**
  * Format a timestamp according to DD-40 rules.
@@ -13,16 +13,16 @@ import { format, isToday, isYesterday, isThisWeek } from 'date-fns';
  */
 export function formatThreadTimestamp(date: Date): string {
   if (isToday(date)) {
-    return format(date, 'hh:mm a');
+    return format(date, "hh:mm a");
   }
 
   if (isYesterday(date)) {
-    return `Yesterday, ${format(date, 'hh:mm a')}`;
+    return `Yesterday, ${format(date, "hh:mm a")}`;
   }
 
   if (isThisWeek(date, { weekStartsOn: 1 })) {
-    return `${format(date, 'EEE')}, ${format(date, 'hh:mm a')}`;
+    return `${format(date, "EEE")}, ${format(date, "hh:mm a")}`;
   }
 
-  return format(date, 'MMM d, EEE hh:mm a');
+  return format(date, "MMM d, EEE hh:mm a");
 }

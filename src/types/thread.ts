@@ -7,16 +7,16 @@
 // Whenever you add a new topic, update the union and THREAD_TOPIC_INFO below -
 // every component and service picks them up automatically.
 
-import { Database } from '@/integrations/supabase/types';
+import { Database } from "@/integrations/supabase/types";
 
 /** All valid thread topic identifiers used throughout the app. */
-export type ThreadTopic = Database['public']['Enums']['thread_topic'];
+export type ThreadTopic = Database["public"]["Enums"]["thread_topic"];
 
 export type ThreadControls = {
   requireAiApproval?: boolean;
 };
 
-export type ThreadStatus = Database['public']['Enums']['thread_status'];
+export type ThreadStatus = Database["public"]["Enums"]["thread_status"];
 
 export type Thread = {
   id: string;
@@ -27,7 +27,7 @@ export type Thread = {
   summary?: string | null;
   topic: ThreadTopic;
   controls?: ThreadControls;
-  type: Database['public']['Enums']['thread_type'];
+  type: Database["public"]["Enums"]["thread_type"];
   createdBy?: {
     id: string;
     name: string;
@@ -39,14 +39,14 @@ export const THREAD_TOPIC_INFO: Record<
   ThreadTopic,
   { label: string; icon: string }
 > = {
-  travel: { label: 'Travel', icon: '✈️' },
-  parenting_time: { label: 'Parenting Time', icon: '👨‍👩‍👧' },
-  health: { label: 'Health', icon: '🏥' },
-  education: { label: 'Education', icon: '🎓' },
-  activity: { label: 'Activity', icon: '🏃' },
-  legal: { label: 'Legal', icon: '⚖️' },
-  expense: { label: 'Expense', icon: '💵' },
-  other: { label: 'Other', icon: '📝' },
+  travel: { label: "Travel", icon: "✈️" },
+  parenting_time: { label: "Parenting Time", icon: "👨‍👩‍👧" },
+  health: { label: "Health", icon: "🏥" },
+  education: { label: "Education", icon: "🎓" },
+  activity: { label: "Activity", icon: "🏃" },
+  legal: { label: "Legal", icon: "⚖️" },
+  expense: { label: "Expense", icon: "💵" },
+  other: { label: "Other", icon: "📝" },
 } as const;
 
 /**
@@ -56,9 +56,9 @@ export const THREAD_TOPIC_INFO: Record<
  * @returns The topic's metadata, or the "other" metadata if the topic is null/undefined.
  */
 export function getThreadTopicInfo(topic: ThreadTopic | null | undefined) {
-  return THREAD_TOPIC_INFO[topic ?? 'other'];
+  return THREAD_TOPIC_INFO[topic ?? "other"];
 }
 
 export function isAIThread(thread: Thread): boolean {
-  return thread.type === 'ai_chat';
+  return thread.type === "ai_chat";
 }

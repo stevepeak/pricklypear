@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,8 +8,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { EyeOff } from 'lucide-react';
+} from "@/components/ui/alert-dialog";
+import { EyeOff } from "lucide-react";
 
 interface DisableConnectionDialogProps {
   open: boolean;
@@ -33,7 +33,7 @@ const DisableConnectionDialog: React.FC<DisableConnectionDialogProps> = ({
             Disable Connection
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to disable your connection with{' '}
+            Are you sure you want to disable your connection with{" "}
             <strong>{connectionName}</strong>? They will no longer see your
             profile or be able to message you until this connection is enabled
             again.

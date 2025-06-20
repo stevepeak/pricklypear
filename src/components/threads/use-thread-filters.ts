@@ -1,36 +1,36 @@
-import { useState, useEffect } from 'react';
-import type { Thread, ThreadTopic } from '@/types/thread';
-import { z } from 'zod';
+import { useState, useEffect } from "react";
+import type { Thread, ThreadTopic } from "@/types/thread";
+import { z } from "zod";
 
 export function useThreadFilters(threads: Thread[]) {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<
-    ('Open' | 'Closed' | 'Archived')[]
+    ("Open" | "Closed" | "Archived")[]
   >([]);
   const [filterParticipants, setFilterParticipants] = useState<string[]>([]);
   const [filterTopics, setFilterTopics] = useState<ThreadTopic[]>([]);
 
   const isFiltering =
-    search.trim() !== '' ||
+    search.trim() !== "" ||
     filterStatus.length > 0 ||
     filterParticipants.length > 0 ||
     filterTopics.length > 0;
 
   // Load persisted filters on mount
   useEffect(() => {
-    const storedFilters = localStorage.getItem('threads.filters');
+    const storedFilters = localStorage.getItem("threads.filters");
     const filtersSchema = z.object({
-      search: z.string().optional().default(''),
+      search: z.string().optional().default(""),
       filterStatus: z
         .array(
           z.union([
-            z.literal('Open'),
-            z.literal('Closed'),
-            z.literal('Archived'),
-          ])
+            z.literal("Open"),
+            z.literal("Closed"),
+            z.literal("Archived"),
+          ]),
         )
         .optional()
-        .default(['Open']),
+        .default(["Open"]),
       filterParticipants: z.array(z.string()).optional().default([]),
       filterTopics: z.array(z.string()).optional().default([]),
     });
@@ -44,9 +44,9 @@ export function useThreadFilters(threads: Thread[]) {
         setFilterParticipants(filterParticipants);
         setFilterTopics(filterTopics as ThreadTopic[]);
       } else {
-        localStorage.removeItem('threads.filters');
-        setSearch('');
-        setFilterStatus(['Open']);
+        localStorage.removeItem("threads.filters");
+        setSearch("");
+        setFilterStatus(["Open"]);
         setFilterParticipants([]);
         setFilterTopics([]);
       }
@@ -62,17 +62,17 @@ export function useThreadFilters(threads: Thread[]) {
       ...(filterTopics.length > 0 && { filterTopics }),
     };
     if (Object.keys(filters).length > 0) {
-      localStorage.setItem('threads.filters', JSON.stringify(filters));
+      localStorage.setItem("threads.filters", JSON.stringify(filters));
     } else {
-      localStorage.removeItem('threads.filters');
+      localStorage.removeItem("threads.filters");
     }
   }, [search, filterStatus, filterParticipants, filterTopics]);
 
-  const toggleStatus = (status: 'Open' | 'Closed' | 'Archived') => {
+  const toggleStatus = (status: "Open" | "Closed" | "Archived") => {
     setFilterStatus((prev) =>
       prev.includes(status)
         ? prev.filter((s) => s !== status)
-        : [...prev, status]
+        : [...prev, status],
     );
   };
 
@@ -80,25 +80,25 @@ export function useThreadFilters(threads: Thread[]) {
     setFilterParticipants((prev) =>
       prev.includes(participant)
         ? prev.filter((p) => p !== participant)
-        : [...prev, participant]
+        : [...prev, participant],
     );
   };
 
   const toggleTopic = (topic: ThreadTopic) => {
     setFilterTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
     );
   };
 
   const clearFilters = () => {
-    setSearch('');
+    setSearch("");
     setFilterStatus([]);
     setFilterParticipants([]);
     setFilterTopics([]);
   };
 
   const participantOptions = Array.from(
-    new Set(threads.flatMap((t) => t.participants))
+    new Set(threads.flatMap((t) => t.participants)),
   ).sort();
 
   const filteredThreads = threads.filter((thread) => {

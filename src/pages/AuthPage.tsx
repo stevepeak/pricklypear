@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useAuth } from '@/contexts/AuthContext';
-import { cn } from '@/lib/utils';
-import { supabase } from '@/integrations/supabase/client';
-import { handleError } from '@/services/messageService/utils';
+import React, { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/AuthContext";
+import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { handleError } from "@/services/messageService/utils";
 
 const AuthPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const [isSignUp, setIsSignUp] = useState(() => {
-    const mode = searchParams.get('mode');
-    const signup = searchParams.get('signup');
-    return mode === 'signup' || signup === 'true';
+    const mode = searchParams.get("mode");
+    const signup = searchParams.get("signup");
+    return mode === "signup" || signup === "true";
   });
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotIsLoading, setForgotIsLoading] = useState(false);
@@ -27,13 +27,13 @@ const AuthPage = () => {
 
   const { signIn, signUpWithMagicLink, user } = useAuth();
   const navigate = useNavigate();
-  const [invitedEmail, setInvitedEmail] = useState(searchParams.get('email'));
-  const inviterName = searchParams.get('inviterName');
+  const [invitedEmail, setInvitedEmail] = useState(searchParams.get("email"));
+  const inviterName = searchParams.get("inviterName");
 
   // Redirect if already logged in
   React.useEffect(() => {
     if (user) {
-      navigate('/threads');
+      navigate("/threads");
     }
   }, [user, navigate]);
 
@@ -42,9 +42,9 @@ const AuthPage = () => {
     setIsLoading(true);
     try {
       await signIn(email, password);
-      navigate('/threads');
+      navigate("/threads");
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +57,7 @@ const AuthPage = () => {
       await signUpWithMagicLink(email);
       setMagicLinkSent(true);
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error("Signup error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -71,18 +71,18 @@ const AuthPage = () => {
     try {
       // Use supabase directly, as useAuth does not expose resetPassword
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/update-password',
+        redirectTo: window.location.origin + "/update-password",
       });
       if (error) {
         setForgotError(error.message);
       } else {
         setForgotMessage(
-          'If an account with that email exists, a password reset link has been sent.'
+          "If an account with that email exists, a password reset link has been sent.",
         );
       }
     } catch (err) {
-      handleError(err, 'handleForgotPassword');
-      setForgotError('Something went wrong. Please try again later.');
+      handleError(err, "handleForgotPassword");
+      setForgotError("Something went wrong. Please try again later.");
     } finally {
       setForgotIsLoading(false);
     }
@@ -94,7 +94,7 @@ const AuthPage = () => {
         <a href="/" className="flex items-center gap-2 self-center font-medium">
           🌵 Prickly Pear
         </a>
-        <div className={cn('flex flex-col gap-6')}>
+        <div className={cn("flex flex-col gap-6")}>
           {invitedEmail ? (
             <Card>
               <CardHeader className="text-center">
@@ -104,12 +104,12 @@ const AuthPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center text-base mb-4">
-                  <strong>{inviterName ?? 'A friend'}</strong> has invited you
+                  <strong>{inviterName ?? "A friend"}</strong> has invited you
                   to join them on Prickly Pear — your AI-assisted parenting
                   communication app.
                 </div>
                 <div className="text-center text-sm text-muted-foreground">
-                  Signing up with:{' '}
+                  Signing up with:{" "}
                   <span className="font-medium">{invitedEmail}</span>
                 </div>
                 <Button
@@ -123,7 +123,7 @@ const AuthPage = () => {
                       await signUpWithMagicLink(invitedEmail);
                       setMagicLinkSent(true);
                     } catch (error) {
-                      console.error('Signup error:', error);
+                      console.error("Signup error:", error);
                     } finally {
                       setIsLoading(false);
                     }
@@ -132,7 +132,7 @@ const AuthPage = () => {
                   Sign Up
                 </Button>
                 <div className="text-center text-xs text-muted-foreground mt-6">
-                  Already have an account?{' '}
+                  Already have an account?{" "}
                   <a
                     href="#"
                     className="underline underline-offset-4"
@@ -161,13 +161,13 @@ const AuthPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-center text-base mb-4">
-                  We sent a magic link to{' '}
+                  We sent a magic link to{" "}
                   <span className="font-semibold">{email}</span>.<br />
                   Please check your inbox and follow the link to activate your
                   account.
                 </div>
                 <div className="text-center text-sm text-muted-foreground mt-2">
-                  Didn&apos;t get the email?{' '}
+                  Didn&apos;t get the email?{" "}
                   <a
                     href="#"
                     className="underline underline-offset-4 cursor-pointer"
@@ -187,10 +187,10 @@ const AuthPage = () => {
                 <CardHeader className="text-center">
                   <CardTitle className="text-xl" role="heading">
                     {showForgotPassword
-                      ? 'Reset your password'
+                      ? "Reset your password"
                       : isSignUp
-                        ? 'Create your account'
-                        : 'Welcome back'}
+                        ? "Create your account"
+                        : "Welcome back"}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -216,7 +216,7 @@ const AuthPage = () => {
                         className="w-full"
                         disabled={forgotIsLoading}
                       >
-                        {forgotIsLoading ? 'Sending...' : 'Send reset link'}
+                        {forgotIsLoading ? "Sending..." : "Send reset link"}
                       </Button>
                       {forgotMessage && (
                         <div className="text-green-600 text-center text-sm">
@@ -294,17 +294,17 @@ const AuthPage = () => {
                           >
                             {isLoading
                               ? isSignUp
-                                ? 'Sending magic link...'
-                                : 'Logging in...'
+                                ? "Sending magic link..."
+                                : "Logging in..."
                               : isSignUp
-                                ? 'Send magic link'
-                                : 'Login'}
+                                ? "Send magic link"
+                                : "Login"}
                           </Button>
                         </div>
                         <div className="text-center text-sm">
                           {isSignUp ? (
                             <>
-                              Already have an account?{' '}
+                              Already have an account?{" "}
                               <a
                                 href="#"
                                 className="underline underline-offset-4 cursor-pointer"
@@ -318,7 +318,7 @@ const AuthPage = () => {
                             </>
                           ) : (
                             <>
-                              Don&apos;t have an account?{' '}
+                              Don&apos;t have an account?{" "}
                               <a
                                 href="#"
                                 className="underline underline-offset-4 cursor-pointer"
@@ -338,15 +338,15 @@ const AuthPage = () => {
                 </CardContent>
               </Card>
               <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-                By clicking Login or Signup, you agree to our{' '}
+                By clicking Login or Signup, you agree to our{" "}
                 <a
                   href="/terms-of-service"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   Terms of Service
-                </a>{' '}
-                and{' '}
+                </a>{" "}
+                and{" "}
                 <a
                   href="/privacy-policy"
                   target="_blank"

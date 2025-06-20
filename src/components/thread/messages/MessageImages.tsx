@@ -1,5 +1,5 @@
-import { supabase } from '@/integrations/supabase/client';
-import { useEffect, useState } from 'react';
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 interface MessageImagesProps {
   assets?: string[];
@@ -15,7 +15,7 @@ export function MessageImages({ assets, onImagesLoaded }: MessageImagesProps) {
       const urls = assets.map((filePath) => {
         const {
           data: { publicUrl },
-        } = supabase.storage.from('threads').getPublicUrl(filePath);
+        } = supabase.storage.from("threads").getPublicUrl(filePath);
         return publicUrl;
       });
       setImageUrls(urls);

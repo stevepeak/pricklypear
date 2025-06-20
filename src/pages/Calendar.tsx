@@ -1,32 +1,32 @@
-import { useState } from 'react';
-import { Search, Plus, Calendar as CalendarIcon, Link } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useState } from "react";
+import { Search, Plus, Calendar as CalendarIcon, Link } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   SearchBar,
   SearchBarLeft,
   SearchBarRight,
-} from '@/components/ui/search-bar';
+} from "@/components/ui/search-bar";
 import {
   Calendar as BigCalendar,
   dateFnsLocalizer,
   EventProps,
-} from 'react-big-calendar';
-import { format, parse, startOfWeek, getDay } from 'date-fns';
-import { enUS } from 'date-fns/locale';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+} from "react-big-calendar";
+import { format, parse, startOfWeek, getDay } from "date-fns";
+import { enUS } from "date-fns/locale";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
-} from '@/components/ui/tooltip';
-import { CreateEventDialog } from '@/components/calendar/CreateEventDialog';
-import { CreateSubscriptionDialog } from '@/components/calendar/CreateSubscriptionDialog';
-import { SubscriptionView } from '@/components/calendar/SubscriptionView';
-import { useCalendarEvents } from '@/hooks/useCalendarEvents';
-import { Toggle } from '@/components/ui/toggle';
-import type { Database } from '@/integrations/supabase/types';
+} from "@/components/ui/tooltip";
+import { CreateEventDialog } from "@/components/calendar/CreateEventDialog";
+import { CreateSubscriptionDialog } from "@/components/calendar/CreateSubscriptionDialog";
+import { SubscriptionView } from "@/components/calendar/SubscriptionView";
+import { useCalendarEvents } from "@/hooks/useCalendarEvents";
+import { Toggle } from "@/components/ui/toggle";
+import type { Database } from "@/integrations/supabase/types";
 
 const localizer = dateFnsLocalizer({
   format,
@@ -34,11 +34,11 @@ const localizer = dateFnsLocalizer({
   startOfWeek,
   getDay,
   locales: {
-    'en-US': enUS,
+    "en-US": enUS,
   },
 });
 
-type CalendarEvent = Database['public']['Tables']['calendar_events']['Row'];
+type CalendarEvent = Database["public"]["Tables"]["calendar_events"]["Row"];
 type CalendarEventWithDates = CalendarEvent & {
   start: Date;
   end: Date;
@@ -47,7 +47,7 @@ type CalendarEventWithDates = CalendarEvent & {
 const CustomEvent = ({ event }: EventProps<CalendarEventWithDates>) => {
   // TODO all day events
   const isAllDay = false; // isSameDay(event.start, event.end);
-  const timeDisplay = isAllDay ? '' : format(event.start, 'h:mm a');
+  const timeDisplay = isAllDay ? "" : format(event.start, "h:mm a");
 
   return (
     <div className="flex justify-between items-center w-full">
@@ -58,13 +58,13 @@ const CustomEvent = ({ event }: EventProps<CalendarEventWithDates>) => {
 };
 
 export default function Calendar() {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [view, setView] = useState<'calendar' | 'subscriptions'>('calendar');
+  const [view, setView] = useState<"calendar" | "subscriptions">("calendar");
   const { events } = useCalendarEvents();
 
   const handleEventSelect = (event: CalendarEventWithDates) => {
-    console.log('Selected event:', event);
+    console.log("Selected event:", event);
     // TODO: Open event details dialog
   };
 
@@ -98,14 +98,14 @@ export default function Calendar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Toggle
-                  pressed={view === 'subscriptions'}
+                  pressed={view === "subscriptions"}
                   size="sm"
                   onPressedChange={(pressed) =>
-                    setView(pressed ? 'subscriptions' : 'calendar')
+                    setView(pressed ? "subscriptions" : "calendar")
                   }
                   aria-label="Toggle view"
                 >
-                  {view === 'subscriptions' ? (
+                  {view === "subscriptions" ? (
                     <CalendarIcon className="h-4 w-4" />
                   ) : (
                     <Link className="h-4 w-4" />
@@ -113,9 +113,9 @@ export default function Calendar() {
                 </Toggle>
               </TooltipTrigger>
               <TooltipContent>
-                {view === 'subscriptions'
-                  ? 'Switch to Calendar'
-                  : 'Switch to Manage Subscriptions'}
+                {view === "subscriptions"
+                  ? "Switch to Calendar"
+                  : "Switch to Manage Subscriptions"}
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -124,7 +124,7 @@ export default function Calendar() {
             size="sm"
             onClick={() => setIsCreateDialogOpen(true)}
           >
-            {view === 'subscriptions' ? (
+            {view === "subscriptions" ? (
               <>
                 <Plus className="h-4 w-4 " />
                 New Subscription
@@ -138,43 +138,43 @@ export default function Calendar() {
           </Button>
         </SearchBarRight>
       </SearchBar>
-      {view === 'calendar' ? (
+      {view === "calendar" ? (
         <div className="p-4 h-[calc(100vh-120px)]">
           <BigCalendar
             localizer={localizer}
             events={filteredEvents}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: '100%' }}
+            style={{ height: "100%" }}
             onSelectEvent={handleEventSelect}
             components={{
               event: CustomEvent,
             }}
             messages={{
-              today: 'Today',
-              previous: '←',
-              next: '→',
-              month: 'Month',
-              week: 'Week',
-              day: 'Day',
-              agenda: 'Agenda',
-              date: 'Date',
-              time: 'Time',
-              event: 'Event',
-              noEventsInRange: 'No events in this range',
+              today: "Today",
+              previous: "←",
+              next: "→",
+              month: "Month",
+              week: "Week",
+              day: "Day",
+              agenda: "Agenda",
+              date: "Date",
+              time: "Time",
+              event: "Event",
+              noEventsInRange: "No events in this range",
               showMore: (total) => `+${total} more`,
             }}
             eventPropGetter={() => ({
-              className: 'event',
+              className: "event",
               style: {
-                backgroundColor: '#34A853',
-                borderColor: '#34A853',
-                borderRadius: '4px',
+                backgroundColor: "#34A853",
+                borderColor: "#34A853",
+                borderRadius: "4px",
                 opacity: 0.8,
-                color: 'white',
-                border: '0 none',
-                display: 'block',
-                padding: '2px 4px',
+                color: "white",
+                border: "0 none",
+                display: "block",
+                padding: "2px 4px",
               },
             })}
           />
@@ -182,7 +182,7 @@ export default function Calendar() {
       ) : (
         <SubscriptionView />
       )}
-      {view === 'calendar' ? (
+      {view === "calendar" ? (
         <CreateEventDialog
           open={isCreateDialogOpen}
           onOpenChange={setIsCreateDialogOpen}

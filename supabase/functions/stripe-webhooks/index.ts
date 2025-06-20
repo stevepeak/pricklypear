@@ -1,13 +1,13 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { getSupabaseServiceClient } from '../utils/supabase.ts';
-import { getErrorMessage, handleError } from '../utils/handle-error.ts';
-import Stripe from 'https://esm.sh/stripe@18.2.1';
-import { env } from '../utils/env.ts';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { getSupabaseServiceClient } from "../utils/supabase.ts";
+import { getErrorMessage, handleError } from "../utils/handle-error.ts";
+import Stripe from "https://esm.sh/stripe@18.2.1";
+import { env } from "../utils/env.ts";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 interface StripeSubscription {
@@ -24,7 +24,7 @@ interface StripeSubscription {
 }
 
 async function handleCustomerSubscriptionCreated(
-  subscription: StripeSubscription
+  subscription: StripeSubscription,
 ) {
   const supabase = getSupabaseServiceClient();
   const customerId = subscription.customer;
@@ -33,9 +33,9 @@ async function handleCustomerSubscriptionCreated(
 
   // Find user by Stripe customer ID
   const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('stripe->>customer_id', customerId)
+    .from("profiles")
+    .select("*")
+    .eq("stripe->>customer_id", customerId)
     .single();
 
   if (profileError || !profile) {
@@ -43,7 +43,7 @@ async function handleCustomerSubscriptionCreated(
   }
 
   const { error: updateError } = await supabase
-    .from('profiles')
+    .from("profiles")
     .update({
       plan: productId,
       stripe: {
@@ -52,7 +52,7 @@ async function handleCustomerSubscriptionCreated(
         subscription_status: status,
       },
     })
-    .eq('id', profile.id);
+    .eq("id", profile.id);
 
   if (updateError) {
     throw updateError;
@@ -60,7 +60,7 @@ async function handleCustomerSubscriptionCreated(
 }
 
 async function handleCustomerSubscriptionUpdated(
-  subscription: StripeSubscription
+  subscription: StripeSubscription,
 ) {
   const supabase = getSupabaseServiceClient();
   const customerId = subscription.customer;
@@ -69,9 +69,9 @@ async function handleCustomerSubscriptionUpdated(
 
   // Find user by Stripe customer ID
   const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('stripe->>customer_id', customerId)
+    .from("profiles")
+    .select("*")
+    .eq("stripe->>customer_id", customerId)
     .single();
 
   if (profileError || !profile) {
@@ -79,7 +79,7 @@ async function handleCustomerSubscriptionUpdated(
   }
 
   const { error: updateError } = await supabase
-    .from('profiles')
+    .from("profiles")
     .update({
       plan: productId,
       stripe: {
@@ -87,7 +87,7 @@ async function handleCustomerSubscriptionUpdated(
         subscription_status: status,
       },
     })
-    .eq('id', profile.id);
+    .eq("id", profile.id);
 
   if (updateError) {
     throw updateError;
@@ -95,16 +95,16 @@ async function handleCustomerSubscriptionUpdated(
 }
 
 async function handleCustomerSubscriptionDeleted(
-  subscription: StripeSubscription
+  subscription: StripeSubscription,
 ) {
   const supabase = getSupabaseServiceClient();
   const customerId = subscription.customer;
 
   // Find user by Stripe customer ID
   const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('stripe->>customer_id', customerId)
+    .from("profiles")
+    .select("*")
+    .eq("stripe->>customer_id", customerId)
     .single();
 
   if (profileError || !profile) {
@@ -113,15 +113,15 @@ async function handleCustomerSubscriptionDeleted(
 
   // Remove plan when subscription is cancelled
   const { error: updateError } = await supabase
-    .from('profiles')
+    .from("profiles")
     .update({
       plan: null,
       stripe: {
         ...profile.stripe,
-        subscription_status: 'canceled',
+        subscription_status: "canceled",
       },
     })
-    .eq('id', profile.id);
+    .eq("id", profile.id);
 
   if (updateError) {
     throw updateError;
@@ -129,24 +129,24 @@ async function handleCustomerSubscriptionDeleted(
 }
 
 export async function handler(req: Request) {
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const body = await req.text();
-    const signature = req.headers.get('stripe-signature');
+    const signature = req.headers.get("stripe-signature");
 
     if (!signature) {
-      return new Response(JSON.stringify({ error: 'No signature found' }), {
+      return new Response(JSON.stringify({ error: "No signature found" }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     // Verify webhook signature
     const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-      apiVersion: '2025-05-28.basil',
+      apiVersion: "2025-05-28.basil",
     });
 
     let event;
@@ -154,34 +154,34 @@ export async function handler(req: Request) {
       event = await stripe.webhooks.constructEventAsync(
         body,
         signature,
-        env.STRIPE_WEBHOOK_SECRET
+        env.STRIPE_WEBHOOK_SECRET,
       );
     } catch (err) {
       const error = new Error(
-        `Webhook signature verification failed: ${getErrorMessage(err)}`
+        `Webhook signature verification failed: ${getErrorMessage(err)}`,
       );
       handleError(error);
-      return new Response(JSON.stringify({ error: 'Invalid signature' }), {
+      return new Response(JSON.stringify({ error: "Invalid signature" }), {
         status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     // Handle different event types
     switch (event.type) {
-      case 'customer.subscription.created':
+      case "customer.subscription.created":
         await handleCustomerSubscriptionCreated(
-          event.data.object as StripeSubscription
+          event.data.object as StripeSubscription,
         );
         break;
-      case 'customer.subscription.updated':
+      case "customer.subscription.updated":
         await handleCustomerSubscriptionUpdated(
-          event.data.object as StripeSubscription
+          event.data.object as StripeSubscription,
         );
         break;
-      case 'customer.subscription.deleted':
+      case "customer.subscription.deleted":
         await handleCustomerSubscriptionDeleted(
-          event.data.object as StripeSubscription
+          event.data.object as StripeSubscription,
         );
         break;
       default:
@@ -189,13 +189,13 @@ export async function handler(req: Request) {
     }
 
     return new Response(JSON.stringify({ received: true }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
     handleError(error);
     return new Response(JSON.stringify({ error: getErrorMessage(error) }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 }

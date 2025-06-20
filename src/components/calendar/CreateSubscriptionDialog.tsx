@@ -4,23 +4,23 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
-import { useState } from 'react';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
-import { useCalendarSubscriptions } from '@/hooks/useCalendarSubscriptions';
-import { toast } from 'sonner';
-import { SubscriptionSuccessDialog } from './SubscriptionSuccessDialog';
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { useCalendarSubscriptions } from "@/hooks/useCalendarSubscriptions";
+import { toast } from "sonner";
+import { SubscriptionSuccessDialog } from "./SubscriptionSuccessDialog";
 
 interface CreateSubscriptionDialogProps {
   open: boolean;
@@ -48,12 +48,12 @@ function DatePicker({
           <Button
             variant="outline"
             className={cn(
-              'w-full justify-start text-left font-normal',
-              !date && 'text-muted-foreground'
+              "w-full justify-start text-left font-normal",
+              !date && "text-muted-foreground",
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, 'PPP') : `Select ${label.toLowerCase()}`}
+            {date ? format(date, "PPP") : `Select ${label.toLowerCase()}`}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
@@ -73,7 +73,7 @@ export function CreateSubscriptionDialog({
   open,
   onOpenChange,
 }: CreateSubscriptionDialogProps) {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [expiresDate, setExpiresDate] = useState<Date>();
@@ -88,7 +88,7 @@ export function CreateSubscriptionDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      toast.error('Please enter a subscription name');
+      toast.error("Please enter a subscription name");
       return;
     }
 
@@ -98,14 +98,14 @@ export function CreateSubscriptionDialog({
         name.trim(),
         startDate,
         endDate,
-        expiresDate
+        expiresDate,
       );
       setSubscriptionId(subscription.id);
       onOpenChange(false);
       setShowSuccess(true);
     } catch (error) {
-      console.error('Error creating subscription:', error);
-      toast.error('Failed to create subscription');
+      console.error("Error creating subscription:", error);
+      toast.error("Failed to create subscription");
     } finally {
       setIsSubmitting(false);
     }
@@ -164,7 +164,7 @@ export function CreateSubscriptionDialog({
                 Cancel
               </Button>
               <Button type="submit" variant="success" disabled={isSubmitting}>
-                {isSubmitting ? 'Creating...' : 'Create Subscription'}
+                {isSubmitting ? "Creating..." : "Create Subscription"}
               </Button>
             </div>
           </form>

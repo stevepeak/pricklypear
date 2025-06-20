@@ -1,10 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Thread } from '@/types/thread';
-import { ThreadStatusBadge } from '@/components/thread/ThreadStatusBadge';
-import { ThreadTopicBadge } from '@/components/thread/ThreadTopicBadge';
-import { Badge } from '../ui/badge';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Thread } from "@/types/thread";
+import { ThreadStatusBadge } from "@/components/thread/ThreadStatusBadge";
+import { ThreadTopicBadge } from "@/components/thread/ThreadTopicBadge";
+import { Badge } from "../ui/badge";
 
 interface ThreadCardProps {
   thread: Thread;
@@ -21,9 +21,9 @@ const ThreadCard = ({ thread, unreadCount = 0 }: ThreadCardProps) => {
     >
       <Card
         className={`p-4 shadow-none hover:shadow-lg ${
-          thread.status === 'Closed' || thread.status === 'Archived'
-            ? ' opacity-70'
-            : ''
+          thread.status === "Closed" || thread.status === "Archived"
+            ? " opacity-70"
+            : ""
         }`}
       >
         <div className="flex justify-between items-start mb-2">
@@ -48,13 +48,13 @@ const ThreadCard = ({ thread, unreadCount = 0 }: ThreadCardProps) => {
         </CardHeader>
         <CardContent className="p-0 mb-2">
           <p className="text-sm text-muted-foreground">
-            {thread.summary ? thread.summary : 'No summary generated yet.'}
+            {thread.summary ? thread.summary : "No summary generated yet."}
           </p>
           {thread.participants && thread.participants.length > 0 && (
             <div className="mt-2">
               <p className="text-sm font-medium">Participants:</p>
               <p className="text-sm text-muted-foreground">
-                {thread.participants.join(', ')}
+                {thread.participants.join(", ")}
               </p>
             </div>
           )}

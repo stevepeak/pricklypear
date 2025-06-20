@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 import {
   MessageSquare,
   Lock,
@@ -12,8 +12,8 @@ import {
   BadgePlus,
   BatteryFull,
   Crown,
-} from 'lucide-react';
-import Footer from '@/components/ui/footer';
+} from "lucide-react";
+import Footer from "@/components/ui/footer";
 
 const PricingSection = () => (
   <div className="flex flex-col items-center justify-center p-4">

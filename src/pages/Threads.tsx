@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import { getThreads } from '@/services/threadService';
-import { useAuth } from '@/contexts/AuthContext';
-import type { Thread, ThreadTopic } from '@/types/thread';
-import { THREAD_TOPIC_INFO, getThreadTopicInfo } from '@/types/thread';
-import ThreadsList from '@/components/threads/ThreadsList';
-import ThreadsTable from '@/components/threads/ThreadsTable';
-import CreateThreadDialog from '@/components/threads/CreateThreadDialog';
-import ThreadViewToggle from '@/components/threads/ThreadViewToggle'; // DD-90
-import { Input } from '@/components/ui/input';
+import { getThreads } from "@/services/threadService";
+import { useAuth } from "@/contexts/AuthContext";
+import type { Thread, ThreadTopic } from "@/types/thread";
+import { THREAD_TOPIC_INFO, getThreadTopicInfo } from "@/types/thread";
+import ThreadsList from "@/components/threads/ThreadsList";
+import ThreadsTable from "@/components/threads/ThreadsTable";
+import CreateThreadDialog from "@/components/threads/CreateThreadDialog";
+import ThreadViewToggle from "@/components/threads/ThreadViewToggle"; // DD-90
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,16 +20,16 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
   DropdownMenuPortal,
-} from '@/components/ui/dropdown-menu';
-import { Search, ListFilter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useThreadFilters } from '@/components/threads/use-thread-filters';
-import { z } from 'zod';
+} from "@/components/ui/dropdown-menu";
+import { Search, ListFilter } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useThreadFilters } from "@/components/threads/use-thread-filters";
+import { z } from "zod";
 import {
   SearchBar,
   SearchBarLeft,
   SearchBarRight,
-} from '@/components/ui/search-bar';
+} from "@/components/ui/search-bar";
 
 const Threads = () => {
   const [threads, setThreads] = useState<Thread[]>([]);
@@ -37,8 +37,8 @@ const Threads = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // DD-90: default to "table" view
-  const [view, setView] = useState<'cards' | 'table'>(
-    window.innerWidth < 768 ? 'cards' : 'table'
+  const [view, setView] = useState<"cards" | "table">(
+    window.innerWidth < 768 ? "cards" : "table",
   );
 
   const { user } = useAuth();
@@ -61,8 +61,8 @@ const Threads = () => {
 
   // Load persisted view preference and filters on mount
   useEffect(() => {
-    const viewSchema = z.enum(['cards', 'table']);
-    const storedView = localStorage.getItem('threads.view');
+    const viewSchema = z.enum(["cards", "table"]);
+    const storedView = localStorage.getItem("threads.view");
     const result = viewSchema.safeParse(storedView);
     if (result.success) {
       setView(result.data);
@@ -91,9 +91,9 @@ const Threads = () => {
   };
 
   // DD-90: accept the exact union type
-  const handleViewChange = (value: 'cards' | 'table') => {
+  const handleViewChange = (value: "cards" | "table") => {
     setView(value);
-    localStorage.setItem('threads.view', value);
+    localStorage.setItem("threads.view", value);
   };
 
   return (
@@ -135,22 +135,22 @@ const Threads = () => {
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent>
                     <DropdownMenuCheckboxItem
-                      checked={filterStatus.includes('Open')}
-                      onCheckedChange={() => toggleStatus('Open')}
+                      checked={filterStatus.includes("Open")}
+                      onCheckedChange={() => toggleStatus("Open")}
                       onSelect={(e) => e.preventDefault()}
                     >
                       Open
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem
-                      checked={filterStatus.includes('Closed')}
-                      onCheckedChange={() => toggleStatus('Closed')}
+                      checked={filterStatus.includes("Closed")}
+                      onCheckedChange={() => toggleStatus("Closed")}
                       onSelect={(e) => e.preventDefault()}
                     >
                       Closed
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem
-                      checked={filterStatus.includes('Archived')}
-                      onCheckedChange={() => toggleStatus('Archived')}
+                      checked={filterStatus.includes("Archived")}
+                      onCheckedChange={() => toggleStatus("Archived")}
                       onSelect={(e) => e.preventDefault()}
                     >
                       Archived
@@ -220,7 +220,7 @@ const Threads = () => {
         </SearchBarRight>
       </SearchBar>
 
-      {view === 'cards' ? (
+      {view === "cards" ? (
         <ThreadsList
           threads={filteredThreads}
           isLoading={isLoading}
@@ -234,7 +234,7 @@ const Threads = () => {
         <div className="flex justify-center items-center border-t gap-2 text-xs text-muted-foreground">
           {threads.length - filteredThreads.length > 0 && (
             <span>
-              <strong>{threads.length - filteredThreads.length} threads</strong>{' '}
+              <strong>{threads.length - filteredThreads.length} threads</strong>{" "}
               hidden by filters.
             </span>
           )}

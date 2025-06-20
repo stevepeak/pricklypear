@@ -1,12 +1,12 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { format } from 'https://deno.land/std@0.168.0/datetime/mod.ts';
-import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
-import { getSupabaseServiceClient } from '../utils/supabase.ts';
-import { handleError } from '../utils/handle-error.ts';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { format } from "https://deno.land/std@0.168.0/datetime/mod.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { getSupabaseServiceClient } from "../utils/supabase.ts";
+import { handleError } from "../utils/handle-error.ts";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "content-type",
 };
 
 function createErrorResponse(message: string, status: number) {
@@ -14,7 +14,7 @@ function createErrorResponse(message: string, status: number) {
     status,
     headers: {
       ...corsHeaders,
-      'Content-Type': 'text/calendar; charset=utf-8',
+      "Content-Type": "text/calendar; charset=utf-8",
     },
   });
 }
@@ -23,26 +23,26 @@ function createErrorResponse(message: string, status: number) {
 const dateSchema = z
   .string()
   .regex(/^\d{2}-\d{2}-\d{4}$/, {
-    message: 'Date must be in MM-DD-YYYY format',
+    message: "Date must be in MM-DD-YYYY format",
   })
   .optional()
   .transform((date) => {
     if (!date) {
       return null;
     }
-    const [month, day, year] = date.split('-').map(Number);
+    const [month, day, year] = date.split("-").map(Number);
     // JavaScript Date constructor uses 0-based months (0-11), so we subtract 1 from the input month
     const parsedDate = new Date(year, month - 1, day);
     if (isNaN(parsedDate.getTime())) {
-      throw new Error('Invalid date');
+      throw new Error("Invalid date");
     }
     return parsedDate;
   });
 
 const calendarParamsSchema = z
   .object({
-    id: z.string().min(1, 'ID is required'),
-    expires: z.enum(['never']).or(dateSchema),
+    id: z.string().min(1, "ID is required"),
+    expires: z.enum(["never"]).or(dateSchema),
     start: dateSchema,
     end: dateSchema,
   })
@@ -55,8 +55,8 @@ const calendarParamsSchema = z
       return true;
     },
     {
-      message: 'End date must be after start date',
-    }
+      message: "End date must be after start date",
+    },
   );
 
 // Define calendar event type
@@ -80,34 +80,34 @@ function generateICS(events: CalendarEvent[], subscriptionName: string) {
       const end = new Date(event.end_time);
 
       return [
-        'BEGIN:VEVENT',
-        `DTSTART:${format(start, 'yyyyMMddTHHmmss')}`,
-        `DTEND:${format(end, 'yyyyMMddTHHmmss')}`,
+        "BEGIN:VEVENT",
+        `DTSTART:${format(start, "yyyyMMddTHHmmss")}`,
+        `DTEND:${format(end, "yyyyMMddTHHmmss")}`,
         `SUMMARY:${event.title}`,
-        event.description ? `DESCRIPTION:${event.description}` : '',
-        event.location ? `LOCATION:${event.location}` : '',
-        'END:VEVENT',
+        event.description ? `DESCRIPTION:${event.description}` : "",
+        event.location ? `LOCATION:${event.location}` : "",
+        "END:VEVENT",
       ]
         .filter(Boolean)
-        .join('\r\n');
+        .join("\r\n");
     })
-    .join('\r\n');
+    .join("\r\n");
 
   return [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Your App//Calendar Events//EN',
-    'CALSCALE:GREGORIAN',
-    'METHOD:PUBLISH',
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Your App//Calendar Events//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
     `X-WR-CALNAME:${subscriptionName}`,
     icsEvents,
-    'END:VCALENDAR',
-  ].join('\r\n');
+    "END:VCALENDAR",
+  ].join("\r\n");
 }
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
@@ -115,48 +115,48 @@ serve(async (req) => {
 
     // Parse and validate parameters using Zod
     const params = calendarParamsSchema.parse({
-      id: url.searchParams.get('id'),
-      expires: url.searchParams.get('expires'),
-      start: url.searchParams.get('start'),
-      end: url.searchParams.get('end'),
+      id: url.searchParams.get("id"),
+      expires: url.searchParams.get("expires"),
+      start: url.searchParams.get("start"),
+      end: url.searchParams.get("end"),
     });
 
     // Check if subscription has expired
     if (params.expires && new Date(params.expires) < new Date()) {
-      return createErrorResponse('Subscription expired', 403);
+      return createErrorResponse("Subscription expired", 403);
     }
 
     const supabaseClient = getSupabaseServiceClient();
 
     // Get events using RPC call
     const { data: events, error: eventsError } = await supabaseClient.rpc(
-      'get_events_for_subscription',
+      "get_events_for_subscription",
       {
         subscriptionid: params.id,
-      }
+      },
     );
 
     if (eventsError) {
-      return createErrorResponse('Failed to fetch events', 500);
+      return createErrorResponse("Failed to fetch events", 500);
     }
 
-    const icsContent = generateICS(events, 'Prickly Pear');
+    const icsContent = generateICS(events, "Prickly Pear");
 
     return new Response(icsContent, {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'text/calendar; charset=utf-8',
-        'Content-Disposition': `attachment; filename=${'Prickly Pear'.toLowerCase().replace(/\s+/g, '-')}.ics`,
+        "Content-Type": "text/calendar; charset=utf-8",
+        "Content-Disposition": `attachment; filename=${"Prickly Pear".toLowerCase().replace(/\s+/g, "-")}.ics`,
       },
     });
   } catch (error) {
     // Handle Zod validation errors
     if (error instanceof z.ZodError) {
-      return createErrorResponse('Invalid parameters', 400);
+      return createErrorResponse("Invalid parameters", 400);
     }
 
     handleError(error);
 
-    return createErrorResponse(error.message ?? 'Unknown error', 500);
+    return createErrorResponse(error.message ?? "Unknown error", 500);
   }
 });

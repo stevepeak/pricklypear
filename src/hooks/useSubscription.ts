@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { requireCurrentUser } from '@/utils/authCache';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { requireCurrentUser } from "@/utils/authCache";
+import { toast } from "sonner";
 
 export function useSubscription() {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,14 +15,14 @@ export function useSubscription() {
       const cancelUrl = `${window.location.origin}/billing?canceled=true`;
 
       const { data, error } = await supabase.functions.invoke(
-        'create-checkout-session',
+        "create-checkout-session",
         {
           body: {
             userId: user.id,
             successUrl,
             cancelUrl,
           },
-        }
+        },
       );
 
       if (error) {
@@ -32,13 +32,13 @@ export function useSubscription() {
       if (data?.url) {
         window.location.href = data.url;
       } else {
-        throw new Error('No checkout URL received');
+        throw new Error("No checkout URL received");
       }
     } catch (error) {
-      console.error('Error creating checkout session:', error);
-      toast('Error starting checkout', {
+      console.error("Error creating checkout session:", error);
+      toast("Error starting checkout", {
         description:
-          'There was a problem starting the checkout process. Please try again.',
+          "There was a problem starting the checkout process. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -53,13 +53,13 @@ export function useSubscription() {
       const returnUrl = `${window.location.origin}/billing`;
 
       const { data, error } = await supabase.functions.invoke(
-        'create-portal-session',
+        "create-portal-session",
         {
           body: {
             userId: user.id,
             returnUrl,
           },
-        }
+        },
       );
 
       if (error) {
@@ -69,13 +69,13 @@ export function useSubscription() {
       if (data?.url) {
         window.location.href = data.url;
       } else {
-        throw new Error('No portal URL received');
+        throw new Error("No portal URL received");
       }
     } catch (error) {
-      console.error('Error opening customer portal:', error);
-      toast('Error opening billing portal', {
+      console.error("Error opening customer portal:", error);
+      toast("Error opening billing portal", {
         description:
-          'There was a problem opening the billing portal. Please try again.',
+          "There was a problem opening the billing portal. Please try again.",
       });
     } finally {
       setIsLoading(false);

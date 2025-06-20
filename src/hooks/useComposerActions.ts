@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { v4 as uuidv4 } from 'uuid';
-import { saveMessage } from '@/services/messageService/save-message';
-import { getMessages } from '@/services/messageService/get-messages';
-import { archiveThread, unarchiveThread } from '@/services/threadService';
-import { handleError } from '@/services/messageService/utils';
-import { useConnections } from '@/hooks/useConnections';
-import type { Thread } from '@/types/thread';
-import type { Message } from '@/types/message';
+import { useState } from "react";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { v4 as uuidv4 } from "uuid";
+import { saveMessage } from "@/services/messageService/save-message";
+import { getMessages } from "@/services/messageService/get-messages";
+import { archiveThread, unarchiveThread } from "@/services/threadService";
+import { handleError } from "@/services/messageService/utils";
+import { useConnections } from "@/hooks/useConnections";
+import type { Thread } from "@/types/thread";
+import type { Message } from "@/types/message";
 
 interface UseComposerActionsProps {
   thread: Thread;
@@ -33,8 +33,8 @@ export function useComposerActions({
         connections,
       });
       if (!messages.length) {
-        toast('Nothing to copy', {
-          description: 'No messages found in this thread.',
+        toast("Nothing to copy", {
+          description: "No messages found in this thread.",
         });
         return;
       }
@@ -45,17 +45,17 @@ export function useComposerActions({
               ? msg.timestamp
               : new Date(msg.timestamp);
           const time = date.toLocaleString();
-          return `[${time}] ${msg.sender?.name || 'someone'}: ${msg.text}`;
+          return `[${time}] ${msg.sender?.name || "someone"}: ${msg.text}`;
         })
-        .join('\n\n');
+        .join("\n\n");
       await navigator.clipboard.writeText(formatted);
-      toast('Copied!', {
-        description: 'Thread messages copied to clipboard.',
+      toast("Copied!", {
+        description: "Thread messages copied to clipboard.",
       });
     } catch (err) {
-      handleError(err, 'copyThreadClipboard');
-      toast('Copy failed', {
-        description: 'Failed to copy messages to clipboard.',
+      handleError(err, "copyThreadClipboard");
+      toast("Copy failed", {
+        description: "Failed to copy messages to clipboard.",
       });
     }
   };
@@ -64,14 +64,14 @@ export function useComposerActions({
     setIsArchiving(true);
     const success = await archiveThread({ threadId: thread.id });
     if (success) {
-      toast('Thread archived', {
-        description: 'This thread has been archived.',
+      toast("Thread archived", {
+        description: "This thread has been archived.",
       });
       await loadMessages();
-      navigate('/threads');
+      navigate("/threads");
     } else {
-      toast('Archive failed', {
-        description: 'Could not archive the thread.',
+      toast("Archive failed", {
+        description: "Could not archive the thread.",
       });
     }
     setIsArchiving(false);
@@ -81,13 +81,13 @@ export function useComposerActions({
     setIsUnarchiving(true);
     const success = await unarchiveThread({ threadId: thread.id });
     if (success) {
-      toast('Thread unarchived', {
-        description: 'This thread has been unarchived.',
+      toast("Thread unarchived", {
+        description: "This thread has been unarchived.",
       });
       await loadMessages();
     } else {
-      toast('Unarchive failed', {
-        description: 'Could not unarchive the thread.',
+      toast("Unarchive failed", {
+        description: "Could not unarchive the thread.",
       });
     }
     setIsUnarchiving(false);
@@ -98,20 +98,20 @@ export function useComposerActions({
 
     setIsUploading(true);
     try {
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.name.split(".").pop();
       const filePath = `${thread.id}/${uuidv4()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('threads')
+        .from("threads")
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
       // TODO soon we will not send message as is but include as attachment to a text message
       const success = await saveMessage({
-        text: 'Uploaded an image',
+        text: "Uploaded an image",
         threadId: thread.id,
-        type: 'user_message',
+        type: "user_message",
         details: {
           assets: [filePath],
         },
@@ -121,9 +121,9 @@ export function useComposerActions({
         await loadMessages();
       }
     } catch (err) {
-      handleError(err, 'uploadImage');
-      toast('Upload failed', {
-        description: 'Failed to upload image.',
+      handleError(err, "uploadImage");
+      toast("Upload failed", {
+        description: "Failed to upload image.",
       });
     } finally {
       setIsUploading(false);

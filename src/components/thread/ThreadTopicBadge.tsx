@@ -1,9 +1,9 @@
-import React from 'react';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import { type Thread } from '@/types/thread';
-import { getThreadTopicInfo, isAIThread } from '@/types/thread';
-import { Bot, Headset } from 'lucide-react';
+import React from "react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { type Thread } from "@/types/thread";
+import { getThreadTopicInfo, isAIThread } from "@/types/thread";
+import { Bot, Headset } from "lucide-react";
 
 /**
  * Renders a badge for a thread's topic with its icon and label.
@@ -22,28 +22,28 @@ export function ThreadTopicBadge({
     <Badge
       variant="secondary"
       className={cn(
-        'px-2 py-0.5 text-xs font-semibold',
+        "px-2 py-0.5 text-xs font-semibold",
         isAIThread(thread)
-          ? 'bg-purple-100 text-purple-800 border-purple-200'
-          : thread.type === 'customer_support'
-            ? 'bg-blue-100 text-blue-800 border-blue-200'
-            : '',
-        className
+          ? "bg-purple-100 text-purple-800 border-purple-200"
+          : thread.type === "customer_support"
+            ? "bg-blue-100 text-blue-800 border-blue-200"
+            : "",
+        className,
       )}
     >
       <span className="mr-1">
         {isAIThread(thread) ? (
           <Bot className="h-3 w-3" />
-        ) : thread.type === 'customer_support' ? (
+        ) : thread.type === "customer_support" ? (
           <Headset className="h-3 w-3" />
         ) : (
           topicInfo.icon
         )}
       </span>
       {isAIThread(thread)
-        ? 'AI Chat'
-        : thread.type === 'customer_support'
-          ? 'Support'
+        ? "AI Chat"
+        : thread.type === "customer_support"
+          ? "Support"
           : topicInfo.label}
     </Badge>
   );

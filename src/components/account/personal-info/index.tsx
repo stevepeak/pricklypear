@@ -6,17 +6,17 @@ import {
   FormControl,
   FormDescription,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { type FormValues, type PersonalInfoFormProps } from './types';
-import React from 'react';
-import { updatePersonalInfo } from './update';
-import { LanguageSelector } from '@/components/ui/LanguageSelector';
-import { toast } from 'sonner';
-import { useTheme } from '@/contexts/ThemeContext';
-import { Moon, Sun, Monitor } from 'lucide-react';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { type FormValues, type PersonalInfoFormProps } from "./types";
+import React from "react";
+import { updatePersonalInfo } from "./update";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
+import { toast } from "sonner";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Moon, Sun, Monitor } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const { form, profileLoading, onProfileUpdated } = props;
@@ -35,26 +35,26 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
         name: data.name,
         email: data.email,
       });
-      toast('Profile updated', {
-        description: 'Your profile information has been updated successfully.',
+      toast("Profile updated", {
+        description: "Your profile information has been updated successfully.",
       });
       if (onProfileUpdated) onProfileUpdated();
     } catch (error: unknown) {
       if (
-        typeof error === 'object' &&
+        typeof error === "object" &&
         error !== null &&
-        'message' in error &&
-        typeof (error as { message?: string }).message === 'string' &&
-        (error as { message: string }).message.includes('confirmation')
+        "message" in error &&
+        typeof (error as { message?: string }).message === "string" &&
+        (error as { message: string }).message.includes("confirmation")
       ) {
         setEmailConfirmationSent(true);
-        toast('Email update initiated', {
+        toast("Email update initiated", {
           description:
-            'A confirmation link has been sent to your new email. Please check your inbox to confirm the change.',
+            "A confirmation link has been sent to your new email. Please check your inbox to confirm the change.",
         });
       } else {
-        toast('Update failed', {
-          description: 'There was a problem updating your profile.',
+        toast("Update failed", {
+          description: "There was a problem updating your profile.",
         });
       }
     } finally {
@@ -175,7 +175,7 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
               type="submit"
               disabled={isLoading || emailUpdating}
             >
-              {isLoading || emailUpdating ? 'Saving...' : 'Save Changes'}
+              {isLoading || emailUpdating ? "Saving..." : "Save Changes"}
             </Button>
           </form>
         </Form>

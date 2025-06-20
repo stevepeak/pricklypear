@@ -1,5 +1,5 @@
-import type { ThreadTopic } from './thread';
-import type { Database } from '@/integrations/supabase/types';
+import type { ThreadTopic } from "./thread";
+import type { Database } from "@/integrations/supabase/types";
 /**
  * Represents a message in a thread
  * @typedef {Object} Message
@@ -25,7 +25,7 @@ export type Message = {
   isCurrentUser?: boolean;
   isRead?: boolean;
   readAt?: Date | null;
-  type: Database['public']['Enums']['message_type'];
+  type: Database["public"]["Enums"]["message_type"];
   details: {
     assets?: string[] | null;
   };
@@ -35,11 +35,11 @@ export type ListMessage = {
   threadId: string;
   threadTitle: string;
   threadTopic: ThreadTopic;
-  threadType: Database['public']['Enums']['thread_type'];
+  threadType: Database["public"]["Enums"]["thread_type"];
   id: string;
   text: string;
   sender: { id: string; name: string };
   timestamp: Date;
-  type: Message['type'];
+  type: Message["type"];
   readAt: Date | null;
 };

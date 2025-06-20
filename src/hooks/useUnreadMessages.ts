@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { getAllUnreadCounts } from '@/services/messageService';
-import { useRealtimeMessages } from './useRealtimeMessages';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { getAllUnreadCounts } from "@/services/messageService";
+import { useRealtimeMessages } from "./useRealtimeMessages";
 
 export const useUnreadMessages = () => {
   const [totalUnread, setTotalUnread] = useState<number>(0);
@@ -24,12 +24,12 @@ export const useUnreadMessages = () => {
         const counts = await getAllUnreadCounts();
         const total = Object.values(counts).reduce(
           (sum, count) => sum + count,
-          0
+          0,
         );
         setTotalUnread(total);
         setThreadCounts(counts);
       } catch (error) {
-        console.error('Error fetching unread counts:', error);
+        console.error("Error fetching unread counts:", error);
       } finally {
         setIsLoading(false);
       }

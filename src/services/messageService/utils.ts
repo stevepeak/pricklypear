@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react';
+import * as Sentry from "@sentry/react";
 
 export const handleError = (error: unknown, context: string): boolean => {
   Sentry.captureException(error);

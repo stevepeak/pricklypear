@@ -1,25 +1,25 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   markMessagesInThreadAsRead,
   getAllUnreadCounts,
-} from '../readReceipts';
-import { supabase } from '../../../integrations/supabase/client';
-import { requireCurrentUser } from '../../../utils/authCache';
+} from "../readReceipts";
+import { supabase } from "../../../integrations/supabase/client";
+import { requireCurrentUser } from "../../../utils/authCache";
 
 // Mock the dependencies
-vi.mock('../../../integrations/supabase/client', () => ({
+vi.mock("../../../integrations/supabase/client", () => ({
   supabase: {
     from: vi.fn(),
   },
 }));
 
-vi.mock('../../../utils/authCache', () => ({
+vi.mock("../../../utils/authCache", () => ({
   requireCurrentUser: vi.fn(),
 }));
 
-describe('readReceipts', () => {
-  const mockUser = { id: 'user-123' };
-  const mockThreadId = 'thread-123';
+describe("readReceipts", () => {
+  const mockUser = { id: "user-123" };
+  const mockThreadId = "thread-123";
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -28,16 +28,16 @@ describe('readReceipts', () => {
     ).mockResolvedValue(mockUser);
   });
 
-  describe('markMessagesInThreadAsRead', () => {
-    it('should mark messages as read successfully', async () => {
+  describe("markMessagesInThreadAsRead", () => {
+    it("should mark messages as read successfully", async () => {
       // Mock unread messages
       const mockMessages = [
         {
-          id: 'msg-1',
+          id: "msg-1",
           message_read_receipts: [{ user_id: mockUser.id, read_at: null }],
         },
         {
-          id: 'msg-2',
+          id: "msg-2",
           message_read_receipts: [{ user_id: mockUser.id, read_at: null }],
         },
       ];
@@ -45,7 +45,7 @@ describe('readReceipts', () => {
       // Mock Supabase responses
       (supabase.from as unknown as ReturnType<typeof vi.fn>).mockImplementation(
         (table: string) => {
-          if (table === 'messages') {
+          if (table === "messages") {
             return {
               select: () => ({
                 eq: () => ({
@@ -59,7 +59,7 @@ describe('readReceipts', () => {
               }),
             };
           }
-          if (table === 'message_read_receipts') {
+          if (table === "message_read_receipts") {
             return {
               upsert: () => ({
                 error: null,
@@ -67,7 +67,7 @@ describe('readReceipts', () => {
             };
           }
           return {};
-        }
+        },
       );
 
       const result = await markMessagesInThreadAsRead({
@@ -76,11 +76,11 @@ describe('readReceipts', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle no unread messages', async () => {
+    it("should handle no unread messages", async () => {
       // Mock empty messages array
       (supabase.from as unknown as ReturnType<typeof vi.fn>).mockImplementation(
         (table: string) => {
-          if (table === 'messages') {
+          if (table === "messages") {
             return {
               select: () => ({
                 eq: () => ({
@@ -95,7 +95,7 @@ describe('readReceipts', () => {
             };
           }
           return {};
-        }
+        },
       );
 
       const result = await markMessagesInThreadAsRead({
@@ -104,18 +104,18 @@ describe('readReceipts', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle errors when fetching messages', async () => {
+    it("should handle errors when fetching messages", async () => {
       // Mock error response
       (supabase.from as unknown as ReturnType<typeof vi.fn>).mockImplementation(
         (table: string) => {
-          if (table === 'messages') {
+          if (table === "messages") {
             return {
               select: () => ({
                 eq: () => ({
                   eq: () => ({
                     is: () => ({
                       data: null,
-                      error: new Error('Database error'),
+                      error: new Error("Database error"),
                     }),
                   }),
                 }),
@@ -123,7 +123,7 @@ describe('readReceipts', () => {
             };
           }
           return {};
-        }
+        },
       );
 
       const result = await markMessagesInThreadAsRead({
@@ -133,26 +133,26 @@ describe('readReceipts', () => {
     });
   });
 
-  describe('getAllUnreadCounts', () => {
-    it('should return unread message counts by thread', async () => {
+  describe("getAllUnreadCounts", () => {
+    it("should return unread message counts by thread", async () => {
       const mockUnreadMessages = [
         {
-          message_id: 'msg-1',
-          messages: { thread_id: 'thread-1', user_id: 'other-user' },
+          message_id: "msg-1",
+          messages: { thread_id: "thread-1", user_id: "other-user" },
         },
         {
-          message_id: 'msg-2',
-          messages: { thread_id: 'thread-1', user_id: 'other-user' },
+          message_id: "msg-2",
+          messages: { thread_id: "thread-1", user_id: "other-user" },
         },
         {
-          message_id: 'msg-3',
-          messages: { thread_id: 'thread-2', user_id: 'other-user' },
+          message_id: "msg-3",
+          messages: { thread_id: "thread-2", user_id: "other-user" },
         },
       ];
 
       (supabase.from as unknown as ReturnType<typeof vi.fn>).mockImplementation(
         (table: string) => {
-          if (table === 'message_read_receipts') {
+          if (table === "message_read_receipts") {
             return {
               select: () => ({
                 eq: () => ({
@@ -165,20 +165,20 @@ describe('readReceipts', () => {
             };
           }
           return {};
-        }
+        },
       );
 
       const result = await getAllUnreadCounts();
       expect(result).toEqual({
-        'thread-1': 2,
-        'thread-2': 1,
+        "thread-1": 2,
+        "thread-2": 1,
       });
     });
 
-    it('should return empty object when no unread messages', async () => {
+    it("should return empty object when no unread messages", async () => {
       (supabase.from as unknown as ReturnType<typeof vi.fn>).mockImplementation(
         (table: string) => {
-          if (table === 'message_read_receipts') {
+          if (table === "message_read_receipts") {
             return {
               select: () => ({
                 eq: () => ({
@@ -191,37 +191,37 @@ describe('readReceipts', () => {
             };
           }
           return {};
-        }
+        },
       );
 
       const result = await getAllUnreadCounts();
       expect(result).toEqual({});
     });
 
-    it('should handle errors gracefully', async () => {
+    it("should handle errors gracefully", async () => {
       (supabase.from as unknown as ReturnType<typeof vi.fn>).mockImplementation(
         (table: string) => {
-          if (table === 'message_read_receipts') {
+          if (table === "message_read_receipts") {
             return {
               select: () => ({
                 eq: () => ({
                   is: () => ({
                     data: null,
-                    error: new Error('Database error'),
+                    error: new Error("Database error"),
                   }),
                 }),
               }),
             };
           }
           return {};
-        }
+        },
       );
 
       const result = await getAllUnreadCounts();
       expect(result).toEqual({});
     });
 
-    it('should return empty object when no user is found', async () => {
+    it("should return empty object when no user is found", async () => {
       (
         requireCurrentUser as unknown as ReturnType<typeof vi.fn>
       ).mockResolvedValue(null);

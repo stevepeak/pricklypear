@@ -5,23 +5,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 
-import { Checkbox } from '@/components/ui/checkbox';
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   NotificationChannel,
   notificationChannels,
   NotificationEventKey,
   notifications,
   UserNotification,
-} from './types';
+} from "./types";
 
 interface NotificationPreferencesProps {
   currentUserNotificationSettings: UserNotification;
   onNotificationChange: (
     eventKey: NotificationEventKey,
     channel: NotificationChannel,
-    value: boolean
+    value: boolean,
   ) => void;
 }
 

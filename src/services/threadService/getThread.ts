@@ -1,11 +1,11 @@
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from "@/integrations/supabase/client";
 import {
   Thread,
   ThreadControls,
   ThreadStatus,
   ThreadTopic,
-} from '@/types/thread';
-import { requireCurrentUser } from '@/utils/authCache';
+} from "@/types/thread";
+import { requireCurrentUser } from "@/utils/authCache";
 
 // Type for the joined participant result
 interface ThreadParticipantProfile {
@@ -22,7 +22,7 @@ export const getThread = async (threadId: string): Promise<Thread | null> => {
 
     // Fetch the thread and its participants (with profile names) in one query
     const { data: threadData, error: threadError } = await supabase
-      .from('threads')
+      .from("threads")
       .select(
         `
         *,
@@ -34,13 +34,13 @@ export const getThread = async (threadId: string): Promise<Thread | null> => {
           profiles(
             id, name
           )
-        )`
+        )`,
       )
-      .eq('id', threadId)
+      .eq("id", threadId)
       .single();
 
     if (threadError || !threadData) {
-      console.error('Error fetching thread:', threadError);
+      console.error("Error fetching thread:", threadError);
       return null;
     }
 
@@ -71,7 +71,7 @@ export const getThread = async (threadId: string): Promise<Thread | null> => {
       createdBy: threadData.createdBy,
     };
   } catch (error) {
-    console.error('Exception fetching thread:', error);
+    console.error("Exception fetching thread:", error);
     return null;
   }
 };

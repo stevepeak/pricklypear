@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,12 +7,12 @@ import {
   DialogTitle,
   DialogDescription,
   DialogClose,
-} from '@/components/ui/dialog';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface SystemPromptDialogProps {
   open: boolean;
@@ -23,15 +23,15 @@ export function SystemPromptDialog({
   open,
   onOpenChange,
 }: SystemPromptDialogProps) {
-  const [activeTab, setActiveTab] = useState('ai-chat');
-  const [aiChatPrompt, setAiChatPrompt] = useState('');
-  const [messageReviewPrompt, setMessageReviewPrompt] = useState('');
+  const [activeTab, setActiveTab] = useState("ai-chat");
+  const [aiChatPrompt, setAiChatPrompt] = useState("");
+  const [messageReviewPrompt, setMessageReviewPrompt] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (open) {
-      const aiChat = localStorage.getItem('systemPrompt:ai-chat') || '';
-      const review = localStorage.getItem('systemPrompt:message-review') || '';
+      const aiChat = localStorage.getItem("systemPrompt:ai-chat") || "";
+      const review = localStorage.getItem("systemPrompt:message-review") || "";
       setAiChatPrompt(aiChat);
       setMessageReviewPrompt(review);
     }
@@ -39,12 +39,12 @@ export function SystemPromptDialog({
 
   const handleSave = () => {
     setIsSaving(true);
-    localStorage.setItem('systemPrompt:ai-chat', aiChatPrompt);
-    localStorage.setItem('systemPrompt:message-review', messageReviewPrompt);
+    localStorage.setItem("systemPrompt:ai-chat", aiChatPrompt);
+    localStorage.setItem("systemPrompt:message-review", messageReviewPrompt);
     setIsSaving(false);
     onOpenChange(false);
-    toast('System prompts updated', {
-      description: 'Your system prompts have been saved.',
+    toast("System prompts updated", {
+      description: "Your system prompts have been saved.",
     });
   };
 
@@ -69,7 +69,7 @@ export function SystemPromptDialog({
               onChange={(e) => setAiChatPrompt(e.target.value)}
               placeholder="Enter your AI Chat system prompt here..."
               className="mt-2 h-96"
-              autoFocus={activeTab === 'ai-chat'}
+              autoFocus={activeTab === "ai-chat"}
             />
           </TabsContent>
           <TabsContent value="message-review">
@@ -78,7 +78,7 @@ export function SystemPromptDialog({
               onChange={(e) => setMessageReviewPrompt(e.target.value)}
               placeholder="Enter your Message Review system prompt here..."
               className="mt-2 h-96"
-              autoFocus={activeTab === 'message-review'}
+              autoFocus={activeTab === "message-review"}
             />
           </TabsContent>
         </Tabs>
@@ -87,7 +87,7 @@ export function SystemPromptDialog({
             <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button onClick={handleSave} disabled={isSaving} variant="default">
-            {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
+            {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>

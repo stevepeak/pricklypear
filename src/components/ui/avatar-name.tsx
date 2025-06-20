@@ -1,21 +1,21 @@
-import * as React from 'react';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
+import * as React from "react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
-type SizeVariant = 'xs' | 'sm' | 'md' | 'lg';
+type SizeVariant = "xs" | "sm" | "md" | "lg";
 
 const avatarSizeClasses: Record<SizeVariant, string> = {
-  xs: 'h-6 w-6 text-[0.625rem]',
-  sm: 'h-8 w-8 text-xs',
-  md: 'h-10 w-10 text-sm',
-  lg: 'h-14 w-14 text-base',
+  xs: "h-6 w-6 text-[0.625rem]",
+  sm: "h-8 w-8 text-xs",
+  md: "h-10 w-10 text-sm",
+  lg: "h-14 w-14 text-base",
 };
 
 const nameSizeClasses: Record<SizeVariant, string> = {
-  xs: 'text-xs',
-  sm: 'text-sm',
-  md: 'text-base',
-  lg: 'text-lg',
+  xs: "text-xs",
+  sm: "text-sm",
+  md: "text-base",
+  lg: "text-lg",
 };
 
 export interface AvatarNameProps {
@@ -45,15 +45,15 @@ export function AvatarName({
   avatarUrl,
   showAvatar = true,
   showName = true,
-  size = 'md',
+  size = "md",
   className,
   avatarClassName,
 }: AvatarNameProps) {
   // Compute user initials once per `name` change.
   const initials = React.useMemo(() => {
     const parts = name.trim().split(/\s+/);
-    if (parts.length === 0) return '?';
-    if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? '?';
+    if (parts.length === 0) return "?";
+    if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? "?";
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }, [name]);
 
@@ -63,17 +63,17 @@ export function AvatarName({
   return (
     <span
       className={cn(
-        'inline-flex items-center',
-        showAvatar && showName && 'gap-1',
-        className
+        "inline-flex items-center",
+        showAvatar && showName && "gap-1",
+        className,
       )}
     >
       {showAvatar && (
         <Avatar
           className={cn(
-            'shrink-0 border-2 border-background',
+            "shrink-0 border-2 border-background",
             avatarSizeClasses[size],
-            avatarClassName
+            avatarClassName,
           )}
         >
           {avatarUrl ? <AvatarImage src={avatarUrl} alt={name} /> : null}

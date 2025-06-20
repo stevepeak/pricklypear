@@ -1,15 +1,15 @@
-import React from 'react';
+import React from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from 'sonner';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 interface MessageReviewDialogProps {
   open: boolean;
@@ -34,8 +34,8 @@ const MessageReviewDialog = ({
     if (kindMessage.trim()) {
       onAccept(kindMessage);
       onOpenChange(false);
-      toast('Message sent', {
-        description: 'Your message has been reviewed and sent',
+      toast("Message sent", {
+        description: "Your message has been reviewed and sent",
       });
     }
   };
@@ -43,8 +43,8 @@ const MessageReviewDialog = ({
     if (newMessage.trim()) {
       onAccept(newMessage);
       onOpenChange(false);
-      toast('Message sent', {
-        description: 'Your original message was sent without revision',
+      toast("Message sent", {
+        description: "Your original message was sent without revision",
       });
     }
   };
@@ -108,7 +108,7 @@ const MessageReviewDialog = ({
                 Processing...
               </>
             ) : (
-              'Accept & Send'
+              "Accept & Send"
             )}
           </Button>
         </DialogFooter>

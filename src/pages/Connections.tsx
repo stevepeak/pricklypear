@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { UserPlus, Loader2, Search, ListFilter } from 'lucide-react';
-import { DialogTrigger, Dialog } from '@/components/ui/dialog';
-import React from 'react';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { UserPlus, Loader2, Search, ListFilter } from "lucide-react";
+import { DialogTrigger, Dialog } from "@/components/ui/dialog";
+import React from "react";
+import { toast } from "sonner";
 import {
   SearchBar,
   SearchBarLeft,
   SearchBarRight,
-} from '@/components/ui/search-bar';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/search-bar";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -17,30 +17,30 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuSeparator,
   DropdownMenuItem,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 import {
   ConnectionStatus,
   updateConnectionStatus,
   disableConnection,
   InviteResponse,
-} from '@/services/users/userService.js';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+} from "@/services/users/userService.js";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
-import PendingConnectionsList from '@/components/connections/PendingConnectionsList';
-import OutgoingConnectionsList from '@/components/connections/OutgoingConnectionsList';
-import AcceptedConnectionsList from '@/components/connections/AcceptedConnectionsList';
-import DisabledConnectionsList from '@/components/connections/DisabledConnectionsList';
-import InviteConnectionDialog from '@/components/connections/InviteConnectionDialog';
-import { deleteConnection } from '@/services/connections/manageConnections.js';
+import PendingConnectionsList from "@/components/connections/PendingConnectionsList";
+import OutgoingConnectionsList from "@/components/connections/OutgoingConnectionsList";
+import AcceptedConnectionsList from "@/components/connections/AcceptedConnectionsList";
+import DisabledConnectionsList from "@/components/connections/DisabledConnectionsList";
+import InviteConnectionDialog from "@/components/connections/InviteConnectionDialog";
+import { deleteConnection } from "@/services/connections/manageConnections.js";
 
-import { useConnections } from '@/hooks/useConnections';
+import { useConnections } from "@/hooks/useConnections";
 
 const Connections = () => {
   const [isInviting, setIsInviting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [filterStatuses, setFilterStatuses] = useState<ConnectionStatus[]>([]);
   const { user } = useAuth();
 
@@ -49,15 +49,15 @@ const Connections = () => {
 
   // Filter connections by status and relation to current user
   const pendingIncomingConnections = connections.filter(
-    (c) => c.status === 'pending' && !c.createdByMe
+    (c) => c.status === "pending" && !c.createdByMe,
   );
 
   const pendingOutgoingConnections = connections.filter(
-    (c) => c.status === 'pending' && c.createdByMe
+    (c) => c.status === "pending" && c.createdByMe,
   );
 
   const disabledConnections = connections.filter(
-    (c) => c.status === 'disabled'
+    (c) => c.status === "disabled",
   );
 
   const isFiltering = filterStatuses.length > 0;
@@ -69,9 +69,9 @@ const Connections = () => {
         connection.name?.toLowerCase().includes(search.toLowerCase()) ||
         connection.invitee_email?.toLowerCase().includes(search.toLowerCase());
       const matchesStatus =
-        filterStatuses.length === 0 || filterStatuses.includes('accepted');
+        filterStatuses.length === 0 || filterStatuses.includes("accepted");
       return matchesSearch && matchesStatus;
-    }
+    },
   );
 
   const filteredPendingIncoming = pendingIncomingConnections.filter(
@@ -80,9 +80,9 @@ const Connections = () => {
         connection.name?.toLowerCase().includes(search.toLowerCase()) ||
         connection.invitee_email?.toLowerCase().includes(search.toLowerCase());
       const matchesStatus =
-        filterStatuses.length === 0 || filterStatuses.includes('pending');
+        filterStatuses.length === 0 || filterStatuses.includes("pending");
       return matchesSearch && matchesStatus;
-    }
+    },
   );
 
   const filteredPendingOutgoing = pendingOutgoingConnections.filter(
@@ -91,9 +91,9 @@ const Connections = () => {
         connection.name?.toLowerCase().includes(search.toLowerCase()) ||
         connection.invitee_email?.toLowerCase().includes(search.toLowerCase());
       const matchesStatus =
-        filterStatuses.length === 0 || filterStatuses.includes('pending');
+        filterStatuses.length === 0 || filterStatuses.includes("pending");
       return matchesSearch && matchesStatus;
-    }
+    },
   );
 
   const filteredDisabled = disabledConnections.filter((connection) => {
@@ -101,7 +101,7 @@ const Connections = () => {
       connection.name?.toLowerCase().includes(search.toLowerCase()) ||
       connection.invitee_email?.toLowerCase().includes(search.toLowerCase());
     const matchesStatus =
-      filterStatuses.length === 0 || filterStatuses.includes('disabled');
+      filterStatuses.length === 0 || filterStatuses.includes("disabled");
     return matchesSearch && matchesStatus;
   });
 
@@ -109,19 +109,19 @@ const Connections = () => {
     setFilterStatuses((prev) =>
       prev.includes(status)
         ? prev.filter((s) => s !== status)
-        : [...prev, status]
+        : [...prev, status],
     );
   };
 
   const clearFilters = () => {
     setFilterStatuses([]);
-    setSearch('');
+    setSearch("");
   };
 
   const handleInvite = async (email: string) => {
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast('Invalid email', {
-        description: 'Please enter a valid email address',
+      toast("Invalid email", {
+        description: "Please enter a valid email address",
       });
       return;
     }
@@ -129,10 +129,10 @@ const Connections = () => {
     setIsInviting(true);
     try {
       const { data, error } = await supabase.functions.invoke(
-        'invite-by-email',
+        "invite-by-email",
         {
           body: { userId: user.id, email },
-        }
+        },
       );
 
       if (error) {
@@ -145,16 +145,16 @@ const Connections = () => {
         setIsDialogOpen(false);
         await refreshConnections();
 
-        toast('Invitation sent');
+        toast("Invitation sent");
       } else {
-        toast('Error', {
+        toast("Error", {
           description: response.message,
         });
       }
     } catch (error) {
-      console.error('Error inviting connection:', error);
-      toast('Error', {
-        description: 'Failed to send invitation',
+      console.error("Error inviting connection:", error);
+      toast("Error", {
+        description: "Failed to send invitation",
       });
     } finally {
       setIsInviting(false);
@@ -163,19 +163,19 @@ const Connections = () => {
 
   const handleUpdateStatus = async (
     connectionId: string,
-    status: ConnectionStatus
+    status: ConnectionStatus,
   ) => {
     try {
       await updateConnectionStatus(connectionId, status);
       await refreshConnections();
 
       toast(
-        status === 'accepted' ? 'Connection accepted' : 'Connection declined'
+        status === "accepted" ? "Connection accepted" : "Connection declined",
       );
     } catch (error) {
-      console.error('Error updating connection:', error);
-      toast('Error', {
-        description: 'Failed to update connection',
+      console.error("Error updating connection:", error);
+      toast("Error", {
+        description: "Failed to update connection",
       });
     }
   };
@@ -185,13 +185,13 @@ const Connections = () => {
       await disableConnection(connectionId);
       await refreshConnections();
 
-      toast('Connection disabled', {
-        description: 'This connection has been disabled',
+      toast("Connection disabled", {
+        description: "This connection has been disabled",
       });
     } catch (error) {
-      console.error('Error disabling connection:', error);
-      toast('Error', {
-        description: 'Failed to disable connection',
+      console.error("Error disabling connection:", error);
+      toast("Error", {
+        description: "Failed to disable connection",
       });
     }
   };
@@ -200,13 +200,13 @@ const Connections = () => {
     try {
       await deleteConnection(connectionId);
       await refreshConnections();
-      toast('Request cancelled', {
-        description: 'The connection request has been cancelled.',
+      toast("Request cancelled", {
+        description: "The connection request has been cancelled.",
       });
     } catch (error) {
-      console.error('Error deleting connection:', error);
-      toast('Error', {
-        description: 'Failed to cancel connection request.',
+      console.error("Error deleting connection:", error);
+      toast("Error", {
+        description: "Failed to cancel connection request.",
       });
     }
   };
@@ -254,22 +254,22 @@ const Connections = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuCheckboxItem
-                checked={filterStatuses.includes('pending')}
-                onCheckedChange={() => toggleStatus('pending')}
+                checked={filterStatuses.includes("pending")}
+                onCheckedChange={() => toggleStatus("pending")}
                 onSelect={(e) => e.preventDefault()}
               >
                 Pending
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={filterStatuses.includes('accepted')}
-                onCheckedChange={() => toggleStatus('accepted')}
+                checked={filterStatuses.includes("accepted")}
+                onCheckedChange={() => toggleStatus("accepted")}
                 onSelect={(e) => e.preventDefault()}
               >
                 Accepted
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={filterStatuses.includes('disabled')}
-                onCheckedChange={() => toggleStatus('disabled')}
+                checked={filterStatuses.includes("disabled")}
+                onCheckedChange={() => toggleStatus("disabled")}
                 onSelect={(e) => e.preventDefault()}
               >
                 Disabled

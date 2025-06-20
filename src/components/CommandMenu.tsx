@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   CommandDialog,
   CommandInput,
@@ -8,13 +8,13 @@ import {
   CommandGroup,
   CommandItem,
   CommandSeparator,
-} from '@/components/ui/command';
-import { SystemPromptDialog } from '@/components/commands/SystemPrompt';
-import { DemoModeDialog } from '@/components/commands/DemoMode';
-import { useAuth } from '@/contexts/AuthContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useUnreadMessages } from '@/hooks/useUnreadMessages';
-import { useConnections } from '@/hooks/useConnections';
+} from "@/components/ui/command";
+import { SystemPromptDialog } from "@/components/commands/SystemPrompt";
+import { DemoModeDialog } from "@/components/commands/DemoMode";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { useConnections } from "@/hooks/useConnections";
 import {
   Moon,
   Sun,
@@ -31,7 +31,7 @@ import {
   LogOut,
   Settings,
   SunMoon,
-} from 'lucide-react';
+} from "lucide-react";
 
 export function CommandMenu() {
   const [open, setOpen] = React.useState(false);
@@ -45,63 +45,63 @@ export function CommandMenu() {
 
   // Calculate pending incoming connections
   const pendingIncomingCount = connections.filter(
-    (c) => c.status === 'pending' && c.id !== user?.id
+    (c) => c.status === "pending" && c.id !== user?.id,
   ).length;
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
       }
     };
-    document.addEventListener('keydown', down);
-    return () => document.removeEventListener('keydown', down);
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
   }, []);
 
   const handleLogout = async () => {
     await signOut();
-    navigate('/');
+    navigate("/");
   };
 
   const navItems = user
     ? [
         {
-          path: '/threads',
-          label: 'Threads',
+          path: "/threads",
+          label: "Threads",
           icon: <MessageSquareText className="h-4 w-4 " />,
           badge: Object.keys(threadCounts).length || undefined,
         },
         {
-          path: '/messages',
-          label: 'Messages',
+          path: "/messages",
+          label: "Messages",
           icon: <MessageSquare className="h-4 w-4 " />,
           badge: totalUnread || undefined,
         },
         {
-          path: '/connections',
-          label: 'Connections',
+          path: "/connections",
+          label: "Connections",
           icon: <BookUser className="h-4 w-4 " />,
           badge: pendingIncomingCount || undefined,
         },
         {
-          path: '/children',
-          label: 'Children Profiles',
+          path: "/children",
+          label: "Children Profiles",
           icon: <Baby className="h-4 w-4 " />,
         },
         {
-          path: '/documents',
-          label: 'Documents',
+          path: "/documents",
+          label: "Documents",
           icon: <FileText className="h-4 w-4 " />,
         },
         {
-          path: '/calendar',
-          label: 'Calendar',
+          path: "/calendar",
+          label: "Calendar",
           icon: <Calendar className="h-4 w-4 " />,
         },
         {
-          path: '/expenses',
-          label: 'Expenses',
+          path: "/expenses",
+          label: "Expenses",
           icon: <Receipt className="h-4 w-4 " />,
         },
       ]
@@ -134,7 +134,7 @@ export function CommandMenu() {
             <CommandItem
               onSelect={() => {
                 setOpen(false);
-                navigate('/feature-request');
+                navigate("/feature-request");
               }}
             >
               <Sparkles className="h-4 w-4" />
@@ -146,7 +146,7 @@ export function CommandMenu() {
             <CommandItem
               onSelect={() => {
                 setOpen(false);
-                navigate('/account');
+                navigate("/account");
               }}
             >
               <BadgeCheck className="h-4 w-4" />
@@ -155,7 +155,7 @@ export function CommandMenu() {
             <CommandItem
               onSelect={() => {
                 setOpen(false);
-                navigate('/billing');
+                navigate("/billing");
               }}
             >
               <FileText className="h-4 w-4" />
@@ -164,7 +164,7 @@ export function CommandMenu() {
             <CommandItem
               onSelect={() => {
                 setOpen(false);
-                navigate('/integrations');
+                navigate("/integrations");
               }}
             >
               <Link2 className="h-4 w-4" />
@@ -180,7 +180,7 @@ export function CommandMenu() {
             <CommandItem
               onSelect={() => {
                 setOpen(false);
-                setTheme('light');
+                setTheme("light");
               }}
             >
               <Sun className="h-4 w-4" />
@@ -189,7 +189,7 @@ export function CommandMenu() {
             <CommandItem
               onSelect={() => {
                 setOpen(false);
-                setTheme('dark');
+                setTheme("dark");
               }}
             >
               <Moon className="h-4 w-4" />
@@ -198,14 +198,14 @@ export function CommandMenu() {
             <CommandItem
               onSelect={() => {
                 setOpen(false);
-                setTheme('system');
+                setTheme("system");
               }}
             >
               <SunMoon className="h-4 w-4" />
               <span>Theme based off system preferences</span>
             </CommandItem>
           </CommandGroup>
-          {user?.id === '09b77fc6-776c-4b4a-bd8c-96bb7997516e' && (
+          {user?.id === "09b77fc6-776c-4b4a-bd8c-96bb7997516e" && (
             <>
               <CommandSeparator />
               <CommandGroup heading="Advanced">

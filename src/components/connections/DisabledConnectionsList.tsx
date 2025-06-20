@@ -1,10 +1,10 @@
-import React from 'react';
-import { Badge } from '@/components/ui/badge';
+import React from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   ConnectedUser,
   ConnectionStatus,
-} from '@/services/users/userService.js';
-import ConnectionCard from './ConnectionCard';
+} from "@/services/users/userService.js";
+import ConnectionCard from "./ConnectionCard";
 
 interface DisabledConnectionsListProps {
   connections: ConnectedUser[];

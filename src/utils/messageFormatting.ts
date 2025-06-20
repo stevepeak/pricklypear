@@ -1,8 +1,8 @@
-import type { Message } from '@/types/message';
+import type { Message } from "@/types/message";
 
 export function formatMessagesForClipboard(messages: Message[]): string {
   if (!messages.length) {
-    return '';
+    return "";
   }
 
   return messages
@@ -10,7 +10,7 @@ export function formatMessagesForClipboard(messages: Message[]): string {
       const date =
         msg.timestamp instanceof Date ? msg.timestamp : new Date(msg.timestamp);
       const time = date.toLocaleString();
-      return `[${time}] ${msg.sender?.name || 'someone'}: ${msg.text}`;
+      return `[${time}] ${msg.sender?.name || "someone"}: ${msg.text}`;
     })
-    .join('\n\n');
+    .join("\n\n");
 }

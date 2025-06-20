@@ -1,8 +1,8 @@
 // @ts-nocheck
 // This file will not be type-checked by Deno or tsc
 
-import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
-import { handler } from './index.ts';
+import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import { handler } from "./index.ts";
 
 function createSupabase(success: boolean) {
   return {
@@ -18,24 +18,24 @@ function createSupabase(success: boolean) {
           return this;
         },
         limit() {
-          if (success && table === 'messages') {
+          if (success && table === "messages") {
             return Promise.resolve({
               data: [
-                { text: 'hi', timestamp: Date.now(), profiles: { name: 'A' } },
+                { text: "hi", timestamp: Date.now(), profiles: { name: "A" } },
               ],
               error: null,
             });
           }
-          return Promise.resolve({ data: null, error: { message: 'err' } });
+          return Promise.resolve({ data: null, error: { message: "err" } });
         },
         single() {
-          if (success && table === 'threads') {
+          if (success && table === "threads") {
             return Promise.resolve({
-              data: { topic: 't', title: 'T' },
+              data: { topic: "t", title: "T" },
               error: null,
             });
           }
-          return Promise.resolve({ data: null, error: { message: 'bad' } });
+          return Promise.resolve({ data: null, error: { message: "bad" } });
         },
       } as unknown;
     },
@@ -45,14 +45,14 @@ function createSupabase(success: boolean) {
 const openai = {
   chat: {
     completions: {
-      create: async () => ({ choices: [{ message: { content: 'ok' } }] }),
+      create: async () => ({ choices: [{ message: { content: "ok" } }] }),
     },
   },
 };
 
-Deno.test('review-message missing fields', async () => {
-  const req = new Request('http://', {
-    method: 'POST',
+Deno.test("review-message missing fields", async () => {
+  const req = new Request("http://", {
+    method: "POST",
     body: JSON.stringify({}),
   });
   const res = await handler(req, {
@@ -62,9 +62,9 @@ Deno.test('review-message missing fields', async () => {
   assertEquals(res.status, 400);
 });
 
-Deno.test('review-message success', async () => {
-  const body = JSON.stringify({ message: 'hello', threadId: '1' });
-  const req = new Request('http://', { method: 'POST', body });
+Deno.test("review-message success", async () => {
+  const body = JSON.stringify({ message: "hello", threadId: "1" });
+  const req = new Request("http://", { method: "POST", body });
   const res = await handler(req, {
     getOpenAIClient: () => openai,
     getSupabaseServiceClient: () => createSupabase(true),
@@ -72,12 +72,12 @@ Deno.test('review-message success', async () => {
   const data = await res.json();
   assertEquals(res.status, 200);
   assertEquals(data.rejected, false);
-  assertEquals(data.rephrasedMessage, 'ok');
+  assertEquals(data.rephrasedMessage, "ok");
 });
 
-Deno.test('review-message fetch error', async () => {
-  const body = JSON.stringify({ message: 'hello', threadId: '1' });
-  const req = new Request('http://', { method: 'POST', body });
+Deno.test("review-message fetch error", async () => {
+  const body = JSON.stringify({ message: "hello", threadId: "1" });
+  const req = new Request("http://", { method: "POST", body });
   const res = await handler(req, {
     getOpenAIClient: () => openai,
     getSupabaseServiceClient: () => createSupabase(false),

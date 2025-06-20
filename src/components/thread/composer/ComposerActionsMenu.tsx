@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu.js';
+} from "@/components/ui/dropdown-menu.js";
 import {
   Plus,
   FilePlus,
@@ -19,9 +19,9 @@ import {
   ShieldCheck,
   Archive,
   Calendar,
-} from 'lucide-react';
-import { isAIThread } from '@/types/thread';
-import type { Thread } from '@/types/thread';
+} from "lucide-react";
+import { isAIThread } from "@/types/thread";
+import type { Thread } from "@/types/thread";
 
 interface ComposerActionsMenuProps {
   thread: Thread;
@@ -73,7 +73,7 @@ export function ComposerActionsMenu({
       >
         <DropdownMenuLabel>Exporting</DropdownMenuLabel>
         <DropdownMenuItem>
-          <FileDown className="h-4 w-4 mr-2" /> Export as PDF{' '}
+          <FileDown className="h-4 w-4 mr-2" /> Export as PDF{" "}
           <Badge key="coming-soon" variant="secondary" className="ml-2">
             Coming soon
           </Badge>
@@ -83,7 +83,7 @@ export function ComposerActionsMenu({
         </DropdownMenuItem>
         <DropdownMenuItem>
           <MessageSquarePlus className="h-4 w-4 mr-2" /> Add as context in new
-          AI chat{' '}
+          AI chat{" "}
           <Badge key="coming-soon" variant="secondary" className="ml-2">
             Coming soon
           </Badge>
@@ -105,7 +105,7 @@ export function ComposerActionsMenu({
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        {!isAIThread(thread) && thread.type !== 'customer_support' && (
+        {!isAIThread(thread) && thread.type !== "customer_support" && (
           <>
             <DropdownMenuItem
               onSelect={onRequestClose}
@@ -124,23 +124,23 @@ export function ComposerActionsMenu({
             </DropdownMenuItem>
           </>
         )}
-        {(isAIThread(thread) || thread.type === 'customer_support') &&
-          thread.status === 'Open' && (
+        {(isAIThread(thread) || thread.type === "customer_support") &&
+          thread.status === "Open" && (
             <DropdownMenuItem onSelect={onArchive} disabled={isArchiving}>
               <Archive className="h-4 w-4 mr-2" />
-              {isArchiving ? 'Archiving...' : 'Archive'}
+              {isArchiving ? "Archiving..." : "Archive"}
             </DropdownMenuItem>
           )}
-        {(isAIThread(thread) || thread.type === 'customer_support') &&
-          thread.status === 'Archived' && (
+        {(isAIThread(thread) || thread.type === "customer_support") &&
+          thread.status === "Archived" && (
             <DropdownMenuItem onSelect={onUnarchive} disabled={isUnarchiving}>
               <FileDown className="h-4 w-4 mr-2" />
-              {isUnarchiving ? 'Unarchiving...' : 'Unarchive'}
+              {isUnarchiving ? "Unarchiving..." : "Unarchive"}
             </DropdownMenuItem>
           )}
         <DropdownMenuItem onSelect={onFileUpload} disabled={isUploading}>
           <FilePlus className="h-4 w-4 mr-2" />
-          {isUploading ? 'Uploading...' : 'Add photos and files'}
+          {isUploading ? "Uploading..." : "Add photos and files"}
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={onCalendarEvent}>
           <Calendar className="h-4 w-4 mr-2" /> Propose calendar event

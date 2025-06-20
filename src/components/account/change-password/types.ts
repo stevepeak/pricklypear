@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { PasswordSchema } from '@/types/schemas';
+import { z } from "zod";
+import { PasswordSchema } from "@/types/schemas";
 
 export const changePasswordFormSchema = z
   .object({
@@ -8,8 +8,8 @@ export const changePasswordFormSchema = z
     confirmNewPassword: PasswordSchema,
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmNewPassword'],
+    message: "Passwords do not match",
+    path: ["confirmNewPassword"],
   });
 
 export type PasswordFormValues = z.infer<typeof changePasswordFormSchema>;

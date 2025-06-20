@@ -5,23 +5,23 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { type PasswordFormValues, changePasswordFormSchema } from './types';
-import React from 'react';
-import { updatePassword } from './update';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'sonner';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { type PasswordFormValues, changePasswordFormSchema } from "./types";
+import React from "react";
+import { updatePassword } from "./update";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 
 export function ChangePasswordForm() {
   const form = useForm<PasswordFormValues>({
     resolver: zodResolver(changePasswordFormSchema),
     defaultValues: {
-      currentPassword: '',
-      newPassword: '',
-      confirmNewPassword: '',
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
     },
   });
   const [isLoading, setIsLoading] = React.useState(false);
@@ -33,16 +33,16 @@ export function ChangePasswordForm() {
         currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       });
-      toast('Password was updated', {
-        description: 'Your password has been changed successfully.',
+      toast("Password was updated", {
+        description: "Your password has been changed successfully.",
       });
       form.reset();
     } catch (error) {
-      toast('Password update failed', {
+      toast("Password update failed", {
         description:
           error instanceof Error
             ? error.message
-            : 'There was a problem updating your password.',
+            : "There was a problem updating your password.",
       });
     } finally {
       setIsLoading(false);
@@ -108,7 +108,7 @@ export function ChangePasswordForm() {
           )}
         />
         <Button variant="success" type="submit" disabled={isLoading}>
-          {isLoading ? 'Updating...' : 'Update Password'}
+          {isLoading ? "Updating..." : "Update Password"}
         </Button>
       </form>
     </Form>
