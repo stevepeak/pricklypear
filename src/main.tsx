@@ -1,4 +1,5 @@
 import "./i18n";
+import "./index.css";
 import React from "react";
 import { isWeb } from "@/utils/platform";
 import App from "./App.tsx";
@@ -51,4 +52,3 @@ if (isWeb()) {
 
 // Native apps register `App` with `AppRegistry`.
 export default App;
-// The rest of the file remains unchanged.

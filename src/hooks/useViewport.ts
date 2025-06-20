@@ -37,11 +37,30 @@ export function useViewport(): ViewportSize {
       window: ViewportSize;
     }) => setSize({ width, height });
 
-    // RN 0.71+ returns a subscription with remove()
-    const subscription: any = Dimensions.addEventListener("change", handler);
+    // RN 0.71+ returns a subscription with an optional remove() method.
+    interface Subscription {
+      remove?: () => void;
+    }
+
+    const subscription = Dimensions.addEventListener(
+      "change",
+      handler
+      // Cast to avoid eslint/ts restrictions on `any`
+    ) as unknown as Subscription;
+
     return () => {
-      if (subscription?.remove) subscription.remove();
-      else Dimensions.removeEventListener("change", handler as any);
+      if (subscription?.remove) {
+        subscription.remove();
+      } else {
+        (
+          Dimensions as unknown as {
+            removeEventListener?: (
+              event: "change",
+              listener: typeof handler
+            ) => void;
+          }
+        ).removeEventListener?.("change", handler);
+      }
     };
   }, []);
 

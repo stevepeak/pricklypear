@@ -6,6 +6,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
+      // Stub React-Native when running in Vitest so `.flow` files aren’t parsed
+      'react-native': resolve(__dirname, './src/__mocks__/react-native.ts'),
     },
   },
   test: {
