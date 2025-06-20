@@ -37,6 +37,10 @@ async function loadHook() {
   const mockInsert = vi.fn();
   const mockUpsert = vi.fn();
 
+  // Provide sensible defaults that individual tests can still override
+  mockSelect.mockImplementation(() => ({ order: mockOrder }));
+  mockOrder.mockResolvedValue({ data: [], error: null });
+
   const mockFrom = vi.fn(() => ({
     select: mockSelect,
     order: mockOrder,
@@ -51,7 +55,10 @@ async function loadHook() {
   }));
 
   /* ----------------------- GlobalMessages mock ---------------------- */
-  const registerCalendarEventCallback = vi.fn();
+  // Always return a noop unsubscribe function so the hook's cleanup never crashes
+  const registerCalendarEventCallback = vi
+    .fn()
+    .mockImplementation(() => () => {});
 
   vi.doMock('@/contexts/GlobalMessagesContext', () => ({
     useGlobalMessages: () => ({
