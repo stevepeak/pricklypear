@@ -58,7 +58,7 @@ import { DOCUMENT_LABEL_INFO, getDocumentLabelInfo } from '@/types/document';
 import { formatThreadTimestamp } from '@/utils/formatTimestamp';
 import { DocumentTableSkeleton } from '@/components/documents/DocumentTableSkeleton';
 import { toast } from 'sonner';
-import { useDocumentFilters } from '@/components/documents/use-document-filters';
+import { useDocumentFilters } from '@/components/documents/useDocumentFilters';
 import {
   SearchBar,
   SearchBarLeft,
