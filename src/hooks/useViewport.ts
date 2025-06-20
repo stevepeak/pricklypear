@@ -22,7 +22,7 @@ export function useViewport(): ViewportSize {
   });
 
   useEffect(() => {
-    // Web – window.resize
+    // Web - window.resize
     if (isWeb()) {
       const handler = () =>
         setSize({ width: window.innerWidth, height: window.innerHeight });
@@ -30,7 +30,7 @@ export function useViewport(): ViewportSize {
       return () => window.removeEventListener('resize', handler);
     }
 
-    // Native – Dimensions listener
+    // Native - Dimensions listener
     const handler = ({ window: { width, height } }: { window: ViewportSize }) =>
       setSize({ width, height });
 
