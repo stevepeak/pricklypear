@@ -9,5 +9,16 @@
     "noEmit": false
   },
   "include": ["src", "src/**/*", "../src", "../src/**/*"],
-  "exclude": []
+  "exclude": [
+    // Web build should ignore test suites
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    // Also ignore any test/spec files pulled in from the shared src folder
+    "../src/**/*.test.ts",
+    "../src/**/*.test.tsx",
+    "../src/**/*.spec.ts",
+    "../src/**/*.spec.tsx"
+  ]
 }
