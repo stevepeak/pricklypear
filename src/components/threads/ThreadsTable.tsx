@@ -59,9 +59,9 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
   return (
     <Table>
       <colgroup>
-        <col style={{ width: '1%', whiteSpace: 'nowrap' }} />
-        <col style={{ width: '1%', whiteSpace: 'nowrap' }} />
-        <col style={{ width: '1%', whiteSpace: 'nowrap' }} />
+        <col className="w-[1%] whitespace-nowrap" />
+        <col className="w-[1%] whitespace-nowrap" />
+        <col className="w-[1%] whitespace-nowrap" />
         <col />
       </colgroup>
       <TableHeader>
