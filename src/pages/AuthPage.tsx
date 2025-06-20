@@ -109,6 +109,7 @@ const AuthPage = () => {
                   <span className="font-medium">{invitedEmail}</span>
                 </div>
                 <Button
+                  variant="accent"
                   className="w-full mt-4"
                   onClick={async () => {
                     setEmail(invitedEmail);
@@ -206,6 +207,7 @@ const AuthPage = () => {
                         />
                       </div>
                       <Button
+                        variant="accent"
                         type="submit"
                         className="w-full"
                         disabled={forgotIsLoading}
@@ -281,6 +283,7 @@ const AuthPage = () => {
                             </div>
                           )}
                           <Button
+                            variant="accent"
                             type="submit"
                             className="w-full"
                             disabled={isLoading}
