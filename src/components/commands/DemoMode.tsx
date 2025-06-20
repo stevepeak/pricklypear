@@ -34,7 +34,7 @@ export function DemoModeDialog({ open, onOpenChange }: DemoModeDialogProps) {
 
   // Effect to handle demo message generation
   React.useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
 
     if (settings.enabled) {
       // Generate a message immediately when enabled

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { Dimensions } from "react-native";
-import { isWeb } from "@/utils/platform";
+import { useEffect, useState } from 'react';
+import { Dimensions } from 'react-native';
+import { isWeb } from '@/utils/platform';
 
 export interface ViewportSize {
   width: number;
@@ -17,7 +17,7 @@ export function useViewport(): ViewportSize {
     if (isWeb()) {
       return { width: window.innerWidth, height: window.innerHeight };
     }
-    const { width, height } = Dimensions.get("window");
+    const { width, height } = Dimensions.get('window');
     return { width, height };
   });
 
@@ -26,16 +26,13 @@ export function useViewport(): ViewportSize {
     if (isWeb()) {
       const handler = () =>
         setSize({ width: window.innerWidth, height: window.innerHeight });
-      window.addEventListener("resize", handler);
-      return () => window.removeEventListener("resize", handler);
+      window.addEventListener('resize', handler);
+      return () => window.removeEventListener('resize', handler);
     }
 
     // Native – Dimensions listener
-    const handler = ({
-      window: { width, height },
-    }: {
-      window: ViewportSize;
-    }) => setSize({ width, height });
+    const handler = ({ window: { width, height } }: { window: ViewportSize }) =>
+      setSize({ width, height });
 
     // RN 0.71+ returns a subscription with an optional remove() method.
     interface Subscription {
@@ -43,7 +40,7 @@ export function useViewport(): ViewportSize {
     }
 
     const subscription = Dimensions.addEventListener(
-      "change",
+      'change',
       handler
       // Cast to avoid eslint/ts restrictions on `any`
     ) as unknown as Subscription;
@@ -55,11 +52,11 @@ export function useViewport(): ViewportSize {
         (
           Dimensions as unknown as {
             removeEventListener?: (
-              event: "change",
+              event: 'change',
               listener: typeof handler
             ) => void;
           }
-        ).removeEventListener?.("change", handler);
+        ).removeEventListener?.('change', handler);
       }
     };
   }, []);

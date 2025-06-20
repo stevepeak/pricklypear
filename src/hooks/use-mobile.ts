@@ -1,4 +1,4 @@
-import { useViewport } from "./useViewport";
+import { useViewport } from './useViewport';
 
 const MOBILE_BREAKPOINT = 768;
 

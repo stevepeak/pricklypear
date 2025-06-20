@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* A very small subset of React-Native APIs used by our cross-platform hooks
    and components.  Only the bits referenced in web-only code are mocked. */
 
