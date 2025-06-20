@@ -1,8 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-import { useCalendarEvents } from './useCalendarEvents';
-
 type CalendarEventRow = {
   id: string;
   title: string;
@@ -13,46 +11,6 @@ type CalendarEventRow = {
   thread_id: string | null;
   location: string | null;
 };
-
-/* ------------------------------------------------------------------ */
-/*                              Mocks                                 */
-/* ------------------------------------------------------------------ */
-
-const mockSelect = vi.fn();
-const mockOrder = vi.fn();
-const mockInsert = vi.fn();
-const mockUpsert = vi.fn();
-
-const mockFrom = vi.fn(() => ({
-  select: mockSelect,
-  order: mockOrder,
-  insert: mockInsert,
-  upsert: mockUpsert,
-}));
-
-const supabaseMock = {
-  from: mockFrom,
-};
-
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: supabaseMock,
-}));
-
-/* ----------------------- GlobalMessages mock ---------------------- */
-const registerCalendarEventCallback = vi.fn();
-
-vi.mock('@/contexts/GlobalMessagesContext', () => ({
-  useGlobalMessages: () => ({
-    registerCalendarEventCallback,
-  }),
-}));
-
-/* ---------------------- requireCurrentUser mock -------------------- */
-vi.mock('@/utils/authCache', () => ({
-  requireCurrentUser: vi.fn(async () => ({
-    id: 'user-1',
-  })),
-}));
 
 /* ----------------------------- Helpers ----------------------------- */
 function createEvent(id: number): CalendarEventRow {
@@ -68,8 +26,69 @@ function createEvent(id: number): CalendarEventRow {
   };
 }
 
+/**
+ * Builds the required mocks for a single test-run and returns the freshly
+ * imported `useCalendarEvents` hook alongside all relevant spies.
+ */
+async function loadHook() {
+  /* ------------------------- Supabase client ------------------------- */
+  const mockSelect = vi.fn();
+  const mockOrder = vi.fn();
+  const mockInsert = vi.fn();
+  const mockUpsert = vi.fn();
+
+  const mockFrom = vi.fn(() => ({
+    select: mockSelect,
+    order: mockOrder,
+    insert: mockInsert,
+    upsert: mockUpsert,
+  }));
+
+  const supabaseMock = { from: mockFrom };
+
+  vi.doMock('@/integrations/supabase/client', () => ({
+    supabase: supabaseMock,
+  }));
+
+  /* ----------------------- GlobalMessages mock ---------------------- */
+  const registerCalendarEventCallback = vi.fn();
+
+  vi.doMock('@/contexts/GlobalMessagesContext', () => ({
+    useGlobalMessages: () => ({
+      registerCalendarEventCallback,
+    }),
+  }));
+
+  /* ---------------------- requireCurrentUser mock -------------------- */
+  vi.doMock('@/utils/authCache', () => ({
+    requireCurrentUser: vi.fn(async () => ({
+      id: 'user-1',
+    })),
+  }));
+
+  /* -------------------------- Import hook --------------------------- */
+  const { useCalendarEvents } = await import('./useCalendarEvents');
+
+  return {
+    // hook
+    useCalendarEvents,
+
+    // supabase
+    supabaseMock,
+    mockSelect,
+    mockOrder,
+    mockInsert,
+    mockUpsert,
+
+    // globals
+    registerCalendarEventCallback,
+  };
+}
+
 describe('useCalendarEvents', () => {
   beforeEach(() => {
+    // Completely reset module graph and mocks between tests
+    vi.resetModules();
     vi.clearAllMocks();
   });
 
@@ -78,10 +97,11 @@ describe('useCalendarEvents', () => {
   });
 
   it('fetches events on mount and updates state', async () => {
-    // arrange supabase query
-    mockSelect.mockReturnValueOnce({
-      order: mockOrder,
-    });
+    const { useCalendarEvents, supabaseMock, mockSelect, mockOrder } =
+      await loadHook();
+
+    // Arrange Supabase query
+    mockSelect.mockReturnValueOnce({ order: mockOrder });
     mockOrder.mockResolvedValueOnce({
       data: [createEvent(1), createEvent(2)],
       error: null,
@@ -89,10 +109,10 @@ describe('useCalendarEvents', () => {
 
     const { result } = renderHook(() => useCalendarEvents());
 
-    // first render => loading should be true
+    // Initial render should be loading
     expect(result.current.isLoading).toBe(true);
 
-    // wait for the hook to finish async work
+    // Wait for async work to finish
     await act(async () => {});
 
     expect(supabaseMock.from).toHaveBeenCalledWith('calendar_events');
@@ -104,41 +124,41 @@ describe('useCalendarEvents', () => {
   });
 
   it('reacts to real-time calendar event updates', async () => {
-    mockSelect.mockReturnValueOnce({
-      order: mockOrder,
-    });
+    const {
+      useCalendarEvents,
+      mockSelect,
+      mockOrder,
+      registerCalendarEventCallback,
+    } = await loadHook();
+
+    mockSelect.mockReturnValueOnce({ order: mockOrder });
     mockOrder.mockResolvedValueOnce({ data: [], error: null });
 
-    let callback: (evt: CalendarEventRow) => void = () => {};
-    registerCalendarEventCallback.mockImplementation((fn: typeof callback) => {
-      callback = fn;
-      return () => {
-        // noop unsubscribe
-      };
+    // Capture registration callback
+    let realtimeCb: (e: CalendarEventRow) => void = () => {};
+    registerCalendarEventCallback.mockImplementation((fn) => {
+      realtimeCb = fn;
+      return () => {}; // unsubscribe noop
     });
 
     const { result } = renderHook(() => useCalendarEvents());
 
     await act(async () => {});
 
-    // add new event
+    // Add new event
     const newEvt = createEvent(3);
-    act(() => {
-      callback(newEvt);
-    });
-
+    act(() => realtimeCb(newEvt));
     expect(result.current.events).toEqual([newEvt]);
 
-    // update existing event
-    const updated = { ...newEvt, title: 'Updated' };
-    act(() => {
-      callback(updated);
-    });
-
-    expect(result.current.events).toEqual([updated]);
+    // Update existing event
+    const updatedEvt = { ...newEvt, title: 'Updated' };
+    act(() => realtimeCb(updatedEvt));
+    expect(result.current.events).toEqual([updatedEvt]);
   });
 
   it('createEvent inserts a new event and returns it', async () => {
+    const { useCalendarEvents, mockInsert } = await loadHook();
+
     const inserted = createEvent(4);
 
     mockInsert.mockReturnValueOnce({
@@ -179,6 +199,8 @@ describe('useCalendarEvents', () => {
   });
 
   it('updateParticipantStatus upserts participant and returns row', async () => {
+    const { useCalendarEvents, mockUpsert } = await loadHook();
+
     const participantRow = {
       id: 'row-1',
       event_id: 'event-123',
