@@ -3,6 +3,7 @@ import { getSupabaseServiceClient } from '../utils/supabase.ts';
 import { getErrorMessage, handleError } from '../utils/handle-error.ts';
 import Stripe from 'https://esm.sh/stripe@18.2.1';
 import { env } from '../utils/env.ts';
+import { sendSlackNotification } from '../utils/send-slack-notification.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -57,10 +58,21 @@ async function handleCustomerSubscriptionCreated(
   if (updateError) {
     throw updateError;
   }
+
+  // --- Slack notification ---
+  const message = `Subscription *created*
+  Customer: ${profile.id} (Stripe: ${customerId})
+  Email: ${profile.email ?? 'unknown'}
+  Subscription: ${subscription.id}
+  Plan: ${productId ?? 'unknown'}
+  Status: ${status}
+  At: ${new Date().toISOString()}`;
+  await sendSlackNotification({ text: message });
 }
 
 async function handleCustomerSubscriptionUpdated(
-  subscription: StripeSubscription
+  subscription: StripeSubscription,
+  previousStatus?: string
 ) {
   const supabase = getSupabaseServiceClient();
   const customerId = subscription.customer;
@@ -92,6 +104,16 @@ async function handleCustomerSubscriptionUpdated(
   if (updateError) {
     throw updateError;
   }
+
+  // --- Slack notification ---
+  const message = `Subscription *updated*
+  Customer: ${profile.id} (Stripe: ${customerId})
+  Email: ${profile.email ?? 'unknown'}
+  Subscription: ${subscription.id}
+  Plan: ${productId ?? 'unknown'}
+  Status: ${previousStatus ?? 'unknown'} -> ${status}
+  At: ${new Date().toISOString()}`;
+  await sendSlackNotification({ text: message });
 }
 
 async function handleCustomerSubscriptionDeleted(
@@ -126,6 +148,15 @@ async function handleCustomerSubscriptionDeleted(
   if (updateError) {
     throw updateError;
   }
+
+  // --- Slack notification ---
+  const message = `Subscription *deleted*
+  Customer: ${profile.id} (Stripe: ${customerId})
+  Email: ${profile.email ?? 'unknown'}
+  Subscription: ${subscription.id}
+  Status: canceled
+  At: ${new Date().toISOString()}`;
+  await sendSlackNotification({ text: message });
 }
 
 export async function handler(req: Request) {
@@ -174,11 +205,16 @@ export async function handler(req: Request) {
           event.data.object as StripeSubscription
         );
         break;
-      case 'customer.subscription.updated':
+      case 'customer.subscription.updated': {
+        const previousStatus = (event.data as any).previous_attributes?.status as
+          | string
+          | undefined;
         await handleCustomerSubscriptionUpdated(
-          event.data.object as StripeSubscription
+          event.data.object as StripeSubscription,
+          previousStatus
         );
         break;
+      }
       case 'customer.subscription.deleted':
         await handleCustomerSubscriptionDeleted(
           event.data.object as StripeSubscription
