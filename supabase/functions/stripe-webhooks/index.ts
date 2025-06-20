@@ -206,9 +206,11 @@ export async function handler(req: Request) {
         );
         break;
       case 'customer.subscription.updated': {
-        const previousStatus = (event.data as any).previous_attributes?.status as
-          | string
-          | undefined;
+        // Stripe sends any changed fields inside `previous_attributes`.
+        // We only care about `status`; safely extract it with a typed cast.
+        const previousStatus = (
+          event.data.previous_attributes as { status?: string } | undefined
+        )?.status;
         await handleCustomerSubscriptionUpdated(
           event.data.object as StripeSubscription,
           previousStatus
