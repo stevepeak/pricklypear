@@ -3,120 +3,40 @@ import { useDropzone } from 'react-dropzone';
 import { Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import { Progress } from './ui/progress';
 import { Alert, AlertDescription } from './ui/alert';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { trackEvent } from '@/lib/tracking';
+import { useDocumentUpload } from '@/hooks/useDocumentUpload';
 
 interface DocumentUploaderProps {
   onUploadComplete?: (documentId: string) => void;
 }
 
-interface UploadState {
-  file: File | null;
-  progress: number;
-  status: 'idle' | 'uploading' | 'processing' | 'success' | 'error';
-  error?: string;
-  documentId?: string;
-}
-
 export function DocumentUploader({ onUploadComplete }: DocumentUploaderProps) {
-  const { user } = useAuth();
-  const [uploadState, setUploadState] = useState<UploadState>({
-    file: null,
-    progress: 0,
-    status: 'idle',
-  });
-
-  const uploadFile = useCallback(
-    async (file: File) => {
-      if (!user) return;
-
-      try {
-        // Upload to Supabase Storage
-        const fileName = `${user.id}/${Date.now()}-${file.name}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('documents')
-          .upload(fileName, file);
-
-        if (uploadError) throw uploadError;
-
-        setUploadState((prev) => ({
-          ...prev,
-          status: 'processing',
-          progress: 50,
-        }));
-
-        // Call Edge Function to extract text
-        const { data: extractData, error: extractError } =
-          await supabase.functions.invoke('extract-doc-text', {
-            body: {
-              user_id: user.id,
-              file_path: uploadData.path,
-              filename: file.name,
-            },
-            headers: {
-              Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
-            },
-          });
-
-        if (extractError) throw extractError;
-
-        trackEvent({ name: 'upload_document', user });
-
-        setUploadState((prev) => ({
-          ...prev,
-          status: 'success',
-          progress: 100,
-          documentId: extractData.document_id,
-        }));
-
-        onUploadComplete?.(extractData.document_id);
-      } catch (error) {
-        console.error('Upload failed:', error);
-        setUploadState((prev) => ({
-          ...prev,
-          status: 'error',
-          error: error instanceof Error ? error.message : 'Upload failed',
-        }));
-      }
-    },
-    [user, onUploadComplete]
-  );
+  const { upload, status, progress, error } = useDocumentUpload();
+  const [file, setFile] = useState<File | null>(null);
+  const [localError, setLocalError] = useState<string | null>(null);
 
   const onDrop = useCallback(
     (acceptedFiles: File[], rejectedFiles: unknown[]) => {
       if (rejectedFiles.length > 0) {
-        setUploadState({
-          file: null,
-          progress: 0,
-          status: 'error',
-          error: 'Invalid file type. Only PDF and DOCX files are supported.',
-        });
+        setLocalError(
+          'Invalid file type. Only PDF and DOCX files are supported.'
+        );
+        setFile(null);
         return;
       }
 
       const file = acceptedFiles[0];
       if (file.size > 10 * 1024 * 1024) {
         // 10MB limit
-        setUploadState({
-          file: null,
-          progress: 0,
-          status: 'error',
-          error: 'File size must be less than 10MB.',
-        });
+        setLocalError('File size must be less than 10MB.');
+        setFile(null);
         return;
       }
 
-      setUploadState({
-        file,
-        progress: 0,
-        status: 'uploading',
-      });
-
-      // Auto-upload immediately
-      uploadFile(file);
+      setLocalError(null);
+      setFile(file);
+      upload(file, onUploadComplete);
     },
-    [uploadFile]
+    [upload, onUploadComplete]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -132,7 +52,7 @@ export function DocumentUploader({ onUploadComplete }: DocumentUploaderProps) {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      {uploadState.status === 'idle' && !uploadState.file && (
+      {status === 'idle' && !file && (
         <div
           {...getRootProps()}
           className={`
@@ -158,28 +78,25 @@ export function DocumentUploader({ onUploadComplete }: DocumentUploaderProps) {
         </div>
       )}
 
-      {(uploadState.status === 'uploading' ||
-        uploadState.status === 'processing') && (
+      {(status === 'uploading' || status === 'processing') && (
         <div className="border rounded-lg p-6">
           <div className="flex items-center space-x-3 mb-4">
             <FileText className="h-8 w-8 text-blue-500" />
             <div>
-              <p className="font-medium">{uploadState.file?.name}</p>
+              <p className="font-medium">{file?.name}</p>
               <p className="text-sm text-muted-foreground">
-                {uploadState.status === 'uploading'
-                  ? 'Uploading...'
-                  : 'Extracting text...'}
+                {status === 'uploading' ? 'Uploading...' : 'Extracting text...'}
               </p>
             </div>
           </div>
-          <Progress value={uploadState.progress} className="mb-2" />
+          <Progress value={progress} className="mb-2" />
           <p className="text-xs text-muted-foreground text-center">
-            {uploadState.progress}% complete
+            {progress}% complete
           </p>
         </div>
       )}
 
-      {uploadState.status === 'success' && (
+      {status === 'success' && (
         <Alert className="border-green-200 bg-green-50">
           <CheckCircle className="h-4 w-4 text-green-600" />
           <AlertDescription className="text-green-800">
@@ -189,11 +106,11 @@ export function DocumentUploader({ onUploadComplete }: DocumentUploaderProps) {
         </Alert>
       )}
 
-      {uploadState.status === 'error' && (
+      {(status === 'error' || localError) && (
         <Alert className="border-red-200 bg-red-50">
           <AlertCircle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
-            {uploadState.error}
+            {error ?? localError}
           </AlertDescription>
         </Alert>
       )}
