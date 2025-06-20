@@ -195,6 +195,3 @@ export function useMessageFilters(messages: ListMessage[]) {
     filteredMessages,
   };
 }
-
-/* Backwards-compat alias */
-export { useMessageFilters as useMessagesFilters };

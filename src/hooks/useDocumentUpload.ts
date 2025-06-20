@@ -88,7 +88,6 @@ export function useDocumentUpload(): UseDocumentUploadResult {
       } catch (err) {
         const message =
           err instanceof Error ? err.message : 'Document upload failed.';
-        // eslint-disable-next-line no-console
         console.error('Document upload failed:', err);
         setState({
           status: 'error',

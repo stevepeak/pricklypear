@@ -15,7 +15,6 @@ beforeEach(() => {
   // @ts-expect-error - redefine for tests
   delete window.location;
   // minimal location object with origin + href mutable
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   window.location = {
     origin: 'http://localhost',
     href: 'about:blank',
