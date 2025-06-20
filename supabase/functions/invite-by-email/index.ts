@@ -1,5 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import sendEmail from '../utils/send-email.ts';
+import { renderEmail } from '../utils/email-render.ts';
+import { InvitationEmail } from '../templates/InvitationEmail.tsx';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
 
 const APP_CONNECTIONS_URL = 'https://prickly.app';
@@ -47,23 +49,16 @@ async function sendInvitationEmail(
 ) {
   const { to, inviterName, isExistingUser } = args;
   const subject = `${inviterName} invited you to connect on The Prickly Pear`;
-  const htmlExisting = `
-    <p>Hi there,</p>
-    <p><strong>${inviterName}</strong> has invited you to connect on The Prickly Pear.</p>
-    <p>Please <a href="${APP_CONNECTIONS_URL}/connections">visit your connections</a> to accept the request.</p>
-    <p>- The Prickly Pear</p>
-  `;
-  const htmlNew = `
-    <p>Hi there,</p>
-    <p><strong>${inviterName}</strong> has invited you to join The Prickly Pear.</p>
-    <p><a href="${APP_CONNECTIONS_URL}/auth?email=${encodeURIComponent(to)}&inviterName=${encodeURIComponent(inviterName)}">Create an account</a> to start the conversation with ${inviterName}.</p>
-    <p>Best,</p>
-    <p>The Prickly Pear</p>
-  `;
+  // Render the React Email template
+  const html = await renderEmail(InvitationEmail, {
+    inviterName,
+    recipientEmail: to,
+    isExistingUser,
+  });
   await sendEmailFn({
     to,
     subject,
-    html: isExistingUser ? htmlExisting : htmlNew,
+    html,
   });
 }
 
