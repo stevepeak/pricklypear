@@ -6,7 +6,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 /* -------------------------------------------------------------------------- */
 
 function buildSupabaseMock() {
-  const chainFetch = vi.fn();
   const order = vi.fn();
   const eq = vi.fn(() => ({ order }));
   const select = vi.fn(() => ({ eq, order }));

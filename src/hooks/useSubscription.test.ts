@@ -1,4 +1,4 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 /* -------------------------------------------------------------------------- */
@@ -12,7 +12,7 @@ beforeEach(() => {
   vi.resetModules();
   vi.clearAllMocks();
 
-  // @ts-expect-error – redefine for tests
+  // @ts-expect-error - redefine for tests
   delete window.location;
   // minimal location object with origin + href mutable
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

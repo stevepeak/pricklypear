@@ -49,6 +49,6 @@ describe('useThread', () => {
     const { result } = renderHook(() => useThread(undefined), { wrapper });
 
     expect(result.current.data).toBeUndefined();
-    expect(getThread as unknown as vi.Mock).not.toHaveBeenCalled();
+    expect(vi.mocked(getThread)).not.toHaveBeenCalled();
   });
 });
