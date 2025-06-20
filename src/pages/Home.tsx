@@ -139,9 +139,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Pricing Section */}
-      <PricingSection />
-
       {/* Features Section */}
       <div className="bg-[#FFF8F0] py-16">
         <div className="container mx-auto px-4">
@@ -172,6 +169,9 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* Pricing Section */}
+      <PricingSection />
 
       {/* Call to Action */}
       <div className="bg-[#F7C873]/40 py-16">
