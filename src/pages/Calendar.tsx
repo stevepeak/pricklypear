@@ -174,8 +174,7 @@ export default function Calendar() {
               showMore: (total) => `+${total} more`,
             }}
             eventPropGetter={() => ({
-              className:
-                'bg-green-600/80 text-white rounded px-1 border-0',
+              className: 'bg-green-600/80 text-white rounded px-1 border-0',
             })}
           />
         </div>

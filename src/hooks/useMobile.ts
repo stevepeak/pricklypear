@@ -3,7 +3,7 @@ import * as React from 'react';
 const MOBILE_BREAKPOINT = 768;
 
 /**
- * Detects if the viewport is in “mobile” size.
+ * Detects if the viewport is in "mobile" size.
  */
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
