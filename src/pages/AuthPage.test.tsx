@@ -9,7 +9,8 @@ vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({
     signIn: vi.fn(),
     signUpWithMagicLink: vi.fn(),
-    user: null,
+    // Explicitly declare user as null of the correct type to avoid implicit-any
+    user: null as null,
   }),
 }));
 
