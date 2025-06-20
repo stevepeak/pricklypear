@@ -54,7 +54,7 @@ const PricingSection = () => (
               </li>
             </ul>
             <Button asChild className="w-full" variant="success">
-              <Link to="/auth">Get started for free</Link>
+              <Link to="/auth?mode=signup">Get started for free</Link>
             </Button>
           </CardContent>
         </Card>
@@ -91,7 +91,7 @@ const PricingSection = () => (
               </li>
             </ul>
             <Button asChild className="w-full" variant="success">
-              <Link to="/auth">Get started for free</Link>
+              <Link to="/auth?mode=signup">Get started for free</Link>
             </Button>
           </CardContent>
         </Card>
@@ -134,7 +134,7 @@ const Home = () => {
             asChild
             className="bg-[#D97D54] hover:bg-[#C96B3F] text-white px-8 shadow-lg border-2 border-[#E2B07A]"
           >
-            <Link to="/auth">Get Started For Free</Link>
+            <Link to="/auth?mode=signup">Get Started For Free</Link>
           </Button>
         </div>
       </div>
@@ -187,7 +187,7 @@ const Home = () => {
             asChild
             className="bg-[#D97D54] hover:bg-[#C96B3F] text-white px-8 py-3 shadow-lg border-2 border-[#E2B07A]"
           >
-            <Link to="/auth">Start Your Free Trial</Link>
+            <Link to="/auth?mode=signup">Start Your Free Trial</Link>
           </Button>
         </div>
       </div>
