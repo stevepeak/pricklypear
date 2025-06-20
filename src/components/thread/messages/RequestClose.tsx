@@ -6,6 +6,7 @@ import { saveMessage } from '@/services/messageService/save-message';
 import { requireCurrentUser } from '@/utils/authCache';
 import { toast } from 'sonner';
 import { ThreadStatus } from '@/types/thread';
+import { isWeb } from '@/utils/platform';
 
 function RequestClose(props: {
   message: Message;
@@ -24,7 +25,9 @@ function RequestClose(props: {
         type: 'close_accepted',
       });
       if (success) {
-        window.location.reload();
+        if (isWeb()) {
+          window.location.reload();
+        }
         toast('Accepted close request', {
           description: 'You accepted the close request.',
         });

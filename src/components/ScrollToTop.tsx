@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { isWeb } from '@/utils/platform';
 
 export function ScrollToTop(): null {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (isWeb()) {
+      window.scrollTo(0, 0);
+    }
   }, [pathname]);
 
   return null;

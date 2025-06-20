@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { isWeb } from '@/utils/platform';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -10,36 +11,36 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 // Helper function to get system theme
-const getSystemTheme = () => {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
+const getSystemTheme = (): Theme =>
+  isWeb() && window.matchMedia('(prefers-color-scheme: dark)').matches
     ? 'dark'
     : 'light';
-};
 
 // Helper function to apply theme
 const applyTheme = (theme: Theme) => {
+  if (!isWeb()) return;
   const effectiveTheme = theme === 'system' ? getSystemTheme() : theme;
   document.documentElement.classList.toggle('dark', effectiveTheme === 'dark');
 };
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    // Check if theme is stored in localStorage
-    const storedTheme = localStorage.getItem('theme') as Theme;
-    return storedTheme || 'system';
+    if (isWeb()) {
+      return (localStorage.getItem('theme') as Theme) ?? 'system';
+    }
+    return 'system';
   });
 
   // Apply theme on mount and when theme changes
   useEffect(() => {
-    // Update localStorage when theme changes
+    if (!isWeb()) return;
     localStorage.setItem('theme', theme);
-
-    // Apply the theme
     applyTheme(theme);
   }, [theme]);
 
   // Listen for system theme changes
   useEffect(() => {
+    if (!isWeb()) return;
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const handleChange = () => {

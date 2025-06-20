@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { requireCurrentUser } from '@/utils/authCache';
 import { toast } from 'sonner';
+import { isWeb } from '@/utils/platform';
 
 export function useSubscription() {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,8 +12,9 @@ export function useSubscription() {
     try {
       const user = await requireCurrentUser();
 
-      const successUrl = `${window.location.origin}/account?success=true`;
-      const cancelUrl = `${window.location.origin}/billing?canceled=true`;
+      const origin = isWeb() ? window.location.origin : '';
+      const successUrl = `${origin}/account?success=true`;
+      const cancelUrl = `${origin}/billing?canceled=true`;
 
       const { data, error } = await supabase.functions.invoke(
         'create-checkout-session',
@@ -29,7 +31,7 @@ export function useSubscription() {
         throw error;
       }
 
-      if (data?.url) {
+      if (data?.url && isWeb()) {
         window.location.href = data.url;
       } else {
         throw new Error('No checkout URL received');
@@ -50,7 +52,7 @@ export function useSubscription() {
     try {
       const user = await requireCurrentUser();
 
-      const returnUrl = `${window.location.origin}/billing`;
+      const returnUrl = `${isWeb() ? window.location.origin : ''}/billing`;
 
       const { data, error } = await supabase.functions.invoke(
         'create-portal-session',
@@ -66,7 +68,7 @@ export function useSubscription() {
         throw error;
       }
 
-      if (data?.url) {
+      if (data?.url && isWeb()) {
         window.location.href = data.url;
       } else {
         throw new Error('No portal URL received');

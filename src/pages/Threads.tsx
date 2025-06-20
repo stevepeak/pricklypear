@@ -25,6 +25,7 @@ import { Search, ListFilter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useThreadFilters } from '@/components/threads/use-thread-filters';
 import { z } from 'zod';
+import { isWeb } from '@/utils/platform';
 import {
   SearchBar,
   SearchBarLeft,
@@ -37,9 +38,12 @@ const Threads = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // DD-90: default to "table" view
-  const [view, setView] = useState<'cards' | 'table'>(
-    window.innerWidth < 768 ? 'cards' : 'table'
-  );
+  const [view, setView] = useState<'cards' | 'table'>(() => {
+    if (isWeb()) {
+      return window.innerWidth < 768 ? 'cards' : 'table';
+    }
+    return 'table';
+  });
 
   const { user } = useAuth();
 
@@ -61,12 +65,11 @@ const Threads = () => {
 
   // Load persisted view preference and filters on mount
   useEffect(() => {
+    if (!isWeb()) return;
     const viewSchema = z.enum(['cards', 'table']);
     const storedView = localStorage.getItem('threads.view');
     const result = viewSchema.safeParse(storedView);
-    if (result.success) {
-      setView(result.data);
-    }
+    if (result.success) setView(result.data);
   }, []);
 
   useEffect(() => {
@@ -93,7 +96,9 @@ const Threads = () => {
   // DD-90: accept the exact union type
   const handleViewChange = (value: 'cards' | 'table') => {
     setView(value);
-    localStorage.setItem('threads.view', value);
+    if (isWeb()) {
+      localStorage.setItem('threads.view', value);
+    }
   };
 
   return (

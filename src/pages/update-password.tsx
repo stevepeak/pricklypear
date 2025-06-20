@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PasswordSchema } from '@/types/schemas';
 import { handleError } from '@/services/messageService/utils';
+import { isWeb } from "@/utils/platform";
 
 const passwordSchema = z
   .object({
@@ -57,7 +58,9 @@ const UpdatePassword = () => {
           setMessage(
             'Your password has been updated and you have been logged in.'
           );
-          window.location.href = '/threads';
+          if (isWeb()) {
+            window.location.href = "/threads";
+          }
         }
       }
     } catch (err) {

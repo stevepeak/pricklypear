@@ -1,21 +1,12 @@
-import * as React from 'react';
+import { useViewport } from "./useViewport";
 
 const MOBILE_BREAKPOINT = 768;
 
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
-    undefined
-  );
-
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    };
-    mql.addEventListener('change', onChange);
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    return () => mql.removeEventListener('change', onChange);
-  }, []);
-
-  return !!isMobile;
+/**
+ * Responsive helper that returns `true` when the viewport
+ * width is below the mobile breakpoint (works for web & native).
+ */
+export function useIsMobile(): boolean {
+  const { width } = useViewport();
+  return width < MOBILE_BREAKPOINT;
 }

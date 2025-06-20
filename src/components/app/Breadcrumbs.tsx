@@ -16,6 +16,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useThread } from '@/hooks/useThread';
+import { isWeb } from '@/utils/platform';
 
 function Breadcrumbs() {
   const location = useLocation();
@@ -29,6 +30,7 @@ function Breadcrumbs() {
   const { data: thread, isLoading: loadingThread } = useThread(threadId);
 
   const handleBreadcrumbClick = () => {
+    if (!isWeb()) return;
     const now = Date.now();
     if (now - lastClickTime.current < DOUBLE_CLICK_DELAY) {
       // Double click detected - open command menu

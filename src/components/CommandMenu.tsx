@@ -32,6 +32,7 @@ import {
   Settings,
   SunMoon,
 } from 'lucide-react';
+import { isWeb } from '@/utils/platform';
 
 export function CommandMenu() {
   const [open, setOpen] = React.useState(false);
@@ -49,6 +50,7 @@ export function CommandMenu() {
   ).length;
 
   React.useEffect(() => {
+    if (!isWeb()) return;
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();

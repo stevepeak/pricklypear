@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { handleError } from '@/services/messageService/utils';
+import { isWeb } from "@/utils/platform";
 
 const AuthPage = () => {
   const [email, setEmail] = useState('');
@@ -71,7 +72,9 @@ const AuthPage = () => {
     try {
       // Use supabase directly, as useAuth does not expose resetPassword
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/update-password',
+        redirectTo: isWeb()
+          ? `${window.location.origin}/update-password`
+          : '',
       });
       if (error) {
         setForgotError(error.message);

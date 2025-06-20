@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { isAIThread } from '@/types/thread';
 import type { Thread } from '@/types/thread';
+import { isWeb } from '@/utils/platform';
 
 interface UseComposerUIProps {
   thread: Thread;
@@ -15,12 +16,14 @@ export function useComposerUI({ thread, messagesEndRef }: UseComposerUIProps) {
 
   // Load auto-accept preference from localStorage
   useEffect(() => {
+    if (!isWeb()) return;
     const stored = localStorage.getItem('autoAcceptAISuggestions');
     setAutoAccept(stored === 'true');
   }, []);
 
   // Show 'Jump to latest message' button if bottom is not visible
   useEffect(() => {
+    if (!isWeb()) return;
     const handleScroll = () => {
       if (!messagesEndRef?.current) return;
       const rect = messagesEndRef.current.getBoundingClientRect();
@@ -33,11 +36,15 @@ export function useComposerUI({ thread, messagesEndRef }: UseComposerUIProps) {
 
   const handleToggleAutoAccept = (value: boolean) => {
     setAutoAccept(value);
-    localStorage.setItem('autoAcceptAISuggestions', value.toString());
+    if (isWeb()) {
+      localStorage.setItem('autoAcceptAISuggestions', value.toString());
+    }
   };
 
   const handleJumpToLatest = () => {
-    messagesEndRef?.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isWeb()) {
+      messagesEndRef?.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return {
