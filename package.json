@@ -22,7 +22,7 @@
     "test:e2e:report": "playwright show-report",
     "clean": "rm -rf dist node_modules",
     "fix": "eslint --fix --quiet . && prettier --log-level=silent --write .",
-    "typecheck": "tsc -b --noEmit",
+    "typecheck": "tsc --noEmit",
     "typecheck:deno": "deno check supabase/functions/**/*.ts --quiet",
     "gen": "supabase gen types --project-id vgddrhyjttyrathqhefb > src/integrations/supabase/types.ts",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org gwiz --project pricklypear ./dist && sentry-cli sourcemaps upload --org gwiz --project pricklypear ./dist",
