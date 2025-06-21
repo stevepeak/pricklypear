@@ -11,12 +11,16 @@
       "prettier --write"
     ]
   },
+  "workspaces": [
+    "react-email"
+  ],
   "prettier": "@dexaai/config/prettier",
   "packageManager": "bun@1.1.42",
   "scripts": {
     "ci": "bun run typecheck && bun run typecheck:deno && bun run lint && bun run knip && bun run build && bun run test",
     "build": "bun run build.ts",
     "dev": "bun run --hot src/index.tsx",
+    "dev:emails": "cd react-email && bun run dev",
     "lint": "eslint . && prettier --check .",
     "test": "vitest run",
     "test:e2e": "playwright test",
@@ -27,7 +31,9 @@
     "fix": "eslint --fix --quiet . && prettier --log-level=silent --write .",
     "typecheck": "tsc -b --noEmit",
     "typecheck:deno": "deno check supabase/functions/**/*.ts --quiet",
-    "gen": "supabase gen types --project-id vgddrhyjttyrathqhefb > src/integrations/supabase/types.ts",
+    "gen": "bun run gen:supabase && bun run gen:emails",
+    "gen:supabase": "supabase gen types --project-id vgddrhyjttyrathqhefb > src/integrations/supabase/types.ts",
+    "gen:emails": "bun run react-email/sync-emails-to-templates.ts",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org gwiz --project pricklypear ./dist && sentry-cli sourcemaps upload --org gwiz --project pricklypear ./dist",
     "prepare": "husky || true"
   },
