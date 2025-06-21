@@ -1,6 +1,6 @@
 /**
  * This is a generated file. Do not edit directly.
- *
+ * 
  * To make changes:
  * 1. Edit the original file in react-email/emails/
  * 2. Run 'bun run gen:emails' to regenerate this file

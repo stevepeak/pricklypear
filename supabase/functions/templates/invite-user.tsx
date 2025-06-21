@@ -1,6 +1,6 @@
 /**
  * This is a generated file. Do not edit directly.
- *
+ * 
  * To make changes:
  * 1. Edit the original file in react-email/emails/
  * 2. Run 'bun run gen:emails' to regenerate this file
@@ -24,24 +24,15 @@ import {
 } from 'npm:@react-email/components';
 
 interface PricklyPearInviteUserEmailProps {
-  username?: string;
-  userImage?: string;
   invitedByName?: string;
   invitedByEmail?: string;
-  teamName?: string;
-  teamImage?: string;
   inviteLink?: string;
-  inviteFromIp?: string;
-  inviteFromLocation?: string;
 }
 
 export const PricklyPearInviteUserEmail = ({
-  username,
   invitedByName,
   invitedByEmail,
   inviteLink,
-  inviteFromIp,
-  inviteFromLocation,
 }: PricklyPearInviteUserEmailProps) => {
   const previewText = `Join ${invitedByName} on Prickly Pear`;
 
@@ -95,14 +86,9 @@ export const PricklyPearInviteUserEmail = ({
             </Text>
             <Hr className="mx-0 my-[26px] w-full border border-[#eaeaea] border-solid" />
             <Text className="text-[#666666] text-[12px] leading-[24px]">
-              This invitation was intended for{' '}
-              <span className="text-black">{username}</span>. This invite was
-              sent from <span className="text-black">{inviteFromIp}</span>{' '}
-              located in{' '}
-              <span className="text-black">{inviteFromLocation}</span>. If you
-              were not expecting this invitation, you can ignore this email. If
-              you are concerned about your account's safety, please reply to
-              this email to get in touch with us.
+              If you were not expecting this invitation, you can ignore this
+              email. If you are concerned about your account's safety, please
+              reply to this email to get in touch with us.
             </Text>
           </Container>
         </Body>
@@ -112,12 +98,9 @@ export const PricklyPearInviteUserEmail = ({
 };
 
 PricklyPearInviteUserEmail.PreviewProps = {
-  username: 'Amanda',
   invitedByName: 'Steve',
   invitedByEmail: 'steve@prickly.app',
   inviteLink: 'https://prickly.app/...',
-  inviteFromIp: '127.0.0.1',
-  inviteFromLocation: 'San Francisco, CA',
 } as PricklyPearInviteUserEmailProps;
 
 export default PricklyPearInviteUserEmail;
