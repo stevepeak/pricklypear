@@ -1,14 +1,21 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { z } from 'https://deno.land/x/zod@v3.24.2/mod.ts';
 import sendEmail from '../utils/send-email.ts';
 import { renderEmail } from '../utils/email-render.ts';
 import { PricklyPearInviteUserEmail } from '../templates/invite-user.tsx';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
+import { handleError } from '../utils/handle-error.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers':
     'authorization, x-client-info, apikey, content-type',
 };
+
+const inviteByEmailSchema = z.object({
+  userId: z.string().uuid('Invalid user ID format'),
+  email: z.string().email('Invalid email format'),
+});
 
 async function fetchInviterName(args: { userId: string }) {
   const { userId } = args;
@@ -105,24 +112,32 @@ export type HandlerDeps = {
   sendEmail?: typeof sendEmail;
 };
 
+function errorResponse(message: string, status = 500) {
+  return new Response(
+    JSON.stringify({
+      success: false,
+      message,
+    }),
+    {
+      status,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    }
+  );
+}
+
 export async function handler(req: Request, deps: HandlerDeps = {}) {
   if (req.method === 'OPTIONS')
     return new Response(null, { headers: corsHeaders });
 
   try {
-    const { userId, email } = await req.json();
-    if (!userId || !email) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: 'Both userId and email are required',
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+    const body = await req.json();
+    const result = inviteByEmailSchema.safeParse(body);
+
+    if (!result.success) {
+      return errorResponse(result.error.errors[0].message, 400);
     }
+
+    const { userId, email } = result.data;
     const getSupabase =
       deps.getSupabaseServiceClient ?? getSupabaseServiceClient;
     const sendEmailFn = deps.sendEmail ?? sendEmail;
@@ -180,13 +195,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
         .single();
 
       if (error) {
-        return new Response(
-          JSON.stringify({
-            success: false,
-            message: `Failed to create pending invitation: ${error.message}`,
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        throw error;
       }
 
       // Send email
@@ -205,15 +214,9 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     }
   } catch (error) {
     console.error('invite-by-email error:', error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        message: error instanceof Error ? error.message : 'Unexpected error',
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+    handleError(error);
+    return errorResponse(
+      error instanceof Error ? error.message : 'Unexpected error'
     );
   }
 }
