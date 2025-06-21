@@ -1,0 +1,6 @@
+{
+  "nodeModulesDir": "auto",
+  "imports": {
+    "npm:@react-email/render": "./supabase/functions/utils/react-email-render-stub.ts"
+  }
+}

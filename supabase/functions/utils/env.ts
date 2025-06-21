@@ -1,5 +1,18 @@
 import { z } from 'https://deno.land/x/zod@v3.24.2/mod.ts';
 
+/**
+ * When running Deno unit tests we don’t want to validate the host
+ * environment – the test runner provides no access to real secrets
+ * and setting dozens of variables in CI clutters the workflow.
+ *
+ * If callers explicitly set SUPABASE_FUNCTIONS_TEST=true we
+ * short-circuit the heavy validation logic and expose the small,
+ * hard-coded stub from `env-test-stub.ts`.
+ */
+import { env as testEnv } from './env-test-stub.ts';
+
+const IS_TEST_ENV = Deno.env.get('SUPABASE_FUNCTIONS_TEST') === 'true';
+
 const envSchema = z.object({
   // Supabase
   SUPABASE_URL: z.string().url('Invalid Supabase URL'),
@@ -74,4 +87,8 @@ function parseEnv() {
   return result.data;
 }
 
-export const env = parseEnv();
+/**
+ * Export the validated production env OR the stub when the test
+ * flag is present.
+ */
+export const env = IS_TEST_ENV ? testEnv : parseEnv();

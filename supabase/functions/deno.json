@@ -1,5 +1,8 @@
 {
   "nodeModulesDir": "auto",
+  "imports": {
+    "npm:@react-email/render": "./utils/react-email-render-stub.ts"
+  },
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",
