@@ -11,10 +11,17 @@ export const getThreads = async (): Promise<Thread[]> => {
   try {
     const user = await requireCurrentUser();
 
-    // Get all threads the user participates in
+    // Get all threads with participants in a single query
     const { data: threadData, error: threadError } = await supabase
       .from('threads')
-      .select('*')
+      .select(
+        `
+        *,
+        thread_participants (
+          profiles:user_id ( id, name )
+        )
+      `
+      )
       .order('created_at', { ascending: false });
 
     if (threadError) {
@@ -22,47 +29,33 @@ export const getThreads = async (): Promise<Thread[]> => {
       return [];
     }
 
-    // For each thread, get the participants
-    const threadsWithParticipants = await Promise.all(
-      (threadData || []).map(async (thread) => {
-        // Get participant profiles for this thread
-        const { data: participantsData } = await supabase
-          .from('thread_participants')
-          .select(
-            `
-          profiles:user_id (
-            id, name
+    // Transform the joined data into the expected Thread format
+    const threadsWithParticipants = (threadData || []).map((thread) => {
+      // Extract participant names, excluding current user
+      const participants =
+        thread.thread_participants
+          ?.map((item) => ({
+            id: item.profiles?.id,
+            name: item.profiles?.name,
+          }))
+          .filter(
+            (participant) =>
+              participant.id && participant.name && participant.id !== user.id
           )
-        `
-          )
-          .eq('thread_id', thread.id);
+          .map((participant) => participant.name) || [];
 
-        // Extract participant names, excluding current user
-        const participants =
-          participantsData
-            ?.map((item) => ({
-              id: item.profiles?.id,
-              name: item.profiles?.name,
-            }))
-            .filter(
-              (participant) =>
-                participant.id && participant.name && participant.id !== user.id
-            )
-            .map((participant) => participant.name) || [];
-
-        return {
-          id: thread.id,
-          title: thread.title,
-          createdAt: new Date(thread.created_at),
-          participants,
-          status: thread.status as ThreadStatus,
-          summary: thread.summary,
-          topic: thread.topic as ThreadTopic,
-          controls: thread.controls as ThreadControls,
-          type: thread.type,
-        };
-      })
-    );
+      return {
+        id: thread.id,
+        title: thread.title,
+        createdAt: new Date(thread.created_at),
+        participants,
+        status: thread.status as ThreadStatus,
+        summary: thread.summary,
+        topic: thread.topic as ThreadTopic,
+        controls: thread.controls as ThreadControls,
+        type: thread.type,
+      };
+    });
 
     return threadsWithParticipants;
   } catch (error) {
