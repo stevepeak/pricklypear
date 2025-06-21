@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // tests/mocks/supabaseClientMock.ts
 // A lightweight, chain-friendly mock for the Supabase JS v2 client. Only the
 // subset of the API used by our Deno edge functions is implemented. For all
@@ -20,7 +21,7 @@ function createQueryBuilder<T>(result: QueryResult<T>) {
       if (prop === 'then') {
         return (
           resolve: (v: QueryResult<T>) => void,
-          _reject: (e: unknown) => void,
+          _reject: (e: unknown) => void
         ) => resolve(result);
       }
 

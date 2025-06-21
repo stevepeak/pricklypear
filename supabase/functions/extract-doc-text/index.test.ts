@@ -1,6 +1,4 @@
 /// <reference lib="deno.ns" />
-// supabase/functions/extract-doc-text/index.test.ts
-// @ts-nocheck
 
 import { assertEquals } from 'https://deno.land/std@0.168.0/testing/asserts.ts';
 
@@ -19,37 +17,44 @@ function authHeaders() {
   return { Authorization: 'Bearer test-token' };
 }
 
-Deno.test('extract-doc-text: happy path extracts PDF and stores record', async () => {
-  const supabase = createMockSupabaseClient({
-    authUser: { id: USER_ID },
-    storageDownload: { data: new Blob([dummyPdf]), error: null },
-    tables: {
-      documents: { data: { id: 'doc-1' }, error: null },
-    },
-  });
+Deno.test(
+  'extract-doc-text: happy path extracts PDF and stores record',
+  async () => {
+    const supabase = createMockSupabaseClient({
+      authUser: { id: USER_ID },
+      storageDownload: { data: new Blob([dummyPdf]), error: null },
+      tables: {
+        documents: { data: { id: 'doc-1' }, error: null },
+      },
+    });
 
-  const req = new Request('http://localhost', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-    body: JSON.stringify({ file_path: `${USER_ID}/test.pdf`, filename: 'test.pdf' }),
-  });
+    const req = new Request('http://localhost', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({
+        file_path: `${USER_ID}/test.pdf`,
+        filename: 'test.pdf',
+      }),
+    });
 
-  const openaiStub = {
-    embeddings: {
-      create: () => Promise.resolve({ data: [{ embedding: [0.1, 0.2, 0.3] }] }),
-    },
-  } as const;
+    const openaiStub = {
+      embeddings: {
+        create: () =>
+          Promise.resolve({ data: [{ embedding: [0.1, 0.2, 0.3] }] }),
+      },
+    } as const;
 
-  const res = await handler(req, {
-    createClient: () => supabase as any,
-    getOpenAIClient: () => openaiStub as any,
-  });
+    const res = await handler(req, {
+      createClient: () => supabase as any,
+      getOpenAIClient: () => openaiStub as any,
+    });
 
-  assertEquals(res.status, 200);
-  const body = await res.json();
-  assertEquals(body.status, 'success');
-  assertEquals(body.document_id, 'doc-1');
-});
+    assertEquals(res.status, 200);
+    const body = await res.json();
+    assertEquals(body.status, 'success');
+    assertEquals(body.document_id, 'doc-1');
+  }
+);
 
 Deno.test('extract-doc-text: unsupported file type returns 400', async () => {
   const supabase = createMockSupabaseClient({ authUser: { id: USER_ID } });
@@ -57,7 +62,10 @@ Deno.test('extract-doc-text: unsupported file type returns 400', async () => {
   const req = new Request('http://localhost', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders() },
-    body: JSON.stringify({ file_path: `${USER_ID}/test.txt`, filename: 'test.txt' }),
+    body: JSON.stringify({
+      file_path: `${USER_ID}/test.txt`,
+      filename: 'test.txt',
+    }),
   });
 
   const res = await handler(req, { createClient: () => supabase as any });

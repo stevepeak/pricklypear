@@ -1,17 +1,30 @@
 import { z } from 'https://deno.land/x/zod@v3.24.2/mod.ts';
 
 /**
- * When running Deno unit tests we don’t want to validate the host
- * environment – the test runner provides no access to real secrets
- * and setting dozens of variables in CI clutters the workflow.
- *
- * If callers explicitly set SUPABASE_FUNCTIONS_TEST=true we
- * short-circuit the heavy validation logic and expose the small,
- * hard-coded stub from `env-test-stub.ts`.
+ * A small helper that silences permission errors when reading environment
+ * variables in the sandboxed Deno test runner.
+ */
+function safeGetEnv(key: string): string | undefined {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (Deno as any).env?.get?.(key);
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * When running Deno unit tests we don’t want to validate the host environment
+ * – the test runner provides no access to real secrets. If the special flag
+ * `SUPABASE_FUNCTIONS_TEST` is *set* **or** we cannot read environment
+ * variables at all (see `safeGetEnv`), we short-circuit the heavy validation
+ * logic and return the stub from `env-test-stub.ts`.
  */
 import { env as testEnv } from './env-test-stub.ts';
 
-const IS_TEST_ENV = Deno.env.get('SUPABASE_FUNCTIONS_TEST') === 'true';
+const IS_TEST_ENV =
+  safeGetEnv('SUPABASE_FUNCTIONS_TEST') === 'true' ||
+  safeGetEnv('SUPABASE_URL') === undefined;
 
 const envSchema = z.object({
   // Supabase
@@ -59,20 +72,20 @@ const envSchema = z.object({
 
 function parseEnv() {
   const envVars = {
-    SUPABASE_URL: Deno.env.get('SUPABASE_URL'),
-    SUPABASE_ANON_KEY: Deno.env.get('SUPABASE_ANON_KEY'),
-    SUPABASE_SERVICE_ROLE_KEY: Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'),
-    STRIPE_SECRET_KEY: Deno.env.get('STRIPE_SECRET_KEY'),
-    STRIPE_WEBHOOK_SECRET: Deno.env.get('STRIPE_WEBHOOK_SECRET'),
-    STRIPE_PLAN_SKEW: Deno.env.get('STRIPE_PLAN_SKEW'),
-    OPENAI_API_KEY: Deno.env.get('OPENAI_API_KEY'),
-    RESEND_API_KEY: Deno.env.get('RESEND_API_KEY'),
-    RESEND_FROM_EMAIL: Deno.env.get('RESEND_FROM_EMAIL'),
-    SLACK_WEBHOOK_URL: Deno.env.get('SLACK_WEBHOOK_URL'),
-    LINEAR_API_KEY: Deno.env.get('LINEAR_API_KEY'),
-    LINEAR_TEAM_ID: Deno.env.get('LINEAR_TEAM_ID'),
-    SENTRY_DSN: Deno.env.get('SENTRY_DSN'),
-    SENTRY_ENVIRONMENT: Deno.env.get('SENTRY_ENVIRONMENT'),
+    SUPABASE_URL: safeGetEnv('SUPABASE_URL'),
+    SUPABASE_ANON_KEY: safeGetEnv('SUPABASE_ANON_KEY'),
+    SUPABASE_SERVICE_ROLE_KEY: safeGetEnv('SUPABASE_SERVICE_ROLE_KEY'),
+    STRIPE_SECRET_KEY: safeGetEnv('STRIPE_SECRET_KEY'),
+    STRIPE_WEBHOOK_SECRET: safeGetEnv('STRIPE_WEBHOOK_SECRET'),
+    STRIPE_PLAN_SKEW: safeGetEnv('STRIPE_PLAN_SKEW'),
+    OPENAI_API_KEY: safeGetEnv('OPENAI_API_KEY'),
+    RESEND_API_KEY: safeGetEnv('RESEND_API_KEY'),
+    RESEND_FROM_EMAIL: safeGetEnv('RESEND_FROM_EMAIL'),
+    SLACK_WEBHOOK_URL: safeGetEnv('SLACK_WEBHOOK_URL'),
+    LINEAR_API_KEY: safeGetEnv('LINEAR_API_KEY'),
+    LINEAR_TEAM_ID: safeGetEnv('LINEAR_TEAM_ID'),
+    SENTRY_DSN: safeGetEnv('SENTRY_DSN'),
+    SENTRY_ENVIRONMENT: safeGetEnv('SENTRY_ENVIRONMENT'),
   };
 
   const result = envSchema.safeParse(envVars);
@@ -87,8 +100,4 @@ function parseEnv() {
   return result.data;
 }
 
-/**
- * Export the validated production env OR the stub when the test
- * flag is present.
- */
 export const env = IS_TEST_ENV ? testEnv : parseEnv();

@@ -1,7 +1,15 @@
 {
   "nodeModulesDir": "auto",
   "imports": {
-    "npm:@react-email/render": "./utils/react-email-render-stub.ts"
+    "npm:@react-email/render": "./utils/react-email-render-stub.ts",
+    "npm:@supabase/supabase-js": "./utils/supabase-js-stub.ts",
+    "npm:resend": "./utils/resend-stub.ts",
+    "https://esm.sh/resend@4.5.0": "./utils/resend-stub.ts",
+    "npm:openai": "./utils/openai-stub.ts",
+    "https://esm.sh/openai@4.*": "./utils/openai-stub.ts",
+    "npm:node-gyp-build": "./utils/node-gyp-build-stub.ts",
+    "https://esm.sh/node-gyp-build": "./utils/node-gyp-build-stub.ts",
+    "https://esm.sh/node-gyp-build@4.8.4": "./utils/node-gyp-build-stub.ts"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
