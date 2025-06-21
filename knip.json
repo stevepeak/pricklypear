@@ -5,7 +5,8 @@
     "supabase/functions/**/*.tsx",
     "src/components/**/*.tsx",
     "tests/e2e/fixtures.ts",
-    "src/integrations/supabase/types.ts"
+    "src/integrations/supabase/types.ts",
+    "react-email/**/*"
   ],
   "ignoreBinaries": ["supabase"],
   "ignoreDependencies": ["@radix-ui/*", "tw-animate-css", "deno", "vaul"]
