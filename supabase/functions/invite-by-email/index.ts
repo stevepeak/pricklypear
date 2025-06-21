@@ -1,7 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import sendEmail from '../utils/send-email.ts';
 import { renderEmail } from '../utils/email-render.ts';
-import { InvitationEmail } from '../templates/InvitationEmail.tsx';
+import { PricklyPearInviteUserEmail } from '../templates/invite-user.tsx';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
 
 const corsHeaders = {
@@ -42,16 +42,19 @@ async function fetchInviteeUser(args: {
 }
 
 async function sendInvitationEmail(
-  args: { to: string; inviterName: string; isExistingUser: boolean },
+  args: { to: string; inviterName: string },
   sendEmailFn: typeof sendEmail = sendEmail
 ) {
-  const { to, inviterName, isExistingUser } = args;
+  const { to, inviterName } = args;
   const subject = `${inviterName} invited you to connect on The Prickly Pear`;
   // Render the React Email template
-  const html = await renderEmail(InvitationEmail, {
-    inviterName,
-    recipientEmail: to,
-    isExistingUser,
+  const html = await renderEmail(PricklyPearInviteUserEmail, {
+    invitedByName: inviterName,
+    invitedByEmail: inviterName, // This should be the actual email, but we don't have it in this context
+    inviteLink: 'https://prickly.app/invite', // This should be a proper invite link
+    username: to,
+    inviteFromIp: 'Unknown',
+    inviteFromLocation: 'Unknown',
   });
   await sendEmailFn({
     to,
@@ -151,10 +154,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       });
 
       // Send email
-      await sendInvitationEmail(
-        { to: email, inviterName, isExistingUser: Boolean(inviteeUser) },
-        sendEmailFn
-      );
+      await sendInvitationEmail({ to: email, inviterName }, sendEmailFn);
 
       return new Response(
         JSON.stringify({
@@ -190,10 +190,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       }
 
       // Send email
-      await sendInvitationEmail(
-        { to: email, inviterName, isExistingUser: Boolean(inviteeUser) },
-        sendEmailFn
-      );
+      await sendInvitationEmail({ to: email, inviterName }, sendEmailFn);
 
       return new Response(
         JSON.stringify({
@@ -221,5 +218,4 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
   }
 }
 
-// @ts-expect-error TS2345
-serve(handler);
+serve(async (req) => handler(req));
