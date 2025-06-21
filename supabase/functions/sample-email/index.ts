@@ -73,24 +73,20 @@ export async function handler(req: Request) {
 
     const resend = new Resend(env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
-      from: 'The Prickly Pear <onboarding@resend.dev>',
+      from: 'The Prickly Pear <hello@prickly.app>',
       to,
       subject: 'Test email',
       html,
     });
 
-    // For actual sending, you would need additional parameters like 'to', 'subject', etc.
-    // This is just a template preview function now
-    return new Response(
-      JSON.stringify({
-        data,
-        error,
-      }),
-      {
-        status: error ? 500 : 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+    if (error) {
+      throw error;
+    }
+
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     handleError(error);
 
