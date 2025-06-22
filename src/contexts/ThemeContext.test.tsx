@@ -17,6 +17,25 @@ describe('ThemeProvider (unauthenticated user)', () => {
   beforeEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
+
+    // Stub window.matchMedia for jsdom
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation(
+        (query: string): MediaQueryList =>
+          ({
+            matches: false,
+            media: query,
+            onchange: null,
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            addListener: vi.fn(), // deprecated but sometimes used
+            removeListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+          }) as unknown as MediaQueryList
+      ),
+    });
+
     // Ensure document root has no lingering dark class
     document.documentElement.classList.remove('dark');
     localStorage.clear();
