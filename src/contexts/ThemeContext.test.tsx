@@ -3,7 +3,8 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 vi.mock('@/contexts/AuthContext', () => ({
-  useAuth: () => ({ user: null, loading: false }),
+  // Explicit `any` keeps TS happy inside the test environment
+  useAuth: (): any => ({ user: null, loading: false }),
 }));
 
 import { ThemeProvider, useTheme } from './ThemeContext';
