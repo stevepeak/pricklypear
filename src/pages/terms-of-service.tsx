@@ -1,23 +1,920 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Footer from '@/components/ui/footer';
 
 export default function TermsOfService() {
+  const [activeTab, setActiveTab] = useState('full');
+
   return (
     <>
-      <div className="max-w-2xl mx-auto py-12 px-4">
-        <h1 className="text-2xl font-bold mb-4">Terms of Service</h1>
-        <p className="mb-4">
-          Welcome to Prickly Pear. By using our service, you agree to the
-          following:
+      <div className="max-w-4xl mx-auto py-12 px-4">
+        <h1 className="text-3xl font-bold mb-6">Terms of Use</h1>
+
+        <p className="text-sm text-muted-foreground mb-8">
+          Effective Date: June 22, 2025
         </p>
-        <ul className="list-disc pl-6 mb-4">
-          <li>We never sell or share your data, ever.</li>
-          <li>
-            We never store your original message, only the AI rephrased one you
-            accept.
-          </li>
-        </ul>
-        <p>If you have any questions about these terms, please contact us.</p>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="full">Full Version</TabsTrigger>
+            <TabsTrigger value="summarized">Summarized</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="full" className="mt-6">
+            <div className="space-y-8">
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  1. Acceptance of Terms
+                </h2>
+                <p className="mb-4">
+                  Welcome to Prickly Pear. By creating an account or using the
+                  Prickly Pear service ("Service"), you ("User" or "Subscriber")
+                  agree to these Terms of Use ("Terms" or "Agreement"). These
+                  Terms constitute a binding legal agreement between you and
+                  Prickly Pear (operated by Prickly Pear Technologies, LLC).
+                </p>
+                <p className="mb-4">
+                  If you do not agree with any part of these Terms or our
+                  Privacy Policy, you should not use the Service. We may update
+                  these Terms from time to time by posting the revised version
+                  on our website or app, and the update will be effective when
+                  posted. Your continued use of the Service after changes are
+                  posted constitutes your acceptance of the updated Terms.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  2. Service Description
+                </h2>
+                <p className="mb-4">
+                  Prickly Pear is a co-parenting communication platform designed
+                  to assist and guide separated or divorced parents in managing
+                  communications about their children in a respectful,
+                  constructive manner. The Service provides a secure messaging
+                  system, shared calendars, expense tracking, and other tools to
+                  help coordinate co-parenting responsibilities.
+                </p>
+                <p className="mb-4">
+                  We also offer AI-assisted features such as tone suggestions or
+                  message drafting help, aimed at reducing conflict by
+                  encouraging civil communication. All communications through
+                  Prickly Pear are retained as unalterable records to ensure
+                  accountability and can be produced as needed for personal
+                  reference or legal proceedings.
+                </p>
+                <p className="mb-4">
+                  <strong>Note:</strong> Prickly Pear is not a law firm,
+                  counseling service, or mediator; it is a technology platform
+                  that facilitates communication. It does not guarantee the
+                  resolution of disputes or the accuracy of any advice or
+                  suggestions provided by the system.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  3. Important Disclaimers (No Professional Advice & AI
+                  Limitations)
+                </h2>
+
+                <h3 className="text-xl font-medium mb-3">
+                  No Legal or Professional Advice
+                </h3>
+                <p className="mb-4">
+                  Prickly Pear is not a substitute for professional judgment or
+                  legal counsel. While the Service may provide informational
+                  content or AI-generated suggestions to improve communication,
+                  we do not give legal advice or provide legal services. Nothing
+                  on Prickly Pear, whether generated by AI or written by staff,
+                  should be construed as legal, financial, psychological, or
+                  medical advice.
+                </p>
+                <p className="mb-4">
+                  If you have questions of a legal nature or any decisions with
+                  legal implications, you should consult a qualified attorney.
+                  If you require counseling or mediation, please seek a licensed
+                  professional. You acknowledge that your reliance on any
+                  information or tools available through Prickly Pear is at your
+                  own risk.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">AI Content Warning</h3>
+                <p className="mb-4">
+                  Prickly Pear employs artificial intelligence to assist users
+                  (for example, by suggesting wording or analyzing message
+                  tone). AI-generated content may contain errors or omissions,
+                  and we make no guarantees regarding its accuracy or
+                  reliability. The AI might sometimes misinterpret context or
+                  generate suggestions that are not appropriate for your
+                  situation.
+                </p>
+                <p className="mb-4">
+                  You are solely responsible for evaluating and deciding whether
+                  to use any AI-provided suggestion or response. All AI outputs
+                  should be reviewed by you, and you should apply your own
+                  judgment or seek human advice where needed. Prickly Pear
+                  disclaims any liability for actions you take (or refrain from
+                  taking) based on AI-generated content.
+                </p>
+                <p className="mb-4">
+                  By using the Service, you agree that Prickly Pear is not
+                  accountable for any errors in AI content or any consequences
+                  arising from such errors. This limitation is part of our
+                  general warranty disclaimer (see Section 10 below). Always
+                  double-check critical information and don't rely on Prickly
+                  Pear as your sole source of guidance for important decisions.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  4. User Accounts and Security
+                </h2>
+
+                <h3 className="text-xl font-medium mb-3">
+                  Account Registration
+                </h3>
+                <p className="mb-4">
+                  You must create an account to use Prickly Pear. You agree to
+                  provide truthful, current, and complete information during
+                  registration and to update it as needed so that it remains
+                  accurate. Each account is for a single user; you are not
+                  allowed to share login credentials with another person.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">Account Security</h3>
+                <p className="mb-4">
+                  Upon registration, you will choose a secure password (and
+                  possibly set up two-factor authentication). You are
+                  responsible for maintaining the confidentiality of your login
+                  credentials. You are liable for all activities that occur
+                  under your account – please guard your password and do not
+                  share it.
+                </p>
+                <p className="mb-4">
+                  If you become aware of any unauthorized use of your account or
+                  security breach, you must notify us immediately. We are not
+                  liable for any loss or damage arising from your failure to
+                  secure your account or report misuse promptly. You also agree
+                  not to use anyone else's account or allow others to use your
+                  account.
+                </p>
+                <p className="mb-4">
+                  We reserve the right to disable or suspend any account we
+                  suspect is compromised or being used in violation of these
+                  Terms, to protect the Service and users.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  5. Appropriate Use of the Service
+                </h2>
+                <p className="mb-4">
+                  By using Prickly Pear, you agree to engage in civil and lawful
+                  communication. You must adhere to our Communication Guidelines
+                  which boil down to treating the other parent (and anyone else
+                  on the platform) with respect and focusing on child-related
+                  matters without harassment.
+                </p>
+                <p className="mb-4">
+                  Specifically, when posting messages, sharing files, or
+                  otherwise using the Service, you agree NOT to:
+                </p>
+
+                <ul className="list-disc pl-6 mb-4 space-y-2">
+                  <li>
+                    <strong>Harass, threaten, or abuse</strong> the other parent
+                    or any person. This includes using profanity, insults,
+                    extreme anger, or any language intended to intimidate or
+                    demean. Prickly Pear's purpose is to reduce conflict, so
+                    keep communications constructive and child-focused.
+                  </li>
+                  <li>
+                    <strong>Use hateful, obscene, or vulgar language</strong>,
+                    or any content that is defamatory or discriminatory. Any
+                    communication that is offensive or inappropriate may be
+                    flagged and revised or rejected by the system.
+                  </li>
+                  <li>
+                    <strong>Discuss illegal activities</strong> or encourage
+                    unlawful behavior. You may not use the Service to plan or
+                    carry out any illegal act, nor to communicate in a way that
+                    violates any court orders (e.g., no-contact orders) that
+                    apply to you.
+                  </li>
+                  <li>
+                    <strong>Upload or share restricted content:</strong> Do not
+                    post anything that violates intellectual property rights
+                    (e.g., copyrighted materials you don't have the right to
+                    share). Do not share anyone's personal data (like social
+                    security numbers, financial account numbers, login
+                    credentials) in a way that could facilitate identity theft.
+                  </li>
+                  <li>
+                    <strong>Include Protected or Sensitive Information:</strong>{' '}
+                    Our platform is not a medical or healthcare service. Do not
+                    upload any protected health information (PHI) about
+                    yourself, your child, or others (such as detailed medical
+                    records). Prickly Pear is not HIPAA-compliant. If you
+                    nonetheless share health or sensitive data, you assume all
+                    risks, and we will have no liability for any exposure or
+                    misuse of such data. (Discuss general health concerns in a
+                    civil manner, but detailed medical records should be handled
+                    through appropriate channels).
+                  </li>
+                  <li>
+                    <strong>Impersonate or misrepresent</strong> your identity
+                    or affiliations. You must use your real identity on your
+                    account and not pretend to be someone else or allow someone
+                    else to pose as you.
+                  </li>
+                  <li>
+                    <strong>Interfere with the Service's operation</strong> or
+                    other users' use. This means you won't attempt to hack,
+                    overload, or disrupt our servers, introduce viruses, or use
+                    any automated means (bots, scripts) to scrape or access data
+                    not meant for you. Any attempt to gain unauthorized access
+                    to the Service or another's account is prohibited.
+                  </li>
+                </ul>
+
+                <p className="mb-4">
+                  Prickly Pear does not pre-screen or actively monitor all
+                  user-generated content in real time, and we are not
+                  responsible for the content of communications that users send.
+                  We cannot guarantee that objectionable material will never
+                  appear on the Service.
+                </p>
+                <p className="mb-4">
+                  However, we reserve the right (but do not assume the
+                  obligation) to review and moderate content. This may include
+                  automated review by AI or review by authorized personnel,
+                  especially if a message is flagged for guideline violations.
+                  We may refuse to transmit or remove any message that violates
+                  these Terms or our guidelines, or modify it to the minimum
+                  extent necessary to render it compliant.
+                </p>
+                <p className="mb-4">
+                  In severe cases or repeated violations, we may label a
+                  communication as "Rejected" and not forward it to the
+                  recipient. Both parties will typically be able to see when a
+                  message was modified or rejected for violation of guidelines,
+                  and an explanation or code may be provided to the sender
+                  indicating why.
+                </p>
+                <p className="mb-4">
+                  Our aim in intervening is to coach and educate users toward
+                  healthier communication, not to censor unnecessarily.
+                  Nonetheless, if you repeatedly violate these standards,
+                  Prickly Pear may suspend or terminate your account (see
+                  Section 12 on Termination).
+                </p>
+                <p className="mb-4">
+                  You acknowledge that any content you contribute is your
+                  responsibility. By posting or sending content via Prickly
+                  Pear, you represent that you have the right to share that
+                  content and that it doesn't violate any confidentiality or
+                  rights of third parties. Under no circumstances will Prickly
+                  Pear or its affiliates be liable for any user content, nor for
+                  any loss or damage resulting from it. This means you, not
+                  Prickly Pear, are fully responsible for the content of your
+                  communications and any consequences that arise from them.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  6. Ownership of Data and License Grant
+                </h2>
+
+                <h3 className="text-xl font-medium mb-3">Your Content</h3>
+                <p className="mb-4">
+                  You retain ownership of the content you create and upload to
+                  Prickly Pear (your messages, attachments, etc.) as between you
+                  and us. Your co-parent will likewise own the messages they
+                  send. Additionally, each parent has joint rights to the
+                  overall record of communications between them.
+                </p>
+                <p className="mb-4">
+                  By using the Service, you grant Prickly Pear a non-exclusive,
+                  worldwide, royalty-free license to host, store, and transmit
+                  your content as needed to provide the Service and fulfill our
+                  obligations under these Terms. This includes the right for us
+                  to compile and retain records of all communications (even if
+                  you delete or edit something on your screen, we may retain the
+                  original in our system logs for legal integrity) and to
+                  disclose those communications as permitted in our Privacy
+                  Policy or these Terms.
+                </p>
+                <p className="mb-4">
+                  We will not use or disclose your communications outside of
+                  providing the Service except as authorized by you or as
+                  required by law.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">Service Content</h3>
+                <p className="mb-4">
+                  All software, text, graphics, logos, trademarks, and other
+                  content provided by Prickly Pear (excluding your own content)
+                  are the intellectual property of Prickly Pear or its
+                  licensors. We grant you a limited, revocable license to use
+                  our application and website for its intended purpose of
+                  co-parenting communication.
+                </p>
+                <p className="mb-4">
+                  You may not copy, modify, distribute, or create derivative
+                  works from our proprietary materials without our express
+                  written permission. You also agree not to reverse engineer or
+                  decompile any aspect of our software.
+                </p>
+                <p className="mb-4">
+                  If you submit feedback or suggestions to us about Prickly
+                  Pear, you agree that we may use such feedback without
+                  obligation to you. (For example, if you suggest a new feature
+                  and we implement it, we don't owe you compensation.) You grant
+                  us a license to use any feedback you provide for any purpose,
+                  consistent with applicable law.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  7. Payment and Subscription (if applicable)
+                </h2>
+                <p className="mb-4">
+                  (This section applies if Prickly Pear operates on a
+                  subscription or paid model.) Prickly Pear may offer free
+                  accounts as well as paid premium features or subscriptions.
+                  The specific pricing, billing frequency, and features of each
+                  plan will be disclosed at the time of purchase.
+                </p>
+                <p className="mb-4">
+                  By subscribing to a paid plan, you agree to pay the listed
+                  fees and any applicable taxes. Payments will be charged in
+                  advance (e.g., monthly or annually) to the payment method you
+                  provide.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">Trials and Refunds</h3>
+                <p className="mb-4">
+                  If we offer a free trial or introductory period, you must
+                  cancel before the end of the trial to avoid being charged. We
+                  may provide a refund for first-time subscriptions canceled
+                  within a certain period (e.g., 30 days) as a courtesy. Refund
+                  eligibility and procedures will be detailed in the purchase
+                  terms or help center. Outside of any stated refund window, all
+                  fees are non-refundable.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">Auto-Renewal</h3>
+                <p className="mb-4">
+                  Paid subscriptions will automatically renew at the end of each
+                  term (month or year) by charging the same payment method,
+                  unless you cancel auto-renewal at least 3 days before the
+                  renewal date. You can manage or cancel your subscription
+                  through your account settings or by contacting our support,
+                  or, if you subscribed via a mobile app store, through the
+                  store's subscription management.
+                </p>
+                <p className="mb-4">
+                  If a payment fails or an account is past due, we reserve the
+                  right to suspend service until payment is resolved. We also
+                  reserve the right to change our fees or subscription
+                  structure, but will give you notice of any price increase and
+                  the opportunity to cancel if you do not agree.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  8. Records and Data Handling
+                </h2>
+
+                <h3 className="text-xl font-medium mb-3">
+                  Unalterable Records
+                </h3>
+                <p className="mb-4">
+                  Prickly Pear provides an unalterable record of communications.
+                  Once a message is sent, it cannot be edited or deleted from
+                  the record by either user (other than adding clarifying
+                  follow-up messages). You may edit or delete entries like
+                  calendar events or notes on your own view, but the system will
+                  log those changes so that a complete history can be
+                  reconstructed.
+                </p>
+                <p className="mb-4">
+                  This policy ensures trust in the records for later reference
+                  or court use. We will not remove or hide content from the
+                  record at the request of a user except in extreme
+                  circumstances (such as if required by a court order, or if the
+                  content violates someone's rights and removal is legally
+                  necessary). Even if an account is terminated, the
+                  communications that occurred may be retained for the benefit
+                  of the other party and for legal integrity.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">
+                  Access by Professionals
+                </h3>
+                <p className="mb-4">
+                  If you or the court allows a third-party professional (such as
+                  a judge, attorney, guardian ad litem, or therapist) to access
+                  your Prickly Pear records (e.g., via a professional access
+                  feature or by providing them copies of records), that
+                  professional is responsible for maintaining any
+                  confidentiality required.
+                </p>
+                <p className="mb-4">
+                  We offer a mechanism similar to other platforms where
+                  professionals can view family communications in a readonly
+                  format with the parties' permission. All professional accounts
+                  or accesses are governed by these Terms and must respect the
+                  privacy of the communications. We are not responsible for any
+                  actions taken by third-party professionals who access your
+                  data with authorization.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">
+                  Subpoenas and Court Orders
+                </h3>
+                <p className="mb-4">
+                  As noted in the Privacy Policy, if Prickly Pear is served with
+                  a valid subpoena or court order for your records, we will
+                  comply and provide the requested information. We prefer to let
+                  you obtain records yourself (users can download their
+                  communication history for court in many cases), but there
+                  might be times we must respond directly to legal process.
+                </p>
+                <p className="mb-4">
+                  We will attempt to notify you of any such request (when
+                  legally permitted) so you can object or seek to quash if you
+                  desire. Prickly Pear is also willing to provide certified
+                  records or testimony about the authenticity of records, if
+                  needed, to verify that the communications are true and
+                  untampered. Note that we will not release records to anyone
+                  without proper legal authority or your consent, to protect
+                  user privacy.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  9. Privacy and Data Protection
+                </h2>
+                <p className="mb-4">
+                  Your use of the Service is also governed by our Privacy
+                  Policy, which is hereby incorporated into these Terms by
+                  reference. The Privacy Policy explains what data we collect
+                  and how we handle it. By agreeing to these Terms, you also
+                  consent to the data practices described in the Privacy Policy.
+                </p>
+                <p className="mb-4">
+                  In short, we collect the minimum personal information needed
+                  to provide the Service, we protect it with appropriate
+                  security measures, and we do not sell your personal data.
+                  Communications between you and your co-parent are stored and
+                  may be disclosed only as outlined in the Privacy Policy. If
+                  you have questions about privacy, please review the policy or
+                  contact us.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  10. Disclaimer of Warranties
+                </h2>
+
+                <h3 className="text-xl font-medium mb-3">
+                  Use at Your Own Risk
+                </h3>
+                <p className="mb-4">
+                  Prickly Pear strives to provide a useful and reliable service,
+                  but we offer no guarantees that the Service will meet your
+                  requirements or achieve particular results. The Service is
+                  provided "AS IS" and "AS AVAILABLE," without warranty of any
+                  kind.
+                </p>
+                <p className="mb-4">
+                  To the fullest extent allowed by law, Prickly Pear disclaims
+                  all warranties, express or implied, including but not limited
+                  to implied warranties of merchantability, fitness for a
+                  particular purpose, and non-infringement. We make no warranty
+                  that the Service will be uninterrupted, timely, secure, or
+                  error-free, or that any defects will be corrected promptly.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">
+                  No Guarantee of Accuracy
+                </h3>
+                <p className="mb-4">
+                  We do not warrant the accuracy or reliability of any
+                  information obtained through the Service (including
+                  suggestions from our AI features or content posted by users).
+                  No advice or information (whether oral or written) obtained
+                  from Prickly Pear or through the Service shall create any
+                  warranty not expressly stated in these Terms. Users are
+                  responsible for verifying the information they glean from the
+                  Service.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">
+                  No Liability for User Conduct
+                </h3>
+                <p className="mb-4">
+                  Prickly Pear does not control what users write in their
+                  communications and is not responsible for any offensive,
+                  inappropriate, obscene, or unlawful content you may encounter.
+                  We do not guarantee the integrity or quality of user-generated
+                  content. You understand that using the Service may expose you
+                  to content you find objectionable or upsetting, and you use
+                  the Service at your own risk.
+                </p>
+                <p className="mb-4">
+                  Some jurisdictions do not allow the exclusion of certain
+                  warranties, so some of the above disclaimers may not fully
+                  apply to you. In such cases, warranties are disclaimed to the
+                  maximum extent permitted by applicable law.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  11. Limitation of Liability
+                </h2>
+                <p className="mb-4">
+                  To the extent permitted by law, Prickly Pear (and its owners,
+                  employees, and affiliates) shall not be liable for any
+                  indirect, incidental, special, consequential, or exemplary
+                  damages arising out of or in connection with your use of the
+                  Service. This includes, without limitation, damages for lost
+                  profits, lost data, emotional distress, or other intangible
+                  losses, even if we have been advised of the possibility of
+                  such damages.
+                </p>
+                <p className="mb-4">
+                  In particular, Prickly Pear will not be liable for:
+                </p>
+                <ul className="list-disc pl-6 mb-4 space-y-2">
+                  <li>
+                    Any actions or decisions you make based on information or
+                    communication through the Service, including decisions
+                    related to legal matters or parenting arrangements. (Always
+                    consult professionals for critical decisions.)
+                  </li>
+                  <li>
+                    Unauthorized access to or alteration of your communications
+                    or data by third parties (for example, if someone hacks into
+                    your account due to your compromised credentials, we are not
+                    responsible for the consequences).
+                  </li>
+                  <li>
+                    Any conduct or content of other users on the platform,
+                    whether online or offline.
+                  </li>
+                  <li>
+                    Loss or damage from interruptions or errors in our Service.
+                    While we aim for high availability, we are not liable for
+                    any downtime, data loss, or functionality issues.
+                  </li>
+                  <li>
+                    Any issues arising from use of AI features, such as
+                    incorrect suggestions or content modifications. (These are
+                    covered by the general disclaimer that the Service may be
+                    faulty and use is at your risk.)
+                  </li>
+                </ul>
+                <p className="mb-4">
+                  Our total cumulative liability to you for any claims arising
+                  from or related to the Service is limited to the amount (if
+                  any) you paid us in the 12 months preceding the event giving
+                  rise to the liability, or $1000 USD, whichever is less. This
+                  limitation applies whether the claim is based on warranty,
+                  contract, tort (including negligence), or any other legal
+                  theory.
+                </p>
+                <p className="mb-4">
+                  <strong>Exception:</strong> Nothing in these Terms is intended
+                  to exclude or limit liability that cannot be excluded under
+                  law – for example, liability for death or personal injury
+                  caused by gross negligence, or fraud. But to the extent the
+                  law allows, we exclude or limit liability as outlined here.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">12. Termination</h2>
+                <p className="mb-4">
+                  You may stop using Prickly Pear at any time. If you wish to
+                  delete your account, you can contact support to initiate that
+                  process. Keep in mind that, due to the nature of shared
+                  records, communications you participated in will remain
+                  accessible to the other parent even after your account is
+                  closed, as part of their record (see Data Retention in the
+                  Privacy Policy).
+                </p>
+                <p className="mb-4">
+                  Prickly Pear reserves the right to suspend or terminate your
+                  access to the Service (or portions of it) at our discretion,
+                  particularly if you violate these Terms or engage in behavior
+                  that jeopardizes the platform or other users. For example,
+                  harassment of the other parent, repeated posting of prohibited
+                  content, illegal activity on the platform, or security
+                  breaches are all grounds for termination.
+                </p>
+                <p className="mb-4">
+                  We will generally provide a warning or ask for corrective
+                  action before terminating, except in severe cases. Upon
+                  termination, your right to use the Service ceases immediately.
+                  We may retain your communications data as explained in our
+                  policies, but your login will be disabled.
+                </p>
+                <p className="mb-4">
+                  Sections of these Terms that by their nature should survive
+                  termination (such as disclaimers of warranties, limitation of
+                  liability, user content license for records, and governing
+                  law) will continue to be in effect.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  13. Governing Law and Dispute Resolution
+                </h2>
+                <p className="mb-4">
+                  These Terms shall be governed by and construed in accordance
+                  with the laws of the State of Colorado, USA, without regard to
+                  its conflict of law principles. You agree that any dispute or
+                  claim arising out of or related to this Agreement or the
+                  Service will be brought exclusively in the state or federal
+                  courts located in Colorado, and you consent to the
+                  jurisdiction of those courts.
+                </p>
+                <p className="mb-4">
+                  (If you reside outside the United States, you understand and
+                  agree that you are voluntarily subjecting yourself to the
+                  jurisdiction of Colorado by using the Service.) However,
+                  before resorting to litigation, we encourage users to contact
+                  us to discuss any issues. We are open to resolving disputes
+                  through mediation or other informal means if both parties
+                  agree, especially since the Service is meant to facilitate
+                  cooperation.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  14. Miscellaneous
+                </h2>
+
+                <h3 className="text-xl font-medium mb-3">No Waiver</h3>
+                <p className="mb-4">
+                  If we do not enforce a provision of these Terms, it is not a
+                  waiver of our right to do so later. Likewise, if you or we
+                  waive any particular breach or provision, it does not mean
+                  that any other breach or provision is also waived.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">Severability</h3>
+                <p className="mb-4">
+                  If any part of these Terms is found to be invalid or
+                  unenforceable by a court, the rest of the Terms will remain in
+                  effect. We agree that the court should modify the invalid
+                  provision to closely reflect the intent of the original, or if
+                  that's not possible, remove it, while keeping the remainder of
+                  the Agreement intact.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">
+                  No Third-Party Beneficiaries
+                </h3>
+                <p className="mb-4">
+                  These Terms do not create any rights for anyone who is not a
+                  party to this agreement. In other words, no third party
+                  (except permitted successors or assigns) has any rights to
+                  enforce any term of this Agreement.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">Assignment</h3>
+                <p className="mb-4">
+                  You may not assign or transfer your rights or obligations
+                  under these Terms to anyone else without our written consent.
+                  Prickly Pear may assign its rights and obligations to an
+                  affiliate or in connection with a merger or acquisition, as
+                  long as your rights are not materially diminished.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">Entire Agreement</h3>
+                <p className="mb-4">
+                  These Terms, together with the Privacy Policy and any
+                  additional guidelines or policies we post, constitute the
+                  entire agreement between you and Prickly Pear regarding the
+                  Service, and supersede any prior agreements or understandings
+                  (whether written or oral) relating to the Service.
+                </p>
+
+                <h3 className="text-xl font-medium mb-3">Headings</h3>
+                <p className="mb-4">
+                  Section headings in this document are for convenience only and
+                  have no legal effect.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">
+                  15. Contact Information
+                </h2>
+                <p className="mb-4">
+                  If you have any questions about these Terms or need to contact
+                  us for any reason, please reach out to our support team:{' '}
+                  <strong>support@prickly.app</strong>. We value our community
+                  and are here to help.
+                </p>
+              </section>
+
+              <div className="mt-12 p-6 bg-muted rounded-lg">
+                <p className="text-center font-medium">
+                  By using Prickly Pear, you acknowledge that you have read,
+                  understood, and agree to these Terms of Use. Thank you for
+                  helping us create a safer and more cooperative co-parenting
+                  environment.
+                </p>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="summarized" className="mt-6">
+            <div className="space-y-8">
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  1. Acceptance of Terms
+                </h2>
+                <p className="mb-4">
+                  By using Prickly Pear, you agree to these Terms of Use.
+                  Continued use after updates constitutes acceptance.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  2. Service Description
+                </h2>
+                <p className="mb-4">
+                  Prickly Pear is a tool for co-parenting communication. It is
+                  not a substitute for legal advice or therapy.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  3. Important Disclaimers
+                </h2>
+                <h3 className="text-lg font-medium mb-3">No Legal Advice</h3>
+                <p className="mb-4">Prickly Pear is not a legal advisor.</p>
+
+                <h3 className="text-lg font-medium mb-3">AI Limitations</h3>
+                <p className="mb-4">
+                  AI may generate errors. Use outputs at your own risk.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  4. User Accounts and Security
+                </h2>
+                <ul className="list-disc pl-6 mb-4">
+                  <li>Use accurate information during sign-up.</li>
+                  <li>Keep your login credentials secure.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  5. Appropriate Use of the Service
+                </h2>
+                <p className="mb-4">Do not:</p>
+                <ul className="list-disc pl-6 mb-4">
+                  <li>Harass or abuse others.</li>
+                  <li>Share illegal or obscene content.</li>
+                  <li>Upload PHI or other sensitive info.</li>
+                  <li>Impersonate others.</li>
+                  <li>Attempt to hack the service.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  6. Ownership of Data
+                </h2>
+                <ul className="list-disc pl-6 mb-4">
+                  <li>You retain ownership of your content.</li>
+                  <li>
+                    We retain the right to store and transmit communications.
+                  </li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  7. Payment and Subscription
+                </h2>
+                <ul className="list-disc pl-6 mb-4">
+                  <li>Subscription plans may apply.</li>
+                  <li>
+                    Auto-renewal terms and refund policies disclosed at
+                    purchase.
+                  </li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  8. Records and Data Handling
+                </h2>
+                <ul className="list-disc pl-6 mb-4">
+                  <li>Communication records are unalterable.</li>
+                  <li>Professionals may be granted read-only access.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  9. Privacy and Data Protection
+                </h2>
+                <p className="mb-4">
+                  See our Privacy Policy for detailed practices.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  10. Disclaimer of Warranties
+                </h2>
+                <p className="mb-4">
+                  Prickly Pear is provided "as is." We do not guarantee results
+                  or uptime.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  11. Limitation of Liability
+                </h2>
+                <p className="mb-4">We are not liable for:</p>
+                <ul className="list-disc pl-6 mb-4">
+                  <li>AI errors</li>
+                  <li>User-generated content</li>
+                  <li>Downtime</li>
+                  <li>Actions based on platform content</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">12. Termination</h2>
+                <p className="mb-4">
+                  We may suspend or terminate accounts for violations.
+                  Communication records may persist after termination.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  13. Governing Law
+                </h2>
+                <p className="mb-4">
+                  These Terms are governed by Colorado law. Disputes will be
+                  resolved in Colorado courts.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  14. Miscellaneous
+                </h2>
+                <ul className="list-disc pl-6 mb-4">
+                  <li>No waiver of rights.</li>
+                  <li>Severability of terms.</li>
+                  <li>No third-party beneficiaries.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold mb-4">
+                  15. Contact Information
+                </h2>
+                <p className="mb-4">Email: hello@prickly.app</p>
+              </section>
+
+              <div className="mt-12 p-6 bg-muted rounded-lg">
+                <p className="text-center font-medium">
+                  By using Prickly Pear, you acknowledge that you have read,
+                  understood, and agree to these Terms of Use.
+                </p>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
       <Footer />
     </>
