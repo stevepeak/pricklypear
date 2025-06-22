@@ -84,7 +84,6 @@ const Account = () => {
           <ChangePasswordForm />
         </CardContent>
       </Card>
-      {/*
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Notification Preferences</CardTitle>
@@ -120,7 +119,6 @@ const Account = () => {
           />
         </CardContent>
       </Card>
-      */}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSearchParams } from 'react-router-dom';
 import {
   Form,
   FormField,
@@ -19,7 +20,16 @@ import { Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 export default function FeatureRequestPage() {
-  const form = useForm({ defaultValues: { title: '', description: '' } });
+  const [searchParams] = useSearchParams();
+  const defaultTitle = searchParams.get('title') || '';
+  const defaultDescription = searchParams.get('description') || '';
+
+  const form = useForm({
+    defaultValues: {
+      title: defaultTitle,
+      description: defaultDescription,
+    },
+  });
   const [status, setStatus] = useState<null | {
     type: 'success' | 'error';
     message: string;
@@ -117,7 +127,7 @@ export default function FeatureRequestPage() {
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Describe your feature idea in detail"
+                      placeholder="Share your ideas and thoughts here 🙏"
                       rows={6}
                       {...field}
                     />

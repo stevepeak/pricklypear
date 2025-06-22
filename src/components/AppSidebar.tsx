@@ -30,6 +30,7 @@ import {
   BookUser,
   Baby,
   MessageSquare,
+  DollarSign,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -89,10 +90,14 @@ export function AppSidebar() {
           icon: <Calendar className="h-4 w-4 mr-2" />,
         },
         {
-          path: '/connections',
-          label: 'Connections',
-          icon: <BookUser className="h-4 w-4 mr-2" />,
-          badge: pendingIncomingCount || undefined,
+          path: '/documents',
+          label: 'Documents',
+          icon: <FileText className="h-4 w-4 mr-2" />,
+        },
+        {
+          path: '/expenses',
+          label: 'Expenses',
+          icon: <DollarSign className="h-4 w-4 mr-2" />,
         },
         {
           path: '/children',
@@ -100,9 +105,10 @@ export function AppSidebar() {
           icon: <Baby className="h-4 w-4 mr-2" />,
         },
         {
-          path: '/documents',
-          label: 'Documents',
-          icon: <FileText className="h-4 w-4 mr-2" />,
+          path: '/connections',
+          label: 'Connections',
+          icon: <BookUser className="h-4 w-4 mr-2" />,
+          badge: pendingIncomingCount || undefined,
         },
       ]
     : [];

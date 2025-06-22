@@ -26,6 +26,7 @@ import FeatureRequestPage from './pages/feature-request';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { Analytics } from '@vercel/analytics/react';
 import Children from './pages/Children';
+import Expenses from './pages/Expenses';
 
 // Import CSS but don't include App.css anymore
 import './index.css';
@@ -84,6 +85,7 @@ function AppRoutes() {
                         <Route path="/messages" element={<Messages />} />
                         <Route path="/calendar" element={<Calendar />} />
                         <Route path="/children" element={<Children />} />
+                        <Route path="/expenses" element={<Expenses />} />
                         <Route
                           path="/integrations"
                           element={<Integrations />}
