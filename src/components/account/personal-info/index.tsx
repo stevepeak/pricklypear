@@ -126,7 +126,7 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
                 messages.
               </FormDescription>
             </div>
-            {/* Theme Selection */}
+            {/* Theme Selection 
             <div>
               <label className="block text-sm font-medium mb-1">Theme</label>
               <RadioGroup
@@ -170,6 +170,7 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
                 system's theme.
               </FormDescription>
             </div>
+            */}
             <Button
               variant="success"
               type="submit"
