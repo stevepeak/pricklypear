@@ -52,40 +52,55 @@
 }
 
 .dark {
-  --background: rgb(20, 20, 20);
-  --foreground: rgb(255, 255, 255);
-  --card: rgb(30, 30, 30);
-  --card-foreground: rgb(255, 255, 255);
-  --popover: rgb(30, 30, 30);
-  --popover-foreground: rgb(255, 255, 255);
-  --primary: rgb(252, 231, 207);
-  --primary-foreground: rgb(0, 0, 0);
-  --secondary: rgb(76, 187, 190);
-  --secondary-foreground: rgb(255, 255, 255);
-  --muted: rgb(40, 40, 40);
-  --muted-foreground: rgb(180, 180, 180);
-  --accent: rgb(183, 106, 149);
-  --accent-foreground: rgb(255, 255, 255);
-  --destructive: rgb(255, 0, 0);
-  --destructive-foreground: rgb(255, 255, 255);
-  --border: rgb(0, 0, 0);
-  --input: rgb(0, 0, 0);
-  --ring: rgb(0, 0, 0);
-  --chart-1: rgb(214, 244, 245);
-  --chart-2: rgb(252, 231, 207);
-  --chart-3: rgb(200, 200, 200);
-  --chart-4: rgb(180, 180, 180);
-  --chart-5: rgb(160, 160, 160);
-  --chart-6: rgb(137, 224, 165);
-  --chart-7: rgb(216, 205, 210);
-  --sidebar: rgb(252, 231, 207);
-  --sidebar-foreground: rgb(0, 0, 0);
-  --sidebar-primary: rgb(214, 244, 245);
-  --sidebar-primary-foreground: rgb(0, 0, 0);
-  --sidebar-accent: rgb(40, 40, 40);
-  --sidebar-accent-foreground: rgb(255, 255, 255);
-  --sidebar-border: rgb(0, 0, 0);
-  --sidebar-ring: rgb(0, 0, 0);
+  /* palette */
+  --background: #1e1f22;
+  --foreground: #eaeaea;
+
+  --card: #26272b;
+  --card-foreground: #eaeaea;
+
+  --popover: #26272b;
+  --popover-foreground: #eaeaea;
+
+  --border: #33363a;
+  --input: #33363a;
+  --ring: #4bb8ba;
+
+  --primary: #eed0b1;
+  --primary-foreground: #1e1f22;
+
+  --secondary: #3aa5a7;
+  --secondary-foreground: #1e1f22;
+
+  --muted: rgb(40 40 40); /* unchanged */
+  --muted-foreground: #b2b2b2;
+
+  --accent: #9f5680;
+  --accent-foreground: #ffffff;
+
+  --success: #5dbd7b;
+  --success-foreground: #1e1f22;
+
+  --destructive: #e14646;
+  --destructive-foreground: #ffffff;
+
+  /* charts & sidebar – intentionally left as-is */
+  --chart-1: rgb(214 244 245);
+  --chart-2: rgb(252 231 207);
+  --chart-3: rgb(200 200 200);
+  --chart-4: rgb(180 180 180);
+  --chart-5: rgb(160 160 160);
+  --chart-6: rgb(137 224 165);
+  --chart-7: rgb(216 205 210);
+
+  --sidebar: rgb(252 231 207);
+  --sidebar-foreground: rgb(0 0 0);
+  --sidebar-primary: rgb(214 244 245);
+  --sidebar-primary-foreground: rgb(0 0 0);
+  --sidebar-accent: rgb(40 40 40);
+  --sidebar-accent-foreground: rgb(255 255 255);
+  --sidebar-border: rgb(0 0 0);
+  --sidebar-ring: rgb(0 0 0);
 }
 
 @theme inline {
@@ -160,5 +175,35 @@ input {
 @media (max-width: 768px) {
   kbd {
     display: none;
+  }
+}
+
+@layer components {
+  /* -------------------------------------------------
+     Dark-mode button states
+  ------------------------------------------------- */
+  .dark [data-slot='button']:hover:not(:disabled) {
+    filter: brightness(94%);
+  }
+
+  .dark [data-slot='button']:active:not(:disabled) {
+    filter: brightness(90%);
+    box-shadow: inset 0 0 0 1px var(--border);
+  }
+
+  .dark [data-slot='button']:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* -------------------------------------------------
+     Dark-mode link styling
+  ------------------------------------------------- */
+  .dark a {
+    color: var(--secondary);
+  }
+
+  .dark a:hover {
+    text-decoration-line: underline;
   }
 }
