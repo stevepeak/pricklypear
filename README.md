@@ -1,3 +1,5 @@
+<!-- This README is maintained by the Prickly Pear team. Please keep it current when making related changes. -->
+
 # 🌵 Prickly Pear
 
 > **AI-assisted co-parenting communication app**
