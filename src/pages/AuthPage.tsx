@@ -299,10 +299,10 @@ const AuthPage = () => {
                           >
                             {isLoading
                               ? isSignUp
-                                ? 'Sending magic link...'
+                                ? 'Sending welcome email...'
                                 : 'Logging in...'
                               : isSignUp
-                                ? 'Send magic link'
+                                ? 'Join The Prickly Pear'
                                 : 'Login'}
                           </Button>
                         </div>
