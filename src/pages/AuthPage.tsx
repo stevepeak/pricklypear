@@ -89,16 +89,16 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+    <div
+      className="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10 bg-primary-foreground"
+      style={{
+        backgroundImage: 'url(../public/login.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       <div className="flex w-full max-w-sm flex-col gap-6">
-        <a href="/" className="flex items-center gap-2 self-center font-medium">
-          <img
-            src="../public/logo.png"
-            alt="Prickly Pear Logo"
-            className="h-6 w-6"
-          />
-          The Prickly Pear
-        </a>
         <div className={cn('flex flex-col gap-6')}>
           {invitedEmail ? (
             <Card>
@@ -342,7 +342,7 @@ const AuthPage = () => {
                   )}
                 </CardContent>
               </Card>
-              <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
+              <div className="text-balance text-center text-xs text-white [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
                 By clicking Login or Signup, you agree to our{' '}
                 <a
                   href="/terms-of-service"
