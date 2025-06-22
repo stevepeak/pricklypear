@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Lock, MessageSquare } from 'lucide-react';
 import Footer from '@/components/ui/footer';
 import { PricingSection } from '@/components/PricingSection';
+import ComparisonTable from '@/components/ComparisonTable';
 
 const Home = () => {
   return (
@@ -67,6 +68,9 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* Comparison Table */}
+      <ComparisonTable />
 
       {/* Pricing Section */}
       <PricingSection variant="marketing" />
