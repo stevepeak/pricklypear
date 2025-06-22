@@ -2,13 +2,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { z } from 'https://deno.land/x/zod@v3.24.2/mod.ts';
 import { getOpenAIClient } from '../utils/openai.ts';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
-import { getErrorMessage } from '../utils/handle-error.ts';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-};
+import { res } from '../utils/response.ts';
 
 const payloadSchema = z.object({
   threadId: z.string().uuid(),
@@ -22,7 +16,7 @@ export type HandlerDeps = {
 
 export async function handler(req: Request, deps: HandlerDeps = {}) {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return res.cors();
   }
 
   try {
@@ -70,7 +64,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     `;
 
     const aiRes = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'o4-mini',
       messages: [{ role: 'system', content: prompt }],
       temperature: 0.8,
     });
@@ -96,16 +90,10 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       throw insertError;
     }
 
-    return new Response(
-      JSON.stringify({ success: true, count: inserts.length }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return res.ok({ success: true, count: inserts.length });
   } catch (err) {
     console.error('generate-conversation error:', err);
-    return new Response(JSON.stringify({ error: getErrorMessage(err) }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return res.serverError(err);
   }
 }
 

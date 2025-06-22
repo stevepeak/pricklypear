@@ -5,12 +5,7 @@ import { renderEmail } from '../utils/email-render.ts';
 import { PricklyPearInviteUserEmail } from '../templates/invite-user.tsx';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
 import { handleError } from '../utils/handle-error.ts';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-};
+import { res } from '../utils/response.ts';
 
 const inviteByEmailSchema = z.object({
   userId: z.string().uuid('Invalid user ID format'),
@@ -59,9 +54,6 @@ async function sendInvitationEmail(
     invitedByName: inviterName,
     invitedByEmail: inviterName, // This should be the actual email, but we don't have it in this context
     inviteLink: 'https://prickly.app/invite', // This should be a proper invite link
-    username: to,
-    inviteFromIp: 'Unknown',
-    inviteFromLocation: 'Unknown',
   });
   await sendEmailFn({
     to,
@@ -112,29 +104,15 @@ export type HandlerDeps = {
   sendEmail?: typeof sendEmail;
 };
 
-function errorResponse(message: string, status = 500) {
-  return new Response(
-    JSON.stringify({
-      success: false,
-      message,
-    }),
-    {
-      status,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    }
-  );
-}
-
 export async function handler(req: Request, deps: HandlerDeps = {}) {
-  if (req.method === 'OPTIONS')
-    return new Response(null, { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return res.cors();
 
   try {
     const body = await req.json();
     const result = inviteByEmailSchema.safeParse(body);
 
     if (!result.success) {
-      return errorResponse(result.error.errors[0].message, 400);
+      return res.badRequest(result.error.errors[0].message);
     }
 
     const { userId, email } = result.data;
@@ -153,12 +131,12 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
         inviteeId: inviteeUser.id,
       });
       if (exists) {
-        return new Response(
-          JSON.stringify({
+        return res.custom(
+          {
             success: false,
             message: 'Connection already exists',
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          },
+          200
         );
       }
 
@@ -171,16 +149,13 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       // Send email
       await sendInvitationEmail({ to: email, inviterName }, sendEmailFn);
 
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: `Connection request sent to ${inviteeUser.email}`,
-          connection: {
-            id: connection.id,
-          },
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return res.ok({
+        success: true,
+        message: `Connection request sent to ${inviteeUser.email}`,
+        connection: {
+          id: connection.id,
+        },
+      });
     } else {
       // Invitee not yet a user: email sent, create pending connection with NULL connected_user_id
       const { data: connection, error } = await supabase
@@ -201,23 +176,18 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       // Send email
       await sendInvitationEmail({ to: email, inviterName }, sendEmailFn);
 
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: `Invitation email sent to ${email} and pending connection created`,
-          connection: {
-            id: connection.id,
-          },
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return res.ok({
+        success: true,
+        message: `Invitation email sent to ${email} and pending connection created`,
+        connection: {
+          id: connection.id,
+        },
+      });
     }
   } catch (error) {
     console.error('invite-by-email error:', error);
     handleError(error);
-    return errorResponse(
-      error instanceof Error ? error.message : 'Unexpected error'
-    );
+    return res.serverError(error);
   }
 }
 

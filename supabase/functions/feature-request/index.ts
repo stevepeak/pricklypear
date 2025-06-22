@@ -1,11 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { env } from '../utils/env.ts';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-};
+import { res } from '../utils/response.ts';
 
 const LINEAR_API_URL = 'https://api.linear.app/graphql';
 
@@ -87,21 +82,12 @@ export type HandlerDeps = { fetch?: typeof fetch };
 
 export async function handler(req: Request, deps: HandlerDeps = {}) {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return res.cors();
   }
   try {
     const { title, description } = await req.json();
     if (!title || !description) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: 'Title and description are required',
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return res.badRequest('Title and description are required');
     }
     const issue = await createLinearIssue(
       { title, description },
@@ -119,21 +105,10 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       deps.fetch ?? fetch
     );
 
-    return new Response(JSON.stringify({ success: true, issue }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return res.ok({ success: true, issue });
   } catch (error) {
     console.error('feature-request error:', error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        message: error instanceof Error ? error.message : 'Unexpected error',
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+    return res.serverError(error);
   }
 }
 

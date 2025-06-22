@@ -1,14 +1,9 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { getOpenAIClient } from '../utils/openai.ts';
-import { getErrorMessage, handleError } from '../utils/handle-error.ts';
+import { handleError } from '../utils/handle-error.ts';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
+import { res } from '../utils/response.ts';
 import { z } from 'https://esm.sh/zod@3.24.2';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-};
 
 async function fetchThreadMessages(args: {
   threadId: string;
@@ -81,26 +76,33 @@ async function fetchThreadTopic(args: {
 }
 
 async function checkIfOnTopic(args: {
+  contextText: string;
   threadTopic: string;
   threadTitle: string;
   message: string;
 }): Promise<boolean> {
-  const { threadTopic, threadTitle, message } = args;
+  const { contextText, threadTopic, threadTitle, message } = args;
   const openai = getOpenAIClient();
-  // TODO not working yet
-  return true;
-  const topicCheckPrompt = `Thread topic: ${threadTopic}\nThread title: ${threadTitle}\nMessage: ${message}\n\nIs this message on-topic for the thread? Reply with only 'yes' or 'no'.`;
   const topicCheckResponse = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'o4-mini',
     messages: [
       {
         role: 'system',
         content: `
-          You are an assistant that checks if a user message is on-topic.
-          When evaluating the message is on-topic, consider:
-          - If relevant to the thread topic
-          - or the message is relevant to the context of other messages
-          - or the message is relevant to the thread title
+          You are a specialist in language and conversation analysis
+          with the mission to ensure user messages are on-topic.
+          
+          When evaluating if the user message is on-topic,
+          consider if the message is relevant to the thread title, thread topic,
+          and context of other messages.
+
+          Thread title: ${threadTitle}
+          Thread topic: ${threadTopic}
+
+          Latest messages in conversation:
+          <context>
+            ${contextText}
+          </context>
 
           We are looking more for flagrant violations, so if you are unsure reply with 'no'.
           Only reply with 'yes' or 'no'.
@@ -108,10 +110,9 @@ async function checkIfOnTopic(args: {
       },
       {
         role: 'user',
-        content: topicCheckPrompt,
+        content: message,
       },
     ],
-    temperature: 0,
   });
   return topicCheckResponse.choices[0]?.message?.content
     ?.toLowerCase()
@@ -127,7 +128,7 @@ async function rephraseMessage(args: {
   const { contextText, message, systemPrompt } = args;
   const openai = getOpenAIClient();
   const response = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'o4-mini',
     messages: [
       {
         role: 'system',
@@ -135,10 +136,19 @@ async function rephraseMessage(args: {
       },
       {
         role: 'user',
-        content: `Conversation context (last 20 messages):\n${contextText}\n\nRephrase this message: ${message}`,
+        content: `
+          Latest messages in conversation:
+          <context>
+            ${contextText}
+          </context>
+          
+          Rephrase this message:
+          <message>
+            ${message}
+          </message>
+        `,
       },
     ],
-    temperature: 0.7,
   });
   return response.choices[0]?.message?.content || message;
 }
@@ -150,24 +160,14 @@ export type HandlerDeps = {
 export async function handler(req: Request) {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return res.cors();
   }
 
   try {
     const { message, threadId, systemPrompt } = await req.json();
 
     if (!message || !threadId) {
-      return new Response(
-        JSON.stringify({
-          rejected: true,
-          reason: 'Message and threadId are required',
-          rephrasedMessage: null,
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return res.badRequest('Message and threadId are required');
     }
 
     // Fetch context
@@ -184,17 +184,7 @@ export async function handler(req: Request) {
       threadTitle = topicData.title;
     } catch (err) {
       handleError(err);
-      return new Response(
-        JSON.stringify({
-          rejected: true,
-          reason: 'Could not fetch thread topic or messages',
-          rephrasedMessage: null,
-        }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return res.serverError(err);
     }
 
     const contextText = formatContextText({ messages: contextMessages });
@@ -202,6 +192,7 @@ export async function handler(req: Request) {
     const [isOnTopic, rephrasedMessage] = await Promise.all([
       // Check if the message is on topic
       checkIfOnTopic({
+        contextText,
         threadTopic,
         threadTitle,
         message,
@@ -211,38 +202,21 @@ export async function handler(req: Request) {
     ]);
 
     if (!isOnTopic) {
-      return new Response(
-        JSON.stringify({
+      return res.custom(
+        {
           rejected: true,
           reason: 'Message is off-topic for this thread.',
           rephrasedMessage: null,
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        },
+        200
       );
     }
 
-    return new Response(
-      JSON.stringify({ rejected: false, reason: null, rephrasedMessage }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+    return res.ok({ rejected: false, reason: null, rephrasedMessage });
   } catch (error) {
     console.error('Error reviewing message:', error);
 
-    return new Response(
-      JSON.stringify({
-        rejected: true,
-        reason: getErrorMessage(error),
-        rephrasedMessage: null,
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+    return res.serverError(error);
   }
 }
 

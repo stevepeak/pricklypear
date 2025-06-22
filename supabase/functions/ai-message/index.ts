@@ -2,14 +2,9 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
 import { getOpenAIClient } from '../utils/openai.ts';
 import { z } from 'https://deno.land/x/zod@v3.24.2/mod.ts';
-import { getErrorMessage, handleError } from '../utils/handle-error.ts';
+import { handleError } from '../utils/handle-error.ts';
+import { res } from '../utils/response.ts';
 import OpenAI from 'https://esm.sh/openai@4.28.0';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-};
 
 const messageSchema = z.object({
   text: z
@@ -21,16 +16,9 @@ const messageSchema = z.object({
   systemPrompt: z.string().nullable().default(''),
 });
 
-function errorResponse(message: string, status = 500) {
-  return new Response(JSON.stringify({ error: message }), {
-    status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-  });
-}
-
 export async function handler(req: Request) {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return res.cors();
   }
 
   try {
@@ -42,7 +30,7 @@ export async function handler(req: Request) {
       systemPrompt,
     });
     if (!result.success) {
-      return errorResponse(result.error.errors[0].message, 400);
+      return res.badRequest(result.error.errors[0].message);
     }
 
     const supabase = getSupabaseServiceClient();
@@ -63,7 +51,7 @@ export async function handler(req: Request) {
 
     if (insertError || !userMessage?.id) {
       handleError(insertError);
-      return errorResponse(insertError?.message || 'Failed to insert message');
+      return res.serverError(insertError);
     }
 
     // Pull thread history (last 20 messages, oldest first)
@@ -76,9 +64,7 @@ export async function handler(req: Request) {
 
     if (historyError) {
       handleError(historyError);
-      return errorResponse(
-        historyError?.message || 'Failed to fetch thread history'
-      );
+      return res.serverError(historyError);
     }
 
     // Format messages for OpenAI
@@ -91,7 +77,7 @@ export async function handler(req: Request) {
 
     // Send to OpenAI
     const aiRes = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'o4-mini',
       messages: [
         {
           role: 'system',
@@ -106,7 +92,7 @@ export async function handler(req: Request) {
 
     const aiContent = aiRes.choices?.[0]?.message?.content?.trim();
     if (!aiContent) {
-      return errorResponse('No AI response generated');
+      return res.serverError('No AI response generated');
     }
 
     // Insert AI response into database
@@ -124,18 +110,14 @@ export async function handler(req: Request) {
 
     if (aiInsertError || !aiMessage?.id) {
       handleError(aiInsertError);
-      return errorResponse(
-        aiInsertError?.message || 'Failed to insert AI message'
-      );
+      return res.serverError(aiInsertError);
     }
 
     // Reply with the new AI message
-    return new Response(JSON.stringify({ aiMessage }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return res.ok({ aiMessage });
   } catch (error) {
     handleError(error);
-    return errorResponse(getErrorMessage(error));
+    return res.serverError(error);
   }
 }
 

@@ -83,7 +83,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
 
     // Generate a summary using OpenAI
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'o4-mini',
       messages: [
         {
           role: 'system',

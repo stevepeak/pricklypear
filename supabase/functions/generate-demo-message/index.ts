@@ -1,13 +1,8 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
-import { getErrorMessage, handleError } from '../utils/handle-error.ts';
+import { handleError } from '../utils/handle-error.ts';
+import { res } from '../utils/response.ts';
 import { z } from 'https://deno.land/x/zod@v3.24.2/mod.ts';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-};
 
 const demoMessageSchema = z.object({
   userId: z.string().uuid('Invalid user ID format'),
@@ -67,20 +62,14 @@ async function getRandomConnectedUser(
 
 export async function handler(req: Request) {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return res.cors();
   }
 
   try {
     const { userId } = await req.json();
     const result = demoMessageSchema.safeParse({ userId });
     if (!result.success) {
-      return new Response(
-        JSON.stringify({ error: result.error.errors[0].message }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return res.badRequest(result.error.errors[0].message);
     }
 
     const supabase = getSupabaseServiceClient();
@@ -118,26 +107,13 @@ export async function handler(req: Request) {
 
     if (insertError || !messageData?.id) {
       handleError(insertError);
-      return new Response(
-        JSON.stringify({
-          error: insertError?.message || 'Failed to insert message',
-        }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return res.serverError(insertError);
     }
 
-    return new Response(JSON.stringify({ id: messageData.id }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return res.ok({ id: messageData.id });
   } catch (error) {
     handleError(error);
-    return new Response(JSON.stringify({ error: getErrorMessage(error) }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return res.serverError(error);
   }
 }
 

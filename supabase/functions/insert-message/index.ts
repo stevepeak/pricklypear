@@ -1,13 +1,8 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { getSupabaseServiceClient } from '../utils/supabase.ts';
 import { z } from 'https://deno.land/x/zod@v3.24.2/mod.ts';
-import { getErrorMessage, handleError } from '../utils/handle-error.ts';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-};
+import { handleError } from '../utils/handle-error.ts';
+import { res } from '../utils/response.ts';
 
 const messageSchema = z.object({
   text: z
@@ -30,21 +25,13 @@ const messageSchema = z.object({
     .optional(),
 });
 
-function errorResponse(args: { message: string; status: number }) {
-  const { message, status } = args;
-  return new Response(JSON.stringify({ error: message }), {
-    status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-  });
-}
-
 export type HandlerDeps = {
   getSupabaseServiceClient?: typeof getSupabaseServiceClient;
 };
 
 export async function handler(req: Request, deps: HandlerDeps = {}) {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return res.cors();
   }
 
   try {
@@ -53,10 +40,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     // Validate the input
     const result = messageSchema.safeParse({ text, threadId, userId, type });
     if (!result.success) {
-      return errorResponse({
-        message: result.error.errors[0].message,
-        status: 400,
-      });
+      return res.badRequest(result.error.errors[0].message);
     }
 
     const getSupabase =
@@ -81,10 +65,7 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     if (error || !messageData?.id) {
       handleError(error);
       console.error('insert-message error:', error);
-      return errorResponse({
-        message: error?.message || 'Failed to insert message',
-        status: 500,
-      });
+      return res.serverError(error);
     }
 
     if (type === 'close_accepted') {
@@ -94,13 +75,11 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
         .eq('id', threadId);
     }
 
-    return new Response(JSON.stringify({ id: messageData.id }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return res.ok({ id: messageData.id });
   } catch (error) {
     console.error('insert-message error:', error);
     handleError(error);
-    return errorResponse({ message: getErrorMessage(error), status: 500 });
+    return res.serverError(error);
   }
 }
 

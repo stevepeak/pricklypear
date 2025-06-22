@@ -1,14 +1,9 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
-import { getErrorMessage, handleError } from '../utils/handle-error.ts';
+import { handleError } from '../utils/handle-error.ts';
 import { getOpenAIClient } from '../utils/openai.ts';
 import { env } from '../utils/env.ts';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-};
+import { res } from '../utils/response.ts';
 
 export type HandlerDeps = {
   createClient?: typeof createClient;
@@ -17,7 +12,7 @@ export type HandlerDeps = {
 
 export async function handler(req: Request, deps: HandlerDeps = {}) {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return res.cors();
   }
 
   try {
@@ -34,40 +29,20 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid authentication token' }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return res.unauthorized('Invalid authentication token');
     }
 
     const { file_path, filename } = await req.json();
 
     if (!file_path || !filename) {
-      return new Response(
-        JSON.stringify({
-          error: 'Missing required fields: user_id, file_path, filename',
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+      return res.badRequest(
+        'Missing required fields: user_id, file_path, filename'
       );
     }
 
     // Verify that the file path belongs to the authenticated user
     if (!file_path.startsWith(`${user.id}/`)) {
-      return new Response(
-        JSON.stringify({
-          error: 'Unauthorized: File path does not belong to user',
-        }),
-        {
-          status: 403,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return res.forbidden('Unauthorized: File path does not belong to user');
     }
 
     // Download file from Supabase Storage
@@ -118,14 +93,8 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
           .trim();
       }
     } else {
-      return new Response(
-        JSON.stringify({
-          error: 'Unsupported file type. Only PDF and DOCX are supported.',
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+      return res.badRequest(
+        'Unsupported file type. Only PDF and DOCX are supported.'
       );
     }
 
@@ -148,14 +117,11 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       .filter((word) => word.length > 0).length;
 
     if (!extractedText || extractedText.length < 10) {
-      return new Response(
-        JSON.stringify({
-          error: 'Could not extract meaningful text from document',
-        }),
+      return res.custom(
         {
-          status: 422,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+          error: 'Could not extract meaningful text from document',
+        },
+        422
       );
     }
 
@@ -200,21 +166,15 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       throw new Error(`Failed to store document: ${insertError.message}`);
     }
 
-    return new Response(
-      JSON.stringify({
-        status: 'success',
-        document_id: document.id,
-        word_count: wordCount,
-        message: 'Document successfully extracted and stored.',
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return res.ok({
+      status: 'success',
+      document_id: document.id,
+      word_count: wordCount,
+      message: 'Document successfully extracted and stored.',
+    });
   } catch (error) {
     handleError(error);
-    return new Response(JSON.stringify({ error: getErrorMessage(error) }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return res.serverError(error);
   }
 }
 
