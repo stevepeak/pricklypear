@@ -1,2 +1,6 @@
 src/integrations/supabase/types.ts
 vitest.d.ts
+
+# Generated files
+supabase/functions/templates/*
+src/integrations/supabase/types.ts
