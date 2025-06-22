@@ -16,12 +16,16 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useThread } from '@/hooks/useThread';
+import { useTranslation } from 'react-i18next';
+import { LanguageSelector } from '@/components/ui/LanguageSelector';
 
 function Breadcrumbs() {
   const location = useLocation();
   const pathnames = location.pathname.split('/').filter(Boolean);
   const lastClickTime = useRef<number>(0);
   const DOUBLE_CLICK_DELAY = 300; // milliseconds
+
+  const { t } = useTranslation('sidebar');
 
   // Extract thread ID from path like /threads/123
   const threadId =
@@ -58,7 +62,7 @@ function Breadcrumbs() {
 
   return (
     <Breadcrumb
-      className="p-3 sticky top-0 z-[9] bg-secondary border-b"
+      className="p-3 sticky top-0 z-[9] bg-secondary border-b flex items-center"
       onClick={handleBreadcrumbClick}
     >
       <BreadcrumbList>
@@ -69,7 +73,7 @@ function Breadcrumbs() {
                 <SidebarTrigger className="" />
               </TooltipTrigger>
               <TooltipContent>
-                <span>Collapse sidebar</span>{' '}
+                <span>{t('collapseSidebar')}</span>{' '}
                 <kbd className="bg-muted text-muted-foreground pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none">
                   <span className="text-xs">⌘</span>B
                 </kbd>
@@ -107,6 +111,7 @@ function Breadcrumbs() {
           );
         })}
       </BreadcrumbList>
+      <LanguageSelector className="ml-auto" />
     </Breadcrumb>
   );
 }

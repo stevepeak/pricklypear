@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Sidebar,
   SidebarContent,
@@ -52,6 +53,7 @@ export function AppSidebar() {
   const { totalUnread, threadCounts } = useUnreadMessages();
   const { connections } = useConnections();
   const { state, isMobile, setOpenMobile } = useSidebar();
+  const { t } = useTranslation('sidebar');
 
   // Calculate pending incoming connections
   const pendingIncomingCount = connections.filter(
@@ -60,8 +62,8 @@ export function AppSidebar() {
 
   const handleLogout = async () => {
     await signOut();
-    toast('Logged out', {
-      description: 'You have been successfully logged out.',
+    toast(t('toastLoggedOut'), {
+      description: t('toastLoggedOutDescription'),
     });
     navigate('/');
   };
@@ -74,39 +76,39 @@ export function AppSidebar() {
     ? [
         {
           path: '/threads',
-          label: 'Threads',
+          label: t('threads'),
           icon: <MessageSquareText className="h-4 w-4 mr-2" />,
           badge: Object.keys(threadCounts).length || undefined,
         },
         {
           path: '/messages',
-          label: 'Messages',
+          label: t('messages'),
           icon: <MessageSquare className="h-4 w-4 mr-2" />,
           badge: totalUnread || undefined,
         },
         {
           path: '/calendar',
-          label: 'Calendar',
+          label: t('calendar'),
           icon: <Calendar className="h-4 w-4 mr-2" />,
         },
         {
           path: '/documents',
-          label: 'Documents',
+          label: t('documents'),
           icon: <FileText className="h-4 w-4 mr-2" />,
         },
         {
           path: '/expenses',
-          label: 'Expenses',
+          label: t('expenses'),
           icon: <DollarSign className="h-4 w-4 mr-2" />,
         },
         {
           path: '/children',
-          label: 'Children Profiles',
+          label: t('childrenProfiles'),
           icon: <Baby className="h-4 w-4 mr-2" />,
         },
         {
           path: '/connections',
-          label: 'Connections',
+          label: t('connections'),
           icon: <BookUser className="h-4 w-4 mr-2" />,
           badge: pendingIncomingCount || undefined,
         },
@@ -124,7 +126,7 @@ export function AppSidebar() {
           />
           {state === 'expanded' && (
             <div className="flex items-center gap-2">
-              <span className="whitespace-nowrap">Prickly Pear</span>
+              <span className="whitespace-nowrap">{t('title')}</span>
             </div>
           )}
         </Link>
@@ -206,11 +208,11 @@ export function AppSidebar() {
                         className="flex items-center w-full justify-start mb-1"
                       >
                         <Sparkles className="h-4 w-4 mr-2" />
-                        <span>Feature Request</span>
+                        <span>{t('featureRequest')}</span>
                       </SidebarMenuButton>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
-                      Feature Request
+                      {t('featureRequest')}
                     </TooltipContent>
                   </Tooltip>
                 ) : (
@@ -223,7 +225,7 @@ export function AppSidebar() {
                     className="flex items-center w-full justify-start mb-1"
                   >
                     <Sparkles className="h-4 w-4 mr-2" />
-                    <span>Feature Request</span>
+                    <span>{t('featureRequest')}</span>
                   </SidebarMenuButton>
                 )}
               </SidebarMenuItem>
@@ -298,7 +300,7 @@ export function AppSidebar() {
                       className="flex items-center w-full"
                       onClick={() => isMobile && setOpenMobile(false)}
                     >
-                      <BadgeCheck className="h-4 w-4 mr-2" /> Account
+                      <BadgeCheck className="h-4 w-4 mr-2" /> {t('account')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -310,7 +312,7 @@ export function AppSidebar() {
                       className="flex items-center w-full"
                       onClick={() => isMobile && setOpenMobile(false)}
                     >
-                      <FileText className="h-4 w-4 mr-2" /> Billing
+                      <FileText className="h-4 w-4 mr-2" /> {t('billing')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center w-full">
@@ -319,7 +321,7 @@ export function AppSidebar() {
                       to="/integrations"
                       onClick={() => isMobile && setOpenMobile(false)}
                     >
-                      <Link2 className="h-4 w-4 mr-4" /> Integrations
+                      <Link2 className="h-4 w-4 mr-4" /> {t('integrations')}
                     </Link>
                   </DropdownMenuItem>
                   <div className="my-1">
@@ -329,7 +331,7 @@ export function AppSidebar() {
                     onSelect={handleLogout}
                     className="flex items-center w-full"
                   >
-                    <LogOut className="h-4 w-4 mr-2" /> Log Out
+                    <LogOut className="h-4 w-4 mr-2" /> {t('logOut')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -338,7 +340,7 @@ export function AppSidebar() {
         ) : (
           <Button asChild className="w-full">
             <Link to="/auth">
-              <LogIn className="h-4 w-4 mr-2" /> Sign In
+              <LogIn className="h-4 w-4 mr-2" /> {t('signIn')}
             </Link>
           </Button>
         )}
