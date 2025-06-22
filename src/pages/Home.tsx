@@ -147,17 +147,17 @@ const Home = () => {
           </span>
           <div className="flex flex-wrap justify-center items-center gap-8">
             <img
-              src="/nyt-logo.svg"
+              src="../public/nyt-logo.svg"
               alt="New York Times logo"
               className="h-8 sm:h-10 object-contain"
             />
             <img
-              src="/techcrunch-logo.svg"
+              src="../public/techcrunch-logo.svg"
               alt="TechCrunch logo"
               className="h-8 sm:h-10 object-contain"
             />
             <img
-              src="/fastcompany-logo.svg"
+              src="../public/fastcompany-logo.svg"
               alt="Fast Company logo"
               className="h-8 sm:h-10 object-contain"
             />
