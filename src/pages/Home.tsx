@@ -127,7 +127,7 @@ const Home = () => {
 
         {/* Content */}
         <div className="relative container mx-auto max-w-4xl text-center py-10 px-4">
-          <h1 className="text-3xl text-white max-w-2xl mx-auto mb-4">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight text-white max-w-2xl mx-auto mb-6">
             AI-powered, co-parenting communication.
           </h1>
           <Button
@@ -136,6 +136,32 @@ const Home = () => {
           >
             <Link to="/auth?mode=signup">Get Started For Free</Link>
           </Button>
+        </div>
+      </div>
+
+      {/* Featured In Section */}
+      <div className="bg-white py-8">
+        <div className="container mx-auto flex flex-col items-center">
+          <span className="text-sm uppercase tracking-widest text-[#7C4A03] mb-6">
+            Featured&nbsp;In
+          </span>
+          <div className="flex flex-wrap justify-center items-center gap-8">
+            <img
+              src="/nyt-logo.svg"
+              alt="New York Times logo"
+              className="h-8 sm:h-10 object-contain"
+            />
+            <img
+              src="/techcrunch-logo.svg"
+              alt="TechCrunch logo"
+              className="h-8 sm:h-10 object-contain"
+            />
+            <img
+              src="/fastcompany-logo.svg"
+              alt="Fast Company logo"
+              className="h-8 sm:h-10 object-contain"
+            />
+          </div>
         </div>
       </div>
 
