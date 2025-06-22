@@ -84,8 +84,8 @@ i18n
       // Path template for translation files
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
-    // We currently use a single default namespace for simplicity
-    ns: ['common'],
+    // Add the new "sidebar" namespace alongside "common"
+    ns: ['common', 'sidebar'],
     defaultNS: 'common',
     interpolation: {
       // React already performs XSS escaping

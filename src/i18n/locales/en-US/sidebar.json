@@ -1,0 +1,13 @@
+{
+  "dashboard": "Dashboard",
+  "threads": "Threads",
+  "calendar": "Calendar",
+  "connections": "Connections",
+  "documents": "Documents",
+  "expenses": "Expenses",
+  "pricing": "Pricing",
+  "comparison": "Comparison",
+  "settings": "Settings",
+  "profile": "Profile",
+  "logout": "Logout"
+}
