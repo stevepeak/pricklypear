@@ -1,0 +1,19 @@
+{
+  "title": "Prickly Pear",
+  "threads": "Threads",
+  "messages": "Messages",
+  "calendar": "Calendar",
+  "documents": "Documents",
+  "expenses": "Expenses",
+  "childrenProfiles": "Children Profiles",
+  "connections": "Connections",
+  "featureRequest": "Feature Request",
+  "signIn": "Sign In",
+  "logOut": "Log Out",
+  "account": "Account",
+  "billing": "Billing",
+  "integrations": "Integrations",
+  "toastLoggedOut": "Logged out",
+  "toastLoggedOutDescription": "You have been successfully logged out.",
+  "collapseSidebar": "Collapse sidebar"
+}
