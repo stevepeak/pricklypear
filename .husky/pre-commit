@@ -1,7 +1,8 @@
 # .husky/pre-commit
 
-bunx lint-staged
-
 # Generate emails
 bun run gen:emails
 git add supabase/functions/templates
+
+bunx lint-staged
+
