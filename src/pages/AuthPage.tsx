@@ -89,15 +89,7 @@ const AuthPage = () => {
   };
 
   return (
-    <div
-      className="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10 bg-primary-foreground"
-      style={{
-        backgroundImage: 'url(../public/login.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10 bg-primary-foreground bg-[url('../public/login.png')] bg-cover bg-center bg-no-repeat">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <div className={cn('flex flex-col gap-6')}>
           {invitedEmail ? (
