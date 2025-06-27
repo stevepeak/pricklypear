@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { GlobalMessagesProvider } from '@/contexts/GlobalMessagesContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { useGlobalNavigation } from '@/hooks/useGlobalNavigation';
+import { useGoogleAnalytics } from '@/hooks/use-google-analytics';
 import Home from './pages/Home';
 import Threads from './pages/Threads';
 import ThreadView from './pages/ThreadView';
@@ -49,6 +50,7 @@ const queryClient = new QueryClient({
 function AppRoutes() {
   const { user, loading } = useAuth();
   useGlobalNavigation();
+  useGoogleAnalytics();
   if (loading) return null;
 
   return (

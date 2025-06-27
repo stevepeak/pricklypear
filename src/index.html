@@ -57,6 +57,19 @@
     />
     <!-- <link rel="manifest" href="/public/site.webmanifest" /> -->
 
+    <!-- Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
     <script type="module" src="./main.tsx" async></script>
   </head>
   <body>
