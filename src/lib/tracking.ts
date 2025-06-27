@@ -1,4 +1,4 @@
-import { track } from '@vercel/analytics';
+import { track as vercelTrack } from '@vercel/analytics';
 import * as Sentry from '@sentry/react';
 import { Thread } from '@/types/thread';
 import { User } from '@supabase/supabase-js';
@@ -8,14 +8,18 @@ type TrackingEvent =
   | { name: 'create_thread'; user: User; thread: Thread }
   | { name: 'upload_document'; user: User };
 
+function track(name: string, props?: Record<string, unknown>) {
+  vercelTrack(name, props);
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', name, props);
+  }
+}
+
 export function trackEvent(event: TrackingEvent) {
   // Track with Vercel Analytics
   switch (event.name) {
     case 'signup':
       track('Signup');
-      if (typeof window.gtag === 'function') {
-        window.gtag('event', 'signup');
-      }
       break;
     case 'create_thread':
       track('Create Thread', {
@@ -23,19 +27,9 @@ export function trackEvent(event: TrackingEvent) {
         threadTopic: event.thread.topic,
         nParticipants: event.thread.participants.length,
       });
-      if (typeof window.gtag === 'function') {
-        window.gtag('event', 'create_thread', {
-          threadType: event.thread.type,
-          threadTopic: event.thread.topic,
-          nParticipants: event.thread.participants.length,
-        });
-      }
       break;
     case 'upload_document':
       track('Upload Document');
-      if (typeof window.gtag === 'function') {
-        window.gtag('event', 'upload_document');
-      }
       break;
   }
 
