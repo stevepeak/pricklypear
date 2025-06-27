@@ -31,7 +31,7 @@ test.describe('Authentication', () => {
     ).toBeVisible();
     await expect(page.getByLabel(/email/i)).toBeVisible();
     await expect(
-      page.getByRole('button', { name: /send magic link/i })
+      page.getByRole('button', { name: /join the prickly pear/i })
     ).toBeVisible();
 
     // Verify login link is present
