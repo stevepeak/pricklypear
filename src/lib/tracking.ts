@@ -9,6 +9,7 @@ type TrackingEvent =
   | { name: 'upload_document'; user: User };
 
 function track(name: string, props?: Record<string, unknown>) {
+  // @ts-expect-error vercel props are tighter, but it's OK
   vercelTrack(name, props);
   if (typeof window.gtag === 'function') {
     window.gtag('event', name, props);
