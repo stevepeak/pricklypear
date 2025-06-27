@@ -13,9 +13,9 @@ import {
 
 Sentry.init({
   dsn: 'https://f0b39040299b245a914fdd95a6425c8b@o4504148959756288.ingest.us.sentry.io/4509333190148096',
-  release: import.meta.env?.VERCEL_GIT_COMMIT_SHA ?? undefined,
-  environment: import.meta.env?.VERCEL_ENV ?? 'development',
-  enabled: import.meta.env?.VERCEL_ENV !== 'development',
+  release: import.meta.env?.VITE_VERCEL_GIT_COMMIT_SHA ?? undefined,
+  environment: import.meta.env?.VITE_VERCEL_ENV ?? 'development',
+  enabled: import.meta.env?.VITE_VERCEL_ENV !== 'development',
   integrations: [
     Sentry.reactRouterV6BrowserTracingIntegration({
       useEffect: React.useEffect,

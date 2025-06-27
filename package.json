@@ -18,8 +18,9 @@
   "packageManager": "bun@1.1.42",
   "scripts": {
     "ci": "bun run typecheck && bun run typecheck:deno && bun run lint && bun run knip && bun run build && bun run test",
-    "build": "bun run build.ts",
-    "dev": "bun run --hot src/index.tsx",
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview",
     "dev:emails": "cd react-email && bun run dev",
     "lint": "eslint . && prettier --check .",
     "test": "bun run test:unittest && bun run test:deno",
@@ -101,6 +102,7 @@
     "@dexaai/config": "0.0.10",
     "@eslint/js": "9.28.0",
     "@playwright/test": "1.52.0",
+    "@tailwindcss/postcss": "4.1.11",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.3.0",
     "@types/bun": "1.2.15",
@@ -108,9 +110,9 @@
     "@types/react": "19.1.6",
     "@types/react-big-calendar": "1.16.2",
     "@types/react-dom": "19.1.6",
+    "@vitejs/plugin-react": "^4.3.4",
     "@vitest/ui": "3.2.3",
     "autoprefixer": "10.4.21",
-    "bun-plugin-tailwind": "0.0.15",
     "deno": "2.3.5",
     "eslint": "9.28.0",
     "eslint-plugin-react-hooks": "5.2.0",
@@ -123,9 +125,9 @@
     "playwright": "1.52.0",
     "postcss": "8.5.4",
     "prettier": "3.5.3",
-    "tailwindcss": "4.1.8",
     "typescript": "5.8.3",
     "typescript-eslint": "8.33.1",
+    "vite": "^5.4.10",
     "vitest": "3.2.3"
   }
 }
