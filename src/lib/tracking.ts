@@ -13,6 +13,9 @@ export function trackEvent(event: TrackingEvent) {
   switch (event.name) {
     case 'signup':
       track('Signup');
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'signup');
+      }
       break;
     case 'create_thread':
       track('Create Thread', {
@@ -20,9 +23,19 @@ export function trackEvent(event: TrackingEvent) {
         threadTopic: event.thread.topic,
         nParticipants: event.thread.participants.length,
       });
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'create_thread', {
+          threadType: event.thread.type,
+          threadTopic: event.thread.topic,
+          nParticipants: event.thread.participants.length,
+        });
+      }
       break;
     case 'upload_document':
       track('Upload Document');
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'upload_document');
+      }
       break;
   }
 

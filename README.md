@@ -85,6 +85,7 @@ This repository contains both:
 - **Styling**: Tailwind CSS
 - **State Management**: React Context API
 - **Routing**: React Router
+- **Analytics**: Vercel Analytics & Google Analytics
 - **Testing**: Vitest
 - **Linting**: ESLint + Prettier
 - **Type Checking**: TypeScript (strict mode)
