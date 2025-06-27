@@ -11,14 +11,14 @@ const Home = () => {
     <div className="flex flex-col min-h-screen">
       <div className="h-14 p-2 flex items-center">
         <div
-          className="inline-block w-8 h-8 bg-[url('/public/logo.png')] bg-center bg-cover bg-no-repeat"
+          className="inline-block w-8 h-8 bg-[url('/logo.png')] bg-center bg-cover bg-no-repeat"
           role="img"
           aria-label="Cactus"
         />
         <span className="text-1xl font-bold ">Prickly Pear</span>
       </div>
       {/* Hero Section with Background Image */}
-      <div className="relative w-full min-h-[65vh] bg-[url('/public/jumbo.png')] bg-center bg-cover bg-no-repeat">
+      <div className="relative w-full min-h-[65vh] bg-[url('/jumbo.png')] bg-center bg-cover bg-no-repeat">
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/15"></div>
 
