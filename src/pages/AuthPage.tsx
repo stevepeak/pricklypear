@@ -6,12 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
-import { supabase } from '@/integrations/supabase/client';
-import { handleError } from '@/services/messageService/utils';
 
 const AuthPage = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const [isSignUp, setIsSignUp] = useState(() => {
@@ -19,13 +16,9 @@ const AuthPage = () => {
     const signup = searchParams.get('signup');
     return mode === 'signup' || signup === 'true';
   });
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [forgotIsLoading, setForgotIsLoading] = useState(false);
-  const [forgotMessage, setForgotMessage] = useState<string | null>(null);
-  const [forgotError, setForgotError] = useState<string | null>(null);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
 
-  const { signIn, signUpWithMagicLink, user } = useAuth();
+  const { sendMagicLink, user } = useAuth();
   const navigate = useNavigate();
   const [invitedEmail, setInvitedEmail] = useState(searchParams.get('email'));
   const inviterName = searchParams.get('inviterName');
@@ -37,54 +30,16 @@ const AuthPage = () => {
     }
   }, [user, navigate]);
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await signIn(email, password);
-      navigate('/threads');
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      await signUpWithMagicLink(email);
+      await sendMagicLink(email);
       setMagicLinkSent(true);
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error('Auth error:', error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setForgotIsLoading(true);
-    setForgotMessage(null);
-    setForgotError(null);
-    try {
-      // Use supabase directly, as useAuth does not expose resetPassword
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/update-password',
-      });
-      if (error) {
-        setForgotError(error.message);
-      } else {
-        setForgotMessage(
-          'If an account with that email exists, a password reset link has been sent.'
-        );
-      }
-    } catch (err) {
-      handleError(err, 'handleForgotPassword');
-      setForgotError('Something went wrong. Please try again later.');
-    } finally {
-      setForgotIsLoading(false);
     }
   };
 
@@ -114,10 +69,9 @@ const AuthPage = () => {
                   className="w-full mt-4"
                   onClick={async () => {
                     setEmail(invitedEmail);
-                    setIsSignUp(true);
                     setIsLoading(true);
                     try {
-                      await signUpWithMagicLink(invitedEmail);
+                      await sendMagicLink(invitedEmail);
                       setMagicLinkSent(true);
                     } catch (error) {
                       console.error('Signup error:', error);
@@ -160,8 +114,14 @@ const AuthPage = () => {
                 <div className="text-center text-base mb-4">
                   We sent a magic link to{' '}
                   <span className="font-semibold">{email}</span>.<br />
-                  Please check your inbox and follow the link to activate your
-                  account.
+                  Please check your inbox and click the link to complete your
+                  sign in.
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <p className="text-sm text-blue-900">
+                    💡 <strong>Important:</strong> You must click the link in
+                    your email to complete the login process.
+                  </p>
                 </div>
                 <div className="text-center text-sm text-muted-foreground mt-2">
                   Didn&apos;t get the email?{' '}
@@ -183,23 +143,16 @@ const AuthPage = () => {
               <Card>
                 <CardHeader className="text-center">
                   <CardTitle className="text-xl" role="heading">
-                    {showForgotPassword
-                      ? 'Reset your password'
-                      : isSignUp
-                        ? 'Create your account'
-                        : 'Welcome back'}
+                    {isSignUp ? 'Join Prickly Pear' : 'Sign in to Prickly Pear'}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {showForgotPassword ? (
-                    <form
-                      onSubmit={handleForgotPassword}
-                      className="grid gap-6"
-                    >
+                  <form onSubmit={handleAuth}>
+                    <div className="grid gap-6">
                       <div className="grid gap-2">
-                        <Label htmlFor="forgot-email">Email</Label>
+                        <Label htmlFor="email">Email</Label>
                         <Input
-                          id="forgot-email"
+                          id="email"
                           type="email"
                           placeholder="m@example.com"
                           required
@@ -207,135 +160,62 @@ const AuthPage = () => {
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p className="text-sm text-blue-900">
+                          {isSignUp
+                            ? "We'll send you a secure magic link to get started. No password needed!"
+                            : "We'll send you a secure magic link to sign in. No password needed!"}
+                        </p>
+                      </div>
                       <Button
                         variant="accent"
                         type="submit"
                         className="w-full"
-                        disabled={forgotIsLoading}
+                        disabled={isLoading}
                       >
-                        {forgotIsLoading ? 'Sending...' : 'Send reset link'}
+                        {isLoading
+                          ? 'Sending magic link...'
+                          : isSignUp
+                            ? 'Join The Prickly Pear'
+                            : 'Continue with Email'}
                       </Button>
-                      {forgotMessage && (
-                        <div className="text-green-600 text-center text-sm">
-                          {forgotMessage}
-                        </div>
-                      )}
-                      {forgotError && (
-                        <div className="text-red-600 text-center text-sm">
-                          {forgotError}
-                        </div>
-                      )}
-                      <div className="text-center text-sm mt-2">
-                        <a
-                          href="#"
-                          className="underline underline-offset-4 cursor-pointer"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setShowForgotPassword(false);
-                          }}
-                        >
-                          Back to login
-                        </a>
+                      <div className="text-center text-sm">
+                        {isSignUp ? (
+                          <>
+                            Already have an account?{' '}
+                            <a
+                              href="#"
+                              className="underline underline-offset-4 cursor-pointer"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setIsSignUp(false);
+                              }}
+                            >
+                              Sign in
+                            </a>
+                          </>
+                        ) : (
+                          <>
+                            Don&apos;t have an account?{' '}
+                            <a
+                              href="#"
+                              className="underline underline-offset-4 cursor-pointer"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setIsSignUp(true);
+                              }}
+                            >
+                              Join now
+                            </a>
+                          </>
+                        )}
                       </div>
-                    </form>
-                  ) : (
-                    <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
-                      <div className="grid gap-6">
-                        <div className="grid gap-6">
-                          <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                              id="email"
-                              type="email"
-                              placeholder="m@example.com"
-                              required
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                            />
-                          </div>
-                          {!isSignUp && (
-                            <div className="grid gap-2">
-                              <div className="flex items-center">
-                                <Label htmlFor="password">Password</Label>
-                                <a
-                                  href="#"
-                                  className="ml-auto text-sm underline-offset-4 hover:underline"
-                                  tabIndex={-1}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    setShowForgotPassword(true);
-                                  }}
-                                >
-                                  Forgot your password?
-                                </a>
-                              </div>
-                              <Input
-                                id="password"
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                              />
-                              <div className="text-xs text-muted-foreground mt-1">
-                                Password must be at least 8 characters and
-                                include at least one lowercase letter, one
-                                uppercase letter, and one number.
-                              </div>
-                            </div>
-                          )}
-                          <Button
-                            variant="accent"
-                            type="submit"
-                            className="w-full"
-                            disabled={isLoading}
-                          >
-                            {isLoading
-                              ? isSignUp
-                                ? 'Sending welcome email...'
-                                : 'Logging in...'
-                              : isSignUp
-                                ? 'Join The Prickly Pear'
-                                : 'Login'}
-                          </Button>
-                        </div>
-                        <div className="text-center text-sm">
-                          {isSignUp ? (
-                            <>
-                              Already have an account?{' '}
-                              <a
-                                href="#"
-                                className="underline underline-offset-4 cursor-pointer"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setIsSignUp(false);
-                                }}
-                              >
-                                Log in
-                              </a>
-                            </>
-                          ) : (
-                            <>
-                              Don&apos;t have an account?{' '}
-                              <a
-                                href="#"
-                                className="underline underline-offset-4 cursor-pointer"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setIsSignUp(true);
-                                }}
-                              >
-                                Sign up
-                              </a>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </form>
-                  )}
+                    </div>
+                  </form>
                 </CardContent>
               </Card>
               <div className="text-balance text-center text-xs text-white [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-                By clicking Login or Signup, you agree to our{' '}
+                By clicking {isSignUp ? 'Join' : 'Continue'}, you agree to our{' '}
                 <a
                   href="/terms-of-service"
                   target="_blank"

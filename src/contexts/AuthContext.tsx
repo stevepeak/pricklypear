@@ -14,8 +14,7 @@ type AuthContextType = {
   session: Session | null;
   user: User | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUpWithMagicLink: (email: string) => Promise<void>;
+  sendMagicLink: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -53,29 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      toast('Welcome back!', {
-        description: 'You have successfully signed in.',
-      });
-    } catch (error) {
-      toast('Error signing in', {
-        description: error.message,
-      });
-      console.error('Error signing in:', error);
-    }
-  };
-
-  const signUpWithMagicLink = async (email: string) => {
+  const sendMagicLink = async (email: string) => {
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email,
@@ -87,7 +64,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw error;
       }
       toast('Check your email!', {
-        description: 'A sign-up link has been sent to your email.',
+        description:
+          'A magic link has been sent to your email to complete sign in.',
       });
     } catch (error) {
       console.error('Error sending magic link:', error);
@@ -142,8 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         session,
         user,
         loading,
-        signIn,
-        signUpWithMagicLink,
+        sendMagicLink,
         signOut,
       }}
     >

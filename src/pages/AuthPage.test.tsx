@@ -7,44 +7,52 @@ import AuthPage from './AuthPage';
 
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({
-    signIn: vi.fn(),
-    signUpWithMagicLink: vi.fn(),
+    sendMagicLink: vi.fn(),
     // Explicitly declare user as null of the correct type to avoid implicit-any
     user: null as null,
   }),
 }));
 
 describe('AuthPage', () => {
-  it('renders "Welcome back" heading for default mode', () => {
+  it('renders "Sign in to Prickly Pear" heading for default mode', () => {
     render(
       <MemoryRouter initialEntries={['/auth']}>
         <AuthPage />
       </MemoryRouter>
     );
     expect(
-      screen.getByRole('heading', { name: /welcome back/i })
+      screen.getByRole('heading', { name: /sign in to prickly pear/i })
     ).toBeInTheDocument();
   });
 
-  it('renders "Create your account" heading for signup mode via mode query', () => {
+  it('renders "Join Prickly Pear" heading for signup mode via mode query', () => {
     render(
       <MemoryRouter initialEntries={['/auth?mode=signup']}>
         <AuthPage />
       </MemoryRouter>
     );
     expect(
-      screen.getByRole('heading', { name: /create your account/i })
+      screen.getByRole('heading', { name: /join prickly pear/i })
     ).toBeInTheDocument();
   });
 
-  it('renders "Create your account" heading for signup mode via signup query', () => {
+  it('renders "Join Prickly Pear" heading for signup mode via signup query', () => {
     render(
       <MemoryRouter initialEntries={['/auth?signup=true']}>
         <AuthPage />
       </MemoryRouter>
     );
     expect(
-      screen.getByRole('heading', { name: /create your account/i })
+      screen.getByRole('heading', { name: /join prickly pear/i })
     ).toBeInTheDocument();
+  });
+
+  it('renders email input field', () => {
+    render(
+      <MemoryRouter initialEntries={['/auth']}>
+        <AuthPage />
+      </MemoryRouter>
+    );
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
   });
 });

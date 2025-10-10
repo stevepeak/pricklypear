@@ -23,7 +23,6 @@ import {
 import { handleError } from '@/services/messageService/utils';
 import { update } from '@/components/account/notifications/update';
 import { PersonalInfoForm } from '@/components/account/personal-info';
-import { ChangePasswordForm } from '@/components/account/change-password';
 
 const Account = () => {
   const navigate = useNavigate();
@@ -73,15 +72,6 @@ const Account = () => {
         </CardHeader>
         <CardContent>
           <PersonalInfoForm form={form} profileLoading={profileLoading} />
-        </CardContent>
-      </Card>
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Change Password</CardTitle>
-          <CardDescription>Update your account password</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ChangePasswordForm />
         </CardContent>
       </Card>
       <Card className="mb-8">

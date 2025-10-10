@@ -20,7 +20,6 @@ import Integrations from './pages/Integrations';
 import Billing from './pages/Billing';
 import { ConnectionsProvider } from '@/contexts/ConnectionsContext';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import UpdatePassword from './pages/update-password';
 import TermsOfService from './pages/terms-of-service';
 import PrivacyPolicy from './pages/privacy-policy';
 import FeatureRequestPage from './pages/feature-request';
@@ -59,7 +58,6 @@ function AppRoutes() {
       <Routes>
         {/* Auth page: always without sidebar */}
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/update-password" element={<UpdatePassword />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         {/* Home page: no sidebar if logged out */}
