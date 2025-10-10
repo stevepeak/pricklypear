@@ -10,7 +10,12 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
-    exclude: ['tests/e2e/**', 'node_modules/**', 'supabase/**'],
+    exclude: [
+      'tests/e2e/**',
+      'node_modules/**',
+      'supabase/**',
+      'react-email/node_modules/**',
+    ],
     globals: true,
   },
 });
