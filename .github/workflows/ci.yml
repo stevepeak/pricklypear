@@ -28,17 +28,13 @@ jobs:
 
       - name: Cache Bun dependencies
         uses: actions/cache@v4
-        id: bun-cache
         with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
+          path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
       - name: Install dependencies
-        if: steps.bun-cache.outputs.cache-hit != 'true'
         run: bun install --frozen-lockfile
 
       - name: Run linting
@@ -90,17 +86,13 @@ jobs:
 
       - name: Cache Bun dependencies
         uses: actions/cache@v4
-        id: bun-cache
         with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
+          path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
       - name: Install dependencies
-        if: steps.bun-cache.outputs.cache-hit != 'true'
         run: bun install --frozen-lockfile
 
       - name: Run unit tests
@@ -149,17 +141,13 @@ jobs:
 
       - name: Cache Bun dependencies
         uses: actions/cache@v4
-        id: bun-cache
         with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
+          path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
       - name: Install dependencies
-        if: steps.bun-cache.outputs.cache-hit != 'true'
         run: bun install --frozen-lockfile
 
       # !Important — Caching browser binaries is not recommended
