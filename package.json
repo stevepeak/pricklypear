@@ -40,7 +40,8 @@
     "gen:supabase": "supabase gen types --project-id vgddrhyjttyrathqhefb > src/integrations/supabase/types.ts",
     "gen:emails": "bun run react-email/sync-emails-to-templates.ts",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org gwiz --project pricklypear ./dist && sentry-cli sourcemaps upload --org gwiz --project pricklypear ./dist",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "prod:psql": "psql \"sslmode=verify-full sslrootcert=./supabase.crt host=aws-0-us-east-2.pooler.supabase.com dbname=postgres user=postgres.vgddrhyjttyrathqhefb\""
   },
   "dependencies": {
     "@hookform/resolvers": "5.1.1",
