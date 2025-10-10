@@ -55,7 +55,7 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
     const trimmed = title.trim();
     const parse = titleSchema.safeParse(trimmed);
     if (!parse.success) {
-      toast('Invalid title', { description: parse.error.errors[0].message });
+      toast('Invalid title', { description: parse.error.issues[0].message });
       if (inputRef.current) {
         inputRef.current.focus();
         inputRef.current.select();

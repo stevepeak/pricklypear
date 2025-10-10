@@ -65,7 +65,7 @@ function parseEnv() {
   const result = envSchema.safeParse(envVars);
 
   if (!result.success) {
-    const errors = result.error.errors
+    const errors = result.error.issues
       .map((err) => `${err.path.join('.')}: ${err.message}`)
       .join(', ');
     throw new Error(`Environment validation failed: ${errors}`);

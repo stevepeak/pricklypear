@@ -69,7 +69,7 @@ export async function handler(req: Request) {
     const { userId } = await req.json();
     const result = demoMessageSchema.safeParse({ userId });
     if (!result.success) {
-      return res.badRequest(result.error.errors[0].message);
+      return res.badRequest(result.error.issues[0].message);
     }
 
     const supabase = getSupabaseServiceClient();

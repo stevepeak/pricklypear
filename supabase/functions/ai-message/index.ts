@@ -30,7 +30,7 @@ export async function handler(req: Request) {
       systemPrompt,
     });
     if (!result.success) {
-      return res.badRequest(result.error.errors[0].message);
+      return res.badRequest(result.error.issues[0].message);
     }
 
     const supabase = getSupabaseServiceClient();

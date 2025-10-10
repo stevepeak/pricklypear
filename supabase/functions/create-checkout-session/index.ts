@@ -32,7 +32,7 @@ export async function handler(req: Request) {
 
     if (!result.success) {
       return new Response(
-        JSON.stringify({ error: result.error.errors[0].message }),
+        JSON.stringify({ error: result.error.issues[0].message }),
         {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },

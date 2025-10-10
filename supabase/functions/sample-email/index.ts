@@ -104,7 +104,7 @@ export async function handler(req: Request) {
         JSON.stringify({
           success: false,
           message: 'Invalid request data',
-          errors: error.errors,
+          errors: error.issues,
         }),
         {
           status: 400,
