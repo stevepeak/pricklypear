@@ -50,6 +50,24 @@ jobs:
       - name: Run Typecheck
         run: bun run typecheck
 
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+
+      - name: Cache Deno dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/deno
+            supabase/functions/node_modules
+          key: ${{ runner.os }}-deno-${{ hashFiles('**/deno.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deno-
+
+      - name: Install Deno dependencies
+        run: deno install --frozen
+
       - name: Run Typecheck Deno
         run: bun run typecheck:deno
 
@@ -91,7 +109,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          deno-version: v2.x
 
       - name: Cache Deno dependencies
         uses: actions/cache@v4
@@ -102,6 +120,9 @@ jobs:
           key: ${{ runner.os }}-deno-${{ hashFiles('**/deno.lock') }}
           restore-keys: |
             ${{ runner.os }}-deno-
+
+      - name: Install Deno dependencies
+        run: deno install --frozen
 
       - name: Run Deno tests
         run: bun run test:deno
