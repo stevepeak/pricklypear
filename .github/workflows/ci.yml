@@ -46,6 +46,9 @@ jobs:
       - name: Run Typecheck
         run: bun run typecheck
 
+      - name: Build application
+        run: bun run build
+
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
@@ -66,9 +69,6 @@ jobs:
 
       - name: Run Typecheck Deno
         run: bun run typecheck:deno
-
-      - name: Build application
-        run: bun run build
 
   test:
     name: Unit Tests
