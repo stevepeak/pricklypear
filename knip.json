@@ -8,6 +8,6 @@
     "src/integrations/supabase/types.ts",
     "react-email/**/*"
   ],
-  "ignoreBinaries": ["supabase"],
+  "ignoreBinaries": ["supabase", "psql"],
   "ignoreDependencies": ["@radix-ui/*", "tw-animate-css", "deno", "vaul"]
 }
