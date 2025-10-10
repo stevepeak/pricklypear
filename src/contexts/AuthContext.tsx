@@ -56,6 +56,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/threads`,
+        },
       });
       if (error) {
         toast('Error sending magic link', {
