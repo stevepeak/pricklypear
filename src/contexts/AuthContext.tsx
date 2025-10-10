@@ -9,14 +9,12 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { getCurrentUser } from '@/utils/authCache';
-import { trackEvent } from '@/lib/tracking';
 
 type AuthContextType = {
   session: Session | null;
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, fullName?: string) => Promise<void>;
   signUpWithMagicLink: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -74,36 +72,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: error.message,
       });
       console.error('Error signing in:', error);
-    }
-  };
-
-  const signUp = async (email: string, password: string, fullName?: string) => {
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            username: fullName, // Keep this as username in user metadata for backward compatibility
-          },
-        },
-      });
-
-      if (error) {
-        toast('Error signing up', {
-          description: error.message,
-        });
-        throw error;
-      }
-
-      trackEvent({ name: 'signup' });
-
-      toast('Account created!', {
-        description: 'You have successfully signed up.',
-      });
-    } catch (error) {
-      console.error('Error signing up:', error);
-      throw error;
     }
   };
 
@@ -175,7 +143,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         loading,
         signIn,
-        signUp,
         signUpWithMagicLink,
         signOut,
       }}
