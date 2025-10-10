@@ -114,10 +114,12 @@ async function checkIfOnTopic(args: {
       },
     ],
   });
-  return topicCheckResponse.choices[0]?.message?.content
-    ?.toLowerCase()
-    .trim()
-    .includes('yes');
+  return (
+    topicCheckResponse.choices[0]?.message?.content
+      ?.toLowerCase()
+      .trim()
+      .includes('yes') ?? false
+  );
 }
 
 async function rephraseMessage(args: {

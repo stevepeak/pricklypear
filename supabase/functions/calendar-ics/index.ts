@@ -157,6 +157,7 @@ serve(async (req) => {
 
     handleError(error);
 
-    return createErrorResponse(error.message ?? 'Unknown error', 500);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return createErrorResponse(message, 500);
   }
 });

@@ -29,6 +29,10 @@ export default async function sendEmail(
       console.error('Error getting user:', userError);
       return;
     }
+    if (!data.user.email) {
+      console.error('User has no email address');
+      return;
+    }
     to = data.user.email;
   } else {
     to = args.to;

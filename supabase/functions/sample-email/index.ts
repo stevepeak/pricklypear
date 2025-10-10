@@ -45,8 +45,22 @@ export async function handler(req: Request) {
     const body = await req.json();
     const { emailName, preview, to, props } = requestSchema.parse(body);
 
-    const template = emailTemplates[emailName];
-    if (!template) {
+    let html: string;
+
+    // Handle each template type separately for type safety
+    if (emailName === 'invite-user') {
+      const template = emailTemplates['invite-user'];
+      html = await renderEmail(template.component, {
+        ...template.previewProps,
+        ...props,
+      });
+    } else if (emailName === 'unread-messages') {
+      const template = emailTemplates['unread-messages'];
+      html = await renderEmail(template.component, {
+        ...template.previewProps,
+        ...props,
+      });
+    } else {
       return new Response(
         JSON.stringify({
           success: false,
@@ -58,11 +72,6 @@ export async function handler(req: Request) {
         }
       );
     }
-
-    const html = await renderEmail(template.component, {
-      ...template.previewProps,
-      ...props,
-    });
 
     // Preview only - return HTML without sending
     if (preview) {

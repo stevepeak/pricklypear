@@ -283,14 +283,12 @@ pricklypear/
 ### Key Tables
 
 - **`threads`**: Conversation topics and metadata
-
   - `id`: Primary key
   - `title`: Thread title
   - `created_at`: Creation timestamp
   - `updated_at`: Last update timestamp
 
 - **`messages`**: Individual chat messages
-
   - `id`: Primary key
   - `thread_id`: Foreign key to threads
   - `content`: Message text
@@ -298,7 +296,6 @@ pricklypear/
   - `created_at`: Creation timestamp
 
 - **`connections`**: User relationships and permissions
-
   - `id`: Primary key
   - `user_id`: Primary user
   - `connected_user_id`: Connected user
