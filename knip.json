@@ -9,5 +9,11 @@
     "react-email/**/*"
   ],
   "ignoreBinaries": ["supabase", "psql"],
-  "ignoreDependencies": ["@radix-ui/*", "tw-animate-css", "deno", "vaul"]
+  "ignoreDependencies": [
+    "@radix-ui/*",
+    "tw-animate-css",
+    "deno",
+    "vaul",
+    "tailwindcss"
+  ]
 }
