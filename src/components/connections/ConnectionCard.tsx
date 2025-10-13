@@ -40,7 +40,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
   const renderBadge = () => {
     switch (variant) {
       case 'pending-incoming':
-        return <Badge>Pending</Badge>;
+        return <Badge variant="accent">Pending</Badge>;
       case 'pending-outgoing':
         return <Badge variant="secondary">Waiting</Badge>;
       case 'accepted':
@@ -85,6 +85,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
               Decline
             </Button>
             <Button
+              variant="accent"
               size="sm"
               onClick={() =>
                 onUpdateStatus?.(connection.connection_id, 'accepted')
