@@ -1,5 +1,11 @@
 project_id = "vgddrhyjttyrathqhefb"
 
+[db]
+major_version = 15
+
+[analytics]
+enabled = false
+
 [functions.calendar-ics]
 verify_jwt = false
 

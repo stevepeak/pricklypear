@@ -24,6 +24,7 @@ dist-ssr
 .env.local
 .supabase/
 supabase/.temp/
+supabase/.branches/
 
 # Sentry Config File
 .sentryclirc
