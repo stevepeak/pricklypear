@@ -305,6 +305,7 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          email: string | null
           id: string
           name: string
           notifications: Json | null
@@ -313,6 +314,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          email?: string | null
           id: string
           name: string
           notifications?: Json | null
@@ -321,6 +323,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          email?: string | null
           id?: string
           name?: string
           notifications?: Json | null
@@ -510,7 +513,7 @@ export type Database = {
       }
       l2_normalize: {
         Args: { "": string } | { "": unknown } | { "": unknown }
-        Returns: string
+        Returns: unknown
       }
       sparsevec_out: {
         Args: { "": unknown }

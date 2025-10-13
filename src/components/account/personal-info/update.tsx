@@ -12,7 +12,7 @@ export async function updatePersonalInfo(data: PersonalInfoUpdate) {
 
   const { error: profileError } = await supabase
     .from('profiles')
-    .update({ name: data.name })
+    .update({ name: data.name, email: data.email })
     .eq('id', authData.user.id);
 
   if (profileError) throw profileError;
