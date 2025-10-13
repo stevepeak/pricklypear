@@ -27,20 +27,18 @@ async function fetchInviterName(args: { userId: string }) {
 async function fetchInviteeUser(args: {
   email: string;
 }): Promise<{ id: string; email: string } | null> {
-  console.log('fetchInviteeUser', args);
-  // TODO unsure how to select by email
-  return null;
-  // const { email } = args;
-  // const supabase = getSupabaseServiceClient();
+  const { email } = args;
+  const supabase = getSupabaseServiceClient();
 
-  // const { data, error } = await supabase.from("profiles").select("*").eq("email", email).maybeSingle();
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, email')
+    .eq('email', email)
+    .single();
 
-  // if (error) throw error;
-  // const user = data.users.find(
-  //   (u: { email: string }) =>
-  //     u.email && u.email.toLowerCase() === email.toLowerCase(),
-  // );
-  // return user ?? null;
+  if (error) throw error;
+
+  return data;
 }
 
 async function sendInvitationEmail(
