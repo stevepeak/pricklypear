@@ -123,11 +123,13 @@ jobs:
     name: E2E Tests
     needs: [quality, test]
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shardIndex: [1, 2, 3, 4]
-        shardTotal: [4]
+    # * Note: installing playwright takes most the time
+    # * so matrix testing here is not as valuable yet
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     shardIndex: [1, 2, 3, 4]
+    #     shardTotal: [4]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
