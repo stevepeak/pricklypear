@@ -139,6 +139,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
     <>
       <Card
         data-testid={`connection-card-${connection.invitee_email}`}
+        data-variant={variant}
         className={variant === 'disabled' ? 'opacity-60' : ''}
       >
         <CardHeader>
