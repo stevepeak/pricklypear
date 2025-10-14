@@ -188,16 +188,7 @@ jobs:
         with:
           version: latest
 
-      # - name: Apply database migrations
-      #   shell: bash
-      #   run: |
-      #     set -euo pipefail
-      #     # Derive the DB host, e.g. https://xyzcompany.supabase.co → db.xyzcompany.supabase.co
-      #     HOST="$(echo "$SUPABASE_URL" | sed -e 's@https\?://@@' -e 's@/$@@')"
-      #     DB_HOST="db.${HOST}"
-      #     # Use the service-role key for the password
-      #     DB_URL="postgres://postgres:${SUPABASE_SERVICE_ROLE_KEY}@${DB_HOST}:5432/postgres"
-      #     echo "Running supabase db push against ${DB_HOST}..."
-      #     supabase db push --db-url "$DB_URL"
+      - name: Apply database migrations
+        run: supabase db push
 
       - run: supabase functions deploy --project-ref $PROJECT_ID
