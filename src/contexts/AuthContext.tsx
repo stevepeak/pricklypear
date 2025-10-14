@@ -15,6 +15,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   sendMagicLink: (email: string) => Promise<void>;
+  signInWithPassword: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -76,6 +77,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signInWithPassword = async (email: string, password: string) => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) {
+        toast('Login failed', {
+          description: error.message,
+        });
+        throw error;
+      }
+      toast('Signed in successfully!');
+    } catch (error) {
+      console.error('Error signing in with password:', error);
+      throw error;
+    }
+  };
+
   const signOut = async () => {
     try {
       // First check if we have a valid session before attempting to sign out
@@ -124,6 +144,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         loading,
         sendMagicLink,
+        signInWithPassword,
         signOut,
       }}
     >

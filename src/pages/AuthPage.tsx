@@ -18,7 +18,7 @@ const AuthPage = () => {
   });
   const [magicLinkSent, setMagicLinkSent] = useState(false);
 
-  const { sendMagicLink, user } = useAuth();
+  const { sendMagicLink, signInWithPassword, user } = useAuth();
   const navigate = useNavigate();
   const [invitedEmail, setInvitedEmail] = useState(searchParams.get('email'));
   const inviterName = searchParams.get('inviterName');
@@ -210,6 +210,44 @@ const AuthPage = () => {
                           </>
                         )}
                       </div>
+                      {import.meta.env.DEV && (
+                        <div className="border-t pt-4">
+                          <div className="text-xs text-muted-foreground mb-2 text-center">
+                            Dev Mode - Quick Login
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {[
+                              { email: 'alice@example.com', name: 'Alice' },
+                              { email: 'bob@example.com', name: 'Bob' },
+                              { email: 'charlie@example.com', name: 'Charlie' },
+                              { email: 'dana@example.com', name: 'Dana' },
+                            ].map((user) => (
+                              <Button
+                                key={user.email}
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={async () => {
+                                  setIsLoading(true);
+                                  try {
+                                    await signInWithPassword(
+                                      user.email,
+                                      'DemoPass1!'
+                                    );
+                                  } catch (error) {
+                                    console.error('Dev login error:', error);
+                                  } finally {
+                                    setIsLoading(false);
+                                  }
+                                }}
+                                disabled={isLoading}
+                              >
+                                {user.name}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </form>
                 </CardContent>

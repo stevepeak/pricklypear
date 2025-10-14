@@ -6,6 +6,12 @@ major_version = 15
 [analytics]
 enabled = false
 
+[auth]
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+
 [functions.calendar-ics]
 verify_jwt = false
 
