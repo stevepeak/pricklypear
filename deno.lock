@@ -1,6 +1,8 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@std/assert@*": "1.0.15",
+    "jsr:@std/internal@^1.0.12": "1.0.12",
     "npm:@dexaai/config@0.0.10": "0.0.10_eslint@9.37.0_prettier@3.6.2_typescript@5.9.3_vitest@3.2.4__@types+node@24.7.1__@vitest+ui@3.2.4___vitest@3.2.4___@types+node@24.7.1___jsdom@27.0.0____postcss@8.5.6___postcss@8.5.6__jsdom@27.0.0___postcss@8.5.6__vite@7.1.9___@types+node@24.7.1___picomatch@4.0.3__postcss@8.5.6_@types+node@24.7.1_@vitest+ui@3.2.4__vitest@3.2.4___@types+node@24.7.1___@vitest+ui@3.2.4___jsdom@27.0.0____postcss@8.5.6___vite@7.1.9____@types+node@24.7.1____picomatch@4.0.3___postcss@8.5.6__@types+node@24.7.1__jsdom@27.0.0___postcss@8.5.6__postcss@8.5.6_jsdom@27.0.0__postcss@8.5.6_postcss@8.5.6",
     "npm:@eslint/js@9.37.0": "9.37.0",
     "npm:@hookform/resolvers@5.2.2": "5.2.2_react-hook-form@7.65.0__react@19.2.0_react@19.2.0",
@@ -91,6 +93,17 @@
     "npm:vite@7.1.9": "7.1.9_@types+node@24.7.1_picomatch@4.0.3",
     "npm:vitest@3.2.4": "3.2.4_@types+node@24.7.1_@vitest+ui@3.2.4__vitest@3.2.4__@types+node@24.7.1__jsdom@27.0.0___postcss@8.5.6__postcss@8.5.6_jsdom@27.0.0__postcss@8.5.6_vite@7.1.9__@types+node@24.7.1__picomatch@4.0.3_postcss@8.5.6",
     "npm:zod@4.1.12": "4.1.12"
+  },
+  "jsr": {
+    "@std/assert@1.0.15": {
+      "integrity": "d64018e951dbdfab9777335ecdb000c0b4e3df036984083be219ce5941e4703b",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.12": {
+      "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    }
   },
   "npm": {
     "@adobe/css-tools@4.4.4": {
