@@ -23,14 +23,25 @@ async function load() {
 
 describe('reviewMessage', () => {
   it('returns data on success', async () => {
+    const mockReview = {
+      analysis: 'Test analysis',
+      suggested_message: 'hi',
+      tone: 'neutral' as const,
+      nvc_elements: {
+        observation: 'obs',
+        feeling: 'feel',
+        need: 'need',
+        request: 'req',
+      },
+    };
     supabase.functions.invoke.mockResolvedValue({
-      data: { rephrasedMessage: 'hi', rejected: false, reason: null },
+      data: { review: mockReview, rejected: false, reason: null },
       error: null,
     });
     const mod = await load();
     const res = await mod.reviewMessage({ message: 'hello', threadId: 't1' });
     expect(res).toEqual({
-      rephrasedMessage: 'hi',
+      review: mockReview,
       rejected: false,
       reason: null,
     });
@@ -47,7 +58,7 @@ describe('reviewMessage', () => {
     const mod = await load();
     const res = await mod.reviewMessage({ message: 'msg', threadId: 't2' });
     expect(res).toEqual({
-      rephrasedMessage: 'msg',
+      review: null,
       rejected: true,
       reason: 'bad',
     });
@@ -58,7 +69,7 @@ describe('reviewMessage', () => {
     const mod = await load();
     const res = await mod.reviewMessage({ message: 'x', threadId: 't3' });
     expect(res).toEqual({
-      rephrasedMessage: 'x',
+      review: null,
       rejected: true,
       reason: 'oops',
     });

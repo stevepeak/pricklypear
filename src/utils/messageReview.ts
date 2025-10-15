@@ -1,13 +1,27 @@
 import { supabase } from '@/integrations/supabase/client';
 
+export type ReviewResponse = {
+  analysis: string;
+  suggested_message: string;
+  tone: 'neutral' | 'empathetic' | 'escalating' | 'unclear';
+  nvc_elements: {
+    observation: string;
+    feeling: string;
+    need: string;
+    request: string;
+  };
+};
+
+type MessageReviewResult = {
+  review: ReviewResponse | null;
+  rejected: boolean;
+  reason: string | null;
+};
+
 export async function reviewMessage(args: {
   message: string;
   threadId: string;
-}): Promise<{
-  rephrasedMessage: string | null;
-  rejected: boolean;
-  reason: string | null;
-}> {
+}): Promise<MessageReviewResult> {
   const { message, threadId } = args;
   try {
     const { data, error } = await supabase.functions.invoke('review-message', {
@@ -24,7 +38,7 @@ export async function reviewMessage(args: {
   } catch (error) {
     console.error('Exception reviewing message:', error);
     return {
-      rephrasedMessage: message,
+      review: null,
       rejected: true,
       reason: (error as Error).message,
     };

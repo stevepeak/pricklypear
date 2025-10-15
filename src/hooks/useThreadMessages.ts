@@ -5,7 +5,7 @@ import {
   saveMessage,
   saveAiMessage,
 } from '@/services/messageService/save-message';
-import { reviewMessage } from '@/utils/messageReview';
+import { reviewMessage, type ReviewResponse } from '@/utils/messageReview';
 import type { Message } from '@/types/message';
 import type { Thread } from '@/types/thread';
 import { toast } from 'sonner';
@@ -26,7 +26,9 @@ export const useThreadMessages = (
 
   // Message review states
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
-  const [kindMessage, setKindMessage] = useState('');
+  const [reviewResponse, setReviewResponse] = useState<ReviewResponse | null>(
+    null
+  );
   const [isReviewingMessage, setIsReviewingMessage] = useState(false);
 
   const { user } = useAuth();
@@ -79,9 +81,9 @@ export const useThreadMessages = (
 
     setIsReviewingMessage(true);
 
-    let reviewedText: string;
+    let response: ReviewResponse;
     try {
-      const { rephrasedMessage, rejected, reason } = await reviewMessage({
+      const { review, rejected, reason } = await reviewMessage({
         message: newMessage,
         threadId,
       });
@@ -96,7 +98,10 @@ export const useThreadMessages = (
         setIsReviewingMessage(false);
         return;
       }
-      reviewedText = rephrasedMessage;
+      if (!review) {
+        throw new Error('No review response received');
+      }
+      response = review;
     } catch (error) {
       console.error('Error reviewing message:', error);
       setIsReviewDialogOpen(false);
@@ -122,12 +127,12 @@ export const useThreadMessages = (
 
     if (autoAccept) {
       // Immediately send the reviewed (or original) message
-      await handleSendReviewedMessage(reviewedText);
+      await handleSendReviewedMessage(response.suggested_message);
       return; // Skip opening the review dialog
     }
 
     // Normal flow – show review dialog
-    setKindMessage(reviewedText);
+    setReviewResponse(response);
     setIsReviewDialogOpen(true);
   };
 
@@ -189,7 +194,7 @@ export const useThreadMessages = (
     newMessage,
     isSending,
     isReviewDialogOpen,
-    kindMessage,
+    reviewResponse,
     isReviewingMessage,
     unreadCount,
     setNewMessage,

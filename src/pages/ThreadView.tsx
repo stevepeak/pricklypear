@@ -20,7 +20,7 @@ const ThreadView = () => {
     isLoading,
     isSending,
     isReviewDialogOpen,
-    kindMessage,
+    reviewResponse,
     isReviewingMessage,
     setNewMessage,
     handleSendMessage,
@@ -105,7 +105,7 @@ const ThreadView = () => {
         open={isReviewDialogOpen}
         onOpenChange={setIsReviewDialogOpen}
         newMessage={newMessage}
-        kindMessage={kindMessage}
+        reviewResponse={reviewResponse}
         onAccept={handleSendReviewedMessage}
         isLoading={isReviewingMessage}
         requireAiApproval={thread.controls?.requireAiApproval}

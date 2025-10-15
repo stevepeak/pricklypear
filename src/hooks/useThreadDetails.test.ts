@@ -32,7 +32,7 @@ vi.mock('./useThreadMessages', () => ({
     newMessage: '',
     isSending: false,
     isReviewDialogOpen: false,
-    kindMessage: '',
+    reviewResponse: null,
     isReviewingMessage: false,
     setNewMessage: vi.fn(),
     handleSendMessage: vi.fn(),
