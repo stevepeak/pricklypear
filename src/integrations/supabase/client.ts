@@ -8,11 +8,12 @@ const isDevelopment = import.meta.env.DEV ?? false;
 
 const SUPABASE_URL = isDevelopment
   ? 'http://localhost:54321'
-  : import.meta.env.VITE_SUPABASE_URL;
+  : import.meta.env.SUPABASE_URL;
 
 const SUPABASE_PUBLISHABLE_KEY = isDevelopment
-  ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0'
-  : import.meta.env.VITE_SUPABASE_ANON_KEY;
+  ? // * Supabase publishable key for local development (generic for all projects)
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0'
+  : import.meta.env.SUPABASE_ANON_KEY;
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
