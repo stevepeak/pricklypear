@@ -34,3 +34,4 @@ supabase/.branches/
 /playwright-report/
 /playwright/.cache/
 *.crt
+.vercel
