@@ -46,8 +46,9 @@ test.describe('AI Chat Threads', () => {
       withUser.getByText('This thread has been archived.')
     ).toBeVisible();
 
-    // Verify we're redirected to threads page
-    await expect(withUser).toHaveURL('/threads');
+    // Wait for navigation to threads page to complete
+    await withUser.waitForURL('/threads', { timeout: 10000 });
+    await withUser.waitForLoadState('networkidle');
 
     // Wait for the threads table to be visible (increase timeout for CI)
     await expect(withUser.getByRole('table')).toBeVisible({ timeout: 10000 });
@@ -73,21 +74,22 @@ test.describe('AI Chat Threads', () => {
   });
 
   test('can send a message and receive AI response', async ({ withUser }) => {
-    // Type message into composer
-    await withUser
-      .getByTestId('thread-message-composer')
-      .fill('what is your specialty?');
+    const messageText = 'what is your specialty?';
 
-    // Click the send button instead of using keyboard shortcut for better cross-platform reliability
-    await withUser.getByRole('button', { name: /ask prickly ai/i }).click();
+    // Wait for composer to be ready and fill message
+    const composer = withUser.getByTestId('thread-message-composer');
+    await expect(composer).toBeVisible();
+    await composer.fill(messageText);
 
-    // Wait for the message to be sent and AI to respond
-    // Look for the user's message in the thread
+    // Wait for send button to be enabled and click it
+    const sendButton = withUser.getByTestId('thread-send-button');
+    await expect(sendButton).toBeEnabled();
+    await sendButton.click();
+
+    // Wait for the message to be sent and appear in the thread
     await expect(
-      withUser
-        .getByTestId('thread-message-list')
-        .getByText('what is your specialty?')
-    ).toBeVisible({ timeout: 5000 });
+      withUser.getByTestId('thread-message-list').getByText(messageText)
+    ).toBeVisible({ timeout: 10000 });
 
     // Wait for AI response (use scoped selector to avoid multiple matches)
     await expect(
@@ -124,7 +126,7 @@ test.describe.skip('Message Review (Default Threads)', () => {
     // Type a message that will trigger review
     const originalMessage = 'you need to fix this now';
     await withUser.getByTestId('thread-message-composer').fill(originalMessage);
-    await withUser.getByRole('button', { name: /send/i }).click();
+    await withUser.getByTestId('thread-send-button').click();
 
     // Wait for review dialog to appear
     await expect(withUser.getByTestId('message-review-dialog')).toBeVisible({
@@ -155,7 +157,7 @@ test.describe.skip('Message Review (Default Threads)', () => {
     // Type a message that will trigger review
     const originalMessage = 'this is terrible and you are wrong';
     await withUser.getByTestId('thread-message-composer').fill(originalMessage);
-    await withUser.getByRole('button', { name: /send/i }).click();
+    await withUser.getByTestId('thread-send-button').click();
 
     // Wait for review dialog to appear
     await expect(withUser.getByTestId('message-review-dialog')).toBeVisible({
@@ -203,7 +205,7 @@ test.describe.skip('Message Review (Default Threads)', () => {
     // Type a message
     const testMessage = 'this should send directly without review';
     await withUser.getByTestId('thread-message-composer').fill(testMessage);
-    await withUser.getByRole('button', { name: /send/i }).click();
+    await withUser.getByTestId('thread-send-button').click();
 
     // Verify the review dialog does NOT appear
     await expect(

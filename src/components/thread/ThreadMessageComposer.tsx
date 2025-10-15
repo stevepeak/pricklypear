@@ -175,6 +175,7 @@ const ThreadMessageComposer = React.forwardRef<
                 size="default"
                 variant="success"
                 className={`shrink-0 flex items-center gap-1`}
+                data-testid="thread-send-button"
               >
                 {isSending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
