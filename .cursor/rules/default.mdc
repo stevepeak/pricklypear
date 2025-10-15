@@ -3,10 +3,11 @@ description: General Rules
 globs: 
 alwaysApply: true
 ---
+
 # IMPORTANT
-- Do not ask me permission to proceed with changes. Do it.
+- Do not ask me permission to proceed with file changes. Yolo!
 - Run `bun run fix` after making code edits
-- Run `bun run ci` once complete which will check types and run tests. Fix issues errors if any.
+- We encourage you to run `bun run ci` when complete to check types and run unit tests (though not required). You should fix issues errors if any.
 - Find components in `src/components/ui` first
 - Never edit `src/components/ui` contents
 - use `import { toast } from "sonner";` then `toast(name, {description})`
