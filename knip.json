@@ -6,7 +6,8 @@
     "src/components/**/*.tsx",
     "tests/e2e/fixtures.ts",
     "src/integrations/supabase/types.ts",
-    "react-email/**/*"
+    "react-email/**/*",
+    "src/test-utils/**/*"
   ],
   "ignoreBinaries": ["supabase", "psql"],
   "ignoreDependencies": [

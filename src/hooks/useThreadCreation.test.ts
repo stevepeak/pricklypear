@@ -78,4 +78,64 @@ describe('useThreadCreation', () => {
       topic: 'other',
     });
   });
+
+  it('handles thread creation errors', async () => {
+    const onCreated = vi.fn();
+    const onClose = vi.fn();
+    const { toast } = await import('sonner');
+
+    createThread.mockResolvedValue(null); // Simulate failure
+
+    const { result } = renderHook(() => useThreadCreation(onCreated, onClose));
+
+    act(() => {
+      result.current.setNewThreadTitle('My Thread');
+      result.current.setSelectedContactIds(['u1']);
+      result.current.setSelectedTopic('other');
+    });
+
+    await act(async () => {
+      await result.current.handleCreateThread();
+    });
+
+    expect(onCreated).not.toHaveBeenCalled();
+    expect(toast).toHaveBeenCalledWith('Error', {
+      description: 'Failed to create thread. Please try again.',
+    });
+  });
+
+  it('validates thread title before creation', async () => {
+    const onCreated = vi.fn();
+    const onClose = vi.fn();
+
+    const { result } = renderHook(() => useThreadCreation(onCreated, onClose));
+
+    act(() => {
+      result.current.setNewThreadTitle('   '); // Empty title
+      result.current.setSelectedContactIds(['u1']);
+    });
+
+    await act(async () => {
+      await result.current.handleCreateThread();
+    });
+
+    expect(createThread).not.toHaveBeenCalled();
+    expect(onCreated).not.toHaveBeenCalled();
+  });
+
+  it('handles AI chat creation errors', async () => {
+    const { toast } = await import('sonner');
+
+    createThread.mockResolvedValue(null); // Simulate failure
+
+    const { result } = renderHook(() => useThreadCreation(vi.fn(), vi.fn()));
+
+    await act(async () => {
+      await result.current.handleCreateAIChat();
+    });
+
+    expect(toast).toHaveBeenCalledWith('Error', {
+      description: 'Failed to create thread. Please try again.',
+    });
+  });
 });
