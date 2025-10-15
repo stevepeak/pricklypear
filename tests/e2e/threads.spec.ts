@@ -49,8 +49,8 @@ test.describe('AI Chat Threads', () => {
     // Verify we're redirected to threads page
     await expect(withUser).toHaveURL('/threads');
 
-    // Wait for the threads table to be visible
-    await expect(withUser.getByRole('table')).toBeVisible();
+    // Wait for the threads table to be visible (increase timeout for CI)
+    await expect(withUser.getByRole('table')).toBeVisible({ timeout: 10000 });
 
     // Verify thread is not visible in the list
     await expect(
@@ -77,7 +77,9 @@ test.describe('AI Chat Threads', () => {
     await withUser
       .getByTestId('thread-message-composer')
       .fill('what is your specialty?');
-    await withUser.getByTestId('thread-message-composer').press('Meta+Enter');
+
+    // Click the send button instead of using keyboard shortcut for better cross-platform reliability
+    await withUser.getByRole('button', { name: /ask prickly ai/i }).click();
 
     // Wait for the message to be sent and AI to respond
     // Look for the user's message in the thread
@@ -122,7 +124,7 @@ test.describe.skip('Message Review (Default Threads)', () => {
     // Type a message that will trigger review
     const originalMessage = 'you need to fix this now';
     await withUser.getByTestId('thread-message-composer').fill(originalMessage);
-    await withUser.getByTestId('thread-message-composer').press('Meta+Enter');
+    await withUser.getByRole('button', { name: /send/i }).click();
 
     // Wait for review dialog to appear
     await expect(withUser.getByTestId('message-review-dialog')).toBeVisible({
@@ -153,7 +155,7 @@ test.describe.skip('Message Review (Default Threads)', () => {
     // Type a message that will trigger review
     const originalMessage = 'this is terrible and you are wrong';
     await withUser.getByTestId('thread-message-composer').fill(originalMessage);
-    await withUser.getByTestId('thread-message-composer').press('Meta+Enter');
+    await withUser.getByRole('button', { name: /send/i }).click();
 
     // Wait for review dialog to appear
     await expect(withUser.getByTestId('message-review-dialog')).toBeVisible({
@@ -201,7 +203,7 @@ test.describe.skip('Message Review (Default Threads)', () => {
     // Type a message
     const testMessage = 'this should send directly without review';
     await withUser.getByTestId('thread-message-composer').fill(testMessage);
-    await withUser.getByTestId('thread-message-composer').press('Meta+Enter');
+    await withUser.getByRole('button', { name: /send/i }).click();
 
     // Verify the review dialog does NOT appear
     await expect(
