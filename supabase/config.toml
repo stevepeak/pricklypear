@@ -15,5 +15,8 @@ enable_signup = true
 [functions.calendar-ics]
 verify_jwt = false
 
+[functions.health]
+verify_jwt = false
+
 [functions.stripe-webhooks]
 verify_jwt = false
