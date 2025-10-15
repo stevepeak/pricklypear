@@ -152,10 +152,18 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      # !Important — Caching browser binaries is not recommended
+      # !Important — Caching browser binaries is not recommended
       # ? -> https://playwright.dev/docs/ci#caching-browsers
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase local instance
+        run: supabase start
 
       - name: Build application
         run: bun run build
@@ -165,6 +173,10 @@ jobs:
         run: bun run test:e2e
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
+
+      - name: Stop Supabase
+        if: always()
+        run: supabase stop --no-backup
 
       - name: Upload test results
         if: always()
