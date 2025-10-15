@@ -16,8 +16,8 @@ export const getConnections = async (): Promise<ConnectedUser[]> => {
       .select(
         `
         *,
-        connected_profile:profiles!connected_user_id ( name ),
-        user_profile:profiles!user_id ( name )
+        connected_profile:profiles!connected_user_id ( name, email ),
+        user_profile:profiles!user_id ( name, email )
       `
       )
       .or(`user_id.eq.${userId},connected_user_id.eq.${userId}`);
@@ -32,6 +32,10 @@ export const getConnections = async (): Promise<ConnectedUser[]> => {
         c.user_id === userId ? c.connected_user_id : c.user_id;
       const name =
         c.user_id === userId ? c.connected_profile?.name : c.user_profile?.name;
+      const email =
+        c.user_id === userId
+          ? c.connected_profile?.email
+          : c.user_profile?.email;
       return {
         id: otherUserId,
         createdByMe: c.user_id === userId,
@@ -40,7 +44,7 @@ export const getConnections = async (): Promise<ConnectedUser[]> => {
         connection_id: c.id,
         created_at: c.created_at,
         updated_at: c.updated_at,
-        invitee_email: c.invitee_email,
+        invitee_email: email || c.invitee_email,
       };
     });
 
