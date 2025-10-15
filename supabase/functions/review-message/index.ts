@@ -84,7 +84,7 @@ async function checkIfOnTopic(args: {
   const { contextText, threadTopic, threadTitle, message } = args;
   const openai = getOpenAIClient();
   const topicCheckResponse = await openai.chat.completions.create({
-    model: 'o4-mini',
+    model: 'gpt-4.1-nano',
     messages: [
       {
         role: 'system',
@@ -130,7 +130,7 @@ async function rephraseMessage(args: {
   const { contextText, message, systemPrompt } = args;
   const openai = getOpenAIClient();
   const response = await openai.chat.completions.create({
-    model: 'o4-mini',
+    model: 'gpt-4.1-nano',
     messages: [
       {
         role: 'system',

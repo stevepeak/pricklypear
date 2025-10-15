@@ -77,7 +77,7 @@ export async function handler(req: Request) {
 
     // Send to OpenAI
     const aiRes = await openai.chat.completions.create({
-      model: 'o4-mini',
+      model: 'gpt-4.1-nano',
       messages: [
         {
           role: 'system',
