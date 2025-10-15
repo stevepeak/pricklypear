@@ -73,7 +73,7 @@ export const test = base.extend<{ withUser: Page }>({
 
     // Reload to pick up the auth session
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Use the authenticated page
     // eslint-disable-next-line react-hooks/rules-of-hooks
