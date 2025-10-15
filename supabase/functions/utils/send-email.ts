@@ -18,6 +18,16 @@ export default async function sendEmail(
         html: string;
       }
 ) {
+  // Skip email sending in development if Resend is not configured
+  if (!env.RESEND_API_KEY || !env.RESEND_FROM_EMAIL) {
+    console.log(
+      'Email sending skipped (Resend not configured):',
+      'to' in args ? args.to : 'userId' in args ? args.userId : 'unknown',
+      args.subject
+    );
+    return;
+  }
+
   const resend = new Resend(env.RESEND_API_KEY);
 
   let to: string;
@@ -39,7 +49,7 @@ export default async function sendEmail(
   }
 
   const { error } = await resend.emails.send({
-    from: `The Prickly Pear <${env.RESEND_FROM_EMAIL}>`,
+    from: `The Prickly Pear <${env.RESEND_FROM_EMAIL!}>`,
     to,
     subject: args.subject,
     html: args.html,

@@ -70,7 +70,10 @@ const MessageReviewDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+        data-testid="message-review-dialog"
+      >
         <DialogHeader>
           <DialogTitle>Review your message</DialogTitle>
         </DialogHeader>
@@ -171,6 +174,7 @@ const MessageReviewDialog = ({
               variant="accent"
               onClick={handleSendOriginal}
               disabled={!newMessage.trim() || isLoading}
+              data-testid="send-original-button"
             >
               Send without revision
             </Button>
@@ -180,6 +184,7 @@ const MessageReviewDialog = ({
             variant="success"
             onClick={handleAccept}
             disabled={!reviewResponse?.suggested_message.trim() || isLoading}
+            data-testid="accept-reviewed-button"
           >
             {isLoading ? (
               <>

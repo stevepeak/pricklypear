@@ -1,7 +1,8 @@
 import { test, expect } from './fixtures';
 
 test.describe('Connections Page', () => {
-  // TODO: Re-enable once auth fixtures are updated for magic link flow
+  // Skip this test until Edge Functions are properly configured with email sending in CI/test environment
+  // The test requires the invite-by-email Edge Function which depends on Resend API configuration
   test.skip('should handle outgoing connection flow', async ({
     withUser: page,
   }) => {
@@ -16,8 +17,10 @@ test.describe('Connections Page', () => {
     await page.getByTestId('invite-email').fill(testEmail);
     await page.getByRole('button', { name: /send invitation/i }).click();
 
-    // Verify success toast
-    await expect(page.getByText(/invitation sent/i)).toBeVisible();
+    // Verify success toast (wait longer for Edge Function to respond)
+    await expect(page.getByText(/invitation sent/i)).toBeVisible({
+      timeout: 10000,
+    });
 
     const connectionCard = page.getByTestId(`connection-card-${testEmail}`);
 
@@ -34,8 +37,7 @@ test.describe('Connections Page', () => {
     await expect(connectionCard).not.toBeVisible();
   });
 
-  // TODO: Re-enable once auth fixtures are updated for magic link flow
-  test.skip('should handle accepting incoming connection', async ({
+  test('should handle accepting incoming connection', async ({
     withUser: page,
   }) => {
     // This test verifies the full flow of accepting a connection:
@@ -93,8 +95,7 @@ test.describe('Connections Page', () => {
     });
   });
 
-  // TODO: Re-enable once auth fixtures are updated for magic link flow
-  test.skip('should handle declining incoming connection', async ({
+  test('should handle declining incoming connection', async ({
     withUser: page,
   }) => {
     // Navigate to connections page

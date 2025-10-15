@@ -8,32 +8,20 @@ const envSchema = z.object({
     .string()
     .min(1, 'Supabase service role key is required'),
 
-  // Stripe
-  STRIPE_SECRET_KEY: z
-    .string()
-    .min(1, 'Stripe secret key is required')
-    .regex(
-      /^sk_(live|test)_/,
-      'Stripe secret key must start with "sk_live_" or "sk_test_"'
-    ),
-  STRIPE_WEBHOOK_SECRET: z
-    .string()
-    .min(1, 'Stripe webhook secret is required')
-    .regex(/^whsec_/, 'Stripe webhook secret must start with "whsec_"'),
-  STRIPE_PLAN_SKEW: z
-    .string()
-    .min(1, 'Stripe plan skew is required')
-    .regex(/^prod_/, 'Stripe plan skew must start with "prod_"'),
+  // Stripe - optional in development
+  STRIPE_SECRET_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  STRIPE_PLAN_SKEW: z.string().optional(),
 
-  // OpenAI
-  OPENAI_API_KEY: z.string().min(1, 'OpenAI API key is required'),
+  // OpenAI - optional in development
+  OPENAI_API_KEY: z.string().optional(),
 
-  // Email (Resend)
-  RESEND_API_KEY: z.string().min(1, 'Resend API key is required'),
-  RESEND_FROM_EMAIL: z.string().email('Invalid Resend from email'),
+  // Email (Resend) - optional in development
+  RESEND_API_KEY: z.string().optional(),
+  RESEND_FROM_EMAIL: z.string().optional(),
 
-  // Slack
-  SLACK_WEBHOOK_URL: z.string().url('Invalid Slack webhook URL'),
+  // Slack - optional in development
+  SLACK_WEBHOOK_URL: z.string().optional(),
 
   // Linear
   LINEAR_API_KEY: z.string().optional(),

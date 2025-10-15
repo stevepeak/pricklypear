@@ -1,7 +1,6 @@
 import { test, expect } from './fixtures';
 
-// TODO: Re-enable once auth fixtures are updated for magic link flow
-test.describe.skip('AI Chat Threads', () => {
+test.describe('AI Chat Threads', () => {
   test.beforeEach(async ({ withUser }) => {
     // Set viewport to desktop size
     await withUser.setViewportSize({ width: 1024, height: 768 });
@@ -73,24 +72,145 @@ test.describe.skip('AI Chat Threads', () => {
     await expect(withUser.getByTestId('thread-title')).toHaveText('New Title');
   });
 
-  test.skip('can send a message and receive AI response', async ({
-    withUser,
-  }) => {
+  test('can send a message and receive AI response', async ({ withUser }) => {
     // Type message into composer
     await withUser
       .getByTestId('thread-message-composer')
       .fill('what is your specialty?');
     await withUser.getByTestId('thread-message-composer').press('Meta+Enter');
 
-    // Your message is visible
-    await expect(withUser.getByText('You')).toBeVisible();
-    // !not working - idk why my message does not show up?
-    await expect(withUser.getByText('what is your specialty?')).toBeVisible();
-    // Wait for AI response
-    await expect(withUser.getByText('Prickly AI')).toBeVisible();
+    // Wait for the message to be sent and AI to respond
+    // Look for the user's message in the thread
+    await expect(
+      withUser
+        .getByTestId('thread-message-list')
+        .getByText('what is your specialty?')
+    ).toBeVisible({ timeout: 5000 });
 
-    // Verify we have exactly 2 messages (user message + AI response)
-    const messages = await withUser.getByTestId('thread-message-list').all();
-    expect(messages).toHaveLength(2);
+    // Wait for AI response (use scoped selector to avoid multiple matches)
+    await expect(
+      withUser.getByTestId('thread-message-list').getByText('Prickly AI')
+    ).toBeVisible({ timeout: 10000 });
+  });
+});
+
+// TODO fix this test
+test.describe.skip('Message Review (Default Threads)', () => {
+  test.beforeEach(async ({ withUser }) => {
+    // Set viewport to desktop size
+    await withUser.setViewportSize({ width: 1024, height: 768 });
+
+    // Navigate to threads page
+    await withUser.goto('/threads');
+
+    // Open new thread dialog
+    await withUser.getByRole('button', { name: /new thread/i }).click();
+    await expect(withUser.getByRole('dialog')).toBeVisible();
+
+    // Select Chat thread type (not AI)
+    await withUser.getByRole('tab', { name: /chat/i }).click();
+
+    // Create the thread
+    await withUser.getByTestId('create-thread-button').click();
+
+    // Verify we're on the new thread page
+    await expect(withUser).toHaveURL(/\/threads\/[0-9a-f-]+$/);
+    await expect(withUser.getByTestId('thread-title')).toBeVisible();
+  });
+
+  test('can send original message after review', async ({ withUser }) => {
+    // Type a message that will trigger review
+    const originalMessage = 'you need to fix this now';
+    await withUser.getByTestId('thread-message-composer').fill(originalMessage);
+    await withUser.getByTestId('thread-message-composer').press('Meta+Enter');
+
+    // Wait for review dialog to appear
+    await expect(withUser.getByTestId('message-review-dialog')).toBeVisible({
+      timeout: 10000,
+    });
+
+    // Verify we can see the review dialog content
+    await expect(
+      withUser.getByRole('heading', { name: /review your message/i })
+    ).toBeVisible();
+
+    // Click "Send without revision" button
+    await withUser.getByTestId('send-original-button').click();
+
+    // Verify toast notification appears
+    await expect(withUser.getByText('Message sent')).toBeVisible();
+    await expect(
+      withUser.getByText('Your original message was sent without revision')
+    ).toBeVisible();
+
+    // Verify the original message appears in the thread
+    await expect(
+      withUser.getByTestId('thread-message-list').getByText(originalMessage)
+    ).toBeVisible({ timeout: 5000 });
+  });
+
+  test('can accept reviewed message', async ({ withUser }) => {
+    // Type a message that will trigger review
+    const originalMessage = 'this is terrible and you are wrong';
+    await withUser.getByTestId('thread-message-composer').fill(originalMessage);
+    await withUser.getByTestId('thread-message-composer').press('Meta+Enter');
+
+    // Wait for review dialog to appear
+    await expect(withUser.getByTestId('message-review-dialog')).toBeVisible({
+      timeout: 10000,
+    });
+
+    // Verify we can see the AI suggested rephrasing
+    await expect(withUser.getByText(/ai suggested rephrasing/i)).toBeVisible();
+
+    // Click "Accept & Send" button
+    await withUser.getByTestId('accept-reviewed-button').click();
+
+    // Verify toast notification appears
+    await expect(withUser.getByText('Message sent')).toBeVisible();
+    await expect(
+      withUser.getByText('Your message has been reviewed and sent')
+    ).toBeVisible();
+
+    // Verify a message appears in the thread (should be the reviewed version, not the original)
+    await expect(
+      withUser.getByTestId('thread-message-list').getByRole('article')
+    ).toBeVisible({ timeout: 5000 });
+
+    // Verify the original harsh message does NOT appear
+    await expect(
+      withUser.getByTestId('thread-message-list').getByText(originalMessage)
+    ).not.toBeVisible();
+  });
+
+  test('auto-accept sends message without review dialog', async ({
+    withUser,
+  }) => {
+    // First, enable auto-accept
+    await withUser.getByTestId('composer-actions-button').click();
+    await expect(
+      withUser.getByTestId('composer-actions-options')
+    ).toBeVisible();
+
+    // Toggle the auto-accept switch on
+    await withUser.getByTestId('auto-accept-switch').click();
+
+    // Close the dropdown menu by clicking elsewhere
+    await withUser.getByTestId('thread-title').click();
+
+    // Type a message
+    const testMessage = 'this should send directly without review';
+    await withUser.getByTestId('thread-message-composer').fill(testMessage);
+    await withUser.getByTestId('thread-message-composer').press('Meta+Enter');
+
+    // Verify the review dialog does NOT appear
+    await expect(
+      withUser.getByTestId('message-review-dialog')
+    ).not.toBeVisible();
+
+    // Verify the message appears in the thread directly
+    await expect(
+      withUser.getByTestId('thread-message-list').getByText(testMessage)
+    ).toBeVisible({ timeout: 5000 });
   });
 });

@@ -100,6 +100,7 @@ export function ComposerActionsMenu({
               checked={autoAccept}
               onCheckedChange={onToggleAutoAccept}
               aria-label="Auto-accept AI rephrasing"
+              data-testid="auto-accept-switch"
             />
           </div>
         </DropdownMenuItem>

@@ -48,9 +48,7 @@ test.describe('Authentication', () => {
     await expect(page.getByRole('link', { name: /sign in/i })).toBeVisible();
   });
 
-  // Skip this test as it requires actual email delivery which depends on Supabase configuration
-  // TODO: Mock the sendMagicLink function or use a test email service
-  test.skip('should show magic link sent confirmation', async ({ page }) => {
+  test('should show magic link sent confirmation', async ({ page }) => {
     await page.goto('/auth');
 
     // Fill in email and submit

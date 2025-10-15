@@ -7,6 +7,15 @@ export async function sendSlackNotification(args: {
   text: string;
   blocks?: unknown[];
 }) {
+  // Skip Slack notifications if webhook URL is not configured
+  if (!env.SLACK_WEBHOOK_URL) {
+    console.log(
+      'Slack notification skipped (webhook not configured):',
+      args.text
+    );
+    return;
+  }
+
   const payload: Record<string, unknown> = { text: args.text };
   if (args.blocks) payload.blocks = args.blocks;
 
