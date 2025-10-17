@@ -29,8 +29,10 @@ import {
   Tags,
   ListFilter,
   FilePlus2,
+  Info,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -309,13 +311,43 @@ export default function Documents() {
             <DocumentTableSkeleton />
           ) : filtered.length === 0 ? (
             <TableRow>
-              <TableCell
-                colSpan={4}
-                className="text-center text-muted-foreground"
-              >
-                {search
-                  ? 'No documents found matching your search.'
-                  : 'No documents uploaded yet.'}
+              <TableCell colSpan={4}>
+                {search ? (
+                  <p className="text-muted-foreground py-8 text-center">
+                    No documents found matching your search.
+                  </p>
+                ) : (
+                  <div className="py-6 px-3 sm:px-4 max-w-xl mx-auto text-center">
+                    <h3 className="text-base font-semibold text-foreground mb-2">
+                      No documents uploaded yet.
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Upload documents to enhance your experience in two ways:
+                    </p>
+                    <div className="text-sm text-muted-foreground space-y-2 text-left max-w-md mx-auto">
+                      <div className="flex gap-2">
+                        <span className="text-foreground mt-0.5">•</span>
+                        <span>
+                          <strong className="text-foreground">
+                            Fact-checking:
+                          </strong>{' '}
+                          Catch incorrect details when messaging, like who has
+                          the child tax credit this year.
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="text-foreground mt-0.5">•</span>
+                        <span>
+                          <strong className="text-foreground">
+                            Chat with docs:
+                          </strong>{' '}
+                          Ask questions about your files to understand your case
+                          better.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ) : (
