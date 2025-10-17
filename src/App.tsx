@@ -7,6 +7,7 @@ import { GlobalMessagesProvider } from '@/contexts/GlobalMessagesContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { useGlobalNavigation } from '@/hooks/useGlobalNavigation';
 import { useGoogleAnalytics } from '@/hooks/use-google-analytics';
+import { useTabNotifications } from '@/hooks/useTabNotifications';
 import Home from './pages/Home';
 import Threads from './pages/Threads';
 import ThreadView from './pages/ThreadView';
@@ -50,6 +51,7 @@ function AppRoutes() {
   const { user, loading } = useAuth();
   useGlobalNavigation();
   useGoogleAnalytics();
+  useTabNotifications();
   if (loading) return null;
 
   return (

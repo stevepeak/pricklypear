@@ -321,24 +321,30 @@ export async function handler(req: Request) {
       systemPrompt: string | null;
     } = result.data;
 
-    // Fetch context
-    const [messages, thread] = await Promise.all([
-      fetchThreadMessages({ threadId }),
-      fetchThreadDetails({ threadId }),
-    ]);
+    // Check if thread requires AI approval
+    const thread = await fetchThreadDetails({ threadId });
 
+    // Skip all AI checks if not AI mediated
+    if (!thread.controls?.requireAiApproval) {
+      return res.ok({
+        rejected: false,
+        reason: null,
+        review: null,
+      });
+    }
+
+    // Fetch context for AI review
+    const messages = await fetchThreadMessages({ threadId });
     const contextText = formatContextText({ messages });
 
     const [isOnTopic, reviewResponse] = await Promise.all([
       // Check if the message is on topic
-      thread.controls?.requireAiApproval
-        ? checkIfOnTopic({
-            contextText,
-            threadTopic: thread.topic,
-            threadTitle: thread.title,
-            message,
-          })
-        : true,
+      checkIfOnTopic({
+        contextText,
+        threadTopic: thread.topic,
+        threadTitle: thread.title,
+        message,
+      }),
       // Rephrase the message
       rephraseMessage({
         contextText,
