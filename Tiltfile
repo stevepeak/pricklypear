@@ -2,22 +2,32 @@
 
 # Supabase local development
 local_resource(
-  'Backend(Supabase)',
-  serve_cmd='supabase start & supabase functions serve --env-file ./supabase/.env',
+  'Supabase',
+  serve_cmd='supabase start && tail -f /dev/null',
   readiness_probe=probe(
     period_secs=5,
-    http_get=http_get_action(port=54321, path='/functions/v1/health'),
+    http_get=http_get_action(port=54323, path='/'),
   ),
   links=[
     link('http://127.0.0.1:54323', 'Supabase Studio'),
     link('http://127.0.0.1:54324', 'Mailpit'),
   ],
-  labels=['Backend'],
+  labels=['Supabase'],
+)
+
+local_resource(
+  'Functions',
+  serve_cmd='supabase functions serve --env-file ./supabase/.env',
+  readiness_probe=probe(
+    period_secs=5,
+    http_get=http_get_action(port=54321, path='/functions/v1/health'),
+  ),
+  labels=['Supabase'],
 )
 
 # Frontend development server
 local_resource(
-  'Frontend (Vercel)',
+  'Web',
   serve_cmd='bun run dev',
   readiness_probe=probe(
     period_secs=2,
