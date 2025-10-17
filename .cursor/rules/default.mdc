@@ -15,6 +15,7 @@ alwaysApply: true
 - Use zod whenever possible
 - Use `className` and Tailwind not `style={""}`
 - This project is using React (not Next or any other framework)
+- If you make database changes please run `bun run db:reset`
 
 # Coding Instructions
 
