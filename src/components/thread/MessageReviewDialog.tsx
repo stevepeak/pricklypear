@@ -37,7 +37,7 @@ const MessageReviewDialog = ({
       onAccept(reviewResponse.suggested_message);
       onOpenChange(false);
       toast('Message sent', {
-        description: 'Your message has been reviewed and sent',
+        description: 'Your message was sent.',
       });
     }
   };
@@ -46,7 +46,7 @@ const MessageReviewDialog = ({
       onAccept(newMessage);
       onOpenChange(false);
       toast('Message sent', {
-        description: 'Your original message was sent without revision',
+        description: 'Your original message was sent without revision.',
       });
     }
   };
