@@ -86,24 +86,19 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       messages: [
         {
           role: 'system',
-          content: `You are an assistant that summarizes conversations. The messages are provided in chronological order (oldest to newest) with timestamps. 
-          
-Important guidelines:
-1. Pay special attention to the chronological order of messages - newer messages may contain updates or corrections to earlier information
-2. If there are conflicting statements, prioritize the most recent information
-3. Ensure the summary reflects the most current state of the conversation based on the latest messages
+          content: `You are an assistant that summarizes conversations. The messages are provided in chronological order (oldest to newest) with timestamps.
 
-Your summary must be structured in exactly three sections:
-
-**Thread Description:** A single concise sentence (10-15 words) that captures the main topic or purpose of this thread.
-
-**Conflicts & Decisions:** A focused paragraph identifying key disagreements, debates, decisions made, or problems solved during the conversation. If no conflicts arose, summarize the main points discussed and any conclusions reached.
-
-**Next Steps:** A brief suggestion (2-3 actionable items) for what should happen next to move this thread toward resolution or completion.`,
+Create a concise summary following these guidelines:
+1. Write 2-3 clear sentences that capture what was discussed and any decisions made
+2. Pay attention to chronological order - prioritize the most recent information if there are updates or changes
+3. Only include information that is actually present in the conversation
+4. Do not use headers, labels, or section titles
+5. If there are specific next steps or action items, mention them naturally in the flow of the summary
+6. Keep it simple and direct - avoid empty statements or filler content`,
         },
         {
           role: 'user',
-          content: `Please summarize this conversation following the three-section structure (Thread Description, Conflicts & Decisions, Next Steps), paying special attention to the chronological order and timestamps:\n\n${conversationText}`,
+          content: `Please provide a concise summary of this conversation:\n\n${conversationText}`,
         },
       ],
       temperature: 0.7,
