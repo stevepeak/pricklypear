@@ -257,6 +257,125 @@ describe('useComposerActions', () => {
       });
     });
 
+    it('should use the correct storage bucket (threads)', async () => {
+      const mockFile = new File(['test'], 'test.png', { type: 'image/png' });
+
+      const { supabase } = await import('@/integrations/supabase/client');
+      const mockUpload = vi.fn().mockResolvedValue({ error: null });
+      vi.mocked(supabase.storage.from).mockReturnValue({
+        upload: mockUpload,
+      } as any);
+
+      const { saveMessage } = await import(
+        '@/services/messageService/save-message'
+      );
+      vi.mocked(saveMessage).mockResolvedValue(true);
+
+      const { result } = renderHook(() =>
+        useComposerActions({
+          thread: mockThread,
+          loadMessages: mockLoadMessages,
+        })
+      );
+
+      await act(async () => {
+        await result.current.handleImageUpload(mockFile);
+      });
+
+      expect(supabase.storage.from).toHaveBeenCalledWith('threads');
+    });
+
+    it('should generate correct file path with thread id and uuid', async () => {
+      const mockFile = new File(['test'], 'test.webp', {
+        type: 'image/webp',
+      });
+
+      const { supabase } = await import('@/integrations/supabase/client');
+      const mockUpload = vi.fn().mockResolvedValue({ error: null });
+      vi.mocked(supabase.storage.from).mockReturnValue({
+        upload: mockUpload,
+      } as any);
+
+      const { saveMessage } = await import(
+        '@/services/messageService/save-message'
+      );
+      vi.mocked(saveMessage).mockResolvedValue(true);
+
+      const { result } = renderHook(() =>
+        useComposerActions({
+          thread: mockThread,
+          loadMessages: mockLoadMessages,
+        })
+      );
+
+      await act(async () => {
+        await result.current.handleImageUpload(mockFile);
+      });
+
+      expect(mockUpload).toHaveBeenCalledWith(
+        expect.stringMatching(/^thread-123\/[a-f0-9-]+\.webp$/),
+        mockFile
+      );
+    });
+
+    it('should handle different image file extensions', async () => {
+      const testCases = [
+        { ext: 'jpg', type: 'image/jpeg' },
+        { ext: 'png', type: 'image/png' },
+        { ext: 'gif', type: 'image/gif' },
+      ];
+
+      for (const { ext, type } of testCases) {
+        vi.clearAllMocks();
+
+        const mockFile = new File(['test'], `test.${ext}`, { type });
+
+        const { supabase } = await import('@/integrations/supabase/client');
+        const mockUpload = vi.fn().mockResolvedValue({ error: null });
+        vi.mocked(supabase.storage.from).mockReturnValue({
+          upload: mockUpload,
+        } as any);
+
+        const { saveMessage } = await import(
+          '@/services/messageService/save-message'
+        );
+        vi.mocked(saveMessage).mockResolvedValue(true);
+
+        const { result } = renderHook(() =>
+          useComposerActions({
+            thread: mockThread,
+            loadMessages: mockLoadMessages,
+          })
+        );
+
+        await act(async () => {
+          await result.current.handleImageUpload(mockFile);
+        });
+
+        expect(mockUpload).toHaveBeenCalledWith(
+          expect.stringMatching(new RegExp(`\\.${ext}$`)),
+          mockFile
+        );
+      }
+    });
+
+    it('should not upload when thread is missing', async () => {
+      const mockFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+
+      const { result } = renderHook(() =>
+        useComposerActions({
+          thread: null as any,
+          loadMessages: mockLoadMessages,
+        })
+      );
+
+      await act(async () => {
+        await result.current.handleImageUpload(mockFile);
+      });
+
+      expect(result.current.isUploading).toBe(false);
+    });
+
     it('should handle upload error', async () => {
       const mockFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
 
@@ -286,6 +405,41 @@ describe('useComposerActions', () => {
       });
       expect(vi.mocked(toast)).toHaveBeenCalledWith('Upload failed', {
         description: 'Failed to upload image.',
+      });
+    });
+
+    it('should handle message save failure after successful upload', async () => {
+      const mockFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+
+      const { supabase } = await import('@/integrations/supabase/client');
+      const mockUpload = vi.fn().mockResolvedValue({ error: null });
+      vi.mocked(supabase.storage.from).mockReturnValue({
+        upload: mockUpload,
+      } as any);
+
+      const { saveMessage } = await import(
+        '@/services/messageService/save-message'
+      );
+      vi.mocked(saveMessage).mockResolvedValue(false);
+
+      const { toast } = await import('sonner');
+
+      const { result } = renderHook(() =>
+        useComposerActions({
+          thread: mockThread,
+          loadMessages: mockLoadMessages,
+        })
+      );
+
+      await act(async () => {
+        await result.current.handleImageUpload(mockFile);
+      });
+
+      expect(mockUpload).toHaveBeenCalled();
+      expect(saveMessage).toHaveBeenCalled();
+      // Should not show success message
+      expect(vi.mocked(toast)).not.toHaveBeenCalledWith('Image uploaded', {
+        description: 'Your image has been uploaded successfully.',
       });
     });
   });
