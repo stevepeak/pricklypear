@@ -28,6 +28,8 @@ test.describe('AI Chat Threads', () => {
   });
 
   test('can archive a thread', async ({ withUser }) => {
+    test.setTimeout(45000); // Increase timeout for CI environment
+
     // Get the thread ID from the URL
     const threadId = withUser.url().split('/').pop();
 
@@ -48,7 +50,6 @@ test.describe('AI Chat Threads', () => {
 
     // Wait for navigation to threads page to complete
     await withUser.waitForURL('/threads', { timeout: 10000 });
-    await withUser.waitForLoadState('networkidle');
 
     // Wait for the threads table to be visible (increase timeout for CI)
     await expect(withUser.getByRole('table')).toBeVisible({ timeout: 10000 });
@@ -74,6 +75,8 @@ test.describe('AI Chat Threads', () => {
   });
 
   test('can send a message and receive AI response', async ({ withUser }) => {
+    test.setTimeout(60000); // Increase timeout to 60s for CI environment (cold starts + OpenAI API calls)
+
     const messageText = 'what is your specialty?';
 
     // Wait for composer to be ready and fill message
@@ -92,9 +95,10 @@ test.describe('AI Chat Threads', () => {
     ).toBeVisible({ timeout: 10000 });
 
     // Wait for AI response (use scoped selector to avoid multiple matches)
+    // Increased timeout to 40s for CI environment where cold starts and API calls can be slower
     await expect(
       withUser.getByTestId('thread-message-list').getByText('Prickly AI')
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible({ timeout: 40000 });
   });
 });
 
