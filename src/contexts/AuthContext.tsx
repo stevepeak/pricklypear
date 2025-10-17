@@ -53,6 +53,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Update user activity timestamp periodically
+  useEffect(() => {
+    if (!user) return;
+
+    const updateActivity = async () => {
+      await supabase
+        .from('profiles')
+        .update({ last_activity_at: new Date().toISOString() })
+        .eq('id', user.id);
+    };
+
+    // Update activity immediately when user becomes active
+    updateActivity();
+
+    // Update activity every 5 minutes while user is active
+    const interval = setInterval(updateActivity, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [user]);
+
   const sendMagicLink = async (email: string) => {
     try {
       const { error } = await supabase.auth.signInWithOtp({
