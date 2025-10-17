@@ -25,7 +25,7 @@
     "lint": "eslint . && prettier --check .",
     "test": "bun run test:unittest && bun run test:deno",
     "test:unittest": "vitest run",
-    "test:deno": "deno test supabase/functions/",
+    "test:deno": "deno test --allow-env --allow-read --allow-net supabase/functions/",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",

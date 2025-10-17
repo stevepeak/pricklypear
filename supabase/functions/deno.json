@@ -8,5 +8,8 @@
   "test": {
     "include": ["**/*.test.ts"],
     "setup": "./test-setup.ts"
+  },
+  "tasks": {
+    "test": "deno test --allow-env --allow-read --allow-net"
   }
 }
