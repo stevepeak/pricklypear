@@ -162,8 +162,8 @@ const CreateThreadForm = ({
         />
         <Label htmlFor="require-ai-approval">
           {requireAiApproval
-            ? 'AI must approve all messages'
-            : 'AI will only suggest change'}
+            ? 'All messages will require AI approval'
+            : 'Messages are not reviewed by AI'}
         </Label>
       </div>
 
