@@ -97,6 +97,10 @@ export function useComposerActions({
     if (!thread?.id) return;
 
     setIsUploading(true);
+    toast('Uploading image', {
+      description: 'Please wait while your image is being uploaded...',
+    });
+
     try {
       const fileExt = file.name.split('.').pop();
       const filePath = `${thread.id}/${uuidv4()}.${fileExt}`;
@@ -119,6 +123,9 @@ export function useComposerActions({
 
       if (success) {
         await loadMessages();
+        toast('Image uploaded', {
+          description: 'Your image has been uploaded successfully.',
+        });
       }
     } catch (err) {
       handleError(err, 'uploadImage');

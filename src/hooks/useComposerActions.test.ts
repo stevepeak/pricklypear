@@ -224,6 +224,8 @@ describe('useComposerActions', () => {
       );
       vi.mocked(saveMessage).mockResolvedValue(true);
 
+      const { toast } = await import('sonner');
+
       const { result } = renderHook(() =>
         useComposerActions({
           thread: mockThread,
@@ -235,6 +237,9 @@ describe('useComposerActions', () => {
         await result.current.handleImageUpload(mockFile);
       });
 
+      expect(vi.mocked(toast)).toHaveBeenCalledWith('Uploading image', {
+        description: 'Please wait while your image is being uploaded...',
+      });
       expect(mockUpload).toHaveBeenCalled();
       expect(saveMessage).toHaveBeenCalledWith({
         text: 'Uploaded an image',
@@ -247,6 +252,9 @@ describe('useComposerActions', () => {
         },
       });
       expect(mockLoadMessages).toHaveBeenCalled();
+      expect(vi.mocked(toast)).toHaveBeenCalledWith('Image uploaded', {
+        description: 'Your image has been uploaded successfully.',
+      });
     });
 
     it('should handle upload error', async () => {
@@ -273,6 +281,9 @@ describe('useComposerActions', () => {
         await result.current.handleImageUpload(mockFile);
       });
 
+      expect(vi.mocked(toast)).toHaveBeenCalledWith('Uploading image', {
+        description: 'Please wait while your image is being uploaded...',
+      });
       expect(vi.mocked(toast)).toHaveBeenCalledWith('Upload failed', {
         description: 'Failed to upload image.',
       });

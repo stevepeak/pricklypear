@@ -133,7 +133,7 @@ const ThreadMessageComposer = React.forwardRef<
             value={newMessage}
             onChange={setNewMessage}
             onKeyDown={handleKeyDown}
-            disabled={isSending}
+            disabled={isSending || isUploading}
             autoFocus={autoFocus}
             thread={thread}
             messagesEndRef={messagesEndRef}
@@ -171,13 +171,20 @@ const ThreadMessageComposer = React.forwardRef<
             <div className="flex items-center gap-2">
               <Button
                 onClick={handleSendMessage}
-                disabled={!newMessage.trim() || isSending}
+                disabled={!newMessage.trim() || isSending || isUploading}
                 size="default"
                 variant="success"
                 className={`shrink-0 flex items-center gap-1`}
                 data-testid="thread-send-button"
               >
-                {isSending ? (
+                {isUploading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="sr-only md:not-sr-only md:inline">
+                      Uploading image
+                    </span>
+                  </>
+                ) : isSending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
