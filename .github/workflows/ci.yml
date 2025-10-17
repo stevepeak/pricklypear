@@ -174,6 +174,8 @@ jobs:
 
       - name: Start Supabase local instance
         run: supabase start
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Build application
         run: bun run build
@@ -183,6 +185,7 @@ jobs:
         run: bun run test:e2e
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Stop Supabase
         if: always()
