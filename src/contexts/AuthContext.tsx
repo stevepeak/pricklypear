@@ -132,7 +132,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // Otherwise proceed with normal sign out
-      const { error } = await supabase.auth.signOut();
+      // Using scope: 'global' ensures tokens are removed from all tabs/windows
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
       if (error) {
         console.error('Error during sign out:', error);
         toast('Error signing out', {
