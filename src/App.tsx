@@ -17,7 +17,6 @@ import NotFound from './pages/NotFound';
 import Account from './pages/Account';
 import Documents from './pages/Documents';
 import Messages from './pages/Messages';
-import Integrations from './pages/Integrations';
 import Billing from './pages/Billing';
 import { ConnectionsProvider } from '@/contexts/ConnectionsContext';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
@@ -89,10 +88,6 @@ function AppRoutes() {
                         <Route path="/calendar" element={<Calendar />} />
                         <Route path="/children" element={<Children />} />
                         <Route path="/expenses" element={<Expenses />} />
-                        <Route
-                          path="/integrations"
-                          element={<Integrations />}
-                        />
                         <Route path="/billing" element={<Billing />} />
                         <Route path="/account" element={<Account />} />
                         <Route

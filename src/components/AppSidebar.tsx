@@ -25,7 +25,6 @@ import {
   Sparkles,
   BadgeCheck,
   Calendar,
-  Link2,
   MessageSquareText,
   BookUser,
   Baby,
@@ -311,15 +310,6 @@ export function AppSidebar() {
                       onClick={() => isMobile && setOpenMobile(false)}
                     >
                       <FileText className="h-4 w-4 mr-2" /> Billing
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center w-full">
-                    <Link
-                      className="flex items-center w-full"
-                      to="/integrations"
-                      onClick={() => isMobile && setOpenMobile(false)}
-                    >
-                      <Link2 className="h-4 w-4 mr-4" /> Integrations
                     </Link>
                   </DropdownMenuItem>
                   <div className="my-1">
