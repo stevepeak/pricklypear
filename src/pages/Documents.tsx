@@ -274,6 +274,13 @@ export default function Documents() {
               <DialogHeader>
                 <DialogTitle>Upload Document</DialogTitle>
               </DialogHeader>
+              <Alert>
+                <Info />
+                <AlertDescription>
+                  Documents are only visible to you and will never be shared
+                  with others.
+                </AlertDescription>
+              </Alert>
               <DocumentUploader onUploadComplete={handleUploadComplete} />
             </DialogContent>
           </Dialog>
