@@ -5,14 +5,13 @@ DROP TRIGGER IF EXISTS "Summarize Thread" ON public.messages;
 CREATE OR REPLACE FUNCTION public.trigger_summarize_thread()
 RETURNS TRIGGER AS $$
 BEGIN
-  -- Call the summarize-thread edge function asynchronously with the thread_id
-  PERFORM supabase_functions.http_request(
-    'https://vgddrhyjttyrathqhefb.supabase.co/functions/v1/summarize-thread',
-    'POST',
-    '{"Content-Type":"application/json"}',
-    '{}',
-    '{"threadId":"' || NEW.thread_id || '"}',
-    '7000'
+  -- Use Kong internal gateway (works in both local and production Supabase)
+  -- Kong is the internal API gateway accessible at http://kong:8000
+  PERFORM net.http_post(
+    url := 'http://kong:8000/functions/v1/summarize-thread',
+    body := jsonb_build_object('threadId', NEW.thread_id),
+    headers := '{"Content-Type":"application/json"}'::jsonb,
+    timeout_milliseconds := 7000
   );
   
   RETURN NEW;
