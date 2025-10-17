@@ -1,6 +1,6 @@
 import type { Message } from '@/types/message';
 import { Sparkles } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { StyledMarkdown } from './StyledMarkdown';
 import { MessageImages } from './MessageImages';
 
 interface MessageFromAIProps {
@@ -21,7 +21,7 @@ function MessageFromAI({ message, onImagesLoaded }: MessageFromAIProps) {
       />
       <div className="flex items-start gap-1">
         <div className="px-4 py-2 rounded-xl rounded-tl-none bg-muted text-muted-foreground mr-20">
-          <ReactMarkdown>{message.text}</ReactMarkdown>
+          <StyledMarkdown>{message.text}</StyledMarkdown>
         </div>
       </div>
     </div>

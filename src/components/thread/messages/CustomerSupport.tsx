@@ -1,6 +1,6 @@
 import { formatThreadTimestamp } from '@/utils/formatTimestamp';
 import type { Message } from '@/types/message';
-import ReactMarkdown from 'react-markdown';
+import { StyledMarkdown } from './StyledMarkdown';
 import { Headset } from 'lucide-react';
 
 function CustomerSupportMessage(props: { message: Message }) {
@@ -16,7 +16,7 @@ function CustomerSupportMessage(props: { message: Message }) {
       </div>
       <div className="flex items-start">
         <div className="px-4 py-2 rounded-xl bg-muted mr-20">
-          <ReactMarkdown>{message.text}</ReactMarkdown>
+          <StyledMarkdown>{message.text}</StyledMarkdown>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { formatThreadTimestamp } from '@/utils/formatTimestamp';
 import { cn } from '@/lib/utils';
 import type { Message } from '@/types/message';
-import ReactMarkdown from 'react-markdown';
+import { StyledMarkdown } from './StyledMarkdown';
 
 function CloseDecision(props: { message: Message }) {
   const { message } = props;
@@ -20,7 +20,7 @@ function CloseDecision(props: { message: Message }) {
         <div
           className={cn('px-4 py-2 rounded-xl bg-muted text-muted-foreground')}
         >
-          <ReactMarkdown>{message.text}</ReactMarkdown>
+          <StyledMarkdown>{message.text}</StyledMarkdown>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { formatThreadTimestamp } from '@/utils/formatTimestamp';
 import type { Message } from '@/types/message';
-import ReactMarkdown from 'react-markdown';
+import { StyledMarkdown } from './StyledMarkdown';
 import { Button } from '@/components/ui/button';
 import { saveMessage } from '@/services/messageService/save-message';
 import { requireCurrentUser } from '@/utils/authCache';
@@ -73,7 +73,7 @@ function RequestClose(props: {
       </div>
       <div className="flex items-start gap-1">
         <div className="px-4 py-2 rounded-xl bg-accent text-accent-foreground">
-          <ReactMarkdown>{message.text}</ReactMarkdown>
+          <StyledMarkdown>{message.text}</StyledMarkdown>
           {isPending && !isCurrentUserSender && threadStatus === 'Open' && (
             <div className="flex w-full mt-2 justify-center">
               <div className="flex gap-2">
