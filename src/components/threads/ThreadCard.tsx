@@ -5,6 +5,7 @@ import type { Thread } from '@/types/thread';
 import { ThreadStatusBadge } from '@/components/thread/ThreadStatusBadge';
 import { ThreadTopicBadge } from '@/components/thread/ThreadTopicBadge';
 import { Badge } from '../ui/badge';
+import { StyledMarkdown } from '@/components/thread/messages/StyledMarkdown';
 
 interface ThreadCardProps {
   thread: Thread;
@@ -47,9 +48,13 @@ const ThreadCard = ({ thread, unreadCount = 0 }: ThreadCardProps) => {
           <CardTitle className="text-lg font-rounded">{thread.title}</CardTitle>
         </CardHeader>
         <CardContent className="p-0 mb-2">
-          <p className="text-sm text-muted-foreground">
-            {thread.summary ? thread.summary : 'No summary generated yet.'}
-          </p>
+          <div className="text-sm text-muted-foreground">
+            {thread.summary ? (
+              <StyledMarkdown>{thread.summary}</StyledMarkdown>
+            ) : (
+              <p>No summary generated yet.</p>
+            )}
+          </div>
           {thread.participants && thread.participants.length > 0 && (
             <div className="mt-2">
               <p className="text-sm font-medium">Participants:</p>

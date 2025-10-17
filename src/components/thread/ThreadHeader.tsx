@@ -21,6 +21,7 @@ import { updateThreadTitle } from '@/services/threadService';
 import React, { useState, useRef } from 'react';
 import { z } from 'zod';
 import { handleError } from '@/services/messageService/utils';
+import { StyledMarkdown } from '@/components/thread/messages/StyledMarkdown';
 
 interface ThreadHeaderProps {
   thread: Thread;
@@ -111,7 +112,13 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
             <SheetHeader>
               <SheetTitle>AI Summary</SheetTitle>
               <SheetDescription>
-                <span className="text-sm">{thread.summary ?? ''}</span>
+                <div className="text-sm">
+                  {thread.summary ? (
+                    <StyledMarkdown>{thread.summary}</StyledMarkdown>
+                  ) : (
+                    ''
+                  )}
+                </div>
               </SheetDescription>
             </SheetHeader>
           </SheetContent>
@@ -221,7 +228,11 @@ const ThreadHeader = ({ thread }: ThreadHeaderProps) => {
         {/* Right Side: summary only on md+ */}
         <div className="md:w-1/2 flex flex-col gap-2 min-w-0 hidden md:flex">
           <div className="text-muted-foreground text-sm break-words">
-            <p>{thread.summary ?? ''}</p>
+            {thread.summary ? (
+              <StyledMarkdown>{thread.summary}</StyledMarkdown>
+            ) : (
+              <p></p>
+            )}
           </div>
         </div>
       </div>
