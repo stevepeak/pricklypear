@@ -51,8 +51,10 @@ test.describe('Connections Page', () => {
     // Navigate to connections page
     await page.goto('/connections');
 
-    // Wait for connections to load
-    await page.waitForLoadState('networkidle');
+    // Wait for the page content to be visible (better than networkidle for pages with websockets)
+    await page
+      .getByText(/Invite Friends & Family/i)
+      .waitFor({ timeout: 10000 });
 
     // Find a pending incoming connection (if any exist)
     const pendingConnection = page
@@ -101,8 +103,10 @@ test.describe('Connections Page', () => {
     // Navigate to connections page
     await page.goto('/connections');
 
-    // Wait for connections to load
-    await page.waitForLoadState('networkidle');
+    // Wait for the page content to be visible (better than networkidle for pages with websockets)
+    await page
+      .getByText(/Invite Friends & Family/i)
+      .waitFor({ timeout: 10000 });
 
     // Find a pending incoming connection (if any exist)
     const pendingConnection = page
