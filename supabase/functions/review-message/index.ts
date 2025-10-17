@@ -193,7 +193,7 @@ async function checkIfOnTopic(args: {
   threadTopic: string;
   threadTitle: string;
   message: string;
-}): Promise<boolean> {
+}): Promise<{ rejected: boolean; reason: string }> {
   const { contextText, threadTopic, threadTitle, message } = args;
   const openai = getOpenAIClient();
   const topicCheckResponse = await openai.chat.completions.create({
@@ -205,7 +205,7 @@ async function checkIfOnTopic(args: {
           You are a specialist in language and conversation analysis.
           Your mission is to identify ONLY flagrant, obvious violations of thread topic.
           
-          BE VERY PERMISSIVE. Only reject messages that are completely unrelated to the thread.
+          BE VERY PERMISSIVE. Only flag messages that are completely unrelated to the thread.
           
           ALWAYS ALLOW:
           - Meta-comments about the thread itself (e.g., "started a new thread", "thanks for creating this")
@@ -214,7 +214,7 @@ async function checkIfOnTopic(args: {
           - Questions or comments that might lead back to the topic
           - Any message where you have even slight uncertainty about relevance
           
-          ONLY REJECT:
+          ONLY FLAG AS OFF-TOPIC:
           - Spam or advertising completely unrelated to co-parenting
           - Messages about entirely different subjects with no connection to the thread
           - Obvious attempts to derail the conversation to unrelated topics
@@ -238,12 +238,17 @@ async function checkIfOnTopic(args: {
       },
     ],
   });
-  return (
+
+  const isOffTopic =
     topicCheckResponse.choices[0]?.message?.content
       ?.toLowerCase()
       .trim()
-      .includes('yes') ?? false
-  );
+      .includes('yes') ?? false;
+
+  return {
+    rejected: isOffTopic,
+    reason: isOffTopic ? 'Message is off-topic for this thread.' : '',
+  };
 }
 
 async function rephraseMessage(args: {
@@ -344,6 +349,7 @@ export async function handler(req: Request) {
         rejected: false,
         reason: null,
         review: null,
+        offTopic: { rejected: false, reason: '' },
       });
     }
 
@@ -354,7 +360,7 @@ export async function handler(req: Request) {
     // Skip topic check if thread topic is "other"
     const shouldCheckTopic = thread.topic !== 'other';
 
-    const [isOnTopic, reviewResponse] = await Promise.all([
+    const [topicCheckResult, reviewResponse] = await Promise.all([
       // Check if the message is on topic (skip if topic is "other")
       shouldCheckTopic
         ? checkIfOnTopic({
@@ -363,7 +369,7 @@ export async function handler(req: Request) {
             threadTitle: thread.title,
             message,
           })
-        : Promise.resolve(true),
+        : Promise.resolve({ rejected: false, reason: '' }),
       // Rephrase the message
       rephraseMessage({
         contextText,
@@ -372,21 +378,12 @@ export async function handler(req: Request) {
       }),
     ]);
 
-    if (!isOnTopic) {
-      return res.custom(
-        {
-          rejected: true,
-          reason: 'Message is off-topic for this thread.',
-          review: null,
-        },
-        200
-      );
-    }
-
+    // Return the review with off-topic information but don't reject the message
     return res.ok({
       rejected: false,
       reason: null,
       review: reviewResponse,
+      offTopic: topicCheckResult,
     });
   } catch (error) {
     console.error('Error reviewing message:', error);

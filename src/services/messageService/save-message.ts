@@ -13,6 +13,10 @@ export const saveMessage = async (args: {
     assets?: string[] | null;
     aiResponse?: ReviewResponse;
     originalMessage?: string;
+    offTopic?: {
+      rejected: boolean;
+      reason: string;
+    } | null;
   } | null;
 }): Promise<boolean> => {
   const { text, threadId, type, details } = args;

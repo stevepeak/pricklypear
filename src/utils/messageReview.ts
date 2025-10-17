@@ -20,6 +20,10 @@ type MessageReviewResult = {
   review: ReviewResponse | null;
   rejected: boolean;
   reason: string | null;
+  offTopic?: {
+    rejected: boolean;
+    reason: string;
+  };
 };
 
 export async function reviewMessage(args: {

@@ -30,6 +30,10 @@ export const useThreadMessages = (
     null
   );
   const [isReviewingMessage, setIsReviewingMessage] = useState(false);
+  const [offTopicInfo, setOffTopicInfo] = useState<{
+    rejected: boolean;
+    reason: string;
+  } | null>(null);
 
   const { user } = useAuth();
   const { connections } = useConnections();
@@ -83,7 +87,7 @@ export const useThreadMessages = (
 
     let response: ReviewResponse;
     try {
-      const { review, rejected, reason } = await reviewMessage({
+      const { review, rejected, reason, offTopic } = await reviewMessage({
         message: newMessage,
         threadId,
       });
@@ -102,6 +106,9 @@ export const useThreadMessages = (
         throw new Error('No review response received');
       }
       response = review;
+
+      // Store off-topic information to be included with the message
+      setOffTopicInfo(offTopic || null);
     } catch (error) {
       console.error('Error reviewing message:', error);
       setIsReviewDialogOpen(false);
@@ -141,7 +148,7 @@ export const useThreadMessages = (
 
     setIsSending(true);
 
-    // Save the final message with AI review response and original message
+    // Save the final message with AI review response, original message, and off-topic info
     const success = await saveMessage({
       threadId,
       text: selectedMessage,
@@ -150,12 +157,14 @@ export const useThreadMessages = (
         ? {
             aiResponse: reviewResponse,
             originalMessage: newMessage.trim(),
+            offTopic: offTopicInfo,
           }
         : undefined,
     });
 
     if (success) {
       setNewMessage('');
+      setOffTopicInfo(null);
     } else {
       toast('Error', {
         description: 'Failed to send message. Please try again.',
