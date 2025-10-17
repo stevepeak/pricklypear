@@ -99,6 +99,9 @@ test.describe('AI Chat Threads', () => {
 });
 
 // TODO fix this test
+// NOTE: These tests require threads to be created with controls.requireAiApproval = true
+// Currently, the UI doesn't expose this setting during thread creation, so these tests are skipped
+// When re-enabling, ensure the created threads have AI mediation enabled
 test.describe.skip('Message Review (Default Threads)', () => {
   test.beforeEach(async ({ withUser }) => {
     // Set viewport to desktop size

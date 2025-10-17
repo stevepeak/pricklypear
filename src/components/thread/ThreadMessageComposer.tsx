@@ -89,8 +89,8 @@ const ThreadMessageComposer = React.forwardRef<
     }, [thread?.id, clearDraftFromStorage, onSendMessage]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      // Cmd+Enter (Mac) or Ctrl+Enter (Windows/Linux) sends the message
-      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      // Enter sends the message, Shift+Enter adds a new line
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         if (newMessage.trim() && !isSending) {
           handleSendMessage();
