@@ -71,7 +71,10 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     const conversationText = messagesData
       .map((msg) => {
         // This is required below.
-        const sender = msg.profile.name;
+        const profile = Array.isArray(msg.profile)
+          ? msg.profile[0]
+          : msg.profile;
+        const sender = profile?.name ?? 'Unknown';
         const timestamp = new Date(msg.timestamp).toLocaleString();
         return `[${timestamp}] ${sender}: ${(msg.text ?? '').trim()}`;
       })

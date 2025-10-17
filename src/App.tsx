@@ -28,6 +28,7 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import { Analytics } from '@vercel/analytics/react';
 import Children from './pages/Children';
 import Expenses from './pages/Expenses';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // Import CSS but don't include App.css anymore
 import './index.css';
@@ -116,23 +117,25 @@ function AppRoutes() {
 }
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <ThemeProvider>
-        <ConnectionsProvider>
-          <GlobalMessagesProvider>
-            <TooltipProvider>
-              <Sonner />
-              <BrowserRouter>
-                <AppRoutes />
-              </BrowserRouter>
-              <Analytics />
-            </TooltipProvider>
-          </GlobalMessagesProvider>
-        </ConnectionsProvider>
-      </ThemeProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ThemeProvider>
+          <ConnectionsProvider>
+            <GlobalMessagesProvider>
+              <TooltipProvider>
+                <Sonner />
+                <BrowserRouter>
+                  <AppRoutes />
+                </BrowserRouter>
+                <Analytics />
+              </TooltipProvider>
+            </GlobalMessagesProvider>
+          </ConnectionsProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
