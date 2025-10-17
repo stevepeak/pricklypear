@@ -181,8 +181,17 @@ export const useThreadMessages = (
           type: 'user_message',
         });
         setNewMessage('');
-      } else {
+      } else if (thread.controls?.requireAiApproval) {
+        // Only run AI review if thread requires it
         handleInitiateMessageReview();
+      } else {
+        // Skip AI review and send message directly
+        await saveMessage({
+          threadId,
+          text,
+          type: 'user_message',
+        });
+        setNewMessage('');
       }
     } finally {
       setIsSending(false);

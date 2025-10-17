@@ -136,4 +136,133 @@ describe('useThreadMessages', () => {
     expect(result.current.newMessage).toBe('');
     expect(result.current.isSending).toBe(false);
   });
+
+  it('sends message directly when AI approval is not required', async () => {
+    const threadId = 't1';
+
+    const { saveMessage } = mockDeps();
+
+    const { useThreadMessages } = await import('./useThreadMessages');
+
+    const regularThread: Thread = {
+      id: threadId,
+      title: 'Regular Chat',
+      createdAt: new Date(),
+      status: 'open' as any,
+      participants: [],
+      topic: 'other',
+      type: 'chat',
+      controls: { requireAiApproval: false },
+    };
+
+    const { result } = renderHook(() =>
+      useThreadMessages(threadId, regularThread)
+    );
+
+    act(() => {
+      result.current.setNewMessage('Hello');
+    });
+
+    await act(async () => {
+      await result.current.handleSendMessage();
+    });
+
+    expect(saveMessage).toHaveBeenCalledWith({
+      threadId,
+      text: 'Hello',
+      type: 'user_message',
+    });
+    expect(result.current.newMessage).toBe('');
+    expect(result.current.isSending).toBe(false);
+  });
+
+  it('sends message directly when controls are undefined', async () => {
+    const threadId = 't1';
+
+    const { saveMessage } = mockDeps();
+
+    const { useThreadMessages } = await import('./useThreadMessages');
+
+    const regularThread: Thread = {
+      id: threadId,
+      title: 'Regular Chat',
+      createdAt: new Date(),
+      status: 'open' as any,
+      participants: [],
+      topic: 'other',
+      type: 'chat',
+    };
+
+    const { result } = renderHook(() =>
+      useThreadMessages(threadId, regularThread)
+    );
+
+    act(() => {
+      result.current.setNewMessage('Hello again');
+    });
+
+    await act(async () => {
+      await result.current.handleSendMessage();
+    });
+
+    expect(saveMessage).toHaveBeenCalledWith({
+      threadId,
+      text: 'Hello again',
+      type: 'user_message',
+    });
+    expect(result.current.newMessage).toBe('');
+  });
+
+  it('triggers AI review when requireAiApproval is true', async () => {
+    const threadId = 't1';
+
+    const { reviewMessage, saveMessage } = mockDeps();
+    reviewMessage.mockResolvedValue({
+      review: {
+        analysis: 'test',
+        suggested_message: 'Improved message',
+        tone: 'neutral',
+        nvc_elements: {
+          observation: 'obs',
+          feeling: 'feel',
+          need: 'need',
+          request: 'req',
+        },
+      },
+      rejected: false,
+      reason: null,
+    });
+
+    const { useThreadMessages } = await import('./useThreadMessages');
+
+    const aiMediatedThread: Thread = {
+      id: threadId,
+      title: 'AI Mediated',
+      createdAt: new Date(),
+      status: 'open' as any,
+      participants: [],
+      topic: 'other',
+      type: 'chat',
+      controls: { requireAiApproval: true },
+    };
+
+    const { result } = renderHook(() =>
+      useThreadMessages(threadId, aiMediatedThread)
+    );
+
+    act(() => {
+      result.current.setNewMessage('Test message');
+    });
+
+    await act(async () => {
+      await result.current.handleSendMessage();
+    });
+
+    expect(reviewMessage).toHaveBeenCalledWith({
+      message: 'Test message',
+      threadId,
+    });
+    expect(saveMessage).not.toHaveBeenCalled();
+    expect(result.current.isReviewDialogOpen).toBe(true);
+  });
 });
