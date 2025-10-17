@@ -17,12 +17,7 @@ const messageSchema = z.object({
     'close_accepted',
     'close_declined',
   ]),
-  details: z
-    .object({
-      assets: z.array(z.string()).optional(),
-    })
-    .nullable()
-    .optional(),
+  details: z.record(z.string(), z.unknown()).nullable().optional(),
 });
 
 export type HandlerDeps = {
@@ -35,10 +30,16 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
   }
 
   try {
-    const { text, threadId, userId, type } = await req.json();
+    const { text, threadId, userId, type, details } = await req.json();
 
     // Validate the input
-    const result = messageSchema.safeParse({ text, threadId, userId, type });
+    const result = messageSchema.safeParse({
+      text,
+      threadId,
+      userId,
+      type,
+      details,
+    });
     if (!result.success) {
       return res.badRequest(result.error.issues[0].message);
     }
@@ -83,5 +84,5 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
   }
 }
 
-// @ts-expect-error TS2345
+// @ts-expect-error - Handler deps signature differs from serve's expected signature
 serve(handler);

@@ -3,6 +3,7 @@ import { requireCurrentUser } from '@/utils/authCache';
 import { handleError } from './utils.js';
 import type { Database } from '@/integrations/supabase/types';
 import type { Message } from '@/types/message';
+import type { ReviewResponse } from '@/utils/messageReview';
 
 export const saveMessage = async (args: {
   text: string;
@@ -10,6 +11,8 @@ export const saveMessage = async (args: {
   type: Database['public']['Enums']['message_type'];
   details?: {
     assets?: string[] | null;
+    aiResponse?: ReviewResponse;
+    originalMessage?: string;
   } | null;
 }): Promise<boolean> => {
   const { text, threadId, type, details } = args;

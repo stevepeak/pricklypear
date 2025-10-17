@@ -1,9 +1,13 @@
 import { supabase } from '@/integrations/supabase/client';
 
+/**
+ * Response from AI message review
+ * NOTE: This type must match the Zod schema in supabase/functions/review-message/index.ts
+ */
 export type ReviewResponse = {
   analysis: string;
   suggested_message: string;
-  tone: 'neutral' | 'empathetic' | 'escalating' | 'unclear';
+  tone: string;
   nvc_elements: {
     observation: string;
     feeling: string;

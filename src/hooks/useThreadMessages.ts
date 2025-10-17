@@ -141,11 +141,17 @@ export const useThreadMessages = (
 
     setIsSending(true);
 
-    // Save the final message with kind version
+    // Save the final message with AI review response and original message
     const success = await saveMessage({
       threadId,
       text: selectedMessage,
       type: 'user_message',
+      details: reviewResponse
+        ? {
+            aiResponse: reviewResponse,
+            originalMessage: newMessage.trim(),
+          }
+        : undefined,
     });
 
     if (success) {

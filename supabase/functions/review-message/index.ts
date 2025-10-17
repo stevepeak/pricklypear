@@ -91,7 +91,30 @@ Return the following JSON object:
 }
 \`\`\`
 
+**CRITICAL:** The "tone" field MUST be EXACTLY ONE of these four values:
+- "neutral" - for factual, cooperative messages
+- "empathetic" - for understanding, supportive messages
+- "escalating" - for messages that could increase conflict
+- "unclear" - for ambiguous messages
+
+DO NOT combine values or use any other strings. Pick the single most appropriate tone.
+
 `;
+
+// Zod schema for AI review response
+const reviewResponseSchema = z.object({
+  analysis: z.string(),
+  suggested_message: z.string(),
+  tone: z.string(), // Allow any string since this value is not actively used
+  nvc_elements: z.object({
+    observation: z.string(),
+    feeling: z.string(),
+    need: z.string(),
+    request: z.string(),
+  }),
+});
+
+type ReviewResponse = z.infer<typeof reviewResponseSchema>;
 
 async function fetchThreadMessages(args: {
   threadId: string;
@@ -135,26 +158,6 @@ type Message = {
   timestamp: string;
   profile: { name: string };
 };
-
-// Zod schema for AI review response
-const reviewResponseSchema = z.object({
-  analysis: z.string(),
-  suggested_message: z.string(),
-  tone: z.union([
-    z.literal('neutral'),
-    z.literal('empathetic'),
-    z.literal('escalating'),
-    z.literal('unclear'),
-  ]),
-  nvc_elements: z.object({
-    observation: z.string(),
-    feeling: z.string(),
-    need: z.string(),
-    request: z.string(),
-  }),
-});
-
-type ReviewResponse = z.infer<typeof reviewResponseSchema>;
 
 function formatContextText(args: { messages: Message[] }): string {
   const { messages } = args;
