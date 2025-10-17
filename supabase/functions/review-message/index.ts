@@ -351,14 +351,19 @@ export async function handler(req: Request) {
     const messages = await fetchThreadMessages({ threadId });
     const contextText = formatContextText({ messages });
 
+    // Skip topic check if thread topic is "other"
+    const shouldCheckTopic = thread.topic !== 'other';
+
     const [isOnTopic, reviewResponse] = await Promise.all([
-      // Check if the message is on topic
-      checkIfOnTopic({
-        contextText,
-        threadTopic: thread.topic,
-        threadTitle: thread.title,
-        message,
-      }),
+      // Check if the message is on topic (skip if topic is "other")
+      shouldCheckTopic
+        ? checkIfOnTopic({
+            contextText,
+            threadTopic: thread.topic,
+            threadTitle: thread.title,
+            message,
+          })
+        : Promise.resolve(true),
       // Rephrase the message
       rephraseMessage({
         contextText,
