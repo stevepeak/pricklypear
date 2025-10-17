@@ -71,7 +71,6 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
     const conversationText = messagesData
       .map((msg) => {
         // This is required below.
-        // @ts-expect-error - Property 'name' exists on profile object
         const sender = msg.profile.name;
         const timestamp = new Date(msg.timestamp).toLocaleString();
         return `[${timestamp}] ${sender}: ${(msg.text ?? '').trim()}`;
@@ -92,12 +91,19 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
 Important guidelines:
 1. Pay special attention to the chronological order of messages - newer messages may contain updates or corrections to earlier information
 2. If there are conflicting statements, prioritize the most recent information
-3. Create a brief, concise summary (maximum 2 sentences) focusing on the main points and final outcomes
-4. Ensure the summary reflects the most current state of the conversation based on the latest messages`,
+3. Ensure the summary reflects the most current state of the conversation based on the latest messages
+
+Your summary must be structured in exactly three sections:
+
+**Thread Description:** A single concise sentence (10-15 words) that captures the main topic or purpose of this thread.
+
+**Conflicts & Decisions:** A focused paragraph identifying key disagreements, debates, decisions made, or problems solved during the conversation. If no conflicts arose, summarize the main points discussed and any conclusions reached.
+
+**Next Steps:** A brief suggestion (2-3 actionable items) for what should happen next to move this thread toward resolution or completion.`,
         },
         {
           role: 'user',
-          content: `Please summarize this conversation, paying special attention to the chronological order and timestamps:\n\n${conversationText}`,
+          content: `Please summarize this conversation following the three-section structure (Thread Description, Conflicts & Decisions, Next Steps), paying special attention to the chronological order and timestamps:\n\n${conversationText}`,
         },
       ],
       temperature: 0.7,
