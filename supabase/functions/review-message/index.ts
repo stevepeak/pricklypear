@@ -202,13 +202,23 @@ async function checkIfOnTopic(args: {
       {
         role: 'system',
         content: `
-          You are a specialist in language and conversation analysis
-          with the mission to ensure user messages are on-topic.
+          You are a specialist in language and conversation analysis.
+          Your mission is to identify ONLY flagrant, obvious violations of thread topic.
           
-          When evaluating if the user message is on-topic,
-          consider if the message is relevant to the thread title, thread topic,
-          and context of other messages.
-
+          BE VERY PERMISSIVE. Only reject messages that are completely unrelated to the thread.
+          
+          ALWAYS ALLOW:
+          - Meta-comments about the thread itself (e.g., "started a new thread", "thanks for creating this")
+          - General greetings, acknowledgments, or conversational pleasantries
+          - Messages that are adjacent or tangentially related to the topic
+          - Questions or comments that might lead back to the topic
+          - Any message where you have even slight uncertainty about relevance
+          
+          ONLY REJECT:
+          - Spam or advertising completely unrelated to co-parenting
+          - Messages about entirely different subjects with no connection to the thread
+          - Obvious attempts to derail the conversation to unrelated topics
+          
           Thread title: ${threadTitle}
           Thread topic: ${threadTopic}
 
@@ -217,8 +227,9 @@ async function checkIfOnTopic(args: {
             ${contextText}
           </context>
 
-          We are looking more for flagrant violations, so if you are unsure reply with 'no'.
-          Only reply with 'yes' or 'no'.
+          When in doubt, reply 'no' (meaning not off-topic, so allow it).
+          Only reply 'yes' if this is a FLAGRANT violation.
+          Reply with ONLY 'yes' or 'no'.
           `,
       },
       {
