@@ -72,7 +72,8 @@ export const getAllUnreadCounts = async (): Promise<Record<string, number>> => {
       .is('read_at', null);
 
     if (error) {
-      return handleError(error, 'fetching all unread counts') ? {} : {};
+      handleError(error, 'fetching all unread counts');
+      return {};
     }
 
     return (unreadMessages || []).reduce(
@@ -84,6 +85,7 @@ export const getAllUnreadCounts = async (): Promise<Record<string, number>> => {
       {} as Record<string, number>
     );
   } catch (error) {
-    return handleError(error, 'fetching all unread counts') ? {} : {};
+    handleError(error, 'fetching all unread counts');
+    return {};
   }
 };

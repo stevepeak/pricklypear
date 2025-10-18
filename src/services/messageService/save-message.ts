@@ -4,6 +4,7 @@ import { handleError } from './utils.js';
 import type { Database } from '@/integrations/supabase/types';
 import type { Message } from '@/types/message';
 import type { ReviewResponse } from '@/utils/messageReview';
+import { getLocalStorageItem, localStorageKeys } from '@/utils/localStorage';
 
 export const saveMessage = async (args: {
   text: string;
@@ -58,7 +59,10 @@ export const saveAiMessage = async (args: {
         text,
         threadId,
         userId: user.id,
-        systemPrompt: localStorage.getItem('systemPrompt:ai-chat') ?? '',
+        systemPrompt: getLocalStorageItem(
+          localStorageKeys.SYSTEM_PROMPT_AI_CHAT,
+          ''
+        ),
       },
     });
     if (error) {

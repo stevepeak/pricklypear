@@ -35,13 +35,34 @@ export async function getCurrentUser(
 export async function getUserProfile(
   user: User
 ): Promise<Database['public']['Tables']['profiles']['Row']> {
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .single();
 
+  if (error || !profile) {
+    throw new Error('Failed to fetch user profile');
+  }
+
   return profile;
+}
+
+/**
+ * Check if the current user is an admin.
+ * This uses the cached user and makes a single query to check admin status.
+ */
+export async function isCurrentUserAdmin(): Promise<boolean> {
+  const user = await getCurrentUser();
+  if (!user) return false;
+
+  const { data } = await supabase
+    .from('profiles')
+    .select('is_admin')
+    .eq('id', user.id)
+    .single();
+
+  return data?.is_admin || false;
 }
 
 export async function requireCurrentUser(forceRefresh = false): Promise<User> {

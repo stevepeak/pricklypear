@@ -13,15 +13,44 @@ export const getMessages = async (args: {
   const user = await requireCurrentUser();
 
   try {
-    // Fetch messages with user profiles for support threads where connections may not exist
+    // Fetch messages
     const { data: messagesData, error: messagesError } = await supabase
       .from('messages')
-      .select('*, profiles:user_id(id, name)')
+      .select('*')
       .eq('thread_id', threadId)
       .order('timestamp', { ascending: true });
 
     if (messagesError) {
-      return handleError(messagesError, 'fetching messages') ? [] : [];
+      handleError(messagesError, 'fetching messages');
+      return [];
+    }
+
+    // Get unique user IDs from messages that aren't in connections and aren't the current user
+    const userIdsNotInConnections = [
+      ...new Set(
+        (messagesData || [])
+          .map((msg) => msg.user_id)
+          .filter(
+            (userId) =>
+              userId !== user.id &&
+              !connections.some((conn) => conn.id === userId)
+          )
+      ),
+    ];
+
+    // Fetch profiles for users not in connections (for support threads)
+    let profilesMap = new Map<string, { id: string; name: string }>();
+    if (userIdsNotInConnections.length > 0) {
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .in('id', userIdsNotInConnections);
+
+      if (profilesData) {
+        profilesMap = new Map(
+          profilesData.map((profile) => [profile.id, profile])
+        );
+      }
     }
 
     const messages = (messagesData || []).map((msg) => {
@@ -31,12 +60,9 @@ export const getMessages = async (args: {
       } else {
         // First try to find in connections (for regular threads)
         sender = connections.find((conn) => conn.id === msg.user_id);
-        // If not found, use profile data from join (for support threads)
-        if (!sender && msg.profiles) {
-          sender = {
-            id: msg.profiles.id,
-            name: msg.profiles.name,
-          };
+        // If not found, use profile data from separate query (for support threads)
+        if (!sender) {
+          sender = profilesMap.get(msg.user_id);
         }
       }
 
@@ -54,6 +80,7 @@ export const getMessages = async (args: {
 
     return messages;
   } catch (error) {
-    return handleError(error, 'fetching messages') ? [] : [];
+    handleError(error, 'fetching messages');
+    return [];
   }
 };

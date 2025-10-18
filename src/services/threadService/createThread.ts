@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Thread, ThreadStatus, ThreadTopic } from '@/types/thread';
 import { requireCurrentUser, getUserProfile } from '@/utils/authCache';
+import { logger } from '@/utils/logger';
 
 export const createThread = async (args: {
   title: string;
@@ -19,7 +20,7 @@ export const createThread = async (args: {
     trimmedTitle.length === 0 ||
     trimmedTitle.length > MAX_THREAD_TITLE_LENGTH
   ) {
-    console.error(
+    logger.error(
       `Thread title must be between 1 and ${MAX_THREAD_TITLE_LENGTH} characters.`
     );
     return null;
@@ -42,7 +43,7 @@ export const createThread = async (args: {
     );
 
     if (threadError || !threadId) {
-      console.error('Error creating thread:', threadError);
+      logger.error('Error creating thread', threadError);
       return null;
     }
 
@@ -59,7 +60,7 @@ export const createThread = async (args: {
       type,
     };
   } catch (error) {
-    console.error('Error creating thread:', error);
+    logger.error('Error creating thread', error);
     return null;
   }
 };

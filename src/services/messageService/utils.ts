@@ -1,7 +1,6 @@
-import * as Sentry from '@sentry/react';
+import { logError } from '@/utils/logger';
 
 export const handleError = (error: unknown, context: string): boolean => {
-  Sentry.captureException(error);
-  console.error(`Error in ${context}:`, error);
+  logError(context, error);
   return false;
 };

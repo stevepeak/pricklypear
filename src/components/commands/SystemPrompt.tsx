@@ -13,6 +13,11 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+  localStorageKeys,
+} from '@/utils/localStorage';
 
 interface SystemPromptDialogProps {
   open: boolean;
@@ -30,8 +35,14 @@ export function SystemPromptDialog({
 
   useEffect(() => {
     if (open) {
-      const aiChat = localStorage.getItem('systemPrompt:ai-chat') || '';
-      const review = localStorage.getItem('systemPrompt:message-review') || '';
+      const aiChat = getLocalStorageItem(
+        localStorageKeys.SYSTEM_PROMPT_AI_CHAT,
+        ''
+      );
+      const review = getLocalStorageItem(
+        localStorageKeys.SYSTEM_PROMPT_MESSAGE_REVIEW,
+        ''
+      );
       setAiChatPrompt(aiChat);
       setMessageReviewPrompt(review);
     }
@@ -39,8 +50,11 @@ export function SystemPromptDialog({
 
   const handleSave = () => {
     setIsSaving(true);
-    localStorage.setItem('systemPrompt:ai-chat', aiChatPrompt);
-    localStorage.setItem('systemPrompt:message-review', messageReviewPrompt);
+    setLocalStorageItem(localStorageKeys.SYSTEM_PROMPT_AI_CHAT, aiChatPrompt);
+    setLocalStorageItem(
+      localStorageKeys.SYSTEM_PROMPT_MESSAGE_REVIEW,
+      messageReviewPrompt
+    );
     setIsSaving(false);
     onOpenChange(false);
     toast('System prompts updated', {

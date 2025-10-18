@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { getLocalStorageItem, localStorageKeys } from './localStorage';
 
 /**
  * Response from AI message review
@@ -36,7 +37,10 @@ export async function reviewMessage(args: {
       body: {
         message,
         threadId,
-        systemPrompt: localStorage.getItem('systemPrompt:message-review'),
+        systemPrompt: getLocalStorageItem(
+          localStorageKeys.SYSTEM_PROMPT_MESSAGE_REVIEW,
+          null
+        ),
       },
     });
     if (error) {

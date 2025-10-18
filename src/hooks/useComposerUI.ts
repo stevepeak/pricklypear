@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { isAIThread } from '@/types/thread';
 import type { Thread } from '@/types/thread';
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+  localStorageKeys,
+} from '@/utils/localStorage';
 
 interface UseComposerUIProps {
   thread: Thread;
@@ -15,8 +20,9 @@ export function useComposerUI({ thread, messagesEndRef }: UseComposerUIProps) {
 
   // Load auto-accept preference from localStorage
   useEffect(() => {
-    const stored = localStorage.getItem('autoAcceptAISuggestions');
-    setAutoAccept(stored === 'true');
+    setAutoAccept(
+      getLocalStorageItem(localStorageKeys.AUTO_ACCEPT_AI_SUGGESTIONS, false)
+    );
   }, []);
 
   // Show 'Jump to latest message' button if bottom is not visible
@@ -33,7 +39,7 @@ export function useComposerUI({ thread, messagesEndRef }: UseComposerUIProps) {
 
   const handleToggleAutoAccept = (value: boolean) => {
     setAutoAccept(value);
-    localStorage.setItem('autoAcceptAISuggestions', value.toString());
+    setLocalStorageItem(localStorageKeys.AUTO_ACCEPT_AI_SUGGESTIONS, value);
   };
 
   const handleJumpToLatest = () => {

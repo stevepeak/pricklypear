@@ -10,6 +10,7 @@ import MessageFromAI from '@/components/thread/messages/MessageFromAI';
 import RequestClose from '@/components/thread/messages/RequestClose';
 import CloseDecision from './messages/CloseDecision';
 import CustomerSupportMessage from './messages/CustomerSupport';
+import CustomerSupportFromMe from './messages/CustomerSupportFromMe';
 import OpenedAt from './messages/OpenedAt';
 
 interface ThreadMessagesProps {
@@ -91,14 +92,10 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
             );
           }
           case 'customer_support':
-            // If current user sent it, show on right as "You"
+            // If current user sent it, show on right as "Customer Support"
             // Otherwise show on left as "Customer Support"
             return message.isCurrentUser ? (
-              <MessageFromMe
-                key={message.id}
-                message={message}
-                onImagesLoaded={onImagesLoaded}
-              />
+              <CustomerSupportFromMe key={message.id} message={message} />
             ) : (
               <CustomerSupportMessage key={message.id} message={message} />
             );

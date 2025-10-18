@@ -22,8 +22,10 @@ export const getConnections = async (): Promise<ConnectedUser[]> => {
       )
       .or(`user_id.eq.${userId},connected_user_id.eq.${userId}`);
 
-    if (connectionError)
-      return handleError(connectionError, 'fetching connections') ? [] : [];
+    if (connectionError) {
+      handleError(connectionError, 'fetching connections');
+      return [];
+    }
 
     if (!connections.length) return [];
 
@@ -50,6 +52,7 @@ export const getConnections = async (): Promise<ConnectedUser[]> => {
 
     return result;
   } catch (error) {
-    return handleError(error, 'fetching connections') ? [] : [];
+    handleError(error, 'fetching connections');
+    return [];
   }
 };

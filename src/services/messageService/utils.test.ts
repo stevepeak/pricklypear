@@ -23,7 +23,14 @@ describe('handleError', () => {
     const err = new Error('oops');
     const result = handleError(err, 'ctx');
     expect(result).toBe(false);
-    expect(captureException).toHaveBeenCalledWith(err);
-    expect(console.error).toHaveBeenCalledWith('Error in ctx:', err);
+    expect(captureException).toHaveBeenCalledWith(
+      err,
+      expect.objectContaining({
+        extra: expect.objectContaining({
+          message: 'Error in ctx',
+        }),
+      })
+    );
+    expect(console.error).toHaveBeenCalledWith('[ERROR] Error in ctx', err);
   });
 });

@@ -5,20 +5,15 @@ import {
   ThreadStatus,
   ThreadTopic,
 } from '@/types/thread';
-import { requireCurrentUser } from '@/utils/authCache';
-
-// Type for the joined participant result
-interface ThreadParticipantProfile {
-  profiles: {
-    id: string;
-    name: string;
-  } | null;
-}
+import { requireCurrentUser, isCurrentUserAdmin } from '@/utils/authCache';
+import { transformThreadParticipants } from './utils';
+import { logger } from '@/utils/logger';
 
 export const getThread = async (threadId: string): Promise<Thread | null> => {
   try {
     // Get the current authenticated user
     const user = await requireCurrentUser();
+    const isAdmin = await isCurrentUserAdmin();
 
     // Fetch the thread and its participants (with profile names) in one query
     const { data: threadData, error: threadError } = await supabase
@@ -40,23 +35,17 @@ export const getThread = async (threadId: string): Promise<Thread | null> => {
       .single();
 
     if (threadError || !threadData) {
-      console.error('Error fetching thread:', threadError);
+      logger.error('Error fetching thread', threadError);
       return null;
     }
 
     // Extract participant names, excluding the current user
-    const participants = (
-      (threadData.thread_participants as
-        | ThreadParticipantProfile[]
-        | undefined) || []
-    )
-      .filter((item) => item.profiles?.id !== user.id)
-      .map((item) => ({
-        id: item.profiles?.id,
-        name: item.profiles?.name,
-      }))
-      .filter((participant) => participant.name)
-      .map((participant) => participant.name as string);
+    const participants = transformThreadParticipants({
+      participants: threadData.thread_participants || [],
+      currentUserId: user.id,
+      isAdmin,
+      threadType: threadData.type,
+    });
 
     return {
       id: threadData.id,
@@ -71,7 +60,7 @@ export const getThread = async (threadId: string): Promise<Thread | null> => {
       createdBy: threadData.createdBy,
     };
   } catch (error) {
-    console.error('Exception fetching thread:', error);
+    logger.error('Exception fetching thread', error);
     return null;
   }
 };

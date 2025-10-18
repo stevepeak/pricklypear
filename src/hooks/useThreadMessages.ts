@@ -13,7 +13,8 @@ import { useConnections } from '@/hooks/useConnections';
 import { isAIThread } from '@/types/thread';
 import { useRealtimeMessages } from './useRealtimeMessages';
 import { useGlobalMessages } from '@/contexts/GlobalMessagesContext';
-import { supabase } from '@/integrations/supabase/client';
+import { useIsAdmin } from './useIsAdmin';
+import { getLocalStorageItem, localStorageKeys } from '@/utils/localStorage';
 
 export const useThreadMessages = (
   threadId: string | undefined,
@@ -24,7 +25,6 @@ export const useThreadMessages = (
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   // Message review states
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
@@ -40,26 +40,7 @@ export const useThreadMessages = (
   const { user } = useAuth();
   const { connections } = useConnections();
   const { registerUnreadCountsCallback } = useGlobalMessages();
-
-  // Check if user is admin
-  useEffect(() => {
-    let isMounted = true;
-    const checkAdminStatus = async () => {
-      if (!user) return;
-      const { data } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', user.id)
-        .single();
-      if (isMounted) {
-        setIsAdmin(data?.is_admin || false);
-      }
-    };
-    checkAdminStatus();
-    return () => {
-      isMounted = false;
-    };
-  }, [user]);
+  const { isAdmin } = useIsAdmin();
 
   // Load unread count for the thread
   useEffect(() => {
@@ -156,9 +137,10 @@ export const useThreadMessages = (
     setIsReviewingMessage(false);
 
     // Decide whether to auto-accept based on stored preference
-    const autoAccept =
-      typeof window !== 'undefined' &&
-      localStorage.getItem('autoAcceptAISuggestions') === 'true';
+    const autoAccept = getLocalStorageItem(
+      localStorageKeys.AUTO_ACCEPT_AI_SUGGESTIONS,
+      false
+    );
 
     if (autoAccept) {
       // Immediately send the reviewed (or original) message

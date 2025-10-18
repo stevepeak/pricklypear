@@ -21,9 +21,10 @@ test.describe('Support Chat Integration', () => {
       'Question about Document Storage'
     );
 
-    // Type and send a message
+    // Type and send a message with unique identifier
     const composer = page.getByTestId('thread-message-composer');
-    await composer.fill('Can you help me with file uploads?');
+    const uniqueMsg = `Can you help me with file uploads? [${Date.now()}]`;
+    await composer.fill(uniqueMsg);
 
     // Use platform-specific keyboard shortcut
     const isMac = process.platform === 'darwin';
@@ -32,7 +33,7 @@ test.describe('Support Chat Integration', () => {
     // Verify message appears
     const messageList = page.getByTestId('thread-message-list');
     await expect(
-      messageList.getByText('Can you help me with file uploads?')
+      messageList.getByText(uniqueMsg, { exact: true })
     ).toBeVisible();
 
     // Verify message is from "You"
@@ -56,9 +57,10 @@ test.describe('Support Chat Integration', () => {
     // Should see messages from the user with their actual name
     await expect(page.getByText('Alice Wonderland')).toBeVisible();
 
-    // Type and send a reply as admin
+    // Type and send a reply as admin with unique identifier
     const composer = page.getByTestId('thread-message-composer');
-    await composer.fill('I can help you with that!');
+    const uniqueMsg = `I can help you with that! [${Date.now()}]`;
+    await composer.fill(uniqueMsg);
 
     // Use platform-specific keyboard shortcut
     const isMac = process.platform === 'darwin';
@@ -67,11 +69,13 @@ test.describe('Support Chat Integration', () => {
     // Wait for message to appear
     const messageList = page.getByTestId('thread-message-list');
     await expect(
-      messageList.getByText('I can help you with that!')
+      messageList.getByText(uniqueMsg, { exact: true })
     ).toBeVisible();
 
-    // Verify Customer Support label appears
-    await expect(page.getByText('Customer Support')).toBeVisible();
+    // Verify Customer Support label appears in the message list
+    await expect(
+      messageList.getByText('Customer Support').first()
+    ).toBeVisible();
   });
 
   test('admin sees user names instead of "someone"', async ({ page }) => {
@@ -82,6 +86,9 @@ test.describe('Support Chat Integration', () => {
     // Open support thread
     await page.getByText('Question about Document Storage').click();
     await page.waitForURL(/\/threads\/.+/);
+
+    // Wait for thread to load
+    await page.waitForLoadState('networkidle');
 
     // Check that messages show actual user names
     const messages = page.getByTestId('thread-message-list');
@@ -103,24 +110,28 @@ test.describe('Support Chat Integration', () => {
     // Wait for thread to load
     await page.waitForLoadState('networkidle');
 
-    // Send a new message as admin
+    // Send a new message as admin with unique identifier
     const composer = page.getByTestId('thread-message-composer');
-    await composer.fill('This is my admin reply');
+    const uniqueMsg = `This is my admin reply [${Date.now()}]`;
+    await composer.fill(uniqueMsg);
 
     const isMac = process.platform === 'darwin';
     await page.keyboard.press(isMac ? 'Meta+Enter' : 'Control+Enter');
 
     // Wait for message to appear
     const messageList = page.getByTestId('thread-message-list');
-    await expect(messageList.getByText('This is my admin reply')).toBeVisible();
+    await expect(
+      messageList.getByText(uniqueMsg, { exact: true })
+    ).toBeVisible();
 
-    // Find the message container - should be right-aligned for admin viewing their own message
-    const userLabel = messageList.getByText('You').last();
-    await expect(userLabel).toBeVisible();
+    // Find the message container with Customer Support label - should be right-aligned for admin viewing their own message
+    const messageContainer = messageList
+      .locator('div.self-end')
+      .filter({ hasText: uniqueMsg });
+    await expect(messageContainer).toBeVisible();
 
-    // Verify message is right-aligned (self-end or items-end class)
-    const messageContainer = userLabel.locator('..');
-    await expect(messageContainer).toHaveClass(/self-end|items-end/);
+    // Verify Customer Support label appears
+    await expect(messageContainer.getByText('Customer Support')).toBeVisible();
   });
 
   test('user sees admin messages left-aligned with Customer Support label', async ({
@@ -160,9 +171,10 @@ test.describe('Support Chat Integration', () => {
     await page.getByText('Question about Document Storage').click();
     await page.waitForURL(/\/threads\/.+/);
 
-    // Send a new message
+    // Send a new message with unique identifier
     const composer = page.getByTestId('thread-message-composer');
-    await composer.fill('Thank you for your help!');
+    const uniqueMsg = `Thank you for your help! [${Date.now()}]`;
+    await composer.fill(uniqueMsg);
 
     const isMac = process.platform === 'darwin';
     await page.keyboard.press(isMac ? 'Meta+Enter' : 'Control+Enter');
@@ -170,16 +182,17 @@ test.describe('Support Chat Integration', () => {
     // Wait for message to appear
     const messageList = page.getByTestId('thread-message-list');
     await expect(
-      messageList.getByText('Thank you for your help!')
+      messageList.getByText(uniqueMsg, { exact: true })
     ).toBeVisible();
 
-    // Find the message container with "You" label nearby
-    const userLabel = messageList.getByText('You').last();
-    await expect(userLabel).toBeVisible();
+    // Find the message container - should be right-aligned for user viewing their own message
+    const messageContainer = messageList
+      .locator('div.self-end')
+      .filter({ hasText: uniqueMsg });
+    await expect(messageContainer).toBeVisible();
 
-    // Verify message is right-aligned (self-end or items-end class)
-    const messageContainer = userLabel.locator('..');
-    await expect(messageContainer).toHaveClass(/self-end|items-end/);
+    // Verify "You" label appears
+    await expect(messageContainer.getByText('You').first()).toBeVisible();
   });
 
   test('user message triggers insert-message API call', async ({ page }) => {
@@ -198,9 +211,10 @@ test.describe('Support Chat Integration', () => {
         request.method() === 'POST'
     );
 
-    // Send a message
+    // Send a message with unique identifier
     const composer = page.getByTestId('thread-message-composer');
-    await composer.fill('Urgent: Need help immediately!');
+    const uniqueMsg = `Urgent: Need help immediately! [${Date.now()}]`;
+    await composer.fill(uniqueMsg);
 
     const isMac = process.platform === 'darwin';
     await page.keyboard.press(isMac ? 'Meta+Enter' : 'Control+Enter');
@@ -208,13 +222,13 @@ test.describe('Support Chat Integration', () => {
     // Verify the API call was made
     const messageRequest = await messagePromise;
     const requestBody = messageRequest.postDataJSON();
-    expect(requestBody.text).toBe('Urgent: Need help immediately!');
+    expect(requestBody.text).toBe(uniqueMsg);
     expect(requestBody.type).toBe('user_message');
 
     // Verify message appears in UI
     const messageList = page.getByTestId('thread-message-list');
     await expect(
-      messageList.getByText('Urgent: Need help immediately!')
+      messageList.getByText(uniqueMsg, { exact: true })
     ).toBeVisible();
   });
 
@@ -280,9 +294,10 @@ test.describe('Support Chat Integration', () => {
         request.method() === 'POST'
     );
 
-    // Send a message as admin
+    // Send a message as admin with unique identifier
     const composer = page.getByTestId('thread-message-composer');
-    await composer.fill('Admin response here');
+    const uniqueMsg = `Admin response here [${Date.now()}]`;
+    await composer.fill(uniqueMsg);
 
     const isMac = process.platform === 'darwin';
     await page.keyboard.press(isMac ? 'Meta+Enter' : 'Control+Enter');
@@ -294,9 +309,15 @@ test.describe('Support Chat Integration', () => {
 
     // Verify message appears with Customer Support label
     const messageList = page.getByTestId('thread-message-list');
-    await expect(messageList.getByText('Admin response here')).toBeVisible();
     await expect(
-      messageList.getByText('Customer Support').last()
+      messageList.getByText(uniqueMsg, { exact: true })
     ).toBeVisible();
+
+    // Find the message container and verify it has Customer Support label
+    const messageContainer = messageList
+      .locator('div')
+      .filter({ hasText: uniqueMsg })
+      .filter({ has: page.getByText('Customer Support') });
+    await expect(messageContainer).toBeVisible();
   });
 });
