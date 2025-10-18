@@ -9,6 +9,7 @@ import { useGlobalNavigation } from '@/hooks/useGlobalNavigation';
 import { useGoogleAnalytics } from '@/hooks/use-google-analytics';
 import { useTabNotifications } from '@/hooks/useTabNotifications';
 import Home from './pages/Home';
+import Comparison from './pages/Comparison';
 import Threads from './pages/Threads';
 import ThreadView from './pages/ThreadView';
 import Connections from './pages/Connections';
@@ -64,6 +65,7 @@ function AppRoutes() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         {/* Home page: no sidebar if logged out */}
         <Route path="/" element={<Home />} />
+        <Route path="/comparison" element={<Comparison />} />
         {/* All other routes: require auth, show sidebar */}
         <Route
           path="*"

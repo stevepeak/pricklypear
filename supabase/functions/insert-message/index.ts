@@ -3,6 +3,9 @@ import { getSupabaseServiceClient } from '../utils/supabase.ts';
 import { z } from 'https://deno.land/x/zod@v3.24.2/mod.ts';
 import { handleError } from '../utils/handle-error.ts';
 import { res } from '../utils/response.ts';
+import sendEmail from '../utils/send-email.ts';
+import { renderEmail } from '../utils/email-render.ts';
+import { PricklyPearSupportMessageEmail } from '../templates/support-message.tsx';
 
 const messageSchema = z.object({
   text: z
@@ -13,6 +16,7 @@ const messageSchema = z.object({
   userId: z.string().uuid('Invalid user ID format'),
   type: z.enum([
     'user_message',
+    'customer_support',
     'request_close',
     'close_accepted',
     'close_declined',
@@ -74,6 +78,53 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
         .from('threads')
         .update({ status: 'Closed' })
         .eq('id', threadId);
+    }
+
+    // Send email notification for support messages from users
+    if (type === 'user_message') {
+      try {
+        // Get thread details to check if it's a support thread
+        const { data: threadData } = await supabase
+          .from('threads')
+          .select('type, title')
+          .eq('id', threadId)
+          .single();
+
+        if (threadData?.type === 'customer_support') {
+          // Get user details
+          const { data: userData } =
+            await supabase.auth.admin.getUserById(userId);
+
+          if (userData?.user?.email) {
+            const html = await renderEmail(PricklyPearSupportMessageEmail, {
+              userName:
+                userData.user.user_metadata?.full_name ||
+                userData.user.user_metadata?.name ||
+                userData.user.email?.split('@')[0] ||
+                'User',
+              userEmail: userData.user.email,
+              threadTitle: threadData.title,
+              threadId,
+              messageText: result.data.text,
+              dashboardLink: `https://prickly.app/threads/${threadId}`,
+            });
+
+            await sendEmail({
+              to: 'steve@prickly.app',
+              subject: `New Support Message from ${userData.user.email}`,
+              html,
+            });
+
+            console.log(
+              `Sent support notification email for thread ${threadId}`
+            );
+          }
+        }
+      } catch (emailError) {
+        // Don't fail the request if email fails
+        console.error('Failed to send support email notification:', emailError);
+        handleError(emailError);
+      }
     }
 
     return res.ok({ id: messageData.id });

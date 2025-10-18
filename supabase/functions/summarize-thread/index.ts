@@ -89,19 +89,22 @@ export async function handler(req: Request, deps: HandlerDeps = {}) {
       messages: [
         {
           role: 'system',
-          content: `You are an assistant that summarizes conversations. The messages are provided in chronological order (oldest to newest) with timestamps.
+          content: `You are an assistant that summarizes co-parenting and legal conversations. Create a structured summary with these exact sections:
 
-Create a concise summary following these guidelines:
-1. Write 2-3 clear sentences that capture what was discussed and any decisions made
-2. Pay attention to chronological order - prioritize the most recent information if there are updates or changes
-3. Only include information that is actually present in the conversation
-4. Do not use headers, labels, or section titles
-5. If there are specific next steps or action items, mention them naturally in the flow of the summary
-6. Keep it simple and direct - avoid empty statements or filler content`,
+**Thread Description:**
+[2-3 sentences describing what this conversation is about]
+
+**Conflicts & Decisions:**
+[List any disagreements, resolutions, or decisions made. If none, write "None discussed yet."]
+
+**Next Steps:**
+[List concrete action items or next steps. If none, write "None identified yet."]
+
+Keep each section concise and factual. Base everything on the actual conversation content.`,
         },
         {
           role: 'user',
-          content: `Please provide a concise summary of this conversation:\n\n${conversationText}`,
+          content: `Please provide a structured summary of this conversation:\n\n${conversationText}`,
         },
       ],
       temperature: 0.7,

@@ -91,7 +91,15 @@ const ThreadMessages: React.FC<ThreadMessagesProps> = ({
             );
           }
           case 'customer_support':
-            return (
+            // If current user sent it, show on right as "You"
+            // Otherwise show on left as "Customer Support"
+            return message.isCurrentUser ? (
+              <MessageFromMe
+                key={message.id}
+                message={message}
+                onImagesLoaded={onImagesLoaded}
+              />
+            ) : (
               <CustomerSupportMessage key={message.id} message={message} />
             );
           case 'close_declined':

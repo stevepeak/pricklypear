@@ -91,6 +91,9 @@ begin
   dana_id := public._demo_create_user('dana@example.com', 'Dana Scully');
   ai_user_id := public._demo_create_user('ai@system.local', 'AI Assistant');
   support_user_id := public._demo_create_user('support@system.local', 'Customer Support');
+  
+  -- Set support user as admin
+  update public.profiles set is_admin = true where id = support_user_id;
 
   -- Create various connections for Alice to demonstrate all connection statuses
   

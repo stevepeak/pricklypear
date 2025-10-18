@@ -13,6 +13,7 @@ import { useConnections } from '@/hooks/useConnections';
 import { isAIThread } from '@/types/thread';
 import { useRealtimeMessages } from './useRealtimeMessages';
 import { useGlobalMessages } from '@/contexts/GlobalMessagesContext';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useThreadMessages = (
   threadId: string | undefined,
@@ -23,6 +24,7 @@ export const useThreadMessages = (
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Message review states
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
@@ -38,6 +40,26 @@ export const useThreadMessages = (
   const { user } = useAuth();
   const { connections } = useConnections();
   const { registerUnreadCountsCallback } = useGlobalMessages();
+
+  // Check if user is admin
+  useEffect(() => {
+    let isMounted = true;
+    const checkAdminStatus = async () => {
+      if (!user) return;
+      const { data } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
+        .single();
+      if (isMounted) {
+        setIsAdmin(data?.is_admin || false);
+      }
+    };
+    checkAdminStatus();
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
 
   // Load unread count for the thread
   useEffect(() => {
@@ -68,7 +90,13 @@ export const useThreadMessages = (
     onMessageReceived: (message) => {
       // Only process messages for this thread
       if (message.threadId === threadId) {
-        setMessages((prev) => [...prev, message]);
+        setMessages((prev) => {
+          // Avoid duplicates by checking if message already exists
+          if (prev.some((m) => m.id === message.id)) {
+            return prev;
+          }
+          return [...prev, message];
+        });
       }
     },
     onReadReceiptUpdated: (messageId, readAt) => {
@@ -190,10 +218,11 @@ export const useThreadMessages = (
         });
         setNewMessage('');
       } else if (thread.type === 'customer_support') {
+        // Admins send customer_support type, regular users send user_message type
         await saveMessage({
           threadId,
           text,
-          type: 'user_message',
+          type: isAdmin ? 'customer_support' : 'user_message',
         });
         setNewMessage('');
       } else if (thread.controls?.requireAiApproval) {

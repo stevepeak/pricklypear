@@ -4,7 +4,7 @@
     "supabase/functions/**/*.ts",
     "supabase/functions/**/*.tsx",
     "src/components/**/*.tsx",
-    "tests/e2e/fixtures.ts",
+    "tests/e2e/**/*.ts",
     "src/integrations/supabase/types.ts",
     "react-email/**/*",
     "src/test-utils/**/*"

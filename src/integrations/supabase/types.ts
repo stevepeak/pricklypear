@@ -327,6 +327,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          is_admin: boolean
           last_activity_at: string | null
           last_notification_sent_at: string | null
           name: string
@@ -338,6 +339,7 @@ export type Database = {
           created_at?: string
           email: string
           id: string
+          is_admin?: boolean
           last_activity_at?: string | null
           last_notification_sent_at?: string | null
           name: string
@@ -349,6 +351,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          is_admin?: boolean
           last_activity_at?: string | null
           last_notification_sent_at?: string | null
           name?: string

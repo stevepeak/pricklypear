@@ -221,6 +221,10 @@ const AuthPage = () => {
                               { email: 'bob@example.com', name: 'Bob' },
                               { email: 'charlie@example.com', name: 'Charlie' },
                               { email: 'dana@example.com', name: 'Dana' },
+                              {
+                                email: 'support@system.local',
+                                name: 'Support (Admin)',
+                              },
                             ].map((user) => (
                               <Button
                                 key={user.email}

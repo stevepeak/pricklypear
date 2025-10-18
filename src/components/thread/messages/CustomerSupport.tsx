@@ -9,8 +9,7 @@ function CustomerSupportMessage(props: { message: Message }) {
     <div className="flex flex-col animate-message-appear self-start items-start">
       <div className="flex items-center gap-1 mb-1 text-xs text-muted-foreground font-normal">
         <Headset className="h-3 w-3 text-primary/70" />
-        {/* TODO put the customer support person name in here */}
-        Customer Support
+        {message.sender?.name || 'Customer Support'}
         <span>•</span>
         {formatThreadTimestamp(message.timestamp)}
       </div>

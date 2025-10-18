@@ -13,9 +13,10 @@ export const getMessages = async (args: {
   const user = await requireCurrentUser();
 
   try {
+    // Fetch messages with user profiles for support threads where connections may not exist
     const { data: messagesData, error: messagesError } = await supabase
       .from('messages')
-      .select('*')
+      .select('*, profiles:user_id(id, name)')
       .eq('thread_id', threadId)
       .order('timestamp', { ascending: true });
 
@@ -24,10 +25,21 @@ export const getMessages = async (args: {
     }
 
     const messages = (messagesData || []).map((msg) => {
-      const sender =
-        msg.user_id === user.id
-          ? { id: user.id, name: 'You' }
-          : connections.find((conn) => conn.id === msg.user_id);
+      let sender;
+      if (msg.user_id === user.id) {
+        sender = { id: user.id, name: 'You' };
+      } else {
+        // First try to find in connections (for regular threads)
+        sender = connections.find((conn) => conn.id === msg.user_id);
+        // If not found, use profile data from join (for support threads)
+        if (!sender && msg.profiles) {
+          sender = {
+            id: msg.profiles.id,
+            name: msg.profiles.name,
+          };
+        }
+      }
+
       return {
         id: msg.id,
         text: (msg.text || '').trim(),

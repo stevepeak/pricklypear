@@ -11,7 +11,17 @@ export const getThreads = async (): Promise<Thread[]> => {
   try {
     const user = await requireCurrentUser();
 
+    // Check if user is admin
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', user.id)
+      .single();
+
+    const isAdmin = profileData?.is_admin || false;
+
     // Get all threads with participants in a single query
+    // If admin, this will include all customer_support threads due to RLS policies
     const { data: threadData, error: threadError } = await supabase
       .from('threads')
       .select(
@@ -32,16 +42,20 @@ export const getThreads = async (): Promise<Thread[]> => {
     // Transform the joined data into the expected Thread format
     const threadsWithParticipants = (threadData || []).map((thread) => {
       // Extract participant names, excluding current user
+      // For admins viewing support threads, show all participants including the user who created it
       const participants =
         thread.thread_participants
           ?.map((item) => ({
             id: item.profiles?.id,
             name: item.profiles?.name,
           }))
-          .filter(
-            (participant) =>
-              participant.id && participant.name && participant.id !== user.id
-          )
+          .filter((participant) => {
+            if (!participant.id || !participant.name) return false;
+            // If admin viewing support thread, include all participants
+            if (isAdmin && thread.type === 'customer_support') return true;
+            // Otherwise exclude current user
+            return participant.id !== user.id;
+          })
           .map((participant) => participant.name) || [];
 
       return {
