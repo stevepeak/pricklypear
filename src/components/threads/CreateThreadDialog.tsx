@@ -22,6 +22,8 @@ import type { Thread } from '@/types/thread';
 import type { User } from '@supabase/supabase-js';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { createThread } from '@/services/threadService';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface CreateThreadDialogProps {
   onThreadCreated: (newThread: Thread) => void;
@@ -164,6 +166,8 @@ function CustomerSupportForm({
   onClose: () => void;
 }) {
   const [isCreating, setIsCreating] = React.useState(false);
+  const navigate = useNavigate();
+
   const handleCreate = async () => {
     setIsCreating(true);
     const thread = await createThread({
@@ -175,6 +179,10 @@ function CustomerSupportForm({
     if (thread) {
       onThreadCreated(thread);
       onClose();
+      navigate(`/threads/${thread.id}`);
+      toast('Support chat created', {
+        description: 'Your support chat has been created successfully.',
+      });
     }
   };
   return (
