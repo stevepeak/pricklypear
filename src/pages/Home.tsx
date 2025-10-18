@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Lock, MessageSquare } from 'lucide-react';
+import { Lock, MessageSquare, ArrowRight, BarChart3 } from 'lucide-react';
 import Footer from '@/components/ui/footer';
 import { PricingSection } from '@/components/PricingSection';
 
@@ -98,6 +98,36 @@ const Home = () => {
           >
             <Link to="/auth?mode=signup">Start Your Free Trial</Link>
           </Button>
+        </div>
+      </div>
+
+      {/* Comparison Section */}
+      <div className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="flex justify-center mb-6">
+              <BarChart3 size={48} className="text-[#7C4A03]" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#7C4A03] mb-4">
+              See How We Compare
+            </h2>
+            <p className="text-lg text-[#7C4A03]/80 mb-8 max-w-2xl mx-auto">
+              Wondering how Prickly Pear stacks up against other co-parenting
+              apps? Our AI-powered approach offers unique advantages that
+              traditional platforms can't match.
+            </p>
+            <Button
+              asChild
+              variant="success"
+              size="lg"
+              className="text-lg px-8 py-4 h-auto"
+            >
+              <Link to="/comparison" className="flex items-center gap-2">
+                View Detailed Comparison
+                <ArrowRight size={20} />
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
 
