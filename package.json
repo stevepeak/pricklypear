@@ -51,6 +51,7 @@
     "db:migration:list": "supabase migration list",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org gwiz --project pricklypear ./dist && sentry-cli sourcemaps upload --org gwiz --project pricklypear ./dist",
     "prepare": "husky || true",
+    "prod:deploy": "supabase db push && supabase functions deploy && vercel deploy --prod",
     "prod:psql": "psql \"sslmode=verify-full sslrootcert=./supabase.crt host=aws-0-us-east-2.pooler.supabase.com dbname=postgres user=postgres.vgddrhyjttyrathqhefb\""
   },
   "dependencies": {
