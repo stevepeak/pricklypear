@@ -162,10 +162,18 @@ To run Edge Functions locally for development:
 # Install Supabase CLI (if not already installed)
 npm install -g supabase
 
-# Start Edge Functions locally
-supabase functions serve review-message
-supabase functions serve summarize-thread
+# Create environment file for functions
+echo "OPENAI_API_KEY=your-openai-api-key-here" > supabase/.env
+
+# Start all Edge Functions locally (required for e2e tests)
+supabase functions serve --env-file ./supabase/.env
+
+# Or start specific functions individually
+supabase functions serve review-message --env-file ./supabase/.env
+supabase functions serve summarize-thread --env-file ./supabase/.env
 ```
+
+> **Note**: The `supabase/.env` file is required for edge functions to work properly. Add your actual OpenAI API key to enable AI features.
 
 ## 🔄 Development Workflow
 

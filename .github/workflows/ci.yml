@@ -177,6 +177,18 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
+      - name: Create env file for functions
+        run: |
+          mkdir -p supabase
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > supabase/.env
+
+      - name: Start Supabase functions in background
+        run: |
+          supabase functions serve --env-file ./supabase/.env > functions.log 2>&1 &
+          echo $! > functions.pid
+          sleep 5
+          echo "Functions started with PID $(cat functions.pid)"
+
       - name: Build application
         run: bun run build
 
@@ -186,6 +198,20 @@ jobs:
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Show functions logs on failure
+        if: failure()
+        run: |
+          echo "=== Functions logs ==="
+          cat functions.log || echo "No functions log found"
+
+      - name: Stop Supabase functions
+        if: always()
+        run: |
+          if [ -f functions.pid ]; then
+            kill $(cat functions.pid) || true
+            rm functions.pid
+          fi
 
       - name: Stop Supabase
         if: always()

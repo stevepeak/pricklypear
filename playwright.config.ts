@@ -34,9 +34,21 @@ export default defineConfig({
     //   use: { ...devices['iPad (gen 7)'] },
     // },
   ],
-  webServer: {
-    command: 'bun run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-  },
+  webServer: [
+    {
+      command: 'bun run dev',
+      url: 'http://localhost:3000',
+      reuseExistingServer: !process.env.CI,
+    },
+    ...(process.env.CI
+      ? []
+      : [
+          {
+            command: 'supabase functions serve --env-file ./supabase/.env 2>&1',
+            url: 'http://localhost:54321/functions/v1/health',
+            reuseExistingServer: !process.env.CI,
+            timeout: 120000,
+          },
+        ]),
+  ],
 });
