@@ -50,25 +50,28 @@ export const logger = {
   },
 
   /**
-   * Log error messages (always logged and sent to Sentry)
+   * Log error messages (always logged, sent to Sentry only in production)
    */
   error: (message: string, error?: unknown, ...args: unknown[]) => {
     console.error(`[ERROR] ${message}`, error, ...args);
 
-    if (error instanceof Error) {
-      Sentry.captureException(error, {
-        extra: { message, args },
-      });
-    } else if (error) {
-      Sentry.captureMessage(message, {
-        level: 'error',
-        extra: { error, args },
-      });
-    } else {
-      Sentry.captureMessage(message, {
-        level: 'error',
-        extra: { args },
-      });
+    // Only send to Sentry in production
+    if (!isDevelopment()) {
+      if (error instanceof Error) {
+        Sentry.captureException(error, {
+          extra: { message, args },
+        });
+      } else if (error) {
+        Sentry.captureMessage(message, {
+          level: 'error',
+          extra: { error, args },
+        });
+      } else {
+        Sentry.captureMessage(message, {
+          level: 'error',
+          extra: { args },
+        });
+      }
     }
   },
 };

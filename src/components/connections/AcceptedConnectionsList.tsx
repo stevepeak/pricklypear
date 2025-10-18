@@ -11,11 +11,8 @@ interface AcceptedConnectionsListProps {
   onOpenInviteDialog: () => void;
 }
 
-const AcceptedConnectionsList: React.FC<AcceptedConnectionsListProps> = ({
-  connections,
-  onDisable,
-  onOpenInviteDialog,
-}) => {
+function AcceptedConnectionsList(props: AcceptedConnectionsListProps) {
+  const { connections, onDisable, onOpenInviteDialog } = props;
   return (
     <>
       <h2 className="text-xl font-semibold mb-4 flex items-center">
@@ -53,6 +50,6 @@ const AcceptedConnectionsList: React.FC<AcceptedConnectionsListProps> = ({
       )}
     </>
   );
-};
+}
 
 export default AcceptedConnectionsList;

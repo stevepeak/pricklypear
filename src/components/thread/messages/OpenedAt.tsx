@@ -5,7 +5,8 @@ interface OpenedAtProps {
   thread: Thread;
 }
 
-const OpenedAt: React.FC<OpenedAtProps> = ({ thread }) => {
+function OpenedAt(props: OpenedAtProps) {
+  const { thread } = props;
   return (
     <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/60 my-2">
       <div className="h-[1px] w-16 bg-muted-foreground/20" />
@@ -14,6 +15,6 @@ const OpenedAt: React.FC<OpenedAtProps> = ({ thread }) => {
       <div className="h-[1px] w-16 bg-muted-foreground/20" />
     </div>
   );
-};
+}
 
 export default OpenedAt;

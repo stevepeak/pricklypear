@@ -11,10 +11,8 @@ interface PendingConnectionsListProps {
   onUpdateStatus: (connectionId: string, status: ConnectionStatus) => void;
 }
 
-const PendingConnectionsList: React.FC<PendingConnectionsListProps> = ({
-  connections,
-  onUpdateStatus,
-}) => {
+function PendingConnectionsList(props: PendingConnectionsListProps) {
+  const { connections, onUpdateStatus } = props;
   if (connections.length === 0) return null;
 
   return (
@@ -38,6 +36,6 @@ const PendingConnectionsList: React.FC<PendingConnectionsListProps> = ({
       </div>
     </>
   );
-};
+}
 
 export default PendingConnectionsList;

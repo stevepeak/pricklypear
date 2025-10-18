@@ -15,6 +15,7 @@ import { useRealtimeMessages } from './useRealtimeMessages';
 import { useGlobalMessages } from '@/contexts/GlobalMessagesContext';
 import { useIsAdmin } from './useIsAdmin';
 import { getLocalStorageItem, localStorageKeys } from '@/utils/localStorage';
+import { logger } from '@/utils/logger';
 
 export const useThreadMessages = (
   threadId: string | undefined,
@@ -119,7 +120,7 @@ export const useThreadMessages = (
       // Store off-topic information to be included with the message
       setOffTopicInfo(offTopic || null);
     } catch (error) {
-      console.error('Error reviewing message:', error);
+      logger.error('Error reviewing message', error);
       setIsReviewDialogOpen(false);
       toast('Error reviewing message', {
         description:

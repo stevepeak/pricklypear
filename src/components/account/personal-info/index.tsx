@@ -14,6 +14,7 @@ import React from 'react';
 import { updatePersonalInfo } from './update';
 import { LanguageSelector } from '@/components/ui/LanguageSelector';
 import { toast } from 'sonner';
+import { isConfirmationError } from './type-guards';
 
 export function PersonalInfoForm(props: PersonalInfoFormProps) {
   const { form, profileLoading, onProfileUpdated } = props;
@@ -36,13 +37,7 @@ export function PersonalInfoForm(props: PersonalInfoFormProps) {
       });
       if (onProfileUpdated) onProfileUpdated();
     } catch (error: unknown) {
-      if (
-        typeof error === 'object' &&
-        error !== null &&
-        'message' in error &&
-        typeof (error as { message?: string }).message === 'string' &&
-        (error as { message: string }).message.includes('confirmation')
-      ) {
+      if (isConfirmationError(error)) {
         setEmailConfirmationSent(true);
         toast('Email update initiated', {
           description:

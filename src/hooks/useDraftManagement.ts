@@ -5,11 +5,12 @@ import {
   removeThreadDraft,
 } from '@/utils/localStorage';
 
-export function useDraftManagement(
-  threadId: string | undefined,
-  newMessage: string,
-  setNewMessage: (message: string) => void
-) {
+export function useDraftManagement(args: {
+  threadId: string | undefined;
+  newMessage: string;
+  setNewMessage: (message: string) => void;
+}) {
+  const { threadId, newMessage, setNewMessage } = args;
   const previousMessageRef = useRef<string>('');
   const isInitializedRef = useRef(false);
 

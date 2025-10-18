@@ -10,33 +10,48 @@ vi.mock('@/utils/authCache');
 const mockRequireCurrentUser = vi.mocked(requireCurrentUser);
 
 describe('getMessages - Admin Support Features', () => {
-  const selectMock = vi.fn();
-  const eqMock = vi.fn();
-  const orderMock = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
     mockRequireCurrentUser.mockResolvedValue({
       id: 'admin-1',
       email: 'admin@test.com',
     } as any);
-
-    vi.mocked(supabase.from).mockReturnValue({
-      select: selectMock,
-    } as any);
-
-    selectMock.mockReturnValue({
-      eq: eqMock,
-    } as any);
-
-    eqMock.mockReturnValue({
-      order: orderMock,
-    } as any);
   });
 
   it('fetches user profiles for support thread messages', async () => {
     const timestamp = new Date().toISOString();
-    orderMock.mockResolvedValue({
+
+    // Mock the messages query
+    const messagesSelectMock = vi.fn();
+    const messagesEqMock = vi.fn();
+    const messagesOrderMock = vi.fn();
+
+    // Mock the profiles query
+    const profilesSelectMock = vi.fn();
+    const profilesInMock = vi.fn();
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'messages') {
+        return {
+          select: messagesSelectMock,
+        } as any;
+      } else if (table === 'profiles') {
+        return {
+          select: profilesSelectMock,
+        } as any;
+      }
+      return {} as any;
+    });
+
+    messagesSelectMock.mockReturnValue({
+      eq: messagesEqMock,
+    } as any);
+
+    messagesEqMock.mockReturnValue({
+      order: messagesOrderMock,
+    } as any);
+
+    messagesOrderMock.mockResolvedValue({
       data: [
         {
           id: 'm1',
@@ -46,10 +61,6 @@ describe('getMessages - Admin Support Features', () => {
           timestamp,
           type: 'user_message',
           details: null,
-          profiles: {
-            id: 'user-1',
-            name: 'Regular User',
-          },
         },
         {
           id: 'm2',
@@ -59,10 +70,20 @@ describe('getMessages - Admin Support Features', () => {
           timestamp,
           type: 'customer_support',
           details: null,
-          profiles: {
-            id: 'admin-1',
-            name: 'Customer Support',
-          },
+        },
+      ],
+      error: null,
+    });
+
+    profilesSelectMock.mockReturnValue({
+      in: profilesInMock,
+    } as any);
+
+    profilesInMock.mockResolvedValue({
+      data: [
+        {
+          id: 'user-1',
+          name: 'Regular User',
         },
       ],
       error: null,
@@ -82,12 +103,34 @@ describe('getMessages - Admin Support Features', () => {
       name: 'You',
     });
     expect(result[1].isCurrentUser).toBe(true);
-    expect(selectMock).toHaveBeenCalledWith('*, profiles:user_id(id, name)');
   });
 
   it('falls back to connections for regular threads', async () => {
     const timestamp = new Date().toISOString();
-    orderMock.mockResolvedValue({
+
+    // Mock the messages query
+    const messagesSelectMock = vi.fn();
+    const messagesEqMock = vi.fn();
+    const messagesOrderMock = vi.fn();
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'messages') {
+        return {
+          select: messagesSelectMock,
+        } as any;
+      }
+      return {} as any;
+    });
+
+    messagesSelectMock.mockReturnValue({
+      eq: messagesEqMock,
+    } as any);
+
+    messagesEqMock.mockReturnValue({
+      order: messagesOrderMock,
+    } as any);
+
+    messagesOrderMock.mockResolvedValue({
       data: [
         {
           id: 'm1',
@@ -97,7 +140,6 @@ describe('getMessages - Admin Support Features', () => {
           timestamp,
           type: 'user_message',
           details: null,
-          profiles: null, // Profile might not be joined in some cases
         },
       ],
       error: null,
@@ -127,7 +169,38 @@ describe('getMessages - Admin Support Features', () => {
 
   it('handles messages with no sender info gracefully', async () => {
     const timestamp = new Date().toISOString();
-    orderMock.mockResolvedValue({
+
+    // Mock the messages query
+    const messagesSelectMock = vi.fn();
+    const messagesEqMock = vi.fn();
+    const messagesOrderMock = vi.fn();
+
+    // Mock the profiles query
+    const profilesSelectMock = vi.fn();
+    const profilesInMock = vi.fn();
+
+    vi.mocked(supabase.from).mockImplementation((table: string) => {
+      if (table === 'messages') {
+        return {
+          select: messagesSelectMock,
+        } as any;
+      } else if (table === 'profiles') {
+        return {
+          select: profilesSelectMock,
+        } as any;
+      }
+      return {} as any;
+    });
+
+    messagesSelectMock.mockReturnValue({
+      eq: messagesEqMock,
+    } as any);
+
+    messagesEqMock.mockReturnValue({
+      order: messagesOrderMock,
+    } as any);
+
+    messagesOrderMock.mockResolvedValue({
       data: [
         {
           id: 'm1',
@@ -137,9 +210,18 @@ describe('getMessages - Admin Support Features', () => {
           timestamp,
           type: 'user_message',
           details: null,
-          profiles: null,
         },
       ],
+      error: null,
+    });
+
+    profilesSelectMock.mockReturnValue({
+      in: profilesInMock,
+    } as any);
+
+    // Return empty profiles data to simulate user not found
+    profilesInMock.mockResolvedValue({
+      data: [],
       error: null,
     });
 

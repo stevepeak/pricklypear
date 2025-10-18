@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { getLocalStorageItem, localStorageKeys } from './localStorage';
+import { logger } from '@/utils/logger';
 
 /**
  * Response from AI message review
@@ -48,7 +49,7 @@ export async function reviewMessage(args: {
     }
     return data;
   } catch (error) {
-    console.error('Exception reviewing message:', error);
+    logger.error('Exception reviewing message', error);
     return {
       review: null,
       rejected: true,

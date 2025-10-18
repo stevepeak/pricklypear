@@ -18,12 +18,8 @@ interface InviteConnectionDialogProps {
   isInviting: boolean;
 }
 
-const InviteConnectionDialog: React.FC<InviteConnectionDialogProps> = ({
-  open,
-  onOpenChange,
-  onInvite,
-  isInviting,
-}) => {
+function InviteConnectionDialog(props: InviteConnectionDialogProps) {
+  const { open, onOpenChange, onInvite, isInviting } = props;
   const [email, setEmail] = useState('');
   const [touched, setTouched] = useState(false);
 
@@ -94,6 +90,6 @@ const InviteConnectionDialog: React.FC<InviteConnectionDialogProps> = ({
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 export default InviteConnectionDialog;

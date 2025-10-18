@@ -32,7 +32,7 @@ describe('uploadDocument', () => {
     uploadMock.mockResolvedValue({ data: { path: 'p' }, error: null });
     invokeMock.mockResolvedValue({ data: { status: 'success' }, error: null });
     const file = new File(['foo'], 'f.txt');
-    const result = await uploadDocument(file, 'u1');
+    const result = await uploadDocument({ file, userId: 'u1' });
     expect(result).toEqual({ status: 'success' });
     expect(uploadMock).toHaveBeenCalled();
     expect(invokeMock).toHaveBeenCalled();
@@ -41,7 +41,7 @@ describe('uploadDocument', () => {
   it('handles upload error', async () => {
     uploadMock.mockResolvedValue({ data: null, error: { message: 'fail' } });
     const file = new File(['foo'], 'f.txt');
-    const result = await uploadDocument(file, 'u1');
+    const result = await uploadDocument({ file, userId: 'u1' });
     expect(result.status).toBe('error');
     expect(result.message).toMatch('Upload failed');
   });
@@ -50,7 +50,7 @@ describe('uploadDocument', () => {
     uploadMock.mockResolvedValue({ data: { path: 'p' }, error: null });
     invokeMock.mockResolvedValue({ data: null, error: { message: 'extract' } });
     const file = new File(['foo'], 'f.txt');
-    const result = await uploadDocument(file, 'u1');
+    const result = await uploadDocument({ file, userId: 'u1' });
     expect(removeMock).toHaveBeenCalledWith(['p']);
     expect(result.status).toBe('error');
   });

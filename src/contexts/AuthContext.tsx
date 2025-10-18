@@ -8,6 +8,7 @@ import {
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { logger } from '@/utils/logger';
 import { getCurrentUser } from '@/utils/authCache';
 
 type AuthContextType = {
@@ -92,7 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           'A magic link has been sent to your email to complete sign in.',
       });
     } catch (error) {
-      console.error('Error sending magic link:', error);
+      logger.error('Error sending magic link', error);
       throw error;
     }
   };
@@ -111,7 +112,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       toast('Signed in successfully!');
     } catch (error) {
-      console.error('Error signing in with password:', error);
+      logger.error('Error signing in with password', error);
       throw error;
     }
   };
@@ -135,7 +136,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Using scope: 'global' ensures tokens are removed from all tabs/windows
       const { error } = await supabase.auth.signOut({ scope: 'global' });
       if (error) {
-        console.error('Error during sign out:', error);
+        logger.error('Error during sign out', error);
         toast('Error signing out', {
           description: error.message,
         });
@@ -150,7 +151,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: 'You have successfully signed out.',
       });
     } catch (error) {
-      console.error('Error signing out:', error);
+      logger.error('Error signing out', error);
       // Even if there's an error, we should try to reset the local state
       setSession(null);
       setUser(null);

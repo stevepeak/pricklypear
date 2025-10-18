@@ -18,12 +18,8 @@ interface DisableConnectionDialogProps {
   connectionName: string;
 }
 
-const DisableConnectionDialog: React.FC<DisableConnectionDialogProps> = ({
-  open,
-  onOpenChange,
-  onConfirm,
-  connectionName,
-}) => {
+function DisableConnectionDialog(props: DisableConnectionDialogProps) {
+  const { open, onOpenChange, onConfirm, connectionName } = props;
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -48,6 +44,6 @@ const DisableConnectionDialog: React.FC<DisableConnectionDialogProps> = ({
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+}
 
 export default DisableConnectionDialog;

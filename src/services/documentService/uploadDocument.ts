@@ -1,10 +1,11 @@
 import { supabase } from '@/integrations/supabase/client';
 import type { DocumentUploadResponse } from '@/types/document';
 
-export async function uploadDocument(
-  file: File,
-  userId: string
-): Promise<DocumentUploadResponse> {
+export async function uploadDocument(args: {
+  file: File;
+  userId: string;
+}): Promise<DocumentUploadResponse> {
+  const { file, userId } = args;
   try {
     // Upload to Supabase Storage
     const fileName = `${userId}/${Date.now()}-${file.name}`;

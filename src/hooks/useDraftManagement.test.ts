@@ -24,7 +24,13 @@ describe('useDraftManagement', () => {
 
     const setNewMessage = vi.fn();
 
-    renderHook(() => useDraftManagement('thread-123', '', setNewMessage));
+    renderHook(() =>
+      useDraftManagement({
+        threadId: 'thread-123',
+        newMessage: '',
+        setNewMessage,
+      })
+    );
 
     expect(localStorageMock.getItem).toHaveBeenCalledWith(
       'thread-draft-thread-123'
@@ -35,13 +41,9 @@ describe('useDraftManagement', () => {
   it('should save draft to localStorage when newMessage changes', () => {
     const setNewMessage = vi.fn();
 
-    const { rerender } = renderHook(
-      ({ threadId, newMessage }) =>
-        useDraftManagement(threadId, newMessage, setNewMessage),
-      {
-        initialProps: { threadId: 'thread-123', newMessage: '', setNewMessage },
-      }
-    );
+    const { rerender } = renderHook((props) => useDraftManagement(props), {
+      initialProps: { threadId: 'thread-123', newMessage: '', setNewMessage },
+    });
 
     // Update with new message
     rerender({
@@ -59,17 +61,13 @@ describe('useDraftManagement', () => {
   it('should remove draft from localStorage when message is empty', () => {
     const setNewMessage = vi.fn();
 
-    const { rerender } = renderHook(
-      ({ threadId, newMessage }) =>
-        useDraftManagement(threadId, newMessage, setNewMessage),
-      {
-        initialProps: {
-          threadId: 'thread-123',
-          newMessage: 'Some message',
-          setNewMessage,
-        },
-      }
-    );
+    const { rerender } = renderHook((props) => useDraftManagement(props), {
+      initialProps: {
+        threadId: 'thread-123',
+        newMessage: 'Some message',
+        setNewMessage,
+      },
+    });
 
     // Update with empty message
     rerender({ threadId: 'thread-123', newMessage: '', setNewMessage });
@@ -82,7 +80,13 @@ describe('useDraftManagement', () => {
   it('should not load draft if threadId is undefined', () => {
     const setNewMessage = vi.fn();
 
-    renderHook(() => useDraftManagement(undefined, '', setNewMessage));
+    renderHook(() =>
+      useDraftManagement({
+        threadId: undefined,
+        newMessage: '',
+        setNewMessage,
+      })
+    );
 
     expect(localStorageMock.getItem).not.toHaveBeenCalled();
     expect(setNewMessage).not.toHaveBeenCalled();
@@ -92,7 +96,11 @@ describe('useDraftManagement', () => {
     const setNewMessage = vi.fn();
 
     renderHook(() =>
-      useDraftManagement(undefined, 'Test message', setNewMessage)
+      useDraftManagement({
+        threadId: undefined,
+        newMessage: 'Test message',
+        setNewMessage,
+      })
     );
 
     expect(localStorageMock.setItem).not.toHaveBeenCalled();
@@ -102,7 +110,11 @@ describe('useDraftManagement', () => {
     const setNewMessage = vi.fn();
 
     const { result } = renderHook(() =>
-      useDraftManagement('thread-123', 'Test message', setNewMessage)
+      useDraftManagement({
+        threadId: 'thread-123',
+        newMessage: 'Test message',
+        setNewMessage,
+      })
     );
 
     expect(typeof result.current.clearDraftFromStorage).toBe('function');
@@ -112,7 +124,11 @@ describe('useDraftManagement', () => {
     const setNewMessage = vi.fn();
 
     const { result } = renderHook(() =>
-      useDraftManagement('thread-123', 'Test message', setNewMessage)
+      useDraftManagement({
+        threadId: 'thread-123',
+        newMessage: 'Test message',
+        setNewMessage,
+      })
     );
 
     act(() => {
@@ -131,7 +147,11 @@ describe('useDraftManagement', () => {
     const setNewMessage = vi.fn();
 
     renderHook(() =>
-      useDraftManagement('thread-123', mockDraft, setNewMessage)
+      useDraftManagement({
+        threadId: 'thread-123',
+        newMessage: mockDraft,
+        setNewMessage,
+      })
     );
 
     expect(setNewMessage).not.toHaveBeenCalled();

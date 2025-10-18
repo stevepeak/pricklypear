@@ -23,7 +23,8 @@ interface ThreadsTableProps {
   isLoading: boolean;
 }
 
-const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
+function ThreadsTable(props: ThreadsTableProps) {
+  const { threads, isLoading } = props;
   const navigate = useNavigate();
   const { threadCounts } = useUnreadMessages();
 
@@ -129,6 +130,6 @@ const ThreadsTable: React.FC<ThreadsTableProps> = ({ threads, isLoading }) => {
       </TableBody>
     </Table>
   );
-};
+}
 
 export default ThreadsTable;

@@ -11,10 +11,8 @@ interface DisabledConnectionsListProps {
   onUpdateStatus: (connectionId: string, status: ConnectionStatus) => void;
 }
 
-const DisabledConnectionsList: React.FC<DisabledConnectionsListProps> = ({
-  connections,
-  onUpdateStatus,
-}) => {
+function DisabledConnectionsList(props: DisabledConnectionsListProps) {
+  const { connections, onUpdateStatus } = props;
   if (connections.length === 0) return null;
 
   return (
@@ -38,6 +36,6 @@ const DisabledConnectionsList: React.FC<DisabledConnectionsListProps> = ({
       </div>
     </>
   );
-};
+}
 
 export default DisabledConnectionsList;

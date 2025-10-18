@@ -9,11 +9,8 @@ interface OutgoingConnectionsListProps {
   onDelete?: (connectionId: string) => void;
 }
 
-const OutgoingConnectionsList: React.FC<OutgoingConnectionsListProps> = ({
-  connections,
-  onUpdateStatus,
-  onDelete,
-}) => {
+function OutgoingConnectionsList(props: OutgoingConnectionsListProps) {
+  const { connections, onUpdateStatus, onDelete } = props;
   if (connections.length === 0) return null;
 
   return (
@@ -38,6 +35,6 @@ const OutgoingConnectionsList: React.FC<OutgoingConnectionsListProps> = ({
       </div>
     </>
   );
-};
+}
 
 export default OutgoingConnectionsList;

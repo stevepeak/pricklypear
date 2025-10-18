@@ -50,11 +50,11 @@ const ThreadMessageComposer = React.forwardRef<
     const [isCalendarDialogOpen, setIsCalendarDialogOpen] = useState(false);
 
     // Custom hooks
-    const { clearDraftFromStorage } = useDraftManagement(
-      thread?.id,
+    const { clearDraftFromStorage } = useDraftManagement({
+      threadId: thread?.id,
       newMessage,
-      setNewMessage
-    );
+      setNewMessage,
+    });
 
     const {
       isArchiving,

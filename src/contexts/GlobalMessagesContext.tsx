@@ -14,6 +14,7 @@ import type { Database } from '@/integrations/supabase/types';
 import { handleError } from '@/services/messageService/utils';
 import { toast } from 'sonner';
 import { useConnections } from '@/hooks/useConnections';
+import { logger } from '@/utils/logger';
 
 type MessageRow = Database['public']['Tables']['messages']['Row'];
 type ReadReceiptRow =
@@ -48,9 +49,8 @@ export const useGlobalMessages = () => {
   return context;
 };
 
-export const GlobalMessagesProvider: React.FC<{
-  children: React.ReactNode;
-}> = ({ children }) => {
+export function GlobalMessagesProvider(props: { children: React.ReactNode }) {
+  const { children } = props;
   const { user } = useAuth();
   const { lookupById } = useConnections();
   const channelRef = useRef<RealtimeChannel | null>(null);
@@ -153,7 +153,7 @@ export const GlobalMessagesProvider: React.FC<{
                 timestamp: new Date(newData.timestamp),
                 threadId: newData.thread_id,
                 type: newData.type,
-                details: newData.details as Record<string, unknown> | null,
+                details: newData.details as Message['details'],
                 isCurrentUser: newData.user_id === user.id,
               };
 
@@ -224,9 +224,9 @@ export const GlobalMessagesProvider: React.FC<{
           )
           .subscribe((status, err) => {
             if (status === 'SUBSCRIBED') {
-              console.log('Subscribed to global messages and calendar events');
+              logger.info('Subscribed to global messages and calendar events');
             } else if (status === 'CHANNEL_ERROR') {
-              console.error('Channel error, attempting to reconnect...', err);
+              logger.error('Channel error, attempting to reconnect', err);
               setTimeout(
                 () => {
                   if (retryCount < 3) {
@@ -267,4 +267,4 @@ export const GlobalMessagesProvider: React.FC<{
       {children}
     </GlobalMessagesContext.Provider>
   );
-};
+}

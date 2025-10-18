@@ -23,13 +23,8 @@ interface ConnectionCardProps {
   onDelete?: (connectionId: string) => void;
 }
 
-const ConnectionCard: React.FC<ConnectionCardProps> = ({
-  connection,
-  onUpdateStatus,
-  onDisable,
-  variant,
-  onDelete,
-}) => {
+function ConnectionCard(props: ConnectionCardProps) {
+  const { connection, onUpdateStatus, onDisable, variant, onDelete } = props;
   const [isDisableDialogOpen, setIsDisableDialogOpen] = useState(false);
 
   const handleDisableConfirmed = () => {
@@ -161,6 +156,6 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
       />
     </>
   );
-};
+}
 
 export default ConnectionCard;

@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import { logger } from '@/utils/logger';
 
 const AuthPage = () => {
   const [email, setEmail] = useState('');
@@ -37,7 +38,7 @@ const AuthPage = () => {
       await sendMagicLink(email);
       setMagicLinkSent(true);
     } catch (error) {
-      console.error('Auth error:', error);
+      logger.error('Auth error', error);
     } finally {
       setIsLoading(false);
     }
@@ -74,7 +75,7 @@ const AuthPage = () => {
                       await sendMagicLink(invitedEmail);
                       setMagicLinkSent(true);
                     } catch (error) {
-                      console.error('Signup error:', error);
+                      logger.error('Signup error', error);
                     } finally {
                       setIsLoading(false);
                     }
@@ -239,7 +240,7 @@ const AuthPage = () => {
                                       'DemoPass1!'
                                     );
                                   } catch (error) {
-                                    console.error('Dev login error:', error);
+                                    logger.error('Dev login error', error);
                                   } finally {
                                     setIsLoading(false);
                                   }

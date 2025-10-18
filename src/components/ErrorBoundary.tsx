@@ -1,7 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
-import * as Sentry from '@sentry/react';
 import { Button } from '@/components/ui/button';
 import { AlertCircle } from 'lucide-react';
+import { logger } from '@/utils/logger';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -26,14 +26,8 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error('Error caught by boundary:', error, errorInfo);
-    if (import.meta.env?.VITE_VERCEL_ENV !== 'development') {
-      Sentry.captureException(error, {
-        extra: {
-          componentStack: errorInfo.componentStack,
-        },
-      });
-    }
+    // Log the error (logger will handle Sentry reporting based on environment)
+    logger.error('Error caught by boundary', error, errorInfo.componentStack);
   }
 
   render(): ReactNode {
