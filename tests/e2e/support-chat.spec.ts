@@ -92,7 +92,7 @@ test.describe('Support Chat Integration', () => {
 
     // Check that messages show actual user names
     const messages = page.getByTestId('thread-message-list');
-    await expect(messages.getByText('Alice Wonderland')).toBeVisible();
+    await expect(messages.getByText('Alice Wonderland').first()).toBeVisible();
 
     // Should NOT see "someone" in the messages area
     await expect(messages.getByText('someone', { exact: true })).toHaveCount(0);
