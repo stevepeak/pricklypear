@@ -14,7 +14,7 @@ export default defineConfig({
       'tests/e2e/**',
       'node_modules/**',
       'supabase/**',
-      'react-email/node_modules/**',
+      'react-email/**',
     ],
     globals: true,
   },

@@ -11,6 +11,7 @@ export default tseslint.config(
       'vitest.d.ts',
       '**/*_test.ts',
       'src/integrations/supabase/types.ts',
+      'react-email/**',
     ],
   },
   {

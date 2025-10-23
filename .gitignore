@@ -35,3 +35,4 @@ supabase/.branches/
 /playwright/.cache/
 *.crt
 .vercel
+.react-email
