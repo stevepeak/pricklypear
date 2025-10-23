@@ -101,9 +101,7 @@ const ThreadMessageComposer = React.forwardRef<
     const handleRequestClose = async () => {
       if (!thread?.id) return;
       setIsRequestingClose(true);
-      const text = 'Requested to close this thread.';
       const success = await saveMessage({
-        text,
         threadId: thread.id,
         type: 'request_close',
       });

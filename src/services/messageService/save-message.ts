@@ -7,7 +7,7 @@ import type { ReviewResponse } from '@/utils/messageReview';
 import { getLocalStorageItem, localStorageKeys } from '@/utils/localStorage';
 
 export const saveMessage = async (args: {
-  text: string;
+  text?: string;
   threadId: string;
   type: Database['public']['Enums']['message_type'];
   details?: {
@@ -20,7 +20,8 @@ export const saveMessage = async (args: {
     } | null;
   } | null;
 }): Promise<boolean> => {
-  const { text, threadId, type, details } = args;
+  const { text = '', threadId, type, details } = args;
+
   try {
     const user = await requireCurrentUser();
 

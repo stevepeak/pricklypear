@@ -15,7 +15,7 @@ export function LinkPreview({ href, children }: LinkPreviewProps) {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-full text-sm text-muted-foreground hover:bg-muted/70 transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-full text-sm text-primary hover:bg-primary/20 transition-colors"
       >
         <Globe className="w-4 h-4" />
         <span>Loading...</span>
@@ -30,7 +30,7 @@ export function LinkPreview({ href, children }: LinkPreviewProps) {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-full text-sm text-muted-foreground hover:bg-muted/70 transition-colors"
+        className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-full text-sm text-primary hover:bg-primary/20 transition-colors"
       >
         <Globe className="w-4 h-4" />
         <span>{children || href}</span>

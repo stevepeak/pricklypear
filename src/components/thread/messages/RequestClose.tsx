@@ -1,9 +1,7 @@
 import { formatThreadTimestamp } from '@/utils/formatTimestamp';
 import type { Message } from '@/types/message';
-import { StyledMarkdown } from './StyledMarkdown';
 import { Button } from '@/components/ui/button';
 import { saveMessage } from '@/services/messageService/save-message';
-import { requireCurrentUser } from '@/utils/authCache';
 import { toast } from 'sonner';
 import { ThreadStatus } from '@/types/thread';
 
@@ -17,9 +15,7 @@ function RequestClose(props: {
 
   const handleAccept = async () => {
     try {
-      const user = await requireCurrentUser();
       const success = await saveMessage({
-        text: `${user.user_metadata.name} agreed to close the thread.`,
         threadId: message.threadId,
         type: 'close_accepted',
       });
@@ -42,9 +38,7 @@ function RequestClose(props: {
 
   const handleDecline = async () => {
     try {
-      const user = await requireCurrentUser();
       const success = await saveMessage({
-        text: `${user.user_metadata.name} declined to close the thread.`,
         threadId: message.threadId,
         type: 'close_declined',
       });
@@ -72,12 +66,11 @@ function RequestClose(props: {
         <span>{formatThreadTimestamp(message.timestamp)}</span>
       </div>
       <div className="flex items-start gap-1">
-        <div className="px-4 py-2 rounded-xl bg-accent text-accent-foreground">
-          <StyledMarkdown>{message.text}</StyledMarkdown>
-          {isPending && !isCurrentUserSender && threadStatus === 'Open' && (
+        <div className="px-4 py-2 rounded-xl bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100">
+          {isPending && !isCurrentUserSender && threadStatus === 'Open' ? (
             <div className="flex w-full mt-2 justify-center">
               <div className="flex gap-2">
-                <Button size="sm" variant="default" onClick={handleAccept}>
+                <Button size="sm" variant="success" onClick={handleAccept}>
                   Accept
                 </Button>
                 <Button size="sm" variant="outline" onClick={handleDecline}>
@@ -85,6 +78,8 @@ function RequestClose(props: {
                 </Button>
               </div>
             </div>
+          ) : (
+            <span>Requested to close thread.</span>
           )}
         </div>
       </div>
