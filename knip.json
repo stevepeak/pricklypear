@@ -9,7 +9,7 @@
     "react-email/**/*",
     "src/test-utils/**/*"
   ],
-  "ignoreBinaries": ["supabase", "psql"],
+  "ignoreBinaries": ["supabase", "psql", "vercel"],
   "ignoreDependencies": [
     "@radix-ui/*",
     "tw-animate-css",
