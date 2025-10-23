@@ -1,4 +1,5 @@
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { Components } from 'react-markdown';
 
 interface StyledMarkdownProps {
@@ -87,7 +88,12 @@ const markdownComponents: Components = {
 export function StyledMarkdown({ children }: StyledMarkdownProps) {
   return (
     <div className="markdown-content">
-      <ReactMarkdown components={markdownComponents}>{children}</ReactMarkdown>
+      <ReactMarkdown
+        components={markdownComponents}
+        remarkPlugins={[remarkGfm]}
+      >
+        {children}
+      </ReactMarkdown>
     </div>
   );
 }
