@@ -1,6 +1,9 @@
 -- Drop the existing trigger
 DROP TRIGGER IF EXISTS "Summarize Thread" ON public.messages;
 
+-- Drop the old function that uses supabase_functions.http_request (this might not exist but let's be safe)
+DROP FUNCTION IF EXISTS supabase_functions.http_request(text, text, text, text, text);
+
 -- Create a function to invoke the summarize-thread edge function with the thread_id
 CREATE OR REPLACE FUNCTION public.trigger_summarize_thread()
 RETURNS TRIGGER AS $$
