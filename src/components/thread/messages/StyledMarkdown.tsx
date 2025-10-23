@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Components } from 'react-markdown';
+import { LinkPreview } from '../../ui/link-preview';
 
 interface StyledMarkdownProps {
   children: string;
@@ -52,16 +53,11 @@ const markdownComponents: Components = {
     );
   },
   pre: ({ children }) => <pre className="my-2">{children}</pre>,
-  a: ({ children, href }) => (
-    <a
-      href={href}
-      className="text-primary underline hover:text-primary/80"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {children}
-    </a>
-  ),
+  a: ({ children, href }) => {
+    if (!href) return <span>{children}</span>;
+
+    return <LinkPreview href={href}>{children}</LinkPreview>;
+  },
   hr: () => <hr className="my-4 border-muted-foreground/20" />,
   table: ({ children }) => (
     <div className="overflow-x-auto my-2">
