@@ -1,8 +1,14 @@
 # .husky/pre-commit
 
-# Generate emails
-bun run gen:emails
-git add supabase/functions/templates
+# Generate emails only if email templates or package.json changed
+if git diff --cached --name-only | grep -E "(react-email/|package\.json)" > /dev/null; then
+  echo "Email templates or package.json changed, generating emails..."
+  bun run gen:emails
+  git add supabase/functions/templates
+else
+  echo "No email template or package.json changes detected, skipping email generation"
+fi
 
 bunx lint-staged
+bun run ci
 
