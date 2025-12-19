@@ -1,0 +1,113 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  deno:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v4
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+      - name: Cache Deno dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/deno
+            supabase/functions/node_modules
+          key: ${{ runner.os }}-deno-${{ hashFiles('**/deno.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deno-
+      - name: Install Deno dependencies
+        run: deno install --frozen
+      - name: Run Deno tests
+        run: bun run test:deno
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v4
+
+      # !Important — Caching browser binaries is not recommended
+      # ? -> https://playwright.dev/docs/ci#caching-browsers
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Cache Docker images
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.docker
+            /var/lib/docker
+          key: ${{ runner.os }}-docker-supabase-${{ hashFiles('supabase/config.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-supabase-
+
+      - name: Start Supabase local instance
+        run: supabase start
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Create env file for functions
+        run: |
+          mkdir -p supabase
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > supabase/.env
+
+      - name: Start Supabase functions in background
+        run: |
+          supabase functions serve --env-file ./supabase/.env > functions.log 2>&1 &
+          echo $! > functions.pid
+          sleep 5
+          echo "Functions started with PID $(cat functions.pid)"
+
+      - name: Build application
+        run: bun run build
+
+      - name: Run Playwright tests
+        # * if shard: run: bun run test:e2e -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: bun run test:e2e
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Show functions logs on failure
+        if: failure()
+        run: |
+          echo "=== Functions logs ==="
+          cat functions.log || echo "No functions log found"
+
+      - name: Stop Supabase functions
+        if: always()
+        run: |
+          if [ -f functions.pid ]; then
+            kill $(cat functions.pid) || true
+            rm functions.pid
+          fi
+
+      - name: Stop Supabase
+        if: always()
+        run: supabase stop --no-backup
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          # * if shard: name: playwright-report-${{ matrix.shardIndex }}
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
