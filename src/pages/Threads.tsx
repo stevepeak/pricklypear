@@ -37,9 +37,15 @@ const Threads = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // DD-90: default to "table" view
-  const [view, setView] = useState<'cards' | 'table'>(
-    window.innerWidth < 768 ? 'cards' : 'table'
-  );
+  const [view, setView] = useState<'cards' | 'table'>(() => {
+    const viewSchema = z.enum(['cards', 'table']);
+    const storedView = localStorage.getItem('threads.view');
+    const result = viewSchema.safeParse(storedView);
+    if (result.success) {
+      return result.data;
+    }
+    return window.innerWidth < 768 ? 'cards' : 'table';
+  });
 
   const { user } = useAuth();
 
@@ -58,16 +64,6 @@ const Threads = () => {
     participantOptions,
     filteredThreads,
   } = useThreadFilters(threads);
-
-  // Load persisted view preference and filters on mount
-  useEffect(() => {
-    const viewSchema = z.enum(['cards', 'table']);
-    const storedView = localStorage.getItem('threads.view');
-    const result = viewSchema.safeParse(storedView);
-    if (result.success) {
-      setView(result.data);
-    }
-  }, []);
 
   useEffect(() => {
     const fetchThreads = async () => {

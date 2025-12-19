@@ -37,7 +37,7 @@ const markdownComponents: Components = {
       return (
         <code
           className="bg-muted/50 px-1.5 py-0.5 rounded text-sm font-mono"
-          {...props}
+          {...(props as React.HTMLAttributes<HTMLElement>)}
         >
           {children}
         </code>
@@ -46,7 +46,7 @@ const markdownComponents: Components = {
     return (
       <code
         className="block bg-muted/50 p-3 rounded-lg text-sm font-mono overflow-x-auto my-2"
-        {...props}
+        {...(props as React.HTMLAttributes<HTMLElement>)}
       >
         {children}
       </code>

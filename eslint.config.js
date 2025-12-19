@@ -8,6 +8,14 @@ export default tseslint.config(
   {
     ignores: [
       'dist',
+      '.react-email',
+      'playwright-report',
+      'node_modules',
+      '.vercel',
+      '.turbo',
+      'test-results',
+      'supabase/.temp',
+      'supabase/.branches',
       'vitest.d.ts',
       '**/*_test.ts',
       'src/integrations/supabase/types.ts',

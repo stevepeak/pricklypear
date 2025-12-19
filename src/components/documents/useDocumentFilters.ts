@@ -17,24 +17,28 @@ const filtersSchema = z.object({
 
 export function useDocumentFilters(args: { documents: Document[] }) {
   const { documents } = args;
-  const [search, setSearch] = useState('');
-  const [filterLabels, setFilterLabels] = useState<DocumentLabel[]>([]);
-
-  // Load persisted filters on mount
-  useEffect(() => {
+  const [search, setSearch] = useState(() => {
     const storedFilters = localStorage.getItem('documents.filters');
     if (storedFilters) {
       const parsed = filtersSchema.safeParse(JSON.parse(storedFilters));
       if (parsed.success) {
-        setSearch(parsed.data.search);
-        setFilterLabels(parsed.data.filterLabels as DocumentLabel[]);
-      } else {
-        localStorage.removeItem('documents.filters');
-        setSearch('');
-        setFilterLabels([]);
+        return parsed.data.search;
       }
+      localStorage.removeItem('documents.filters');
     }
-  }, []);
+    return '';
+  });
+  const [filterLabels, setFilterLabels] = useState<DocumentLabel[]>(() => {
+    const storedFilters = localStorage.getItem('documents.filters');
+    if (storedFilters) {
+      const parsed = filtersSchema.safeParse(JSON.parse(storedFilters));
+      if (parsed.success) {
+        return parsed.data.filterLabels as DocumentLabel[];
+      }
+      localStorage.removeItem('documents.filters');
+    }
+    return [];
+  });
 
   // Persist filters to localStorage whenever they change
   useEffect(() => {

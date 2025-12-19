@@ -5,7 +5,7 @@ import ThreadMessages from '@/components/thread/ThreadMessages';
 import ThreadMessageComposer from '@/components/thread/ThreadMessageComposer';
 import MessageReviewDialog from '@/components/thread/MessageReviewDialog';
 import { useAuth } from '@/contexts/AuthContext';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ThreadViewSkeleton from '@/components/thread/ThreadViewSkeleton';
 
 const ThreadView = () => {
@@ -29,17 +29,14 @@ const ThreadView = () => {
     loadMessages,
   } = useThreadDetails(threadId, composerRef);
 
-  const [hasOpenCloseRequest, setHasOpenCloseRequest] = useState(false);
-
-  useEffect(() => {
+  const hasOpenCloseRequest = React.useMemo(() => {
     // Find the latest request_close message
     const latestRequestClose = [...messages]
       .reverse()
       .find((m) => m.type === 'request_close');
 
     if (!latestRequestClose) {
-      setHasOpenCloseRequest(false);
-      return;
+      return false;
     }
 
     // Get all messages after the latest request_close
@@ -49,9 +46,9 @@ const ThreadView = () => {
 
     // If there are no messages after the request, or if there's no close_declined message,
     // then there is an open close request
-    setHasOpenCloseRequest(
+    return (
       messagesAfterRequest.length === 0 ||
-        !messagesAfterRequest.some((m) => m.type === 'close_declined')
+      !messagesAfterRequest.some((m) => m.type === 'close_declined')
     );
   }, [messages]);
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
@@ -90,14 +91,86 @@ vi.mock('@/components/connections/DisabledConnectionsList', () => ({
     </button>
   ),
 }));
+vi.mock('@/components/ui/dropdown-menu', () => ({
+  DropdownMenu: ({ children }: any) => <div>{children}</div>,
+  DropdownMenuTrigger: ({ children, asChild }: any) =>
+    asChild ? children : <div>{children}</div>,
+  DropdownMenuContent: ({ children }: any) => <div>{children}</div>,
+  DropdownMenuCheckboxItem: ({ children, checked, onCheckedChange }: any) => (
+    <button
+      data-testid={`checkbox-${children}`}
+      onClick={() => onCheckedChange(!checked)}
+    >
+      {children}
+    </button>
+  ),
+  DropdownMenuSeparator: () => <hr />,
+  DropdownMenuItem: ({ children, onSelect }: any) => (
+    <button data-testid="menu-item" onClick={onSelect}>
+      {children}
+    </button>
+  ),
+}));
+vi.mock('@/components/ui/dialog', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- Required for vi.mock
+  const React = require('react');
+  const DialogContext = React.createContext({});
+
+  return {
+    Dialog: ({ children, open, onOpenChange }: any) => {
+      const trigger = React.Children.toArray(children).find(
+        (child: any) =>
+          React.isValidElement(child) &&
+          (child.type?.displayName === 'DialogTrigger' ||
+            child.type?.name?.includes('Trigger'))
+      );
+      const content = React.Children.toArray(children).filter(
+        (child: any) =>
+          !(
+            React.isValidElement(child) &&
+            (child.type?.displayName === 'DialogTrigger' ||
+              child.type?.name?.includes('Trigger'))
+          )
+      );
+      return (
+        <DialogContext.Provider value={{ onOpenChange }}>
+          {trigger}
+          {open ? content : null}
+        </DialogContext.Provider>
+      );
+    },
+    DialogTrigger: ({ children, asChild }: any) => {
+      const { onOpenChange } = React.useContext(DialogContext);
+      const handleClick = () => {
+        onOpenChange?.(true);
+      };
+      if (asChild && React.isValidElement(children)) {
+        return React.cloneElement(children, {
+          onClick: (e: any) => {
+            children.props.onClick?.(e);
+            handleClick();
+          },
+        });
+      }
+      return <div onClick={handleClick}>{children}</div>;
+    },
+    DialogContent: ({ children }: any) => (
+      <div data-testid="dialog">{children}</div>
+    ),
+    DialogHeader: ({ children }: any) => <div>{children}</div>,
+    DialogTitle: ({ children }: any) => <h2>{children}</h2>,
+    DialogDescription: ({ children }: any) => <p>{children}</p>,
+    DialogFooter: ({ children }: any) => <div>{children}</div>,
+    DialogClose: ({ children, asChild }: any) =>
+      asChild ? children : <button>{children}</button>,
+  };
+});
 
 const { toast } = await import('sonner');
-const { updateConnectionStatus, disableConnection } = await import(
-  '@/services/users/userService.js'
-);
-const { deleteConnection } = await import(
-  '@/services/connections/manageConnections.js'
-);
+const { updateConnectionStatus, disableConnection } =
+  await import('@/services/users/userService.js');
+const { deleteConnection } =
+  await import('@/services/connections/manageConnections.js');
 const Connections = (await import('./Connections')).default;
 
 describe('Connections page', () => {

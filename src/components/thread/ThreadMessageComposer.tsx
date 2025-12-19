@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2, Send, ArrowUp } from 'lucide-react';
 import { saveMessage } from '@/services/messageService/save-message';
@@ -71,7 +71,7 @@ const ThreadMessageComposer = React.forwardRef<
       showJumpToLatest,
       handleToggleAutoAccept,
       handleJumpToLatest,
-    } = useComposerUI({ thread, messagesEndRef });
+    } = useComposerUI({ messagesEndRef });
 
     // Expose focusInput method via ref
     React.useImperativeHandle(ref, () => ({
@@ -81,12 +81,12 @@ const ThreadMessageComposer = React.forwardRef<
     }));
 
     // Clear draft when message is sent
-    const handleSendMessage = useCallback(() => {
+    const handleSendMessage = () => {
       if (thread?.id) {
         clearDraftFromStorage(thread.id);
       }
       onSendMessage();
-    }, [thread?.id, clearDraftFromStorage, onSendMessage]);
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       // Enter sends the message, Shift+Enter adds a new line

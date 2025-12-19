@@ -13,9 +13,8 @@ vi.mock('@/utils/authCache', () => ({
 }));
 
 const { supabase } = await import('@/integrations/supabase/client');
-const { requireCurrentUser, getUserProfile } = await import(
-  '@/utils/authCache'
-);
+const { requireCurrentUser, getUserProfile } =
+  await import('@/utils/authCache');
 
 beforeEach(() => {
   vi.clearAllMocks();

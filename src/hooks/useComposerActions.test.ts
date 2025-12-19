@@ -82,9 +82,8 @@ describe('useComposerActions', () => {
         },
       ];
 
-      const { getMessages } = await import(
-        '@/services/messageService/get-messages'
-      );
+      const { getMessages } =
+        await import('@/services/messageService/get-messages');
       vi.mocked(getMessages).mockResolvedValue(mockMessages);
 
       const mockClipboard = {
@@ -111,9 +110,8 @@ describe('useComposerActions', () => {
     });
 
     it('should show error toast when no messages found', async () => {
-      const { getMessages } = await import(
-        '@/services/messageService/get-messages'
-      );
+      const { getMessages } =
+        await import('@/services/messageService/get-messages');
       vi.mocked(getMessages).mockResolvedValue([]);
 
       const { toast } = await import('sonner');
@@ -219,9 +217,8 @@ describe('useComposerActions', () => {
         upload: mockUpload,
       } as any);
 
-      const { saveMessage } = await import(
-        '@/services/messageService/save-message'
-      );
+      const { saveMessage } =
+        await import('@/services/messageService/save-message');
       vi.mocked(saveMessage).mockResolvedValue(true);
 
       const { toast } = await import('sonner');
@@ -266,9 +263,8 @@ describe('useComposerActions', () => {
         upload: mockUpload,
       } as any);
 
-      const { saveMessage } = await import(
-        '@/services/messageService/save-message'
-      );
+      const { saveMessage } =
+        await import('@/services/messageService/save-message');
       vi.mocked(saveMessage).mockResolvedValue(true);
 
       const { result } = renderHook(() =>
@@ -296,9 +292,8 @@ describe('useComposerActions', () => {
         upload: mockUpload,
       } as any);
 
-      const { saveMessage } = await import(
-        '@/services/messageService/save-message'
-      );
+      const { saveMessage } =
+        await import('@/services/messageService/save-message');
       vi.mocked(saveMessage).mockResolvedValue(true);
 
       const { result } = renderHook(() =>
@@ -336,9 +331,8 @@ describe('useComposerActions', () => {
           upload: mockUpload,
         } as any);
 
-        const { saveMessage } = await import(
-          '@/services/messageService/save-message'
-        );
+        const { saveMessage } =
+          await import('@/services/messageService/save-message');
         vi.mocked(saveMessage).mockResolvedValue(true);
 
         const { result } = renderHook(() =>
@@ -417,9 +411,8 @@ describe('useComposerActions', () => {
         upload: mockUpload,
       } as any);
 
-      const { saveMessage } = await import(
-        '@/services/messageService/save-message'
-      );
+      const { saveMessage } =
+        await import('@/services/messageService/save-message');
       vi.mocked(saveMessage).mockResolvedValue(false);
 
       const { toast } = await import('sonner');

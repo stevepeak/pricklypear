@@ -17,33 +17,55 @@ const filtersSchema = z.object({
 
 export function useMessageFilters(messages: ListMessage[]) {
   /* -------------------------------------------------------------------- */
-  /* State                                                                 */
-  /* -------------------------------------------------------------------- */
-  const [search, setSearch] = useState('');
-  const [filterParticipants, setFilterParticipants] = useState<string[]>([]);
-  const [filterTypes, setFilterTypes] = useState<MessageType[]>([]);
-  const [filterThreads, setFilterThreads] = useState<string[]>([]);
-  const [filterTopics, setFilterTopics] = useState<ThreadTopic[]>([]);
-
-  /* -------------------------------------------------------------------- */
   /* Persist & Restore filters                                             */
   /* -------------------------------------------------------------------- */
-  useEffect(() => {
+  const loadFiltersFromStorage = () => {
     const stored = localStorage.getItem('messages.filters');
-    if (!stored) return;
+    if (!stored) {
+      return {
+        search: '',
+        filterParticipants: [] as string[],
+        filterTypes: [] as MessageType[],
+        filterThreads: [] as string[],
+        filterTopics: [] as ThreadTopic[],
+      };
+    }
 
     const parsed = filtersSchema.safeParse(JSON.parse(stored));
     if (!parsed.success) {
       localStorage.removeItem('messages.filters');
-      return;
+      return {
+        search: '',
+        filterParticipants: [] as string[],
+        filterTypes: [] as MessageType[],
+        filterThreads: [] as string[],
+        filterTopics: [] as ThreadTopic[],
+      };
     }
 
-    setSearch(parsed.data.search);
-    setFilterParticipants(parsed.data.filterParticipants);
-    setFilterTypes(parsed.data.filterTypes as MessageType[]);
-    setFilterThreads(parsed.data.filterThreads);
-    setFilterTopics(parsed.data.filterTopics as ThreadTopic[]);
-  }, []);
+    return {
+      search: parsed.data.search,
+      filterParticipants: parsed.data.filterParticipants,
+      filterTypes: parsed.data.filterTypes as MessageType[],
+      filterThreads: parsed.data.filterThreads,
+      filterTopics: parsed.data.filterTopics as ThreadTopic[],
+    };
+  };
+
+  const initialFilters = loadFiltersFromStorage();
+  const [search, setSearch] = useState(initialFilters.search);
+  const [filterParticipants, setFilterParticipants] = useState<string[]>(
+    initialFilters.filterParticipants
+  );
+  const [filterTypes, setFilterTypes] = useState<MessageType[]>(
+    initialFilters.filterTypes
+  );
+  const [filterThreads, setFilterThreads] = useState<string[]>(
+    initialFilters.filterThreads
+  );
+  const [filterTopics, setFilterTopics] = useState<ThreadTopic[]>(
+    initialFilters.filterTopics
+  );
 
   useEffect(() => {
     const filters = {

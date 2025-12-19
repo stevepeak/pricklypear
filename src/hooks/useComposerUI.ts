@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { isAIThread } from '@/types/thread';
-import type { Thread } from '@/types/thread';
 import {
   getLocalStorageItem,
   setLocalStorageItem,
@@ -8,22 +6,14 @@ import {
 } from '@/utils/localStorage';
 
 interface UseComposerUIProps {
-  thread: Thread;
   messagesEndRef?: React.RefObject<HTMLDivElement>;
 }
 
-export function useComposerUI({ thread, messagesEndRef }: UseComposerUIProps) {
-  const [autoAccept, setAutoAccept] = useState(
-    isAIThread(thread) ? false : true
+export function useComposerUI({ messagesEndRef }: UseComposerUIProps) {
+  const [autoAccept, setAutoAccept] = useState(() =>
+    getLocalStorageItem(localStorageKeys.AUTO_ACCEPT_AI_SUGGESTIONS, false)
   );
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
-
-  // Load auto-accept preference from localStorage
-  useEffect(() => {
-    setAutoAccept(
-      getLocalStorageItem(localStorageKeys.AUTO_ACCEPT_AI_SUGGESTIONS, false)
-    );
-  }, []);
 
   // Show 'Jump to latest message' button if bottom is not visible
   useEffect(() => {

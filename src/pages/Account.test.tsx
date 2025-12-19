@@ -32,9 +32,8 @@ vi.mock('@/utils/authCache', () => ({
 vi.mock('@/services/messageService/utils', () => ({ handleError: vi.fn() }));
 
 const { toast } = await import('sonner');
-const { requireCurrentUser, getUserProfile } = await import(
-  '@/utils/authCache'
-);
+const { requireCurrentUser, getUserProfile } =
+  await import('@/utils/authCache');
 const { update } = await import('@/components/account/notifications/update');
 const { handleError } = await import('@/services/messageService/utils');
 const Account = (await import('./Account')).default;

@@ -3,6 +3,44 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { RequestCloseDialog } from './RequestCloseDialog';
 
+vi.mock('@/components/ui/dialog.js', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- Required for vi.mock
+  const React = require('react');
+  const DialogContext = React.createContext({});
+
+  return {
+    Dialog: ({ children, open, onOpenChange }: any) => (
+      <DialogContext.Provider value={{ onOpenChange }}>
+        {open ? <div data-testid="dialog">{children}</div> : null}
+      </DialogContext.Provider>
+    ),
+    DialogContent: ({ children }: any) => <div>{children}</div>,
+    DialogHeader: ({ children }: any) => <div>{children}</div>,
+    DialogTitle: ({ children }: any) => <h2>{children}</h2>,
+    DialogDescription: ({ children }: any) => <p>{children}</p>,
+    DialogFooter: ({ children }: any) => <div>{children}</div>,
+    DialogClose: ({ children, asChild }: any) => {
+      const { onOpenChange } = React.useContext(DialogContext);
+      const handleClick = () => {
+        onOpenChange?.(false);
+      };
+      if (asChild && React.isValidElement(children)) {
+        return React.cloneElement(children, {
+          onClick: (e: any) => {
+            children.props.onClick?.(e);
+            handleClick();
+          },
+        });
+      }
+      return (
+        <button onClick={handleClick} data-testid="dialog-close">
+          {children}
+        </button>
+      );
+    },
+  };
+});
+
 describe('RequestCloseDialog', () => {
   const mockOnOpenChange = vi.fn();
   const mockOnRequestClose = vi.fn();

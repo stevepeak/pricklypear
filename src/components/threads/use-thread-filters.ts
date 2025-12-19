@@ -2,56 +2,56 @@ import { useState, useEffect } from 'react';
 import type { Thread, ThreadTopic } from '@/types/thread';
 import { z } from 'zod';
 
+const filtersSchema = z.object({
+  search: z.string().optional().default(''),
+  filterStatus: z
+    .array(
+      z.union([z.literal('Open'), z.literal('Closed'), z.literal('Archived')])
+    )
+    .optional()
+    .default(['Open']),
+  filterParticipants: z.array(z.string()).optional().default([]),
+  filterTopics: z.array(z.string()).optional().default([]),
+});
+
+function loadFiltersFromStorage() {
+  const storedFilters = localStorage.getItem('threads.filters');
+  if (storedFilters) {
+    const parsed = filtersSchema.safeParse(JSON.parse(storedFilters));
+    if (parsed.success) {
+      return {
+        ...parsed.data,
+        filterTopics: parsed.data.filterTopics as ThreadTopic[],
+      };
+    }
+    localStorage.removeItem('threads.filters');
+  }
+  return {
+    search: '',
+    filterStatus: ['Open'] as ('Open' | 'Closed' | 'Archived')[],
+    filterParticipants: [] as string[],
+    filterTopics: [] as ThreadTopic[],
+  };
+}
+
 export function useThreadFilters(threads: Thread[]) {
-  const [search, setSearch] = useState('');
+  const initialFilters = loadFiltersFromStorage();
+  const [search, setSearch] = useState(initialFilters.search);
   const [filterStatus, setFilterStatus] = useState<
     ('Open' | 'Closed' | 'Archived')[]
-  >([]);
-  const [filterParticipants, setFilterParticipants] = useState<string[]>([]);
-  const [filterTopics, setFilterTopics] = useState<ThreadTopic[]>([]);
+  >(initialFilters.filterStatus);
+  const [filterParticipants, setFilterParticipants] = useState<string[]>(
+    initialFilters.filterParticipants
+  );
+  const [filterTopics, setFilterTopics] = useState<ThreadTopic[]>(
+    initialFilters.filterTopics
+  );
 
   const isFiltering =
     search.trim() !== '' ||
     filterStatus.length > 0 ||
     filterParticipants.length > 0 ||
     filterTopics.length > 0;
-
-  // Load persisted filters on mount
-  useEffect(() => {
-    const storedFilters = localStorage.getItem('threads.filters');
-    const filtersSchema = z.object({
-      search: z.string().optional().default(''),
-      filterStatus: z
-        .array(
-          z.union([
-            z.literal('Open'),
-            z.literal('Closed'),
-            z.literal('Archived'),
-          ])
-        )
-        .optional()
-        .default(['Open']),
-      filterParticipants: z.array(z.string()).optional().default([]),
-      filterTopics: z.array(z.string()).optional().default([]),
-    });
-    if (storedFilters) {
-      const parsed = filtersSchema.safeParse(JSON.parse(storedFilters));
-      if (parsed.success) {
-        const { search, filterStatus, filterParticipants, filterTopics } =
-          parsed.data;
-        setSearch(search);
-        setFilterStatus(filterStatus);
-        setFilterParticipants(filterParticipants);
-        setFilterTopics(filterTopics as ThreadTopic[]);
-      } else {
-        localStorage.removeItem('threads.filters');
-        setSearch('');
-        setFilterStatus(['Open']);
-        setFilterParticipants([]);
-        setFilterTopics([]);
-      }
-    }
-  }, []);
 
   // Persist filters to localStorage whenever they change
   useEffect(() => {

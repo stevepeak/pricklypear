@@ -29,8 +29,14 @@ export function SystemPromptDialog({
   onOpenChange,
 }: SystemPromptDialogProps) {
   const [activeTab, setActiveTab] = useState('ai-chat');
-  const [aiChatPrompt, setAiChatPrompt] = useState('');
-  const [messageReviewPrompt, setMessageReviewPrompt] = useState('');
+  const [aiChatPrompt, setAiChatPrompt] = useState(() =>
+    open ? getLocalStorageItem(localStorageKeys.SYSTEM_PROMPT_AI_CHAT, '') : ''
+  );
+  const [messageReviewPrompt, setMessageReviewPrompt] = useState(() =>
+    open
+      ? getLocalStorageItem(localStorageKeys.SYSTEM_PROMPT_MESSAGE_REVIEW, '')
+      : ''
+  );
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -43,8 +49,11 @@ export function SystemPromptDialog({
         localStorageKeys.SYSTEM_PROMPT_MESSAGE_REVIEW,
         ''
       );
-      setAiChatPrompt(aiChat);
-      setMessageReviewPrompt(review);
+      // Defer state updates to avoid synchronous setState in effect
+      requestAnimationFrame(() => {
+        setAiChatPrompt(aiChat);
+        setMessageReviewPrompt(review);
+      });
     }
   }, [open]);
 

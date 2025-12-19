@@ -90,9 +90,8 @@ describe('useCalendarSubscriptions', () => {
     ];
     setupMocks(subs);
 
-    const { useCalendarSubscriptions } = await import(
-      './useCalendarSubscriptions'
-    );
+    const { useCalendarSubscriptions } =
+      await import('./useCalendarSubscriptions');
 
     const { result } = renderHook(() => useCalendarSubscriptions());
 
@@ -104,9 +103,8 @@ describe('useCalendarSubscriptions', () => {
   it('createSubscription adds new sub to state', async () => {
     const { inserted } = setupMocks();
 
-    const { useCalendarSubscriptions } = await import(
-      './useCalendarSubscriptions'
-    );
+    const { useCalendarSubscriptions } =
+      await import('./useCalendarSubscriptions');
 
     const { result } = renderHook(() => useCalendarSubscriptions());
 
@@ -130,9 +128,8 @@ describe('useCalendarSubscriptions', () => {
     ];
     setupMocks(subs);
 
-    const { useCalendarSubscriptions } = await import(
-      './useCalendarSubscriptions'
-    );
+    const { useCalendarSubscriptions } =
+      await import('./useCalendarSubscriptions');
 
     const { result } = renderHook(() => useCalendarSubscriptions());
 

@@ -12,9 +12,9 @@
   "ignoreBinaries": ["supabase", "psql", "vercel"],
   "ignoreDependencies": [
     "@radix-ui/*",
-    "tw-animate-css",
     "deno",
     "vaul",
-    "tailwindcss"
+    "baseline-browser-mapping",
+    "@react-email/render"
   ]
 }

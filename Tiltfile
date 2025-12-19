@@ -29,13 +29,7 @@ local_resource(
 local_resource(
   'Web',
   serve_cmd='bun run dev',
-  readiness_probe=probe(
-    period_secs=2,
-    http_get=http_get_action(port=3000, path='/health'),
-  ),
-  links=[
-    link('http://localhost:3000', 'App'),
-  ],
+  links=[ link('http://localhost:3000', 'App') ],
   labels=['Frontend'],
 )
 

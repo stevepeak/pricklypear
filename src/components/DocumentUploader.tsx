@@ -54,7 +54,7 @@ export function DocumentUploader({ onUploadComplete }: DocumentUploaderProps) {
     <div className="w-full max-w-2xl mx-auto">
       {status === 'idle' && !file && (
         <div
-          {...getRootProps()}
+          {...(getRootProps() as React.HTMLAttributes<HTMLDivElement>)}
           className={`
             border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
             ${
@@ -64,7 +64,9 @@ export function DocumentUploader({ onUploadComplete }: DocumentUploaderProps) {
             }
           `}
         >
-          <input {...getInputProps()} />
+          <input
+            {...(getInputProps() as React.InputHTMLAttributes<HTMLInputElement>)}
+          />
           <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
           <p className="text-lg font-medium mb-2">
             {isDragActive ? 'Drop the document here' : 'Upload a document'}

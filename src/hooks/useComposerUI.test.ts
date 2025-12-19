@@ -14,12 +14,6 @@ Object.defineProperty(window, 'localStorage', {
 });
 
 describe('useComposerUI', () => {
-  const mockThread = {
-    id: 'thread-123',
-    type: 'ai' as const,
-    status: 'Open' as const,
-  };
-
   const mockMessagesEndRef = {
     current: {
       getBoundingClientRect: vi.fn(),
@@ -31,10 +25,10 @@ describe('useComposerUI', () => {
     vi.clearAllMocks();
   });
 
-  it('should initialize with correct default state for AI thread', () => {
+  it('should initialize with correct default state', () => {
     localStorageMock.getItem.mockReturnValue('false');
 
-    const { result } = renderHook(() => useComposerUI({ thread: mockThread }));
+    const { result } = renderHook(() => useComposerUI({}));
 
     expect(result.current.autoAccept).toBe(false);
     expect(result.current.showJumpToLatest).toBe(false);
@@ -42,12 +36,10 @@ describe('useComposerUI', () => {
     expect(typeof result.current.handleJumpToLatest).toBe('function');
   });
 
-  it('should initialize with correct default state for non-AI thread', () => {
+  it('should initialize with correct default state from localStorage', () => {
     localStorageMock.getItem.mockReturnValue('true');
 
-    const nonAIThread = { ...mockThread, type: 'customer_support' as const };
-
-    const { result } = renderHook(() => useComposerUI({ thread: nonAIThread }));
+    const { result } = renderHook(() => useComposerUI({}));
 
     expect(result.current.autoAccept).toBe(true);
   });
@@ -55,7 +47,7 @@ describe('useComposerUI', () => {
   it('should load auto-accept preference from localStorage', () => {
     localStorageMock.getItem.mockReturnValue('true');
 
-    renderHook(() => useComposerUI({ thread: mockThread }));
+    renderHook(() => useComposerUI({}));
 
     expect(localStorageMock.getItem).toHaveBeenCalledWith(
       'autoAcceptAISuggestions'
@@ -65,7 +57,7 @@ describe('useComposerUI', () => {
   it('should handle toggle auto-accept preference', () => {
     localStorageMock.getItem.mockReturnValue('false');
 
-    const { result } = renderHook(() => useComposerUI({ thread: mockThread }));
+    const { result } = renderHook(() => useComposerUI({}));
 
     act(() => {
       result.current.handleToggleAutoAccept(true);
@@ -81,7 +73,6 @@ describe('useComposerUI', () => {
   it('should handle jump to latest', () => {
     const { result } = renderHook(() =>
       useComposerUI({
-        thread: mockThread,
         messagesEndRef: mockMessagesEndRef as any,
       })
     );
@@ -102,7 +93,6 @@ describe('useComposerUI', () => {
 
     const { result } = renderHook(() =>
       useComposerUI({
-        thread: mockThread,
         messagesEndRef: mockMessagesEndRef as any,
       })
     );
@@ -122,7 +112,6 @@ describe('useComposerUI', () => {
 
     const { result } = renderHook(() =>
       useComposerUI({
-        thread: mockThread,
         messagesEndRef: mockMessagesEndRef as any,
       })
     );
@@ -136,7 +125,7 @@ describe('useComposerUI', () => {
   });
 
   it('should handle undefined messagesEndRef gracefully', () => {
-    const { result } = renderHook(() => useComposerUI({ thread: mockThread }));
+    const { result } = renderHook(() => useComposerUI({}));
 
     // Should not throw error
     expect(() => {

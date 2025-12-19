@@ -53,13 +53,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (loading) return;
     if (!user) {
-      setTheme('light');
-      localStorage.removeItem('theme');
+      // Use a callback to avoid synchronous setState in effect
+      requestAnimationFrame(() => {
+        setTheme('light');
+        localStorage.removeItem('theme');
+      });
       return;
     }
 
     const storedTheme = (localStorage.getItem('theme') as Theme) ?? 'system';
-    setTheme(storedTheme);
+    requestAnimationFrame(() => {
+      setTheme(storedTheme);
+    });
   }, [user, loading]);
 
   // Listen for system theme changes
