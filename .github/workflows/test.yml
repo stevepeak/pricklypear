@@ -36,7 +36,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - uses: actions/checkout@v4
 
       # !Important — Caching browser binaries is not recommended
       # ? -> https://playwright.dev/docs/ci#caching-browsers
