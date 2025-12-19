@@ -59,6 +59,7 @@ jobs:
         run: bun run typecheck:deno
 
   deno-test:
+    needs: [deno-typecheck]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -83,6 +84,7 @@ jobs:
         run: bun run test:deno
 
   e2e:
+    needs: [typecheck, deno-typecheck, deno-test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -163,7 +165,7 @@ jobs:
           retention-days: 7
 
   deploy:
-    needs: [lint, typecheck, knip, build, deno-typecheck, deno-test, e2e]
+    needs: [deno-test, e2e]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     env:
