@@ -10,5 +10,3 @@ else
 fi
 
 bunx lint-staged
-bun run ci
-
